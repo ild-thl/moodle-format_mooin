@@ -456,7 +456,7 @@ $mainuserfields =   user_picture::fields('u', $userfields); ;// \core_user\field
 $value = \core_user\fields::for_name()->with_identity($context);
 $extrasql = $value->get_sql('u')->selects;
 // $mainuserfields = $mainuserfields_first->get_sql('u')->selects;
-var_dump($mainuserfields);
+// var_dump($mainuserfields);
 if ($isfrontpage) {
     $select = "SELECT $mainuserfields, u.lastaccess$extrasql";
     $joins[] = "JOIN ($esql) e ON e.id = u.id"; // Everybody on the frontpage usually.
