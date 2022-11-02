@@ -37,3 +37,5 @@ $string['page-course-view-mooin-x'] = 'Any course page in mooin format';
 $string['hidefromothers'] = 'Hide topic';
 $string['showfromothers'] = 'Show topic';
 $string['privacy:metadata'] = 'The mooin format plugin does not store any personal data.';
+$string['map_title'] = 'Map of participants';
+$string['map_descr'] = 'Participant\'s city all over the world';

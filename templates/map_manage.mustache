@@ -1,0 +1,186 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template format_mooin4/map_manage
+
+    class="card-columns" 
+    class="card shadow-sm p-3 mb-5 bg-white rounded"
+    Example context (json):
+    {
+
+    }
+}}
+<!-- <canvas id="myCanvas" width="1024" height="200" style="border:1px solid #bdbdbd;">
+
+</canvas> -->
+<!-- <!DOCTYPE html> -->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{title}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{desc}}</h6>
+        
+          <div id="map_id">
+
+          </div>
+        
+      </div>
+    </div>
+    <script>
+      /*
+        const mymap = L.map('map_id', {
+            maxZoom: 18,
+            }).setView([[51.505, -0.09], 7]);
+      
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(mymap);
+       */
+      // start
+      const mymap = L.map('map_id', {
+      maxZoom: 18,
+      minZoom: 3,
+      preferCanvas: true
+    }).setView([51.165691, 10.451526], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        subdomains: ['a','b','c']
+    }).addTo(mymap);
+    /*
+      L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+      maxZoom: 20,
+      attribution: '&copy; OpenStreetMap France | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(mymap);
+    */
+
+  // L.Control.geocoder().addTo(mymap);
+    
+  // custom canvas layer (only added)
+  var customlayer = L.Layer.extend({
+    initialize: function (options) {
+      this._map = mymap;
+      this._canvas = null;
+      this._frame = null;
+      this._delegate = null;
+      L.setOptions(this, options);
+      this.onAdd();
+    },
+    onAdd: function(){
+      this._canvas = L.DomUtil.create('canvas', 'leaflet-layer custom');
+
+      var size = this._map.getSize();
+      this._canvas.width = size.x;
+      this._canvas.height = size.y;
+
+      this._map._panes.overlayPane.appendChild(this._canvas);
+    }
+  });
+  new customlayer();
+
+
+  // markerpin example
+  L.Canvas.include({
+    _updateMarkerPin: function (layer) {
+      if (!this._drawing || layer._empty()) {
+        return;
+      }
+      var canvas = document.querySelector('canvas.custom');
+      var ctx = canvas.getContext("2d");
+
+      var p = layer._point,
+          ctx = this._ctx,
+          r = layer._radius;
+
+      // this._drawnLayers[layer._leaflet_id] = layer;
+
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x - 0.58 * r, p.y - r);
+      ctx.arc(p.x, p.y - 2 * r, r, -Math.PI * 1.161, Math.PI * 0.161);
+      ctx.closePath();
+      this._fillStroke(ctx, layer);
+    }
+  });
+
+
+  L.MarkerPin = L.CircleMarker.extend({
+    _updatePath: function () {
+      this._renderer._updateMarkerPin(this);
+    },
+    _containsPoint: function (p) {
+      var r = this._radius;
+      var insideCircle =
+        p.add([0, r * 2]).distanceTo(this._point) <= r + this._clickTolerance();
+      var a = this._point,
+        b = a.subtract([0.58 * r, r]),
+        c = a.subtract([-0.58 * r, r]);
+
+      var insideTriangle = true;
+
+      var ap_x = p.x - a.x;
+      var ap_y = p.y - a.y;
+      var p_ab = (b.x - a.x) * ap_y - (b.y - a.y) * ap_x > 0;
+      var p_ac = (c.x - a.x) * ap_y - (c.y - a.y) * ap_x > 0;
+      var p_bc = (c.x - b.x) * (p.y - b.y) - (c.y - b.y) * (p.x - b.x) > 0;
+      if (p_ac === p_ab) insideTriangle = false;
+      if (p_bc !== p_ab) insideTriangle = false;
+      return insideTriangle || insideCircle;
+    }
+  });
+
+  /* const name = new L.MarkerPin([53.865467, 10.686559], {
+    weight: 1,
+    fillColor: "red",
+    fillOpacity: 5,
+    color: '#333',
+    radius: 4
+  });
+    name.bindPopup('Hello').addTo(mymap); */
+    //Icon
+    // Implement the custom maker for participant in the course
+    var myIcon = L.icon({
+      iconUrl: './images/online_noshadow.png',
+      shadowUrl: './images/online.png',
+      iconSize: [12, 14],
+      iconAnchor: [9, 21],
+      popupAnchor: [0, -14]
+    });
+    var markerLists = [];
+    {{#userdata}}
+      L.Control.geocoder().options.geocoder.geocode('{{.}}', (results) => {
+          // var res = '{{.}}';
+          // var result = res.split("|", 1);
+          //console.log(results);
+          //console.log('{{.}}');
+          markerLists.push( L.marker( [results[0].center.lat, results[0].center.lng],{icon:myIcon}).bindPopup("{{.}}").addTo(mymap));
+          L.marker( [results[0].center.lat, results[0].center.lng],{icon:myIcon}).bindPopup('{{.}}').addTo(mymap);
+        });
+    {{/userdata}}  
+  </script>
+    
+  </body>
+</html>

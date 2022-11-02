@@ -37,3 +37,5 @@ $string['page-course-view-mooin-x'] = 'Any course page in mooin format';
 $string['hidefromothers'] = 'Abschnitt verbergen';
 $string['showfromothers'] = 'Abschnitt anzeigen';
 $string['privacy:metadata'] = 'Das mooin Kursformat-Plugin speichert keine persönlichen Daten.';
+$string['map_title'] = 'Karte der Teilnehmenden';
+$string['map_descr'] = 'Die Stadt des Teilnehmers in der ganzen Welt';
