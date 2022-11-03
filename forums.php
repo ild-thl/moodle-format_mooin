@@ -25,6 +25,7 @@ require_once('../../../mod/forum/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
 
 $id = optional_param('id', 0, PARAM_INT);       // Course ID
+$cmid = optional_param('cmid', 0, PARAM_INT);       // Course module ID
 $f = optional_param('f', 0, PARAM_INT);        // Forum ID
 $mode = optional_param('mode', 0, PARAM_INT);     // Display mode (for single forum)
 $showall = optional_param('showall', '', PARAM_INT); // show all discussions on one page
@@ -36,7 +37,10 @@ $search = optional_param('search', '', PARAM_CLEAN);// search string
 $page = -1;
 
 $params = array();
-if ($id) {
+if ($cmid > 0) {
+    $params['cmid'] = $cmid;
+}
+else if ($id > 0) {
     $params['id'] = $id;
 } else {
     $params['f'] = $f;
@@ -49,37 +53,41 @@ if ($search) {
 }
 $PAGE->set_url('/course/format/mooin/forums.php', $params);
 
-if ($id) {
+if ($cmid > 0) {
+    if (!$cm = $DB->get_record('course_modules', array('id' => $cmid))) {
+        print_error('invalidcoursemodule');
+    }
+    if (!$course = $DB->get_record("course", array("id" => $cm->course))) {
+        print_error('coursemisconf');
+        
+    }
+    $PAGE->set_course($course);
+    if (!$forum = $DB->get_record('forum', array('id' => $cm->instance))){
+        print_error('forumnotfounderror');
+    }
+}
+else if ($id > 0) {
     if (!$forum = $DB->get_record('forum', array('course' => $id, 'type' => 'general'))){
         print_error('forumnotfounderror');
     }
     if (!$course = $DB->get_record("course", array("id" => $id))) {
         print_error('coursemisconf');
     }
-    /*
     $oc_m = $DB->get_record('modules', array('name' => 'forum'));
-    if (!$oc_cm = $DB->get_record('course_modules', array('instance' => $forum->id, 'course' => $course->id, 'module' => $oc_m->id)))  {
+    $oc_cm = $DB->get_record('course_modules', array('instance' => $forum->id, 'course' => $course->id, 'module' => $oc_m->id));
+    if (!$oc_cm)  {
         print_error('invalidcoursemodule');
     }
-*/
-    if (!$cm = get_coursemodule_from_id('forum', $forum->id)) {
-        print_error('invalidcoursemodule');
-    }
-    /*
-    if (!$forum = $DB->get_record("forum", array("id" => $cm->instance))) {
-        print_error('invalidforumid', 'forum');
-    }
-    */
+    $cm = $oc_cm;
     if ($forum->type == 'single') {
         $PAGE->set_pagetype('mod-forum-discuss');
     }
-
     // move require_course_login here to use forced language for course
     // fix for MDL-6926
     require_course_login($course, true, $cm);
     $strforums = get_string("modulenameplural", "forum");
     $strforum = get_string("modulename", "forum");
-} else if ($f) {
+} else if ($f > 0) {
 
     if (!$forum = $DB->get_record("forum", array("id" => $f))) {
         print_error('invalidforumid', 'forum');
@@ -123,7 +131,7 @@ $completion->set_module_viewed($cm);
 $PAGE->set_title($forum->name);
 $PAGE->add_body_class('forumtype-' . $forum->type);
 $PAGE->set_heading($course->fullname);
-
+//print_object($PAGE);die();
 echo $OUTPUT->header();
 
 /// Some capability checks.
@@ -137,13 +145,11 @@ if (!has_capability('mod/forum:viewdiscussion', $context)) {
 
 
 //////////// mooin ////////////////////////////////
-// Wenn mehrere Foren (Newsforum z�hlt nicht) vohanden sind,
+// Wenn mehrere Foren (Newsforum zählt nicht) vohanden sind,
 // wird hier nur eine Liste mit Links angezeigt
 
 global $USER, $DB;
 
-//if ($USER->username == 'riegerj' or $USER->username == 'rieger') {
-//echo '*';
 $oc_m = $DB->get_record('modules', array('name' => 'forum'));
 $oc_foren = $DB->get_records('forum', array('course' => $course->id, 'type' => 'general'));
 $oc_showall = optional_param('showall', '', PARAM_RAW);
@@ -153,7 +159,7 @@ if (count($oc_foren) > 1 and $oc_showall == '') {
     echo '<h2>' . get_string('all_forums', 'format_mooin') . '</h2>';
     foreach ($oc_foren as $oc_forum) {
         $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $course->id, 'module' => $oc_m->id));
-        $oc_link = html_writer::link(new moodle_url('/course/format/mooin/forums.php?showall=false&id=' . $oc_cm->id), $oc_forum->name);
+        $oc_link = html_writer::link(new moodle_url('/course/format/mooin/forums.php?showall=false&cmid=' . $oc_cm->id), $oc_forum->name);
         if ($oc_cm->visible == 1) {
             echo html_writer::tag('div', $oc_link);
             $oc_counter++;
@@ -166,7 +172,6 @@ if (count($oc_foren) > 1 and $oc_showall == '') {
     }
 }
 ob_end_clean();
-//}
 
 ///////////////////////////////////////////////////////
 
@@ -175,7 +180,7 @@ if (!empty($forum->intro) && $forum->type != 'single' && $forum->type != 'teache
     echo $OUTPUT->box(format_module_intro('forum', $forum, $cm->id), 'generalbox', 'intro');
 }
 
-// mooin Link: Meine Beitr�ge und Suche//////////////////////////////////////////////////////////////////////////////////////////
+// mooin Link: Meine Beiträge und Suche//////////////////////////////////////////////////////////////////////////////////////////
 
 
 $mythreads_url = new moodle_url('/mod/forum/user.php', array('id' => $USER->id, 'course' => $course->id));
@@ -205,7 +210,6 @@ echo $searchform;
 // 2 - automatisch
 // 3 - deaktiviert
 
-//if ($USER->username == 'riegerj') {
 if ($forum->forcesubscribe == 0 OR $forum->forcesubscribe == 2) {
     sesskey();
     $subscription = $DB->get_record('forum_subscriptions', array('userid' => $USER->id, 'forum' => $forum->id));
@@ -216,7 +220,6 @@ if ($forum->forcesubscribe == 0 OR $forum->forcesubscribe == 2) {
     }
     echo '<p></p>';
 }
-//}
 
 /// find out current groups mode
 groups_print_activity_menu($cm, $CFG->wwwroot . '/mod/forum/view.php?id=' . $cm->id);
