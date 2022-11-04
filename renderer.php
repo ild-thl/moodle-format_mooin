@@ -290,6 +290,52 @@ class format_mooin_renderer extends format_section_renderer_base {
 
     }
 
+     /**
+     * Return the navbar content so that it can be echoed out by the layout
+     *
+     * @return string XHTML navbar
+     */
+    public function navbar($displaysection) {
+        $items = $this->page->navbar->get_items();
+        $itemcount = count($items);
+        if ($itemcount === 0) {
+            return '';
+        }
+
+        $htmlblocks = array();
+        // Iterate the navarray and display each node
+        $separator = get_separator();
+        for ($i=0;$i < $itemcount;$i++) {
+            $val  = '/ Kap. '. ' '.$displaysection .' / Lek.  '. ' ' .$displaysection .'.'. $displaysection . ':';
+            $item = $items[$i];
+            $item->hideicon = true;
+            if ($i===0) {
+                $content = html_writer::tag('li', $this->render($item));
+            } elseif($i === $itemcount - 2) {
+                $content = html_writer::tag('li', ' /  '. $this->render($item));
+            }elseif ($i === $itemcount - 1) {
+                $content = html_writer::tag('li', '  '. ' '.$val); // $separator.$this->render($item)
+            } else {
+                $content = '';
+            }/*  {
+                $content = html_writer::tag('li', $separator.$this->render($item));
+            } */
+            $htmlblocks[] = $content;
+        }
+
+        //accessibility: heading for navbar list  (MDL-20446)
+        $navbarcontent = html_writer::tag('span', get_string('pagepath'),
+                array('class' => 'accesshide', 'id' => 'navbar-label'));
+        // $navbarcontent .= html_writer::start_tag('nav', array('aria-labelledby' => 'navbar-label'));
+        
+        $navbarcontent .= html_writer::tag('nav',
+                html_writer::tag('ul', join('', $htmlblocks),array('class' => "breadcrumb", 'id'=> 'menu'),array('aria-labelledby' => 'navbar-label')),
+                );
+        // $navbarcontent .= html_writer::start_tag('ul', array('id' => "menu"));
+        // XHTML
+        return $navbarcontent;
+    }
+
     /**
      * Output the html for a single section page .
      *
@@ -301,9 +347,12 @@ class format_mooin_renderer extends format_section_renderer_base {
      * @param int $displaysection The section number in the course which is being displayed
      */
     public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection) {
+        global $PAGE;
+
         $modinfo = get_fast_modinfo($course);
         $course = course_get_format($course)->get_course();
-
+        echo $this->navbar($displaysection);
+        
         // Can we view the section in question?
         if (!($sectioninfo = $modinfo->get_section_info($displaysection)) || !$sectioninfo->uservisible) {
             // This section doesn't exist or is not available for the user.
@@ -311,10 +360,17 @@ class format_mooin_renderer extends format_section_renderer_base {
             print_error('unknowncoursesection', 'error', course_get_url($course),
                 format_string($course->fullname));
         }
-
-        //*
+        $PAGE->navbar->ignore_active();
+        $PAGE->navbar->add('/ Kap.'.$displaysection);
+        /* $coursenode = $PAGE->navigation->find($course->id, navigation_node::TYPE_COURSE);
+        $thingnode = $coursenode->add('Perial', new moodle_url('moodle/course/view.php?id=' .$course->id. '&section='.$displaysection));
+        $thingnode->make_active();
+        $PAGE->navbar->add(get_string('name of thing'), new moodle_url('/a/link/if/you/want/one.php')); */
         // Copy activity clipboard..
-        echo $this->course_activity_clipboard($course, $displaysection);
+
+        $node = navigation_node::create('Perial');
+        $node->showinflatnavigation = true;
+        $PAGE->navbar->add('PPPPPP',  $node);
         $thissection = $modinfo->get_section_info(0);
         if ($this->page->user_is_editing()) {
             echo $this->start_section_list();
@@ -324,13 +380,18 @@ class format_mooin_renderer extends format_section_renderer_base {
             echo $this->section_footer();
             echo $this->end_section_list();
         }
-        //*/
+        
+        
         // Start single-section div
         echo html_writer::start_tag('div', array('class' => 'single-section'));
 
         // The requested section page.
         $thissection = $modinfo->get_section_info($displaysection);
 
+        //$PAGE->navbar->add('Perial'.$displaysection);
+        // nav_bar_in_single_section($course, $displaysection);
+       // var_dump($PAGE->context );
+        
         // Title with section navigation links.
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
         $sectiontitle = '';
@@ -363,8 +424,8 @@ class format_mooin_renderer extends format_section_renderer_base {
         $sectionbottomnav .= html_writer::start_tag('div', array('class' => 'section-navigation mdl-bottom'));
         $sectionbottomnav .= html_writer::tag('span', $sectionnavlinks['previous'], array('class' => 'mdl-left'));
         $sectionbottomnav .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'mdl-right'));
-        $sectionbottomnav .= html_writer::tag('div', $this->section_nav_selection($course, $sections, $displaysection),
-            array('class' => 'mdl-align'));
+        /* $sectionbottomnav .= html_writer::tag('div', $this->section_nav_selection($course, $sections, $displaysection),
+            array('class' => 'mdl-align')); */
         $sectionbottomnav .= html_writer::end_tag('div');
         echo $sectionbottomnav;
 

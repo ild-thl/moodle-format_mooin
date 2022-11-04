@@ -97,13 +97,4 @@ $capabilities = array(
             'teacher' => CAP_ALLOW
         ]
     ],
-        // View public badges in other users' profiles.
-    'moodle/badges:viewotherbadges' => array(
-        'riskbitmap'    => RISK_PERSONAL,
-        'captype'       => 'read',
-        'contextlevel'  => CONTEXT_USER,
-        'archetypes'    => array(
-            'user'    => CAP_ALLOW
-        )
-    ),
 );

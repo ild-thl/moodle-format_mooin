@@ -968,8 +968,8 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 				// oncampus Badges anzeigen
 				$badges = '';
 				// $badges .= get_badges_list($user->id).get_badges_list($user->id, $course->id);
-                $badges .= get_badges_list($user->id, $course->id);
-
+                // var_dump(get_badges_list($user->id, $course->id));
+                
                 // nur wenn der teilnehmer kein teacher ist werden badges angezeigt
 				$ccontext = context_course::instance($course->id);
 				$roles = get_user_roles($ccontext, $user->id, false);
@@ -1031,9 +1031,25 @@ if ($perpage == SHOW_ALL_PAGE_SIZE) {
     echo $OUTPUT->container(html_writer::link($perpageurl, get_string('showall', '', $matchcount)), array(), 'showall');
 }
 
+// Kurslich verliehene Badges
+echo('<br>');echo('<br>');echo('<br>');echo('<br>');
+$out = html_writer::tag('div', get_string('awarded_badges', 'format_mooin'), array('class' => 'oc_badges_text'));
+echo html_writer::tag('h2', $out);
+// echo html_writer::tag('div', get_string('lastday', 'format_mooin'), array('class' => 'oc_badges_text'));
+// display_badges(0, $courseid, 24 * 60 * 60);
+//echo html_writer::tag('div', get_string('lastweek', 'format_mooin'), array('class' => 'oc_badges_text'));
+ob_start();
+display_badges(0, $courseid, 12 * 31 * 7 * 24 * 60 * 60);
+$out = ob_get_contents();
+ob_end_clean();
+if ($out != '') {
+    echo $out;
+} else {
+    echo html_writer::tag('div', get_string('no_badges_awarded', 'format_mooin'), array('class' => 'oc-no-badges'));
+}
 // Link zum Abmelden aus dem Kurs anzeigen,
 // wenn der User �ber Autoenrol eingeschrieben ist
-if ($enrol = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'autoenrol', 'status' => 0))) {	
+if ($enrol = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'autoenrol', 'status' => 0))) {// manual || autoenrol
 	if ($user_enrolment = $DB->get_record('user_enrolments', array('enrolid' => $enrol->id, 'userid' => $USER->id))) {
 		$unenrolurl = new moodle_url("$CFG->wwwroot/enrol/autoenrol/unenrolself.php?enrolid=$enrol->id");
 		echo html_writer::tag('div', html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin') )); // , array('class' => 'oc-kurs-abmeldung'
@@ -1048,13 +1064,191 @@ echo $OUTPUT->footer();
 if ($userlist) {
     $userlist->close();
 }
+/**
+ * Get Badge since function
+ * 
+ */
+function get_badges_since($courseid, $since, $global = false) {
+    global $DB, $USER;
+    if (!$global) {
+        $params = array();
+        $sql = 'SELECT
+					b.*,
+					bi.id,
+					bi.badgeid,
+					bi.userid,
+					bi.dateissued,
+					bi.uniquehash
+				FROM
+					{badge} b,
+					{badge_issued} bi
+				WHERE b.id = bi.badgeid ';
+
+
+        $sql .= ' AND b.courseid = :courseid';
+        $params['courseid'] = $courseid;
+
+        if ($since > 0) {
+            $sql .= ' AND bi.dateissued > :since ';
+            $since = time() - $since;
+            $params['since'] = $since;
+        }
+        $sql .= ' ORDER BY bi.dateissued DESC ';
+        $sql .= ' LIMIT 0, 20 ';
+        $badges = $DB->get_records_sql($sql, $params);
+    } else {
+        $params = array('courseid' => $courseid);
+        $sql = 'SELECT
+					b.*,
+					bi.id,
+					bi.badgeid,
+					bi.userid,
+					bi.dateissued,
+					bi.uniquehash
+				FROM
+					{badge} b,
+					{badge_issued} bi,
+					{user_enrolments} ue,
+					{enrol} e
+				WHERE b.id = bi.badgeid 
+				AND	bi.userid = ue.userid 
+				AND ue.enrolid = e.id 
+				AND e.courseid = :courseid ';
+
+
+        $sql .= ' AND b.type = :type';
+        $params['type'] = 1;
+
+        if ($since > 0) {
+            $sql .= ' AND bi.dateissued > :since ';
+            $since = time() - $since;
+            $params['since'] = $since;
+        }
+        $sql .= ' ORDER BY bi.dateissued DESC ';
+        $sql .= ' LIMIT 0, 20 ';
+        $badges = $DB->get_records_sql($sql, $params);
+    }
+
+    $correct_badges = array();
+    foreach ($badges as $badge) {
+        $badge->id = $badge->badgeid;
+
+        // nur wenn der Inhaber kein Teacher ist anzeigen
+        $coursecontext = context_course::instance($courseid);
+        $roles = get_user_roles($coursecontext, $badge->userid, false);
+        $not_a_teacher = true;
+        foreach ($roles as $role) {
+            if ($role->shortname == 'editingteacher') {
+                $not_a_teacher = false;
+            }
+        }
+        if ($not_a_teacher) {
+            $correct_badges[] = $badge;
+        }
+    }
+    return $correct_badges;
+}
+
+/**
+ * Returns Badges List in UI
+ * 
+ */
+function display_badges($userid = 0, $courseid = 0, $since = 0, $print = true) {
+    global $CFG, $PAGE, $USER, $SITE;
+    require_once($CFG->dirroot . '/badges/renderer.php');
+
+    // Determine context.
+    if (isloggedin()) {
+        $context = context_user::instance($USER->id);
+    } else {
+        $context = context_system::instance();
+    }
+
+    if ($userid == 0) {
+        if ($since == 0) {
+            $records = get_badges($courseid, null, null, null);
+        } else {
+            $records = get_badges_since($courseid, $since, false);
+            // globale Badges
+            // if ($courseid != 0) {
+            // $records = array_merge(get_badges_since($courseid, $since, true), $records);
+            // }
+        }
+        $renderer = new core_badges_renderer($PAGE, '');
+
+        // Print local badges.
+        if ($records) {
+            //$right = $renderer->print_badges_list($records, $userid, true);
+            if ($since == 0) {
+                print_badges($records);
+            } else {
+                print_badges($records, true);
+            }
+        }
+    } elseif ($USER->id == $userid || has_capability('moodle/badges:viewotherbadges', $context)) {
+        $records = badges_get_user_badges($userid, $courseid, null, null, null, true);
+        $renderer = new core_badges_renderer($PAGE, '');
+
+        // Print local badges.
+        if ($records) {
+            $right = $renderer->print_badges_list($records, $userid, true);
+            if ($print) {
+                echo html_writer::tag('dd', $right);
+                //print_badges($records);
+            } else {
+                return html_writer::tag('dd', $right);
+            }
+        }
+    }
+}
+
+/**
+ * 
+ * 
+ */
+function print_badges($records, $details = false, $highlight = false, $badgename = false) {
+    global $DB;
+    $lis = '';
+    foreach ($records as $record) {
+        if ($record->type == 2) {
+            $context = context_course::instance($record->courseid);
+        } else {
+            $context = context_system::instance();
+        }
+        $opacity = '';
+        if ($highlight) {
+            $opacity = ' opacity: 0.15;';
+            if (isset($record->highlight)) {
+                $opacity = ' opacity: 1.0;';
+            }
+        }
+        $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $record->id, '/', 'f1', false);
+        $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'badge-image', 'style' => 'width: 100px; height: 100px;' . $opacity));
+        if (isset($record->uniquehash)) {
+            $url = new moodle_url('/badges/badge.php', array('hash' => $record->uniquehash));
+        } else {
+            $url = new moodle_url('/badges/overview.php', array('id' => $record->id));
+        }
+        $detail = '';
+        if ($details) {
+            $user = $DB->get_record('user', array('id' => $record->userid));
+            $detail = '<br />' . $user->firstname . ' ' . $user->lastname . '<br />(' . date('d.m.y H:i', $record->dateissued) . ')';
+        } else if ($badgename) {
+            $detail = '<br />' . $record->name;
+        }
+        $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
+        $lis .= html_writer::tag('li', $link);
+    }
+    echo html_writer::tag('ul', $lis, array('class' => 'badges'));
+}
+
  /**
  * Returns Bagdes for a specific user in a specific course
  * 
  * @return string badges
  */
 function get_badges_list($userid, $courseid = 0) {
-    global $CFG, $USER;
+    global $CFG, $USER, $DB;
     require_once($CFG->dirroot . '/badges/renderer.php');
     
     if ($courseid == 0) {
@@ -1068,15 +1262,22 @@ function get_badges_list($userid, $courseid = 0) {
             $records = get_global_user_badges($userid);
         } else {
             $records = badges_get_user_badges($userid, $courseid, null, null, null, true);
+            // $records = $DB->get_records('badge_issued', ['userid' =>$userid]);
+            
+        //var_dump($records);
         }
         // Print local badges.
+        
+        //var_dump($context);
         if ($records) {
             $out = '';
+            
             foreach ($records as $record) {
-                $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $record->id, '/', 'f1', false);
+                // $val = $DB->get_record('badge', ['id' =>$record->badgeid]);
+                $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $record->id, '/', 'f1', false); // $context->id == $record->type
                 $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'badge-image', 'style' => 'width: 30px; height: 30px;'));
                 $url = new moodle_url('/badges/badge.php', array('hash' => $record->uniquehash));
-                $link = html_writer::link($url, $image, array('title' => $record->name));
+                $link = html_writer::link($url, $image, ['title'=>$record->name]);
                 $out .= $link;
             }
             return $out;
