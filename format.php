@@ -72,6 +72,7 @@ if ($sectionnumber == 0) {
 
     // progress & start/continue learning button
     echo get_string('progress', 'format_mooin');
+    echo '&nbsp;';
     $start_continue = get_string('start', 'format_mooin');
     // get last visited section from userpref
     if (isset($last_section)) {
@@ -108,6 +109,7 @@ if ($sectionnumber == 0) {
     $badges_url = new moodle_url('/course/format/mooin/badges.php', array('id' => $course->id));
     $badges_link = html_writer::link($badges_url, get_string('badges', 'format_mooin'), array('title' => get_string('badges', 'format_mooin')));
     echo $badges_link;
+    echo '&nbsp;';
     $certificates_url = new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id));
     $certificates_link = html_writer::link($certificates_url, get_string('certificates', 'format_mooin'), array('title' => get_string('certificates', 'format_mooin')));
     echo $certificates_link;
@@ -118,6 +120,7 @@ if ($sectionnumber == 0) {
     $forums_url = new moodle_url('/course/format/mooin/forums.php', array('id' => $course->id));
     $forums_link = html_writer::link($forums_url, get_string('forums', 'format_mooin'), array('title' => get_string('forums', 'format_mooin')));
     echo $forums_link;
+    echo '&nbsp;';
     $participants_url = new moodle_url('/course/format/mooin/participants.php', array('id' => $course->id));
     $participants_link = html_writer::link($participants_url, get_string('participants', 'format_mooin'), array('title' => get_string('participants', 'format_mooin')));
     echo $participants_link;
