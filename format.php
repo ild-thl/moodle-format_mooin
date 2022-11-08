@@ -136,6 +136,7 @@ if ($sectionnumber == 0) {
 if (!empty($displaysection)) {
     $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
 } else {
+    
     $renderer->print_multiple_section_page($course, null, null, null, null);
 }
 
