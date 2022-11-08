@@ -557,17 +557,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $PAGE->navbar->add('/ Kap.'.$displaysection);
         // Copy activity clipboard..
 
-<<<<<<< HEAD
-        $node = navigation_node::create('Perial');
-        $node->showinflatnavigation = true;
-        $PAGE->navbar->add('PPPPPP',  $node);
-
-        //*
-        // Copy activity clipboard..
-        echo $this->course_activity_clipboard($course, $displaysection);
-=======
         
->>>>>>> master
         $thissection = $modinfo->get_section_info(0);
         if ($this->page->user_is_editing()) {
             echo $this->start_section_list();

@@ -1,9 +1,7 @@
-<<<<<<< HEAD
 .activity-navigation .row {
     align-items: center;
     visibility: hidden;
   }
-=======
 /* #page.container-fluid.d-print-block {
     background-color: royalblue !important;
 } */
@@ -118,4 +116,3 @@ div.card-body {
 @media only screen and (min-width: 1200px) { 
 
 }
->>>>>>> master
