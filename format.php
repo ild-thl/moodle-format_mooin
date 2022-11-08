@@ -49,11 +49,20 @@ if (($marker >= 0) && has_capability('moodle/course:setcurrentsection', $context
 course_create_sections_if_missing($course, 0);
 
 // mooin: TODO get section and set last visited in userpref
+$sectionnumber = optional_param('section', 0, PARAM_INT);
+// mooin: TODO get section and set last visited in userpref
+if ($sectionnumber > 0) {
+    set_user_preference('format_mooin_last_section_in_course_'.$courseid, $sectionnumber, $USER->id);
+}
+else if ($sectionnumber == 0) {
+    $last_section = get_user_preferences('format_mooin_last_section_in_course_'.$courseid, 0, $USER->id);
+}
 
 $renderer = $PAGE->get_renderer('format_mooin');
 
 // mooin: print tiles here
 $sectionnumber = optional_param('section', 0, PARAM_INT);
+
 if ($sectionnumber == 0) {
     // newsforum
     if ($news_forum = $DB->get_record('forum', array('course' => $course->id, 'type' => 'news'))) {
@@ -70,6 +79,35 @@ if ($sectionnumber == 0) {
     $sectionnumber = 1;
     $continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $sectionnumber));
     $continue_link = html_writer::link($continue_url, get_string('continue', 'format_mooin'), array('title' => get_string('continue', 'format_mooin')));
+    echo '&nbsp;';
+    $start_continue = get_string('start', 'format_mooin');
+    // get last visited section from userpref
+    if (isset($last_section)) {
+        if ($last_section == 0) {
+            // start learning
+            $last_section = 1;
+        }
+        else {
+            // continue learning
+            if ($section = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
+                if ($section->name) {
+                    $start_continue = get_string('continue', 'format_mooin').' '.$section->name;
+                }
+                else {
+                    $start_continue = get_string('continue', 'format_mooin').' '.get_string('sectionname', 'format_mooin').' '.$last_section;
+                }
+            }
+            else {
+                $start_continue = get_string('continue', 'format_mooin');
+            }
+        }
+    }
+    else {
+        // start learning
+        $last_section = 1;
+    }
+    $continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section));
+    $continue_link = html_writer::link($continue_url, $start_continue, array('title' => $start_continue));
     echo $continue_link;
     echo '<p></p>';
 
@@ -78,6 +116,7 @@ if ($sectionnumber == 0) {
     $badges_url = new moodle_url('/course/format/mooin/badges.php', array('id' => $course->id));
     $badges_link = html_writer::link($badges_url, get_string('badges', 'format_mooin'), array('title' => get_string('badges', 'format_mooin')));
     echo $badges_link;
+    echo '&nbsp;';
     $certificates_url = new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id));
     $certificates_link = html_writer::link($certificates_url, get_string('certificates', 'format_mooin'), array('title' => get_string('certificates', 'format_mooin')));
     echo $certificates_link;
@@ -88,6 +127,7 @@ if ($sectionnumber == 0) {
     $forums_url = new moodle_url('/course/format/mooin/forums.php', array('id' => $course->id));
     $forums_link = html_writer::link($forums_url, get_string('forums', 'format_mooin'), array('title' => get_string('forums', 'format_mooin')));
     echo $forums_link;
+    echo '&nbsp;';
     $participants_url = new moodle_url('/course/format/mooin/participants.php', array('id' => $course->id));
     $participants_link = html_writer::link($participants_url, get_string('participants', 'format_mooin'), array('title' => get_string('participants', 'format_mooin')));
     echo $participants_link;

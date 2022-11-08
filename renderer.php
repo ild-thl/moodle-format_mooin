@@ -353,6 +353,9 @@ class format_mooin_renderer extends format_section_renderer_base {
         $course = course_get_format($course)->get_course();
         echo $this->navbar($displaysection);
         
+        $modinfo = get_fast_modinfo($course);
+        $course = course_get_format($course)->get_course();
+
         // Can we view the section in question?
         if (!($sectioninfo = $modinfo->get_section_info($displaysection)) || !$sectioninfo->uservisible) {
             // This section doesn't exist or is not available for the user.
@@ -371,6 +374,10 @@ class format_mooin_renderer extends format_section_renderer_base {
         $node = navigation_node::create('Perial');
         $node->showinflatnavigation = true;
         $PAGE->navbar->add('PPPPPP',  $node);
+
+        //*
+        // Copy activity clipboard..
+        echo $this->course_activity_clipboard($course, $displaysection);
         $thissection = $modinfo->get_section_info(0);
         if ($this->page->user_is_editing()) {
             echo $this->start_section_list();
@@ -382,6 +389,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         }
         
         
+        //*/
         // Start single-section div
         echo html_writer::start_tag('div', array('class' => 'single-section'));
 
@@ -426,6 +434,8 @@ class format_mooin_renderer extends format_section_renderer_base {
         $sectionbottomnav .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'mdl-right'));
         /* $sectionbottomnav .= html_writer::tag('div', $this->section_nav_selection($course, $sections, $displaysection),
             array('class' => 'mdl-align')); */
+        $sectionbottomnav .= html_writer::tag('div', $this->section_nav_selection($course, $sections, $displaysection),
+            array('class' => 'mdl-align'));
         $sectionbottomnav .= html_writer::end_tag('div');
         echo $sectionbottomnav;
 
