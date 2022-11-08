@@ -176,6 +176,7 @@ $PAGE->navbar->add('Participants');
  
 echo $OUTPUT->header();
 
+echo $OUTPUT->navbar();
 // oncampus /////////////////////////////////////////////////////////////////////////
 //echo html_writer::tag('div', get_string('profile_city_descr', 'block_oc_mooc_nav'));
 
@@ -991,7 +992,6 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
     }
 	
     $table->print_html();
-
 }
 
 if ($bulkoperations) {
@@ -1064,6 +1064,8 @@ echo $OUTPUT->footer();
 if ($userlist) {
     $userlist->close();
 }
+
+
 /**
  * Get Badge since function
  * 
