@@ -5,6 +5,9 @@
 /* #page.container-fluid.d-print-block {
     background-color: royalblue !important;
 } */
+.course-content {
+    margin-top: 50px !important;
+}
 div.card{
     border: none !important;
 }
@@ -20,7 +23,7 @@ ul#menu.navmenu {
     background-color: transparent;
     max-width: 90%;
     position: absolute;
-    top: -92px;
+    top: -24px;
     padding-left: 1.25rem;
 }
 
@@ -50,6 +53,9 @@ ul#menu.navmenu {
 div.card-body {
     display: none !important;
 } */
+ul li.section.main.section-summary.clearfix:last-child {
+    border-bottom: 1px solid #dee2e6 !important;
+}
 .bottom_complete {
     color: black !important;
     background-color: #b8c1ca !important;

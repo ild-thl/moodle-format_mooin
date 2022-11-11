@@ -52,10 +52,10 @@ course_create_sections_if_missing($course, 0);
 $sectionnumber = optional_param('section', 0, PARAM_INT);
 // mooin: TODO get section and set last visited in userpref
 if ($sectionnumber > 0) {
-    set_user_preference('format_mooin_last_section_in_course_'.$courseid, $sectionnumber, $USER->id);
+    set_user_preference('format_mooin_last_section_in_course_'.$course->id, $sectionnumber, $USER->id);
 }
 else if ($sectionnumber == 0) {
-    $last_section = get_user_preferences('format_mooin_last_section_in_course_'.$courseid, 0, $USER->id);
+    $last_section = get_user_preferences('format_mooin_last_section_in_course_'.$course->id, 0, $USER->id);
 }
 
 $renderer = $PAGE->get_renderer('format_mooin');

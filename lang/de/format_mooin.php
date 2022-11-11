@@ -72,9 +72,9 @@ $string['badge_options'] = 'Badge Einstellungen';
 $string['owner'] = 'Inhaber';
 $string['no_badges_awarded'] = 'Bisher wurden noch keine Badges in diesem Kurs verliehen';
 $string['no_badges_available'] = 'In diesem Kurs sind noch keine Badges verfügbar';
-$string['badge_overview_description'] = 'Mit diesen Kursbadges bzw. digitalen Lernabzeichen können Sie den anderen Teilnehmerinnen und Teilnehmern hier auf demo.oncampus.de und auch der ganzen Welt im Web zeigen, welche Kursfortschritte Sie bereits gemacht haben.
+$string['badge_overview_description'] = '<h5>Mit diesen Kursbadges bzw. digitalen Lernabzeichen können Sie den anderen Teilnehmerinnen und Teilnehmern hier auf demo.oncampus.de und auch der ganzen Welt im Web zeigen, welche Kursfortschritte Sie bereits gemacht haben.
 										<br />Weitere Informationen gibt es in der <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a> 
-										und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a>';
+										und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a></h5>';
 $string['all_forums'] = 'Alle Diskussionsforen';
 $string['course_groups'] = 'Kursgruppen';
 $string['course_groups_descr'] = 'Hier kannst Du sehen, welche Arbeitsgruppen es in diesem Kurs gibt und entscheiden, welcher Du beitreten möchtest:';
@@ -85,7 +85,9 @@ $string['certificate'] = 'Teilnahmebestätigung';
 $string['cert_addtext'] = 'Lorem ipsum';
 $string['required_questions'] = 'Benötigte korrekte Antworten in %';
 $string['only_for_trainers'] = 'Nur für Admins und Trainer sichtbar';
-
+$string['my_certificate'] = 'Meine Kurszertifikate';
+$string['certificate_overview_description'] = '<h5>Herlichen Glückwunsch! Sie haben die im Kurs enthaltenen Selbtsttest erfolgreich bearbeitet und können sich hier Ihre Teilnahmenbestätigung herunterladen.</h5>';
+$string['certificate_overview'] = 'Es gibt noch kein Zertifikat für diese Kurs!';
 /* $string['course'] = 'Kurs';
 $string['participants'] = 'Kursteilnehmer';
 $string['badges'] = 'Auszeichnungen und Bescheinigungen';

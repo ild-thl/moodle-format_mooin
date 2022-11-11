@@ -373,7 +373,7 @@ $tablecolumns[] = 'userpic';
 $tablecolumns[] = 'fullname';
 
 
-$extrafields = \core_user\fields::for_identity($context)->get_required_fields();// get_extra_user_fields($context); // \core_user\fields::for_identity($context, false)->get_required_fields(); //
+$extrafields = get_extra_user_fields($context); // \core_user\fields::for_identity($context)->get_required_fields();//  \core_user\fields::for_identity($context, false)->get_required_fields();
 $tableheaders[] = get_string('userpic');
 $tableheaders[] = get_string('fullnameuser');
 

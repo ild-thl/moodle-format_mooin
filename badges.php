@@ -19,7 +19,7 @@ $systemcontext = context_system::instance();
 $PAGE->set_course($course);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_context(\context_course::instance($course->id));
-$PAGE->set_title("$course->shortname: " . get_string('participants'));
+$PAGE->set_title("$course->shortname: " . get_string('my_badges', 'format_mooin'));
 $PAGE->set_heading($course->fullname);
 
 // $PAGE->set_pagetype('course-view-' . $course->format);
@@ -107,7 +107,8 @@ if ($cert_m) {
         }
     }
 }
-
+echo '<br />';
+echo '<br />';
 echo html_writer::tag('h2', html_writer::tag('div', get_string('course_badges', 'format_mooin'), array('class' => 'oc_badges_text')));
 
 echo html_writer::tag('div', get_string('badge_overview_description', 'format_mooin'));
