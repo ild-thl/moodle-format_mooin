@@ -2,6 +2,7 @@
 require_once('../../../config.php');
 require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/completionlib.php');
+require_once('locallib.php');
 // require_once('../../../mod/ilddigitalcert/overview.php');
 
 global $USER, $PAGE, $CFG, $DB;
@@ -14,7 +15,7 @@ $download = optional_param('download', '', PARAM_ALPHA);
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 $context = context_course::instance(SITEID); // $course->id, MUST_EXIST
 
-$templatedata = array();
+
 
 require_login($course);
 
@@ -39,49 +40,15 @@ $PAGE->set_url('/course/format/mooin/certificates.php', array('id' => $course->i
 echo $OUTPUT->header();
 
 echo $OUTPUT->navbar();
-$he = $DB->get_record('modules', ['name' =>'ilddigitalcert']);
-
-$te = $DB->get_records('course_modules', ['module' =>$he->id]);
-
-$ze = $DB->get_records('course_sections', ['course' =>$courseid]);
-
-$cm_id = 0;
+$val = false;
 echo '<br />';
 echo '<br />';
 echo html_writer::tag('h2', html_writer::tag('div', get_string('my_certificate', 'format_mooin'), array('class' => 'oc_badges_text')));
 
 echo html_writer::tag('div', get_string('certificate_overview_description', 'format_mooin'));
 echo '<br />';
-$a = 1;
-foreach ($ze as $key => $value) {
-    foreach ($te as $k => $v) {
-        if ($value->id == $v->section) {
-            // var_dump($v);
-            $cm_id = $v->id;
-            array_push($templatedata, (object)[
-                'id'=> $v->id,
-                'index' => $a++,
-                'module' => $value->module,
-                'section' => $v->section
-            ]) ;
-        }
-    }
-}
-if (count($templatedata) > 0) {
-    for ($i=0; $i < count($templatedata); $i++) { 
-        
-            $templatedata[$i]->certificate_name = 'Certificate';
-            $templatedata[$i]->preview_url = (
-            new moodle_url(
-                '/mod/ilddigitalcert/view.php',
-                array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->section)
-            )
-            )->out(false);
-            $templatedata[$i]->course_name = $course->fullname;
-        }
-}else {
-    echo $OUTPUT->heading(get_string('certificate_overview', 'format_mooin')); // To Do
-}
+$templatedata = get_certificate($course->id);
+// echo gettype($templatedata);
 /* if ($cm_id != 0) {
 
     $templatedata['certificate_name'] = 'Certificate'; // $moduleinstance->name;
@@ -99,8 +66,14 @@ if (count($templatedata) > 0) {
         echo $OUTPUT->heading(get_string('overview', 'mod_ilddigitalcert'));
     }
 } */
+if (gettype($templatedata) == 'string') {
+    $val = false;
+} else {
+    $val = true;
+}
 $templatedatas = (object)[
     'data' => $templatedata,
+    'value' => $val
 ];
 
 echo $OUTPUT->render_from_template('format_mooin/certificat_overview', $templatedatas);

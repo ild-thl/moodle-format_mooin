@@ -101,7 +101,7 @@ function complete_section($userid, $cid, $section) {
             
         if ( array_key_exists('btnComplete-'.$section, $_POST)) { // isset($_POST["id_bottom_complete-".$section])
             $res = true;
-            echo ' Inside Complete Section '. $res;
+            // echo ' Inside Complete Section '. $res;
             $values = new stdClass();
             $values->id = $id + 1;
             $values->userid = $userid;
@@ -172,4 +172,652 @@ function get_section_grades(&$section) {
         } else {
             return -1;
         }
+}
+
+
+// Badges functions
+/**
+ * 
+ */
+function print_badges($records, $details = false, $highlight = false, $badgename = false) {
+    global $DB;
+    $lis = '';
+    foreach ($records as $record) {
+        if ($record->type == 2) {
+            $context = context_course::instance($record->courseid);
+        } else {
+            $context = context_system::instance();
+        }
+        $opacity = '';
+        if ($highlight) {
+            $opacity = ' opacity: 0.15;';
+            if (isset($record->highlight)) {
+                $opacity = ' opacity: 1.0;';
+            }
+        }
+        $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $record->id, '/', 'f1', false);
+        $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'badge-image', 'style' => 'width: 100px; height: 100px;' . $opacity));
+        if (isset($record->uniquehash)) {
+            $url = new moodle_url('/badges/badge.php', array('hash' => $record->uniquehash));
+        } else {
+            $url = new moodle_url('/badges/overview.php', array('id' => $record->id));
+        }
+        $detail = '';
+        if ($details) {
+            $user = $DB->get_record('user', array('id' => $record->userid));
+            $detail = '<br />' . $user->firstname . ' ' . $user->lastname . '<br />(' . date('d.m.y H:i', $record->dateissued) . ')';
+        } else if ($badgename) {
+            $detail = '<br />' . $record->name;
+        }
+        $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
+        $lis .= html_writer::tag('li', $link);
+    }
+    echo html_writer::tag('ul', $lis, array('class' => 'badges', 'style' => 'border-bottom: none')); // Add style
+}
+
+/**
+ * 
+ */
+function display_user_and_availbale_badges($userid, $courseid) {
+    global $CFG, $USER;
+    $result = null;
+    require_once($CFG->dirroot . '/badges/renderer.php');
+
+    $coursebadges = get_badges($courseid, null, null, null);
+    $userbadges = badges_get_user_badges($userid, $courseid, null, null, null, true);
+
+    foreach ($userbadges as $ub) {
+        if ($ub->status != 4) {
+            $coursebadges[$ub->id]->highlight = true;
+            $coursebadges[$ub->id]->uniquehash = $ub->uniquehash;
+        }
+    }
+    if ($coursebadges) {
+        $result = print_badges($coursebadges, false, true, true);
+    } else {
+        $result .= html_writer::start_span() . get_string('no_badges_available', 'format_mooin') . html_writer::end_span();
+    }
+    return $result;
+}
+
+/**
+ * 
+ */
+function get_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
+    global $DB;
+    $params = array();
+    $sql = 'SELECT
+                b.*
+            FROM
+                {badge} b
+            WHERE b.type > 0 
+			  AND b.status != 4 ';
+
+    if ($courseid == 0) {
+        $sql .= ' AND b.type = :type';
+        $params['type'] = 1;
+    }
+
+    if ($courseid != 0) {
+        $sql .= ' AND b.courseid = :courseid';
+        $params['courseid'] = $courseid;
+    }
+
+    if (!empty($search)) {
+        $sql .= ' AND (' . $DB->sql_like('b.name', ':search', false) . ') ';
+        $params['search'] = '%' . $DB->sql_like_escape($search) . '%';
+    }
+
+    $badges = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
+
+    return $badges;
+}
+/**
+ * 
+ */
+function get_badges_since($courseid, $since, $global = false) {
+    global $DB, $USER;
+    if (!$global) {
+        $params = array();
+        $sql = 'SELECT
+					b.*,
+					bi.id,
+					bi.badgeid,
+					bi.userid,
+					bi.dateissued,
+					bi.uniquehash
+				FROM
+					{badge} b,
+					{badge_issued} bi
+				WHERE b.id = bi.badgeid ';
+
+
+        $sql .= ' AND b.courseid = :courseid';
+        $params['courseid'] = $courseid;
+
+        if ($since > 0) {
+            $sql .= ' AND bi.dateissued > :since ';
+            $since = time() - $since;
+            $params['since'] = $since;
+        }
+        $sql .= ' ORDER BY bi.dateissued DESC ';
+        $sql .= ' LIMIT 0, 20 ';
+        $badges = $DB->get_records_sql($sql, $params);
+    } else {
+        $params = array('courseid' => $courseid);
+        $sql = 'SELECT
+					b.*,
+					bi.id,
+					bi.badgeid,
+					bi.userid,
+					bi.dateissued,
+					bi.uniquehash
+				FROM
+					{badge} b,
+					{badge_issued} bi,
+					{user_enrolments} ue,
+					{enrol} e
+				WHERE b.id = bi.badgeid 
+				AND	bi.userid = ue.userid 
+				AND ue.enrolid = e.id 
+				AND e.courseid = :courseid ';
+
+
+        $sql .= ' AND b.type = :type';
+        $params['type'] = 1;
+
+        if ($since > 0) {
+            $sql .= ' AND bi.dateissued > :since ';
+            $since = time() - $since;
+            $params['since'] = $since;
+        }
+        $sql .= ' ORDER BY bi.dateissued DESC ';
+        $sql .= ' LIMIT 0, 20 ';
+        $badges = $DB->get_records_sql($sql, $params);
+    }
+
+    $correct_badges = array();
+    foreach ($badges as $badge) {
+        $badge->id = $badge->badgeid;
+
+        // nur wenn der Inhaber kein Teacher ist anzeigen
+        $coursecontext = context_course::instance($courseid);
+        $roles = get_user_roles($coursecontext, $badge->userid, false);
+        $not_a_teacher = true;
+        foreach ($roles as $role) {
+            if ($role->shortname == 'editingteacher') {
+                $not_a_teacher = false;
+            }
+        }
+        if ($not_a_teacher) {
+            $correct_badges[] = $badge;
+        }
+    }
+    return $correct_badges;
+}
+/**
+ * 
+ */
+function display_badges($userid = 0, $courseid = 0, $since = 0, $print = true) {
+    global $CFG, $PAGE, $USER, $SITE;
+    require_once($CFG->dirroot . '/badges/renderer.php');
+
+    // Determine context.
+    if (isloggedin()) {
+        $context = context_user::instance($USER->id);
+    } else {
+        $context = context_system::instance();
+    }
+
+    if ($userid == 0) {
+        if ($since == 0) {
+            $records = get_badges($courseid, null, null, null);
+        } else {
+            $records = get_badges_since($courseid, $since, false);
+            // globale Badges
+            // if ($courseid != 0) {
+            // $records = array_merge(get_badges_since($courseid, $since, true), $records);
+            // }
+        }
+        $renderer = new core_badges_renderer($PAGE, '');
+
+        // Print local badges.
+        if ($records) {
+            //$right = $renderer->print_badges_list($records, $userid, true);
+            if ($since == 0) {
+                print_badges($records);
+            } else {
+                print_badges($records, true);
+            }
+        }
+    } elseif ($USER->id == $userid || has_capability('moodle/badges:viewotherbadges', $context)) {
+        $records = badges_get_user_badges($userid, $courseid, null, null, null, true);
+        $renderer = new core_badges_renderer($PAGE, '');
+
+        // Print local badges.
+        if ($records) {
+            $right = $renderer->print_badges_list($records, $userid, true);
+            if ($print) {
+                echo html_writer::tag('dd', $right);
+                //print_badges($records);
+            } else {
+                return html_writer::tag('dd', $right);
+            }
+        }
+    }
+}
+
+// Participants functions
+ /**
+ * Returns Bagdes for a specific user in a specific course
+ * 
+ * @return string badges
+ */
+function get_badges_list($userid, $courseid = 0) {
+    global $CFG, $USER, $DB;
+    require_once($CFG->dirroot . '/badges/renderer.php');
+    
+    if ($courseid == 0) {
+        $context = context_system::instance();
+    } else {
+        $context = context_course::instance($courseid);
+    }
+    
+    if ($USER->id == $userid || has_capability('moodle/badges:viewotherbadges', $context)) {
+        if ($courseid == 0) {
+            $records = get_global_user_badges($userid);
+        } else {
+            $records = badges_get_user_badges($userid, $courseid, null, null, null, true);
+            // $records = $DB->get_records('badge_issued', ['userid' =>$userid]);
+            
+        //var_dump($records);
+        }
+        // Print local badges.
+        
+        //var_dump($context);
+        if ($records) {
+            $out = '';
+            
+            foreach ($records as $record) {
+                // $val = $DB->get_record('badge', ['id' =>$record->badgeid]);
+                $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $record->id, '/', 'f1', false); // $context->id == $record->type
+                $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'badge-image', 'style' => 'width: 30px; height: 30px;'));
+                $url = new moodle_url('/badges/badge.php', array('hash' => $record->uniquehash));
+                $link = html_writer::link($url, $image, ['title'=>$record->name]);
+                $out .= $link;
+            }
+            return $out;
+        }
+    }
+}
+
+/**
+ * Returns SQL that can be used to limit a query to a period where the user last accessed a course..
+ *
+ * @param string $accesssince
+ * @return string
+ */
+function get_course_lastaccess_sql($accesssince='') {
+    if (empty($accesssince)) {
+        return '';
+    }
+    if ($accesssince == -1) { // Never.
+        return 'ul.timeaccess = 0';
+    } else {
+        return 'ul.timeaccess != 0 AND ul.timeaccess < '.$accesssince;
+    }
+}
+
+/**
+ * Returns SQL that can be used to limit a query to a period where the user last accessed the system.
+ *
+ * @param string $accesssince
+ * @return string
+ */
+function get_user_lastaccess_sql($accesssince='') {
+    if (empty($accesssince)) {
+        return '';
+    }
+    if ($accesssince == -1) { // Never.
+        return 'u.lastaccess = 0';
+    } else {
+        return 'u.lastaccess != 0 AND u.lastaccess < '.$accesssince;
+    }
+}
+function cmp_badges_asc($a, $b) {
+	if($a->badgecount == $b->badgecount)
+	{
+		return 0;
+	}
+	return ($a->badgecount < $b->badgecount) ? -1 : 1;
+}
+
+function cmp_badges_desc($a, $b) {
+	if($a->badgecount == $b->badgecount)
+	{
+		return 0;
+	}
+	return ($a->badgecount > $b->badgecount) ? -1 : 1;
+}
+
+// Certificate Functions
+
+/**
+ * Get certificat in a course
+ * @param int courseid
+ * @return array
+ */
+function get_certificate($courseid) {
+    global $DB, $OUTPUT;
+
+    $he = $DB->get_record('modules', ['name' =>'ilddigitalcert']);
+    
+    $te = $DB->get_records('course_modules', ['module' =>$he->id]);
+
+    $ze = $DB->get_records('course_sections', ['course' =>$courseid]);
+    $course = $DB->get_record('course', ['id' =>$courseid]);
+
+    // $cm_id = 0;
+    $templatedata = array();
+   
+    $a = 1;
+    foreach ($ze as $key => $value) {
+        foreach ($te as $k => $v) {
+            if ($value->id == $v->section) {
+                // var_dump($v);
+                $cm_id = $v->id;
+                array_push($templatedata, (object)[
+                    'id'=> $v->id,
+                    'index' => $a++,
+                    'module' => $value->module,
+                    'section' => $v->section
+                ]) ;
+            }
+        }
+    }
+    if (count($templatedata) > 0) {
+        for ($i=0; $i < count($templatedata); $i++) { 
+            
+                $templatedata[$i]->certificate_name = 'Certificate';
+                $templatedata[$i]->preview_url = (
+                new moodle_url(
+                    '/mod/ilddigitalcert/view.php',
+                    array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->section)
+                )
+                )->out(false);
+                $templatedata[$i]->course_name = $course->fullname;
+            }
+    }else {
+        $templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin')); // To Do
+    }
+
+    return $templatedata;
+}
+/**
+ * show the  certificat on the welcome page
+ * @param int courseid
+ * @return array
+ */
+function show_certificat($courseid) {
+    if ( get_certificate($courseid)) {
+        // TO-DO
+    }
+}
+// News functions
+
+/**
+ * Get the last News in a course
+ * @param int $courseid
+ * @param string $forum_type
+ * @return array 
+ */
+function get_last_news($courseid, $forum_type) {
+    global $DB, $OUTPUT;
+
+    
+    // Get all the forum (news) in the course
+    $new_in_course = $DB->get_record('forum', ['course' =>$courseid, 'type' => $forum_type]);
+    // var_dump($new_in_course);
+    // get the news annoucement & forum discussion for a specific news or forum
+    if ($new_in_course == true) {
+        $out = null;
+        $cond = 'SELECT * FROM mdl_forum_discussions WHERE forum = :id  ORDER BY ID DESC LIMIT 1';
+        $param =  array('id' => $new_in_course->id);
+        $discussions_in_new = $DB->get_record_sql($cond, $param, IGNORE_MISSING);
+    
+        // Get the data in forum_posts (userid, subject, message, created)
+        $cond_in_forum_posts = 'SELECT * FROM mdl_forum_posts WHERE discussion = :id_for_disc ORDER BY CREATED DESC LIMIT 1';
+        $param =  array('id_for_disc' => $discussions_in_new->id );
+        $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
+        // var_dump($news_forum_post);
+        $user = $DB->get_record('user', ['id' => $news_forum_post->userid]);
+        
+        // Get the right date for new creation
+        $created_news = date("D M j G:i:s T Y", date((int)$news_forum_post->created));
+        
+            $out .= html_writer::start_tag('div', ['class'=> 'news']); // card_news
+            $out .= html_writer::start_tag('div', ['class'=> 'container']); //container
+            if ($forum_type == 'news') {
+                $out .= get_string('news', 'format_mooin');
+            } else {
+                $out .= get_string('discussion', 'format_mooin');
+            }
+            $out .= html_writer::start_tag('div', ['class' =>'primary-link float-right']); //right_part_new
+            
+            $news_forum_id = $new_in_course->id;
+            $newsurl = new moodle_url('/mod/forum/view.php', array('f' => $news_forum_id, 'tab' => 1));
+            if ($forum_type == 'news') {
+                $out .= html_writer::link($newsurl, get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin')));
+            } else {
+                $out .= html_writer::link($newsurl, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin')));
+            }
+            
+            $out .= html_writer::end_tag('div'); // right_part_new
+            $out .= html_writer::start_tag('div', ['class' =>' primary-link d-none d-md-block']); //left_part_new
+            $news_forum_id = $new_in_course->id;
+            $newsurl = new moodle_url('/mod/forum/view.php', array('f' => $news_forum_id, 'tab' => 1));
+            if ($forum_type == 'news') {
+                $out .= html_writer::link($newsurl, get_string('old_news', 'format_mooin'), array('title' => get_string('old_news', 'format_mooin')));
+            } else {
+                $out .= html_writer::link($newsurl, get_string('old_discussion', 'format_mooin'), array('title' => get_string('old_discussion', 'format_mooin')));
+            }
+            
+            $out .= html_writer::end_tag('div'); // left_part_new
+           
+            $out .= html_writer::start_tag('div', ['class' =>'news-card']); // top_card_news justify-content-between
+           
+            
+            $out .= html_writer::start_tag('div', ['class' =>'d-flex align-items-center']); // align-items-center
+            
+            
+            
+            if ($forum_type == 'news') {
+                $out .= html_writer::start_span('icon-wrapper news-icon') .  html_writer::end_span();
+            } else {
+                 $out .= html_writer::start_span('icon-wrapper chat-icon') . html_writer::end_span();
+            }
+            
+            $out .= html_writer::start_span('fw-700') . get_string('letze_beitrag','format_mooin') . '  ' . html_writer::end_span() . ' von '. $user->firstname . ' - ' . $created_news;
+            
+            // $out .= html_writer::end_tag('p'); // caption text-primary pl-2
+            $out .= html_writer::end_tag('div'); // align-items-center
+            $out .= html_writer::div($OUTPUT->user_picture($user, array('courseid'=>$courseid)), 'new_user_picture');
+            $out .= html_writer::start_tag('div', ['class' => 'news-card-inner']);
+            $out .= html_writer::nonempty_tag('p', $news_forum_post->subject, ['class' => 'fw-600 text-truncate']); // fw-600 text-truncate
+            
+            // $out .= html_writer::nonempty_tag('p',$news_forum_post->message, ['class' => 'd-none d-md-block message']); // d-none d-md-block
+            $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-block message']); // d-none d-md-block
+            $out .= $news_forum_post->message;
+            $out .= html_writer::end_tag('div');
+            $out .= html_writer::end_tag('div'); // news-card-inner
+            $out .= html_writer::start_tag('div', ['class' =>'primary-link d-none d-md-block text-right']);
+            $forum_discussion_url = new moodle_url('/mod/forum/discuss.php', array('d' => $news_forum_post->discussion));
+            $discussion_url = html_writer::link($forum_discussion_url, get_string('discussion_news', 'format_mooin'), array('title' => get_string('discussion_news', 'format_mooin')));
+            $out .= $discussion_url;
+            $out .= html_writer::end_tag('div'); // d-none d-md-block text-right
+            $out .= html_writer::end_tag('div'); // top_card_news
+            
+            $out .= html_writer::end_tag('div'); //container
+            $out .= html_writer::end_tag('div'); // card_news
+    
+        }
+     else {
+        $out = null;
+    }
+    return $out;
+}
+
+/**
+ * Get course grade
+ * @param int courseid
+ */
+function get_course_grades($courseid) {
+    global $DB, $CFG, $USER;
+    require_once($CFG->libdir . '/gradelib.php');
+
+    if (isset($courseid)) {
+        // $mods = get_course_section_mods($COURSE->id, $section);//print_object($mods);
+        // Find a way to get the right section from the DB
+        
+        $sec = $DB->get_records_sql("SELECT cs.id 
+                    FROM {course_sections} cs
+                    WHERE cs.course = ?", array($courseid));
+
+        /* var_dump($sec);
+        echo('SEC.'); */
+        $mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
+                    FROM {modules} m, {course_modules} cm
+                WHERE cm.course = ? AND cm.completion !=0 AND cm.module = m.id AND m.visible = 1", array($courseid));
+
+        // echo count($mods);
+        $percentage = 0;
+        $mods_counter = 0;
+        $max_grade = 10.0;
+        
+        foreach ($mods as $mod) {
+            if (($mod->modname == 'hvp') && $mod->visible == 1) {
+                $skip = false;
+
+                if (isset($mod->availability)) {
+                    $availability = json_decode($mod->availability);
+                    foreach ($availability->c as $criteria) {
+                        if ($criteria->type == 'language' && ($criteria->id != $SESSION->lang)) {
+                            $skip = true;
+                        }
+                    }
+                }
+                 if (!$skip) {
+                    $grading_info = grade_get_grades($mod->course, 'mod', 'hvp', $mod->instance, $USER->id);
+                    $grading_info = (object)($grading_info);// new, convert an array to object
+                    $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
+
+                    $percentage += $user_grade;
+                    $mods_counter++;
+                }
+            }
+        }
+        
+        if ($mods_counter != 0) {
+            return ($percentage / $mods_counter) * $max_grade; //$percentage * $mods_counter; // $percentage / $mods_counter
+        } else {
+            return -1;
+        }
+    } else {
+        return -1;
+    }
+}
+/**
+ * Get the course progress
+ * @param int p the progress course variable
+ * @param int width the with for the progress bar
+ */
+function get_progress_bar_course($p, $width) {
+    //$p_width = $width / 100 * $p;
+    $result =
+        html_writer::tag('div',
+            html_writer::tag('div',
+                html_writer::tag('div',
+                    '',
+                    array('style' => 'width: ' . $p . '%; height: 15px; border: 0px; background: #9ADC00; text-align: center; float: left; border-radius: 12px', 'id' => 'mooinprogressbar' )
+                ),
+                array('style' => 'width: ' . $width . '%; height: 15px; border: 1px; background: #aaa; solid #aaa; margin: 0 auto; padding: 0;  border-radius: 12px')
+            ) .
+            html_writer::start_span('',['style' => 'font-weight: bold']) . $p . '%' . html_writer::end_span() .
+            html_writer::start_span(' d-none d-md-inline ') . ' des Kurses bearbeitet' . html_writer::end_span() , // 'style' => 'float: left;font-size: 12px; margin-left: 12px',
+            array( 'style' => 'position: relative')); // 'class' => 'oc-progress-div',
+    return $result;
+}
+
+/**
+ * Get the user in the course
+ * @param int courseid
+ * @return array out
+ */
+function get_user_in_course($courseid) {
+    global $DB, $OUTPUT;
+    $out = null;
+    // Get the enrol data in the course
+    
+    $sql = 'SELECT * FROM mdl_enrol WHERE courseid = :cid AND enrol = :enrol_data ORDER BY ID ASC';
+    $param = array('cid' => $courseid, 'enrol_data' =>'manual');
+    $enrol_data = $DB->get_records_sql($sql,$param);
+
+    // Get user_enrolments data
+    $user_enrol_data = [];
+    $sql_query = 'SELECT * FROM mdl_user_enrolments WHERE enrolid = :value_id ORDER BY timecreated DESC ';
+    
+    foreach ($enrol_data as $key => $value) {
+        $param_array = array('value_id' => $value->id);
+        $count_val = $DB->get_records_sql($sql_query, $param_array);
+        $val = $DB->get_records_sql($sql_query, $param_array, 0, 3);// ('user_enrolments', ['enrolid' =>$value->id], 'userid');
+        array_push($user_enrol_data, $val);
+    }
+    
+    if (isset($enrol_data)) {
+        $out .= html_writer::start_tag('div', ['class' =>'participant-card']); // participant-card
+        $out .= html_writer::start_tag('div', ['class' =>'participant-card-inner']); // participant-card-inner
+        $out .= html_writer::start_tag('div', ['class' =>'d-flex align-items-center']); // d-flex align-items-center
+        $out .= html_writer::start_span('icon-wrapper participant-icon') . html_writer::end_span();
+
+        $out .= html_writer::nonempty_tag('p', get_string('user_card_title', 'format_mooin'), ['class'=>'caption fw-700 text-primary pl-2']);
+        $out .= html_writer::end_tag('div'); // d-flex align-items-center
+        
+        $user_count = count($count_val);
+        $user_in_course = $user_count . get_string('user_in_course', 'format_mooin');
+        $out .= html_writer::start_tag('p');
+        $out .= html_writer::start_span('fw-700') . $user_in_course . html_writer::end_span();
+        $out .= html_writer::end_tag('p');
+        $out .= html_writer::nonempty_tag('p', get_string('new_user', 'format_mooin'), ['class'=> 'caption fw-700']);
+        
+        $out .= html_writer::start_tag('ul', ['class' => 'caption', 'style'=> 'line-height: 3rem']); // user_card_list
+        foreach ($user_enrol_data as $key => $value) {
+            
+            $el = array_values($value);
+            for ($i=0; $i < count($el); $i++) { 
+                // var_dump($el);
+                $out .= html_writer::start_tag('li');
+                $user = $DB->get_record('user', ['id' => $el[$i]->userid], '*');
+                $out .= html_writer::start_tag('span');
+                $out .= html_writer::nonempty_tag('img',$OUTPUT->user_picture($user, array('courseid'=>$courseid)));
+                $out .= $user-> firstname . ' ' . $user->lastname ;
+                $out .= html_writer::end_tag('span');
+                
+                // $out .= html_writer::div($user-> firstname . ' ' . $user->lastname, 'user_card_name');
+                $out .= html_writer::end_tag('li'); // user_card_element 
+            }
+        }
+        $out .= html_writer::end_tag('ul'); // user_card_list
+     
+        $out .= html_writer::start_tag('div', ['class' =>'primary-link d-none d-md-block text-right']);
+        $participants_url = new moodle_url('/course/format/mooin/participants.php', array('id' => $courseid));
+        $participants_link = html_writer::link($participants_url, get_string('participants', 'format_mooin'), array('title' => get_string('participants', 'format_mooin')));
+        $out .= $participants_link;
+        $out .= html_writer::end_tag('div'); // d-none d-md-block text-right
+        $out .= html_writer::end_tag('div'); // participant-card-inner
+        $out .= html_writer::end_tag('div'); // participant-card 
+    } else {
+        $out .= html_writer::div(get_string('no_user', 'format_mooin'), 'no_user_class'); // '
+    }
+
+    return $out;
 }

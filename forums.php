@@ -32,7 +32,7 @@ $showall = optional_param('showall', '', PARAM_INT); // show all discussions on 
 $changegroup = optional_param('group', -1, PARAM_INT);   // choose the current group
 $page = optional_param('page', 0, PARAM_INT);     // which page to show
 $search = optional_param('search', '', PARAM_CLEAN);// search string
-
+// $PAGE->navbar->add(get_string('my_forum', 'format_mooin'));
 // mooin
 $page = -1;
 
@@ -51,7 +51,7 @@ if ($page) {
 if ($search) {
     $params['search'] = $search;
 }
-$PAGE->set_url('/course/format/mooin/forums.php', $params);
+$PAGE->set_url('/mod/forum/view.php', $params); // /course/format/mooin/forums.php', $params
 
 if ($cmid > 0) {
     if (!$cm = $DB->get_record('course_modules', array('id' => $cmid))) {
@@ -67,7 +67,7 @@ if ($cmid > 0) {
     }
 }
 else if ($id > 0) {
-    if (!$forum = $DB->get_record('forum', array('course' => $id, 'type' => 'general'))){
+    if (!$forum = $DB->get_record('forum', array('course' => $id, 'type' => 'general'))){ // general
         print_error('forumnotfounderror');
     }
     if (!$course = $DB->get_record("course", array("id" => $id))) {
@@ -134,6 +134,7 @@ $PAGE->set_heading($course->fullname);
 //print_object($PAGE);die();
 echo $OUTPUT->header();
 
+echo $OUTPUT->navbar();
 /// Some capability checks.
 if (empty($cm->visible) and !has_capability('moodle/course:viewhiddenactivities', $context)) {
     notice(get_string("activityiscurrentlyhidden"));
@@ -155,7 +156,7 @@ $oc_foren = $DB->get_records('forum', array('course' => $course->id, 'type' => '
 $oc_showall = optional_param('showall', '', PARAM_RAW);
 $oc_counter = 0;
 ob_start();
-if (count($oc_foren) > 1 and $oc_showall == '') {
+if (count($oc_foren) >= 0 and $oc_showall == '') {
     echo '<h2>' . get_string('all_forums', 'format_mooin') . '</h2>';
     foreach ($oc_foren as $oc_forum) {
         $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $course->id, 'module' => $oc_m->id));
