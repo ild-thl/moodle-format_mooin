@@ -2,6 +2,8 @@
 require_once('../../../config.php');
 require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/completionlib.php');
+require_once('locallib.php');
+
 
 global $USER, $PAGE, $CFG, $DB;
 
@@ -33,7 +35,7 @@ $PAGE->set_url('/course/format/mooin/badges.php', array('id' => $course->id));
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->navbar();
+echo $OUTPUT->navbar($displaysection=0);
 // echo $OUTPUT->heading(get_string('badges', 'format_mooin'));
 
 $blockrecord = $DB->get_record('block_instances', array('blockname' => 'badges', 'parentcontextid' => $context->instanceid), '*', MUST_EXIST); // oc_mooc_nav || $context->id
@@ -71,9 +73,10 @@ if ($cert_m) {
         if ($hvp_count != 0) {
             foreach ($cm as $module) {
                 $grading_info = grade_get_grades($module->course, 'mod', 'hvp', $module->instance, $USER->id);
-                $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
+                $val = (object)$grading_info;
+                $user_grade = $val->items[0]->grades[$USER->id]->grade;
 
-                $hvp_percentage += $user_grade / $hvp_count;
+                $hvp_percentage += (int)$user_grade / $hvp_count;
             }
 
             $percentage = $hvp_percentage;
@@ -164,213 +167,3 @@ if ($out != '') {
 
 
 echo $OUTPUT->footer();
-
-function print_badges($records, $details = false, $highlight = false, $badgename = false) {
-    global $DB;
-    $lis = '';
-    foreach ($records as $record) {
-        if ($record->type == 2) {
-            $context = context_course::instance($record->courseid);
-        } else {
-            $context = context_system::instance();
-        }
-        $opacity = '';
-        if ($highlight) {
-            $opacity = ' opacity: 0.15;';
-            if (isset($record->highlight)) {
-                $opacity = ' opacity: 1.0;';
-            }
-        }
-        $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $record->id, '/', 'f1', false);
-        $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'badge-image', 'style' => 'width: 100px; height: 100px;' . $opacity));
-        if (isset($record->uniquehash)) {
-            $url = new moodle_url('/badges/badge.php', array('hash' => $record->uniquehash));
-        } else {
-            $url = new moodle_url('/badges/overview.php', array('id' => $record->id));
-        }
-        $detail = '';
-        if ($details) {
-            $user = $DB->get_record('user', array('id' => $record->userid));
-            $detail = '<br />' . $user->firstname . ' ' . $user->lastname . '<br />(' . date('d.m.y H:i', $record->dateissued) . ')';
-        } else if ($badgename) {
-            $detail = '<br />' . $record->name;
-        }
-        $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
-        $lis .= html_writer::tag('li', $link);
-    }
-    echo html_writer::tag('ul', $lis, array('class' => 'badges'));
-}
-function get_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
-    global $DB;
-    $params = array();
-    $sql = 'SELECT
-                b.*
-            FROM
-                {badge} b
-            WHERE b.type > 0 
-			  AND b.status != 4 ';
-
-    if ($courseid == 0) {
-        $sql .= ' AND b.type = :type';
-        $params['type'] = 1;
-    }
-
-    if ($courseid != 0) {
-        $sql .= ' AND b.courseid = :courseid';
-        $params['courseid'] = $courseid;
-    }
-
-    if (!empty($search)) {
-        $sql .= ' AND (' . $DB->sql_like('b.name', ':search', false) . ') ';
-        $params['search'] = '%' . $DB->sql_like_escape($search) . '%';
-    }
-
-    $badges = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
-
-    return $badges;
-}
-
-function get_badges_since($courseid, $since, $global = false) {
-    global $DB, $USER;
-    if (!$global) {
-        $params = array();
-        $sql = 'SELECT
-					b.*,
-					bi.id,
-					bi.badgeid,
-					bi.userid,
-					bi.dateissued,
-					bi.uniquehash
-				FROM
-					{badge} b,
-					{badge_issued} bi
-				WHERE b.id = bi.badgeid ';
-
-
-        $sql .= ' AND b.courseid = :courseid';
-        $params['courseid'] = $courseid;
-
-        if ($since > 0) {
-            $sql .= ' AND bi.dateissued > :since ';
-            $since = time() - $since;
-            $params['since'] = $since;
-        }
-        $sql .= ' ORDER BY bi.dateissued DESC ';
-        $sql .= ' LIMIT 0, 20 ';
-        $badges = $DB->get_records_sql($sql, $params);
-    } else {
-        $params = array('courseid' => $courseid);
-        $sql = 'SELECT
-					b.*,
-					bi.id,
-					bi.badgeid,
-					bi.userid,
-					bi.dateissued,
-					bi.uniquehash
-				FROM
-					{badge} b,
-					{badge_issued} bi,
-					{user_enrolments} ue,
-					{enrol} e
-				WHERE b.id = bi.badgeid 
-				AND	bi.userid = ue.userid 
-				AND ue.enrolid = e.id 
-				AND e.courseid = :courseid ';
-
-
-        $sql .= ' AND b.type = :type';
-        $params['type'] = 1;
-
-        if ($since > 0) {
-            $sql .= ' AND bi.dateissued > :since ';
-            $since = time() - $since;
-            $params['since'] = $since;
-        }
-        $sql .= ' ORDER BY bi.dateissued DESC ';
-        $sql .= ' LIMIT 0, 20 ';
-        $badges = $DB->get_records_sql($sql, $params);
-    }
-
-    $correct_badges = array();
-    foreach ($badges as $badge) {
-        $badge->id = $badge->badgeid;
-
-        // nur wenn der Inhaber kein Teacher ist anzeigen
-        $coursecontext = context_course::instance($courseid);
-        $roles = get_user_roles($coursecontext, $badge->userid, false);
-        $not_a_teacher = true;
-        foreach ($roles as $role) {
-            if ($role->shortname == 'editingteacher') {
-                $not_a_teacher = false;
-            }
-        }
-        if ($not_a_teacher) {
-            $correct_badges[] = $badge;
-        }
-    }
-    return $correct_badges;
-}
-function display_badges($userid = 0, $courseid = 0, $since = 0, $print = true) {
-    global $CFG, $PAGE, $USER, $SITE;
-    require_once($CFG->dirroot . '/badges/renderer.php');
-
-    // Determine context.
-    if (isloggedin()) {
-        $context = context_user::instance($USER->id);
-    } else {
-        $context = context_system::instance();
-    }
-
-    if ($userid == 0) {
-        if ($since == 0) {
-            $records = get_badges($courseid, null, null, null);
-        } else {
-            $records = get_badges_since($courseid, $since, false);
-            // globale Badges
-            // if ($courseid != 0) {
-            // $records = array_merge(get_badges_since($courseid, $since, true), $records);
-            // }
-        }
-        $renderer = new core_badges_renderer($PAGE, '');
-
-        // Print local badges.
-        if ($records) {
-            //$right = $renderer->print_badges_list($records, $userid, true);
-            if ($since == 0) {
-                print_badges($records);
-            } else {
-                print_badges($records, true);
-            }
-        }
-    } elseif ($USER->id == $userid || has_capability('moodle/badges:viewotherbadges', $context)) {
-        $records = badges_get_user_badges($userid, $courseid, null, null, null, true);
-        $renderer = new core_badges_renderer($PAGE, '');
-
-        // Print local badges.
-        if ($records) {
-            $right = $renderer->print_badges_list($records, $userid, true);
-            if ($print) {
-                echo html_writer::tag('dd', $right);
-                //print_badges($records);
-            } else {
-                return html_writer::tag('dd', $right);
-            }
-        }
-    }
-}
-function display_user_and_availbale_badges($userid, $courseid) {
-    global $CFG, $USER;
-    require_once($CFG->dirroot . '/badges/renderer.php');
-
-    $coursebadges = get_badges($courseid, null, null, null);
-    $userbadges = badges_get_user_badges($userid, $courseid, null, null, null, true);
-
-    foreach ($userbadges as $ub) {
-        if ($ub->status != 4) {
-            $coursebadges[$ub->id]->highlight = true;
-            $coursebadges[$ub->id]->uniquehash = $ub->uniquehash;
-        }
-    }
-
-    print_badges($coursebadges, false, true, true);
-}
