@@ -142,7 +142,7 @@ function get_section_grades(&$section) {
             $max_grade = 10.0;
             
             foreach ($mods as $mod) {
-                if (($mod->modname == 'hvp') && $mod->visible == 1) {
+                if ($mod->visible == 1) { // ($mod->modname == 'hvp') &&
                     $skip = false;
 
                     if (isset($mod->availability)) {
@@ -154,17 +154,23 @@ function get_section_grades(&$section) {
                         }
                     }
                      if (!$skip) {
-                        $grading_info = grade_get_grades($mod->course, 'mod', 'hvp', $mod->instance, $USER->id);
+                        $grading_info = grade_get_grades($mod->course, 'mod', $mod->modname, $mod->instance, $USER->id); // 'hvp'
                         $grading_info = (object)($grading_info);// new, convert an array to object
-                        $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
-
+                        if ($mod->modname == 'forum') {
+                            $user_grade = $grading_info->items[1]->grades[$USER->id]->grade;
+                        } else {
+                            $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
+                        }
+                        
                         $percentage += $user_grade;
                         $mods_counter++;
+                        // var_dump($grading_info->items[0]);
                     }
                 }
             }
             
             if ($mods_counter != 0) {
+                
                 return ($percentage / $mods_counter) * $max_grade; //$percentage * $mods_counter; // $percentage / $mods_counter
             } else {
                 return -1;
@@ -548,7 +554,7 @@ function get_certificate($courseid) {
                 $templatedata[$i]->course_name = $course->fullname;
             }
     }else {
-        $templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin')); // To Do
+        $templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
     }
 
     return $templatedata;
@@ -559,9 +565,40 @@ function get_certificate($courseid) {
  * @return array
  */
 function show_certificat($courseid) {
-    if ( get_certificate($courseid)) {
+    $out_certificat = null;
+    // if ( get_certificate($courseid)) {
         // TO-DO
-    }
+        $templ = get_certificate($courseid);
+        $out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
+
+        if (is_string($templ) == 1) {
+            $out_certificat = $templ;
+        } 
+        if (is_string($templ) != 1) {
+            
+            $imageurl = 'images/certificat.png';
+            for ($i=0; $i < count($templ); $i++) { 
+                
+                $out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_body', 'style'=>'display:grid; cursor:pointer']); // certificat_card
+
+                $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
+
+                // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
+                $certificat_url = $templ[$i]->preview_url;
+                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->course_name . ' ' . $templ[$i]->index);
+                // $out_certificat .= html_writer::end_tag('button'); // button
+                $out_certificat .= html_writer::end_tag('div'); // certificat_body
+                
+            }
+
+        }
+        // $out_certificat .= html_writer::end_tag('div'); // certificat_card
+        // $out_certificat .= html_writer::end_tag('div'); // certificat_card 
+        // $out_certificat .= html_writer::end_tag('div'); // certificat_card
+
+         // $out_certificat; //echo
+    //  }
+    return  $out_certificat;
 }
 // News functions
 
@@ -572,25 +609,32 @@ function show_certificat($courseid) {
  * @return array 
  */
 function get_last_news($courseid, $forum_type) {
-    global $DB, $OUTPUT;
+    global $DB, $OUTPUT, $USER;
 
     
-    // Get all the forum (news) in the course
-    $new_in_course = $DB->get_record('forum', ['course' =>$courseid, 'type' => $forum_type]);
+    // Get all the forum (news) oder general  in the course
+    $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum LIMIT 1 '; //ORDER BY ID DESC
+    $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
+    // $new_in_course = $DB->get_record('forum', ['course' =>$courseid, 'type' => $forum_type]);
+    $new_in_course = $DB->get_record_sql($sql_first, $param_first);
     // var_dump($new_in_course);
     // get the news annoucement & forum discussion for a specific news or forum
     if ($new_in_course == true) {
         $out = null;
         $cond = 'SELECT * FROM mdl_forum_discussions WHERE forum = :id  ORDER BY ID DESC LIMIT 1';
+        
         $param =  array('id' => $new_in_course->id);
         $discussions_in_new = $DB->get_record_sql($cond, $param, IGNORE_MISSING);
-    
+        if ($discussions_in_new != false) {
+            
+        
+        
         // Get the data in forum_posts (userid, subject, message, created)
         $cond_in_forum_posts = 'SELECT * FROM mdl_forum_posts WHERE discussion = :id_for_disc ORDER BY CREATED DESC LIMIT 1';
         $param =  array('id_for_disc' => $discussions_in_new->id );
         $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         // var_dump($news_forum_post);
-        $user = $DB->get_record('user', ['id' => $news_forum_post->userid]);
+        $user = $DB->get_record('user', ['id' => $news_forum_post->userid], '*');
         
         // Get the right date for new creation
         $created_news = date("D M j G:i:s T Y", date((int)$news_forum_post->created));
@@ -606,10 +650,23 @@ function get_last_news($courseid, $forum_type) {
             
             $news_forum_id = $new_in_course->id;
             $newsurl = new moodle_url('/mod/forum/view.php', array('f' => $news_forum_id, 'tab' => 1));
+            $url_disc = new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
             if ($forum_type == 'news') {
                 $out .= html_writer::link($newsurl, get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin')));
             } else {
-                $out .= html_writer::link($newsurl, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin')));
+                $sql = 'SELECT * FROM mdl_forum WHERE course = :cid AND type != :tid ORDER BY ID ASC';
+                $param = array('cid' =>$courseid, 'tid' => 'news');
+                $oc_foren = $DB->get_records_sql($sql, $param);
+                // $oc_f = $DB->get_records('forum_discussions', array('course' => $courseid));
+                $cond_in_forum_posts = 'SELECT * FROM mdl_forum_discussions WHERE course = :id ORDER BY ID DESC LIMIT 1';
+                $param =  array('id' => $courseid );
+                $oc_f = $DB->get_record_sql($cond_in_forum_posts, $param);
+                if (count($oc_foren) > 1 || count($oc_f)) {
+                    $out .= html_writer::link($url_disc, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin')));
+                } /* else {
+                    $out .= html_writer::link($newsurl, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin')));
+                } */
+                
             }
             
             $out .= html_writer::end_tag('div'); // right_part_new
@@ -641,7 +698,8 @@ function get_last_news($courseid, $forum_type) {
             
             // $out .= html_writer::end_tag('p'); // caption text-primary pl-2
             $out .= html_writer::end_tag('div'); // align-items-center
-            $out .= html_writer::div($OUTPUT->user_picture($user, array('courseid'=>$courseid)), 'new_user_picture');
+            $out .= html_writer::nonempty_tag('img',$OUTPUT->user_picture($USER, array('courseid'=>$courseid))); // $user
+            // $out .= html_writer::div($OUTPUT->user_picture($user, array('courseid'=>$courseid)), 'new_user_picture');
             $out .= html_writer::start_tag('div', ['class' => 'news-card-inner']);
             $out .= html_writer::nonempty_tag('p', $news_forum_post->subject, ['class' => 'fw-600 text-truncate']); // fw-600 text-truncate
             
@@ -659,7 +717,7 @@ function get_last_news($courseid, $forum_type) {
             
             $out .= html_writer::end_tag('div'); //container
             $out .= html_writer::end_tag('div'); // card_news
-    
+        }
         }
      else {
         $out = null;
@@ -683,19 +741,18 @@ function get_course_grades($courseid) {
                     FROM {course_sections} cs
                     WHERE cs.course = ?", array($courseid));
 
-        /* var_dump($sec);
-        echo('SEC.'); */
+        
         $mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
                     FROM {modules} m, {course_modules} cm
-                WHERE cm.course = ? AND cm.completion !=0 AND cm.module = m.id AND m.visible = 1", array($courseid));
+                    WHERE cm.course = ? AND cm.completiongradeitemnumber >= 0 AND cm.module = m.id AND m.visible = 1", array($courseid)); // AND cm.completion !=0
 
         // echo count($mods);
         $percentage = 0;
         $mods_counter = 0;
-        $max_grade = 10.0;
-        
+        $max_grade = 100.0;
+        $number_element = count($mods);
         foreach ($mods as $mod) {
-            if (($mod->modname == 'hvp') && $mod->visible == 1) {
+            if ($mod->visible == 1) { // ($mod->modname == 'hvp')
                 $skip = false;
 
                 if (isset($mod->availability)) {
@@ -706,19 +763,27 @@ function get_course_grades($courseid) {
                         }
                     }
                 }
-                 if (!$skip) {
-                    $grading_info = grade_get_grades($mod->course, 'mod', 'hvp', $mod->instance, $USER->id);
+                if (!$skip) {
+                    $grading_info = grade_get_grades($mod->course, 'mod', $mod->modname, $mod->instance, $USER->id);
                     $grading_info = (object)($grading_info);// new, convert an array to object
-                    $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
-
-                    $percentage += $user_grade;
-                    $mods_counter++;
+                    if ($mod->modname == 'forum') {
+                        $user_grade = $grading_info->items[1]->grades[$USER->id]->grade;
+                    } else {
+                        $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
+                    }
+                    //echo ('Grade : ' . $user_grade);
+                    if ($user_grade > 0) {
+                        $percentage += $user_grade ; // $user_grade
+                        $mods_counter++;  
+                    }
+                    // var_dump($mod->completion);
+                    
                 }
             }
         }
-        
+        // echo ('Percentage : '. $mods_counter);
         if ($mods_counter != 0) {
-            return ($percentage / $mods_counter) * $max_grade; //$percentage * $mods_counter; // $percentage / $mods_counter
+            return ($max_grade * $mods_counter) /$number_element; //$percentage * $mods_counter; // $percentage / $mods_counter
         } else {
             return -1;
         }

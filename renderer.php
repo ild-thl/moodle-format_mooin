@@ -417,7 +417,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         
        for ($i=1; $i <= $sections; $i++) { 
             if (array_key_exists('btnComplete-'.$i, $_POST) && $i == $displaysection) {
-                $this->complete_section($USER->id, $course->id, $i);
+                complete_section($USER->id, $course->id, $i);
             }
        }
         // Title with section navigation links.

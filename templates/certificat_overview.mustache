@@ -25,12 +25,13 @@
 }}
 
 <div class="certificate_button" style="display: block;" >
+    
     {{#value}}
         {{#data}}
-            <button type="button"  style=" margin: 10px;" class="btn btn-primary btn-lg" onclick="location.href='{{preview_url}}'">Download {{course_name}} Zertifikat {{index}}</button>
+        <button type="button"  style=" margin: 10px;" class="btn btn-primary btn-lg" onclick="location.href='{{preview_url}}'">Download {{course_name}} Zertifikat {{index}}</button>
         {{/data}}
     {{/value}}
     {{#data}}
-    {{{.}}}
+        {{{.}}}
     {{/data}}
 </div>
