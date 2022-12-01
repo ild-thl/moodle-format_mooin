@@ -107,7 +107,12 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $out_first_part .= html_writer::start_tag('div', array('class' => 'even-columns')); // even-columns
     
     $out_first_part .= html_writer::start_tag('div'); // array('class' =>'progress_card col-10')
-    // TODO get and show the right procentage of progress
+    // To Remove
+    /* $mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
+                    FROM {modules} m, {course_modules} cm
+                WHERE cm.course = ? AND cm.completiongradeitemnumber >= ? AND cm.module = m.id AND m.visible = 1", array($course->id, 0));
+    echo count($mods);
+    var_dump($mods); */
     $grade_in_course = get_course_grades($course->id);
     
     $course_grade = round($grade_in_course);
@@ -173,7 +178,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
    
     $out_first_part .= html_writer::end_div();
     $out_first_part .= html_writer::start_div();
-    $certificate_url = new moodle_url('/course/format/mooin/certificate.php', array('id' => $course->id));
+    $certificate_url = new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id));
     $out_first_part .= html_writer::link($certificate_url, get_string('my_certificate', 'format_mooin'), array('title' => get_string('my_certificate', 'format_mooin'), 'class'=> 'mooin-btn mooin-btn-special mooin-btn-icon icon-wrapper award-icon'));
    
     $out_first_part .= html_writer::end_div();
@@ -181,8 +186,12 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $out_first_part .= html_writer::end_tag('div'); // container
     $out_first_part .= html_writer::end_tag('div'); //badges-mobile-mooin-btn
 
-    // Community mobile buttons
-    $dis = $DB->get_record('forum', ['course'=> $course->id, 'type'=>'general']);
+    // Community mobile buttons (später ändern)
+    // $dis = $DB->get_record('forum', ['course'=> $course->id, 'type'=>'general']);
+    $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1 ';
+    $param_first = array('id_course'=>$course->id, 'type_forum'=>'general');
+    // $new_in_course = $DB->get_record('forum', ['course' =>$courseid, 'type' => $forum_type]);
+    $dis = $DB->get_record_sql($sql_first, $param_first);
     $out_first_part .= html_writer::start_tag('div',['class' => 'community-mobile-mooin-btn d-sm-block d-md-none']);
     $out_first_part .= html_writer::start_tag('div', ['class' => 'container']);
     $out_first_part .= html_writer::nonempty_tag('h2',get_string('community', 'format_mooin'));
@@ -251,7 +260,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $out .= html_writer::end_tag('div'); // align-items-center
     
     $out .= html_writer::start_tag('div', array('class' => 'certificate-card-inner')); // certificate-card-inner
-    $out .= get_certificate($course->id);
+    $out .= show_certificat($course->id);// get_certificate($course->id);
     // $out .= ob_get_contents();
     $out .= html_writer::end_tag('div'); // certificate-card-inner
     

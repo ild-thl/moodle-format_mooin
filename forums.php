@@ -149,7 +149,7 @@ if (!has_capability('mod/forum:viewdiscussion', $context)) {
 // Wenn mehrere Foren (Newsforum zählt nicht) vohanden sind,
 // wird hier nur eine Liste mit Links angezeigt
 
-global $USER, $DB;
+/* global $USER, $DB;
 
 $oc_m = $DB->get_record('modules', array('name' => 'forum'));
 $oc_foren = $DB->get_records('forum', array('course' => $course->id, 'type' => 'general'));
@@ -172,7 +172,7 @@ if (count($oc_foren) >= 0 and $oc_showall == '') {
         exit;
     }
 }
-ob_end_clean();
+ob_end_clean(); */
 
 ///////////////////////////////////////////////////////
 

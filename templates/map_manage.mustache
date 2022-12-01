@@ -174,8 +174,8 @@
       L.Control.geocoder().options.geocoder.geocode('{{.}}', (results) => {
           // var res = '{{.}}';
           // var result = res.split("|", 1);
-          //console.log(results);
-          //console.log('{{.}}');
+          console.log(results);
+          // console.log('{{.}}');
           markerLists.push( L.marker( [results[0].center.lat, results[0].center.lng],{icon:myIcon}).bindPopup("{{.}}").addTo(mymap));
           L.marker( [results[0].center.lat, results[0].center.lng],{icon:myIcon}).bindPopup('{{.}}').addTo(mymap);
         });
