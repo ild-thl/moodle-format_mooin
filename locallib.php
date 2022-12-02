@@ -31,24 +31,24 @@ function get_progress_bar($p, $width, $sectionid = 0) {
 function section_progress($sectioncmids, $coursecms) {
         $completed = 0;
         $outof = 0;
-       
-        global $DB, $USER, $COURSE;       
+
+        global $DB, $USER, $COURSE;
         foreach ($sectioncmids as $cmid) {
 
             $thismod = $coursecms[$cmid];
             // var_dump($COURSE->id);
             if ($thismod->uservisible && !$thismod->deletioninprogress) {
-                
-                if ($thismod->modname == 'label') { // $this->completioninfo->is_enabled($thismod) 
+
+                if ($thismod->modname == 'label') { // $this->completioninfo->is_enabled($thismod)
                     $outof = 1;
 
                     $com_value = $USER->id . ' ' . $COURSE->id . ' ' . $thismod->sectionnum;
                     $value_pref = $DB->record_exists('user_preferences', array('value' => $com_value));
                     if ($value_pref) {
-                    	$completed = 1;              
+                    	$completed = 1;
                     }else {
                          $completed = 0;
-                    }     
+                    }
                 }
             }
         }
@@ -97,8 +97,8 @@ function complete_section($userid, $cid, $section) {
         $q = $userid .' ' . $cid. ' ' .$section;
         $value_check = $DB->record_exists('user_preferences', array('value' => $q));
         $id = $DB->count_records('user_preferences', array('userid'=> $userid));
-           
-            
+
+
         if ( array_key_exists('btnComplete-'.$section, $_POST)) { // isset($_POST["id_bottom_complete-".$section])
             $res = true;
             // echo ' Inside Complete Section '. $res;
@@ -111,7 +111,7 @@ function complete_section($userid, $cid, $section) {
             if (!$value_check) {
                 $DB->insert_record('user_preferences',$values, true, false );
             }
-            
+
         }
     return $res;
 }
@@ -125,8 +125,8 @@ function get_section_grades(&$section) {
         if (isset($section)) {
             // $mods = get_course_section_mods($COURSE->id, $section);//print_object($mods);
             // Find a way to get the right section from the DB
-            
-            $sec = $DB->get_record_sql("SELECT cs.id 
+
+            $sec = $DB->get_record_sql("SELECT cs.id
                         FROM {course_sections} cs
                         WHERE cs.course = ? AND cs.section = ?", array($COURSE->id, $section));
 
@@ -136,11 +136,11 @@ function get_section_grades(&$section) {
                         FROM {modules} m, {course_modules} cm
                     WHERE cm.course = ? AND cm.section= ? AND cm.completion !=0 AND cm.module = m.id AND m.visible = 1", array($COURSE->id, (int)$sec->id));
 
-            
+
             $percentage = 0;
             $mods_counter = 0;
             $max_grade = 10.0;
-            
+
             foreach ($mods as $mod) {
                 if ($mod->visible == 1) { // ($mod->modname == 'hvp') &&
                     $skip = false;
@@ -159,18 +159,18 @@ function get_section_grades(&$section) {
                         if ($mod->modname == 'forum') {
                             $user_grade = $grading_info->items[1]->grades[$USER->id]->grade;
                         } else {
-                            $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
+                        $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
                         }
-                        
+
                         $percentage += $user_grade;
                         $mods_counter++;
                         // var_dump($grading_info->items[0]);
                     }
                 }
             }
-            
+
             if ($mods_counter != 0) {
-                
+
                 return ($percentage / $mods_counter) * $max_grade; //$percentage * $mods_counter; // $percentage / $mods_counter
             } else {
                 return -1;
@@ -183,7 +183,7 @@ function get_section_grades(&$section) {
 
 // Badges functions
 /**
- * 
+ *
  */
 function print_badges($records, $details = false, $highlight = false, $badgename = false) {
     global $DB;
@@ -218,11 +218,11 @@ function print_badges($records, $details = false, $highlight = false, $badgename
         $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
         $lis .= html_writer::tag('li', $link);
     }
-    echo html_writer::tag('ul', $lis, array('class' => 'badges', 'style' => 'border-bottom: none')); // Add style
+    echo html_writer::tag('ul', $lis, array('class' => 'badges-list'));
 }
 
 /**
- * 
+ *
  */
 function display_user_and_availbale_badges($userid, $courseid) {
     global $CFG, $USER;
@@ -247,7 +247,7 @@ function display_user_and_availbale_badges($userid, $courseid) {
 }
 
 /**
- * 
+ *
  */
 function get_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
     global $DB;
@@ -256,7 +256,7 @@ function get_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
                 b.*
             FROM
                 {badge} b
-            WHERE b.type > 0 
+            WHERE b.type > 0
 			  AND b.status != 4 ';
 
     if ($courseid == 0) {
@@ -279,7 +279,7 @@ function get_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
     return $badges;
 }
 /**
- * 
+ *
  */
 function get_badges_since($courseid, $since, $global = false) {
     global $DB, $USER;
@@ -323,9 +323,9 @@ function get_badges_since($courseid, $since, $global = false) {
 					{badge_issued} bi,
 					{user_enrolments} ue,
 					{enrol} e
-				WHERE b.id = bi.badgeid 
-				AND	bi.userid = ue.userid 
-				AND ue.enrolid = e.id 
+				WHERE b.id = bi.badgeid
+				AND	bi.userid = ue.userid
+				AND ue.enrolid = e.id
 				AND e.courseid = :courseid ';
 
 
@@ -362,7 +362,7 @@ function get_badges_since($courseid, $since, $global = false) {
     return $correct_badges;
 }
 /**
- * 
+ *
  */
 function display_badges($userid = 0, $courseid = 0, $since = 0, $print = true) {
     global $CFG, $PAGE, $USER, $SITE;
@@ -416,34 +416,34 @@ function display_badges($userid = 0, $courseid = 0, $since = 0, $print = true) {
 // Participants functions
  /**
  * Returns Bagdes for a specific user in a specific course
- * 
+ *
  * @return string badges
  */
 function get_badges_list($userid, $courseid = 0) {
     global $CFG, $USER, $DB;
     require_once($CFG->dirroot . '/badges/renderer.php');
-    
+
     if ($courseid == 0) {
         $context = context_system::instance();
     } else {
         $context = context_course::instance($courseid);
     }
-    
+
     if ($USER->id == $userid || has_capability('moodle/badges:viewotherbadges', $context)) {
         if ($courseid == 0) {
             $records = get_global_user_badges($userid);
         } else {
             $records = badges_get_user_badges($userid, $courseid, null, null, null, true);
             // $records = $DB->get_records('badge_issued', ['userid' =>$userid]);
-            
+
         //var_dump($records);
         }
         // Print local badges.
-        
+
         //var_dump($context);
         if ($records) {
             $out = '';
-            
+
             foreach ($records as $record) {
                 // $val = $DB->get_record('badge', ['id' =>$record->badgeid]);
                 $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $record->id, '/', 'f1', false); // $context->id == $record->type
@@ -517,7 +517,7 @@ function get_certificate($courseid) {
     global $DB, $OUTPUT;
 
     $he = $DB->get_record('modules', ['name' =>'ilddigitalcert']);
-    
+
     $te = $DB->get_records('course_modules', ['module' =>$he->id]);
 
     $ze = $DB->get_records('course_sections', ['course' =>$courseid]);
@@ -525,7 +525,7 @@ function get_certificate($courseid) {
 
     // $cm_id = 0;
     $templatedata = array();
-   
+
     $a = 1;
     foreach ($ze as $key => $value) {
         foreach ($te as $k => $v) {
@@ -542,8 +542,8 @@ function get_certificate($courseid) {
         }
     }
     if (count($templatedata) > 0) {
-        for ($i=0; $i < count($templatedata); $i++) { 
-            
+        for ($i=0; $i < count($templatedata); $i++) {
+
                 $templatedata[$i]->certificate_name = 'Certificate';
                 $templatedata[$i]->preview_url = (
                 new moodle_url(
@@ -573,12 +573,12 @@ function show_certificat($courseid) {
 
         if (is_string($templ) == 1) {
             $out_certificat = $templ;
-        } 
+    }
         if (is_string($templ) != 1) {
-            
+
             $imageurl = 'images/certificat.png';
-            for ($i=0; $i < count($templ); $i++) { 
-                
+            for ($i=0; $i < count($templ); $i++) {
+
                 $out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_body', 'style'=>'display:grid; cursor:pointer']); // certificat_card
 
                 $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
@@ -588,12 +588,12 @@ function show_certificat($courseid) {
                 $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->course_name . ' ' . $templ[$i]->index);
                 // $out_certificat .= html_writer::end_tag('button'); // button
                 $out_certificat .= html_writer::end_tag('div'); // certificat_body
-                
+
             }
 
         }
         // $out_certificat .= html_writer::end_tag('div'); // certificat_card
-        // $out_certificat .= html_writer::end_tag('div'); // certificat_card 
+        // $out_certificat .= html_writer::end_tag('div'); // certificat_card
         // $out_certificat .= html_writer::end_tag('div'); // certificat_card
 
          // $out_certificat; //echo
@@ -606,12 +606,12 @@ function show_certificat($courseid) {
  * Get the last News in a course
  * @param int $courseid
  * @param string $forum_type
- * @return array 
+ * @return array
  */
 function get_last_news($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
 
-    
+
     // Get all the forum (news) oder general  in the course
     $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum LIMIT 1 '; //ORDER BY ID DESC
     $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
@@ -622,37 +622,47 @@ function get_last_news($courseid, $forum_type) {
     if ($new_in_course == true) {
         $out = null;
         $cond = 'SELECT * FROM mdl_forum_discussions WHERE forum = :id  ORDER BY ID DESC LIMIT 1';
-        
+
         $param =  array('id' => $new_in_course->id);
         $discussions_in_new = $DB->get_record_sql($cond, $param, IGNORE_MISSING);
         if ($discussions_in_new != false) {
-            
-        
-        
+
+
+
         // Get the data in forum_posts (userid, subject, message, created)
         $cond_in_forum_posts = 'SELECT * FROM mdl_forum_posts WHERE discussion = :id_for_disc ORDER BY CREATED DESC LIMIT 1';
         $param =  array('id_for_disc' => $discussions_in_new->id );
         $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         // var_dump($news_forum_post);
         $user = $DB->get_record('user', ['id' => $news_forum_post->userid], '*');
-        
+
         // Get the right date for new creation
-        $created_news = date("D M j G:i:s T Y", date((int)$news_forum_post->created));
-        
+        // Deutsches Datumsformat hier oder in der lang file?
+        $created_news = date("d. m. Y,  G:i", date((int)$news_forum_post->created));
+        //$created_news = date("D M j G:i:s T Y", date((int)$news_forum_post->created));
+
             $out .= html_writer::start_tag('div', ['class'=> 'news']); // card_news
-            $out .= html_writer::start_tag('div', ['class'=> 'container']); //container
+
             if ($forum_type == 'news') {
-                $out .= get_string('news', 'format_mooin');
+                $out .= html_writer::start_tag('div', ['class'=> 'container']); //container
+                $out .= html_writer::nonempty_tag('h2',get_string('news', 'format_mooin'),['class' => 'mb-1']);
+                //$out .= get_string('news', 'format_mooin');
             } else {
-                $out .= get_string('discussion', 'format_mooin');
+                //$out .= get_string('discussion', 'format_mooin');
             }
-            $out .= html_writer::start_tag('div', ['class' =>'primary-link float-right']); //right_part_new
-            
+            $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-inline-block align-items-center mb-3']); //right_part_new
+
             $news_forum_id = $new_in_course->id;
             $newsurl = new moodle_url('/mod/forum/view.php', array('f' => $news_forum_id, 'tab' => 1));
             $url_disc = new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
             if ($forum_type == 'news') {
-                $out .= html_writer::link($newsurl, get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin')));
+                // Falls es neue Nachrichten gibt
+                $out .= html_writer::start_span('count-container inline-batch fw-700 mr-1') .'4'. html_writer::end_span(); //Notification Counter
+                // sonst print 0
+                $out .= '0 ';
+
+                $out .= get_string('unread_news', 'format_mooin');
+                $out .= html_writer::link($newsurl, get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin'), 'class' =>'primary-link'));
             } else {
                 $sql = 'SELECT * FROM mdl_forum WHERE course = :cid AND type != :tid ORDER BY ID ASC';
                 $param = array('cid' =>$courseid, 'tid' => 'news');
@@ -662,59 +672,78 @@ function get_last_news($courseid, $forum_type) {
                 $param =  array('id' => $courseid );
                 $oc_f = $DB->get_record_sql($cond_in_forum_posts, $param);
                 if (count($oc_foren) > 1 || count($oc_f)) {
-                    $out .= html_writer::link($url_disc, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin')));
+                    $out .= html_writer::start_span('count-container inline-batch fw-700 mr-1') .'4'. html_writer::end_span(); //Notification Counter
+                    $out .= html_writer::link($url_disc, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin'), 'class' =>'primary-link'));
                 } /* else {
                     $out .= html_writer::link($newsurl, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin')));
                 } */
-                
+
             }
-            
+
             $out .= html_writer::end_tag('div'); // right_part_new
-            $out .= html_writer::start_tag('div', ['class' =>' primary-link d-none d-md-block']); //left_part_new
-            $news_forum_id = $new_in_course->id;
-            $newsurl = new moodle_url('/mod/forum/view.php', array('f' => $news_forum_id, 'tab' => 1));
+            // $out .= html_writer::start_tag('div', ['class' =>' primary-link d-none d-md-block']); //left_part_new
+            // $news_forum_id = $new_in_course->id;
+            // $newsurl = new moodle_url('/mod/forum/view.php', array('f' => $news_forum_id, 'tab' => 1));
+            // if ($forum_type == 'news') {
+            //     //$out .= html_writer::link($newsurl, get_string('old_news', 'format_mooin'), array('title' => get_string('old_news', 'format_mooin')));
+            // } else {
+            //     $out .= html_writer::link($newsurl, get_string('old_discussion', 'format_mooin'), array('title' => get_string('old_discussion', 'format_mooin')));
+            // }
+
+            // $out .= html_writer::end_tag('div'); // left_part_new
+
+            $out .= html_writer::start_tag('div', ['class' =>'news-card d-flex']); // top_card_news justify-content-between
+
+
+            $out .= html_writer::start_tag('div'); // align-items-center
+
+
+
             if ($forum_type == 'news') {
-                $out .= html_writer::link($newsurl, get_string('old_news', 'format_mooin'), array('title' => get_string('old_news', 'format_mooin')));
+                $out .= html_writer::start_span('news-icon') .  html_writer::end_span();
             } else {
-                $out .= html_writer::link($newsurl, get_string('old_discussion', 'format_mooin'), array('title' => get_string('old_discussion', 'format_mooin')));
+                 $out .= html_writer::start_span('chat-icon') . html_writer::end_span();
             }
-            
-            $out .= html_writer::end_tag('div'); // left_part_new
-           
-            $out .= html_writer::start_tag('div', ['class' =>'news-card']); // top_card_news justify-content-between
-           
-            
-            $out .= html_writer::start_tag('div', ['class' =>'d-flex align-items-center']); // align-items-center
-            
-            
-            
-            if ($forum_type == 'news') {
-                $out .= html_writer::start_span('icon-wrapper news-icon') .  html_writer::end_span();
-            } else {
-                 $out .= html_writer::start_span('icon-wrapper chat-icon') . html_writer::end_span();
-            }
-            
-            $out .= html_writer::start_span('fw-700') . get_string('letze_beitrag','format_mooin') . '  ' . html_writer::end_span() . ' von '. $user->firstname . ' - ' . $created_news;
-            
-            // $out .= html_writer::end_tag('p'); // caption text-primary pl-2
             $out .= html_writer::end_tag('div'); // align-items-center
-            $out .= html_writer::nonempty_tag('img',$OUTPUT->user_picture($USER, array('courseid'=>$courseid))); // $user
-            // $out .= html_writer::div($OUTPUT->user_picture($user, array('courseid'=>$courseid)), 'new_user_picture');
-            $out .= html_writer::start_tag('div', ['class' => 'news-card-inner']);
+
+
+
+            $out .= html_writer::start_tag('div', ['class' => 'news-card-inner pt-1']);
+            $out .= html_writer::start_span('caption d-none d-md-block');
+            $out .= html_writer::start_span('fw-700 text-primary') . get_string('letze_beitrag','format_mooin') . '  ' . html_writer::end_span() . html_writer::start_span('in-news'). ' von ' . $user->firstname . ' - ' . $created_news . html_writer::end_span();
+            $out .= html_writer::end_span();
+
+            $out .= html_writer::start_span('caption d-sm-block d-md-none');
+            $out .= html_writer::start_span('fw-700 ') . get_string('latest_contribution_mobile','format_mooin') . '  ' . html_writer::end_span();
+            $out .= html_writer::end_span();
+
+
+            // $out .= html_writer::end_tag('p'); // caption text-primary pl-2
+
+
+            $out .= html_writer::start_tag('div', ['class' => 'position-relative pt-0 pt-md-1']);
+            $out .= html_writer::nonempty_tag('span',$OUTPUT->user_picture($USER, array('courseid'=>$courseid)),array('class' => 'new_user_picture d-none d-md-block')); // $user
+
+            //$out .= html_writer::div($OUTPUT->user_picture($user, array('courseid'=>$courseid)), 'new_user_picture d-none d-md-block');
+
             $out .= html_writer::nonempty_tag('p', $news_forum_post->subject, ['class' => 'fw-600 text-truncate']); // fw-600 text-truncate
-            
+            $out .= html_writer::start_span('in-community pb-2'). ' von ' . $user->firstname . ' - ' . $created_news.html_writer::end_span();
+
             // $out .= html_writer::nonempty_tag('p',$news_forum_post->message, ['class' => 'd-none d-md-block message']); // d-none d-md-block
             $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-block message']); // d-none d-md-block
             $out .= $news_forum_post->message;
             $out .= html_writer::end_tag('div');
-            $out .= html_writer::end_tag('div'); // news-card-inner
+
+            $out .= html_writer::end_tag('div');
+
             $out .= html_writer::start_tag('div', ['class' =>'primary-link d-none d-md-block text-right']);
             $forum_discussion_url = new moodle_url('/mod/forum/discuss.php', array('d' => $news_forum_post->discussion));
             $discussion_url = html_writer::link($forum_discussion_url, get_string('discussion_news', 'format_mooin'), array('title' => get_string('discussion_news', 'format_mooin')));
             $out .= $discussion_url;
+            $out .= html_writer::end_tag('div'); // news-card-inner
             $out .= html_writer::end_tag('div'); // d-none d-md-block text-right
             $out .= html_writer::end_tag('div'); // top_card_news
-            
+
             $out .= html_writer::end_tag('div'); //container
             $out .= html_writer::end_tag('div'); // card_news
         }
@@ -736,12 +765,12 @@ function get_course_grades($courseid) {
     if (isset($courseid)) {
         // $mods = get_course_section_mods($COURSE->id, $section);//print_object($mods);
         // Find a way to get the right section from the DB
-        
-        $sec = $DB->get_records_sql("SELECT cs.id 
+
+        $sec = $DB->get_records_sql("SELECT cs.id
                     FROM {course_sections} cs
                     WHERE cs.course = ?", array($courseid));
 
-        
+
         $mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
                     FROM {modules} m, {course_modules} cm
                     WHERE cm.course = ? AND cm.completiongradeitemnumber >= 0 AND cm.module = m.id AND m.visible = 1", array($courseid)); // AND cm.completion !=0
@@ -763,21 +792,21 @@ function get_course_grades($courseid) {
                         }
                     }
                 }
-                if (!$skip) {
+                 if (!$skip) {
                     $grading_info = grade_get_grades($mod->course, 'mod', $mod->modname, $mod->instance, $USER->id);
                     $grading_info = (object)($grading_info);// new, convert an array to object
                     if ($mod->modname == 'forum') {
                         $user_grade = $grading_info->items[1]->grades[$USER->id]->grade;
                     } else {
-                        $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
+                    $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
                     }
                     //echo ('Grade : ' . $user_grade);
                     if ($user_grade > 0) {
                         $percentage += $user_grade ; // $user_grade
-                        $mods_counter++;  
+                    $mods_counter++;
                     }
                     // var_dump($mod->completion);
-                    
+
                 }
             }
         }
@@ -822,7 +851,7 @@ function get_user_in_course($courseid) {
     global $DB, $OUTPUT;
     $out = null;
     // Get the enrol data in the course
-    
+
     $sql = 'SELECT * FROM mdl_enrol WHERE courseid = :cid AND enrol = :enrol_data ORDER BY ID ASC';
     $param = array('cid' => $courseid, 'enrol_data' =>'manual');
     $enrol_data = $DB->get_records_sql($sql,$param);
@@ -830,56 +859,61 @@ function get_user_in_course($courseid) {
     // Get user_enrolments data
     $user_enrol_data = [];
     $sql_query = 'SELECT * FROM mdl_user_enrolments WHERE enrolid = :value_id ORDER BY timecreated DESC ';
-    
+
     foreach ($enrol_data as $key => $value) {
         $param_array = array('value_id' => $value->id);
         $count_val = $DB->get_records_sql($sql_query, $param_array);
         $val = $DB->get_records_sql($sql_query, $param_array, 0, 3);// ('user_enrolments', ['enrolid' =>$value->id], 'userid');
         array_push($user_enrol_data, $val);
     }
-    
+
     if (isset($enrol_data)) {
         $out .= html_writer::start_tag('div', ['class' =>'participant-card']); // participant-card
         $out .= html_writer::start_tag('div', ['class' =>'participant-card-inner']); // participant-card-inner
-        $out .= html_writer::start_tag('div', ['class' =>'d-flex align-items-center']); // d-flex align-items-center
+        $out .= html_writer::start_tag('div', ['class' =>'d-flex']); // d-flex align-items-center
         $out .= html_writer::start_span('icon-wrapper participant-icon') . html_writer::end_span();
 
-        $out .= html_writer::nonempty_tag('p', get_string('user_card_title', 'format_mooin'), ['class'=>'caption fw-700 text-primary pl-2']);
-        $out .= html_writer::end_tag('div'); // d-flex align-items-center
-        
+        $out .= html_writer::start_tag('div');
+        $out .= html_writer::nonempty_tag('p', get_string('user_card_title', 'format_mooin'), ['class'=>'caption fw-700 text-primary']);
+
+
         $user_count = count($count_val);
-        $user_in_course = $user_count . get_string('user_in_course', 'format_mooin');
+        $user_in_course = $user_count . ' ' . get_string('user_in_course', 'format_mooin');
         $out .= html_writer::start_tag('p');
         $out .= html_writer::start_span('fw-700') . $user_in_course . html_writer::end_span();
         $out .= html_writer::end_tag('p');
         $out .= html_writer::nonempty_tag('p', get_string('new_user', 'format_mooin'), ['class'=> 'caption fw-700']);
-        
+
         $out .= html_writer::start_tag('ul', ['class' => 'caption', 'style'=> 'line-height: 3rem']); // user_card_list
         foreach ($user_enrol_data as $key => $value) {
-            
+
             $el = array_values($value);
-            for ($i=0; $i < count($el); $i++) { 
+            for ($i=0; $i < count($el); $i++) {
                 // var_dump($el);
                 $out .= html_writer::start_tag('li');
                 $user = $DB->get_record('user', ['id' => $el[$i]->userid], '*');
                 $out .= html_writer::start_tag('span');
-                $out .= html_writer::nonempty_tag('img',$OUTPUT->user_picture($user, array('courseid'=>$courseid)));
+                $out .= html_writer::nonempty_tag('span',$OUTPUT->user_picture($user, array('courseid'=>$courseid)));
                 $out .= $user-> firstname . ' ' . $user->lastname ;
                 $out .= html_writer::end_tag('span');
-                
+
                 // $out .= html_writer::div($user-> firstname . ' ' . $user->lastname, 'user_card_name');
-                $out .= html_writer::end_tag('li'); // user_card_element 
+                $out .= html_writer::end_tag('li'); // user_card_element
             }
         }
         $out .= html_writer::end_tag('ul'); // user_card_list
-     
+        $out .= html_writer::end_tag('div');
+
+
+        $out .= html_writer::end_tag('div'); // d-flex
+
         $out .= html_writer::start_tag('div', ['class' =>'primary-link d-none d-md-block text-right']);
         $participants_url = new moodle_url('/course/format/mooin/participants.php', array('id' => $courseid));
-        $participants_link = html_writer::link($participants_url, get_string('participants', 'format_mooin'), array('title' => get_string('participants', 'format_mooin')));
+        $participants_link = html_writer::link($participants_url, get_string('show_all_infos', 'format_mooin'), array('title' => get_string('participants', 'format_mooin')));
         $out .= $participants_link;
         $out .= html_writer::end_tag('div'); // d-none d-md-block text-right
         $out .= html_writer::end_tag('div'); // participant-card-inner
-        $out .= html_writer::end_tag('div'); // participant-card 
+        $out .= html_writer::end_tag('div'); // participant-card
     } else {
         $out .= html_writer::div(get_string('no_user', 'format_mooin'), 'no_user_class'); // '
     }
