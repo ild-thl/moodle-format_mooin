@@ -74,7 +74,7 @@ $string['owner'] = 'Inhaber';
 $string['no_badges_awarded'] = 'Bisher wurden noch keine Badges in diesem Kurs verliehen';
 $string['no_badges_available'] = 'In diesem Kurs sind noch keine Badges verfügbar';
 $string['badge_overview_description'] = '<h5>Mit diesen Kursbadges bzw. digitalen Lernabzeichen können Sie den anderen Teilnehmerinnen und Teilnehmern hier auf demo.oncampus.de und auch der ganzen Welt im Web zeigen, welche Kursfortschritte Sie bereits gemacht haben.
-										<br />Weitere Informationen gibt es in der <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a> 
+										<br />Weitere Informationen gibt es in der <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a>
 										und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a></h5>';
 $string['all_forums'] = 'Alle Diskussionsforen';
 $string['course_groups'] = 'Kursgruppen';
@@ -97,3 +97,11 @@ $string['social_media'] = 'Social Media';
 $string['discuss'] = 'Allgemeines Diskussionsforum'; */
 
 $string['unenrol'] = 'Aus diesem Kurs abmelden';
+
+
+// added by Jonas
+$string['unread_news'] = ' ungelesene Beiträge im ';
+$string['all_news_mobile'] = 'Alle Beiträge';
+$string['by'] = 'von ';
+$string['latest_contribution_mobile'] = 'Neuster Beitrag:';
+$string['show_all_infos'] = ' Alle Infos anzeigen';
