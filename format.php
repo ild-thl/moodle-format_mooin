@@ -240,7 +240,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // Badges and certificates
 
     $out .= html_writer::start_tag('div', ['class' => 'badges']); // badges
-    $out .= html_writer::start_tag('div', ['class' => 'container']); // container
+    $out .= html_writer::start_tag('div', ['class' => 'container pt-2']); // container
     $out .= html_writer::nonempty_tag('h2',get_string('badges_certificates', 'format_mooin'));
     $out .= html_writer::start_tag('div', array('class' => 'badges-card')); // badges-card
     $out .= html_writer::start_tag('div', array('class' => 'd-flex align-items-center')); // d-flex align-items-center
@@ -278,8 +278,10 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $out .= show_certificat($course->id);// get_certificate($course->id);
     // $out .= ob_get_contents();
     $out .= html_writer::end_tag('div'); // certificate-card-inner
-
+    $bottom_certificate_link = html_writer::link($certificates_url, get_string('see_badges', 'format_mooin'), array('title' => get_string('see_badges', 'format_mooin')));
+    $out .= html_writer::div($bottom_certificate_link, 'primary-link d-block text-right');
     $out .= html_writer::end_tag('div');// certificate-card
+
     $out .= html_writer::end_tag('div'); //container
     $out .= html_writer::end_tag('div'); // badges
 
@@ -307,7 +309,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // $out .= html_writer::end_tag('div'); // diskussion_card
 
 
-    $out .= html_writer::end_tag('div');// forum-card
+
 
     // Participants
 
@@ -319,10 +321,11 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     }
     $out .= html_writer::end_tag('div'); // container
     $out .= html_writer::end_tag('div'); // community
-    $out .= html_writer::end_tag('div');
+    $out .= html_writer::end_tag('div'); // side-right
+    $out .= html_writer::end_tag('div'); // wrapper
     $main_out .= $out;
 
-    $main_out .= html_writer::end_tag('div'); // wrapper
+    $main_out .= html_writer::end_tag('div'); // course-content
     echo $main_out;
 
 
