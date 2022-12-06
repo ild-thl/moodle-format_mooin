@@ -148,17 +148,20 @@ $oc_counter = 0;
 
 // ob_start();
 //if (count($oc_foren) > 1 || count($oc_f) >1 ) { and $oc_showall == ''
+    echo html_writer::start_div('mooin-md-container'); //open outer div
     echo '<h2>' . get_string('all_forums', 'format_mooin') . '</h2>';
-    
+    echo '<br>';
+    echo html_writer::start_div('border-card'); //open outer div
+
     if (count($oc_foren) >= 1) {
         foreach ($oc_foren as $oc_forum) {
             // var_dump($oc_forum->id);
-            
+
             $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $course->id, 'module' => $oc_m->id));
-            
+
             // blocks/oc_mooc_nav/forum_view.php?showall=false&
             $oc_link = html_writer::link(new moodle_url('/mod/forum/view.php?f=' . $oc_forum->id .'&tab='.'1'), $oc_forum->name);
-            if ($oc_cm->visible == 1) {           
+            if ($oc_cm->visible == 1) {
                 echo html_writer::div($oc_link, 'all_forum_list');
                 // $oc_counter++;
             }
@@ -169,6 +172,8 @@ $oc_counter = 0;
             exit;
         }
     }
+    echo html_writer::end_div(); //close border-card div
+    echo html_writer::end_div(); //close outer div
    /*  if (count($oc_f) > 1 ) {
        foreach ($oc_f as $value) {
         foreach ($oc_foren as $oc_forum) {
@@ -176,7 +181,7 @@ $oc_counter = 0;
                 $oc_cm = $DB->get_record('course_modules', array('instance' => $value->id, 'course' => $course->id, 'module' => $oc_m->id));
                 //var_dump($oc_m->visible);
                 $oc_link = html_writer::link(new moodle_url('/mod/forum/discuss.php?d=' . $value->id), $value->name);
-                //if ($oc_cm->visible == '1') {           
+                //if ($oc_cm->visible == '1') {
                     echo html_writer::div($oc_link, 'all_forum_list');
                     //$oc_counter++;
                 //}
@@ -189,7 +194,7 @@ $oc_counter = 0;
             exit;
         }
     } */
-    
+
 // }
 // ob_end_clean();
 //}

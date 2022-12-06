@@ -112,6 +112,7 @@ if ($cert_m) {
 }
 echo '<br />';
 echo '<br />';
+echo html_writer::start_div('mooin-md-container'); //open outer div
 echo html_writer::tag('h2', html_writer::tag('div', get_string('course_badges', 'format_mooin'), array('class' => 'oc_badges_text')));
 
 echo html_writer::tag('div', get_string('badge_overview_description', 'format_mooin'));
@@ -157,6 +158,7 @@ if ($out != '') {
     echo html_writer::tag('div', get_string('no_badges_awarded', 'format_mooin'), array('class' => 'oc-no-badges'));
 }
 
+echo html_writer::end_div(); //close outer div
 // TODO Zertifikate
 
 // TODO Highscore
