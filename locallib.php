@@ -920,3 +920,45 @@ function get_user_in_course($courseid) {
 
     return $out;
 }
+
+/**
+ * Returns url for headerimage
+ *
+ * @param int courseid
+ * @param bool true if mobile header image is required or false for desktop image
+ * @return string|bool String with url or false if no image exists
+ */
+function get_headerimage_url($courseid, $mobile = true) {
+    global $DB;
+    $context = context_course::instance($courseid);
+    $filearea = 'headerimagemobile';
+    if (!$mobile) {
+        $filearea = 'headerimagedesktop';
+    }
+    $filename = '';
+    $sql = 'select 0, filename 
+              from {files} 
+             where contextid = :contextid
+               and component = :component
+               and filearea = :filearea
+               and itemid = :courseid
+               and mimetype like :mimetype';
+
+    $params = array('contextid' => $context->id, 
+                    'component' => 'format_mooin', 
+                    'filearea' => $filearea,
+                    'courseid' => $courseid,
+                    'mimetype' => 'image/%');
+
+    $records = $DB->get_records_sql($sql, $params);
+
+    if (count($records) == 1) {
+        $filename = $records[0]->filename;
+    }
+    else {
+        return false;
+    }
+
+    $url = new moodle_url('/pluginfile.php/'.$context->id.'/format_mooin/'.$filearea.'/'.$courseid.'/0/'.$filename);
+    return $url;
+}
