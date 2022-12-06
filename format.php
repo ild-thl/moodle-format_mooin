@@ -78,14 +78,25 @@ $out_first_part = null;
 $main_out .= html_writer::start_tag('div', ['class'=>'wrapper']);
 $main_out .= html_writer::start_tag('div', ['class' => 'main-container bg-white']); // 'main-container
 $main_out .= html_writer::start_tag('div', ['class' => 'course-title-header']); // course-title-header
-$main_out .= html_writer::start_tag('div', ['class' => 'container']);
+
+//Course Images mobile & desktop
+$main_out .= html_writer::empty_tag('img', array('src' => '', 'class' => 'course-image d-block d-md-none'));
+$main_out .= html_writer::empty_tag('img', array('src' => '', 'class' => 'course-image d-none d-md-block'));
+
+
+$main_out .= html_writer::start_tag('div', ['class' => 'title-overlay']);
 $main_out .= html_writer::start_tag('p');
 $main_out .= get_string('welcome', 'format_mooin');
 $main_out .= html_writer::end_tag('p');
 $main_out .= html_writer::start_tag('h2'); //h2
 $main_out .= $course->fullname;
 $main_out .= html_writer::end_tag('h2'); //h2
-$main_out .= html_writer::end_tag('div'); // container
+
+// Continue Button in Course Header -- needs Buttontext
+$continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section));
+$main_out .= html_writer::link($continue_url, $start_continue, array('title' => $start_continue, 'class' => 'mooin-btn mooin-btn-primary btn-continue d-flex d-md-none'));
+
+$main_out .= html_writer::end_tag('div'); // title-overlay
 $main_out .= html_writer::end_tag('div'); // course-title-header
 // $lesson = new lesson($lessonrecord);
 
