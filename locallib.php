@@ -218,7 +218,7 @@ function print_badges($records, $details = false, $highlight = false, $badgename
         $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
         $lis .= html_writer::tag('li', $link);
     }
-    echo html_writer::tag('ul', $lis, array('class' => 'badges-list'));
+    echo html_writer::tag('ul', $lis, array('class' => 'badges-list badges'));
 }
 
 /**
@@ -745,6 +745,9 @@ function get_last_news($courseid, $forum_type) {
             $out .= html_writer::end_tag('div'); // top_card_news
 
             $out .= html_writer::end_tag('div'); //container
+            $out .= html_writer::start_tag('div', ['class' => 'seperator']); //Seperator lline
+            $out .= html_writer::end_tag('div'); //Seperator lline
+
             $out .= html_writer::end_tag('div'); // card_news
         }
         }
