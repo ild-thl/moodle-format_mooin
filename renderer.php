@@ -205,7 +205,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                     $content = '';
                 }
             } else {
-                
+
                 $val  = ' Kap. '. ' '.$displaysection .' / Lek.  '. ' ' .$displaysection .'.'. $displaysection . ':';
                 $item = $items[$i];
                 $item->hideicon = true;
@@ -231,7 +231,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $navbarcontent = html_writer::tag('span', get_string('pagepath'),
                 array('class' => 'accesshide', 'id' => 'navbar-label'));
         // $navbarcontent .= html_writer::start_tag('nav', array('aria-labelledby' => 'navbar-label'));
-        
+
         $navbarcontent .= html_writer::tag('nav',
                 html_writer::tag('ul', join('', $htmlblocks),array('class' => "navmenu", 'id'=> 'menu'),array('aria-labelledby' => 'navbar-label')),
                 );
@@ -377,8 +377,8 @@ class format_mooin_renderer extends format_section_renderer_base {
         $section_course = $DB->get_records('course_sections', array('course' =>$course->id));
         $sections = ($DB->count_records('course_sections', ['course' =>$course->id])) - 1;
 
-        echo $this->navbar($displaysection);
-        
+        //echo $this->navbar($displaysection);
+
         $modinfo = get_fast_modinfo($course);
         $course = course_get_format($course)->get_course();
 
@@ -393,7 +393,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $PAGE->navbar->add('/ Kap.'.$displaysection);
         // Copy activity clipboard..
 
-        
+
         $thissection = $modinfo->get_section_info(0);
         if ($this->page->user_is_editing()) {
             echo $this->start_section_list();
@@ -403,9 +403,9 @@ class format_mooin_renderer extends format_section_renderer_base {
             echo $this->section_footer();
             echo $this->end_section_list();
         }
-        
-        
-        
+
+
+
         // Start single-section div
         echo html_writer::start_tag('div', array('class' => 'single-section'));
 
@@ -414,8 +414,8 @@ class format_mooin_renderer extends format_section_renderer_base {
         //$PAGE->navbar->add('Perial'.$displaysection);
         // nav_bar_in_single_section($course, $displaysection);
        // var_dump($PAGE->context );
-        
-       for ($i=1; $i <= $sections; $i++) { 
+
+       for ($i=1; $i <= $sections; $i++) {
             if (array_key_exists('btnComplete-'.$i, $_POST) && $i == $displaysection) {
                 complete_section($USER->id, $course->id, $i);
             }
@@ -430,14 +430,14 @@ class format_mooin_renderer extends format_section_renderer_base {
         $classes = 'sectionname';
         if (!$thissection->visible) {
             $classes .= ' dimmed_text';
-            
+
         }
         $sectionname = html_writer::tag('span', $this->section_title_without_link($thissection, $course));
         $sectiontitle .= $this->output->heading($sectionname, 3, $classes);
 
         $sectiontitle .= html_writer::end_tag('div');
-        
-        
+
+
         // Progress bar anzeige
         $check_sequence = $DB->get_records('course_sections', ['course' => $course->id, 'section' => $displaysection], '', 'sequence');
         $val = array_values($check_sequence);
@@ -448,31 +448,31 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $sectiontitle .= '<br />' . get_progress_bar($ocp, 100, $displaysection);
             } else {
                 $completionthistile = section_progress($modinfo->sections[$displaysection], $modinfo->cms);
-                
+
                 // use the completion_indicator to show the right percentage in secton
                 $section_percent = completion_indicator($completionthistile['completed'], $completionthistile['outof'], true, false);
-                    
+
                 $sectiontitle .= '<br />' . get_progress_bar($section_percent['percent'], 100, $displaysection);
             }
         }
-        
+
 
         echo $sectiontitle;
         // Now the list of sections..
-        
+
         echo $this->start_section_list();
 
         echo $this->section_header($thissection, $course, true, $displaysection);
 
         echo $this->courserenderer->course_section_cm_list($course, $thissection, $displaysection);
         echo $this->courserenderer->course_section_add_cm_control($course, $displaysection, $displaysection);
-        
+
         if($this->courserenderer->course_section_cm_list($course, $thissection, $displaysection)) {
-           
+
         }
         foreach ($section_course as $k => $v) {
             foreach ($modules_course as $key => $value) {
-               
+
                if ($value->section == $v->id && $v->section == $displaysection) {
                        //  var_dump($v ) ;
                         //echo 'JiJo'.$displaysection;
@@ -490,7 +490,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                                     if (!$this->page->user_is_editing()) {
                                         $bar .= html_writer::start_tag('form', array('method' => 'post', 'style' => 'margin-top: 40px;'));
                                         $bar .= html_writer::start_tag('input', array('class'=>'bottom_complete btn btn-outline-secondary', 'id' => 'id_bottom_complete-' .$displaysection, 'type' => 'submit', 'name'=> 'btnComplete-'.$displaysection,'value' => 'Seite als bearbeitet markieren', 'onclick' => complete_section($USER->id, $course->id, $displaysection) )); // 'onclick' => $this->the_click( $section, $course->id, $USER->id)
-                                                
+
                                         // $bar .= html_writer::start_span('bottom_button') . 'Seite als bearbeitet markieren' . html_writer::end_span();
                                         $bar .= html_writer::end_tag('input');
                                         $bar .= html_writer::end_tag('form');
@@ -498,26 +498,26 @@ class format_mooin_renderer extends format_section_renderer_base {
                                 } else {
                                     if (!$this->page->user_is_editing()) {
                                         $bar .= html_writer::start_tag('div', array('class'=>'complete_section btn btn-outline-secondary', 'id' => 'id_bottom_complete-' .$displaysection, 'style' => 'margin-top: 40px;'));
-                
+
                                         $bar .= html_writer::start_span('bottom_button') . 'Seite als bearbeitet markieren' . html_writer::end_span();
                                         $bar .= html_writer::end_tag('div');
                                     }
                                 }
-                                
+
 
                                 echo $bar;
                             }
                         }
                         /* if (strpos($value->module, '11') == true) {
-                           
+
                         } else if ($value->module == '13' ) {
-                           
+
                         }  */
                }
             }
-                
+
         }
-        
+
         echo $this->section_footer();
         echo $this->end_section_list();
 
@@ -655,7 +655,7 @@ class format_mooin_renderer extends format_section_renderer_base {
     }
 
     /**
-     * Generate the display of the header part of a chapter 
+     * Generate the display of the header part of a chapter
      *
      * @param stdClass $section The course_section entry from DB
      * @param stdClass $course The course entry from DB
@@ -684,7 +684,7 @@ class format_mooin_renderer extends format_section_renderer_base {
             'role' => 'region',
             'aria-labelledby' => "sectionid-{$section->id}-title",
             'data-sectionid' => $section->section,
-            'data-sectionreturnid' => $sectionreturn // 0 
+            'data-sectionreturnid' => $sectionreturn // 0
         ]);
 
         $leftcontent = $this->section_left_content($section, $course, $onsectionpage);
