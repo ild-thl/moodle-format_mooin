@@ -29,10 +29,10 @@ $string['editsectionname'] = 'Edit topic name';
 $string['deletesection'] = 'Delete topic';
 $string['news'] = '<h2>News</h2>';
 $string['discussion']= '<h5><strong>Letzter Beitrag</h5></strong>';
-$string['all_discussions'] = 'Alle Diskussionsforen anzeigen';
+$string['all_discussions'] = 'Ungelesene Beiträge in den Diskussionsforen';
 $string['old_discussion'] = 'Altere Discussions';
 $string['old_news'] = 'Altere News';
-$string['all_news'] = 'Alle Newsbeiträge anzeige';
+$string['all_news'] = 'Newsforum';
 $string['letze_beitrag'] = 'Letzer Beitrag ';
 $string['discussion_news'] = 'Zur Nachricht';
 $string['newsectionname'] = 'New name for topic {$a}';
@@ -47,7 +47,7 @@ $string['privacy:metadata'] = 'The mooin format plugin does not store any person
 $string['map_title'] = 'Map of participants';
 $string['map_descr'] = 'Participant\'s city all over the world';
 $string['badges'] = 'Meine Kursbadges';
-$string['see_badges'] = ' Alles Badges';
+$string['see_badges'] = ' Alle Infos anzeigen';
 $string['community'] = 'Community';
 $string['forums'] = 'DISKUSSIONSFOREN';
 $string['my_forum'] = 'FOREN';
@@ -83,7 +83,7 @@ $string['owner'] = 'Inhaber';
 $string['no_badges_awarded'] = 'Bisher wurden noch keine Badges in diesem Kurs verliehen';
 $string['no_badges_available'] = '<h2>In diesem Kurs sind noch keine Badges verfügbar!</h2>';
 $string['badge_overview_description'] = '<h5>Mit diesen Kursbadges bzw. digitalen Lernabzeichen können Sie den anderen Teilnehmerinnen und Teilnehmern hier auf demo.oncampus.de und auch der ganzen Welt im Web zeigen, welche Kursfortschritte Sie bereits gemacht haben.
-										<br />Weitere Informationen gibt es in der <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a> 
+										<br />Weitere Informationen gibt es in der <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a>
 										und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a></h5>';
 $string['all_forums'] = 'Alle Diskussionsforen';
 $string['course_groups'] = 'Kursgruppen';
@@ -100,7 +100,7 @@ $string['my_certificate'] = 'Kurszertifikate';
 $string['certificate_overview_description'] = '<h5>Herlichen Glückwunsch! Sie haben die im Kurs enthaltenen Selbtsttest erfolgreich bearbeitet und können sich hier Ihre Teilnahmenbestätigung herunterladen.</h5>';
 $string['certificate_overview'] = 'Es gibt noch kein Zertifikat für diese Kurs!';
 $string['user_card_title'] = 'Teilnehmende des Kurses';
-$string['user_in_course'] = 'Personen nehmen teil';
+$string['user_in_course'] = 'Personen <span class="fw-400">nehmen teil</span>';
 $string['new_user'] = ' Neu hinzugekommen : ';
 $string['no_user'] = ' Kein Teilnehmer würde hinzugefügt!';
 /* $string['course'] = 'Kurs';
@@ -110,3 +110,10 @@ $string['social_media'] = 'Social Media';
 $string['discuss'] = 'Allgemeines Diskussionsforum'; */
 $string['welcome'] = 'Herzlich Willkommen im Kurs';
 $string['unenrol'] = 'Aus diesem Kurs abmelden';
+
+// added by Jonas
+$string['unread_news'] = ' ungelesene Beiträge im ';
+$string['all_news_mobile'] = 'Alle Beiträge';
+$string['by'] = 'von ';
+$string['latest_contribution_mobile'] = 'Neuster Beitrag:';
+$string['show_all_infos'] = ' Alle Infos anzeigen';

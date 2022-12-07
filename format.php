@@ -78,15 +78,29 @@ $out_first_part = null;
 $main_out .= html_writer::start_tag('div', ['class'=>'wrapper']);
 $main_out .= html_writer::start_tag('div', ['class' => 'main-container bg-white']); // 'main-container
 $main_out .= html_writer::start_tag('div', ['class' => 'course-title-header']); // course-title-header
-$main_out .= html_writer::start_tag('div', ['class' => 'container']);
+
+//Course Images mobile & desktop
+$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($course->id, true), 'class' => 'course-image d-block d-md-none')); //mobile
+$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($course->id, false), 'class' => 'course-image d-none d-md-block')); //desktop
+//$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($courseid, $mobile = true), 'class' => 'course-image d-block d-md-none')); //mobile
+//$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($courseid, $mobile = false), 'class' => 'course-image d-none d-md-block')); //desktop
+
+
+$main_out .= html_writer::start_tag('div', ['class' => 'title-overlay']);
 $main_out .= html_writer::start_tag('p');
 $main_out .= get_string('welcome', 'format_mooin');
 $main_out .= html_writer::end_tag('p');
 $main_out .= html_writer::start_tag('h2'); //h2
 $main_out .= $course->fullname;
 $main_out .= html_writer::end_tag('h2'); //h2
-$main_out .= html_writer::end_tag('div'); // container
+
+// Continue Button in Course Header -- needs Buttontext
+$continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section));
+$main_out .= html_writer::link($continue_url, $start_continue, array('title' => $start_continue, 'class' => 'mooin-btn mooin-btn-primary btn-continue d-flex d-md-none'));
+
+$main_out .= html_writer::end_tag('div'); // title-overlay
 $main_out .= html_writer::end_tag('div'); // course-title-header
+$main_out .= html_writer::start_tag('div', ['class' => 'inner-wrapper']); //inner-wrapper
 // $lesson = new lesson($lessonrecord);
 
 if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
@@ -232,6 +246,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $main_out .= $out_first_part;
     // Add rendere here
 
+    $main_out .= html_writer::end_tag('div'); // inner-wrapper
     $main_out .= html_writer::end_tag('div'); // main-container
 
 
@@ -240,7 +255,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // Badges and certificates
 
     $out .= html_writer::start_tag('div', ['class' => 'badges']); // badges
-    $out .= html_writer::start_tag('div', ['class' => 'container']); // container
+    $out .= html_writer::start_tag('div', ['class' => 'container pt-2']); // container
     $out .= html_writer::nonempty_tag('h2',get_string('badges_certificates', 'format_mooin'));
     $out .= html_writer::start_tag('div', array('class' => 'badges-card')); // badges-card
     $out .= html_writer::start_tag('div', array('class' => 'd-flex align-items-center')); // d-flex align-items-center
@@ -278,8 +293,10 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $out .= show_certificat($course->id);// get_certificate($course->id);
     // $out .= ob_get_contents();
     $out .= html_writer::end_tag('div'); // certificate-card-inner
-
+    $bottom_certificate_link = html_writer::link($certificates_url, get_string('see_badges', 'format_mooin'), array('title' => get_string('see_badges', 'format_mooin')));
+    $out .= html_writer::div($bottom_certificate_link, 'primary-link d-block text-right');
     $out .= html_writer::end_tag('div');// certificate-card
+
     $out .= html_writer::end_tag('div'); //container
     $out .= html_writer::end_tag('div'); // badges
 
@@ -307,7 +324,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // $out .= html_writer::end_tag('div'); // diskussion_card
 
 
-    $out .= html_writer::end_tag('div');// forum-card
+
 
     // Participants
 
@@ -319,10 +336,11 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     }
     $out .= html_writer::end_tag('div'); // container
     $out .= html_writer::end_tag('div'); // community
-    $out .= html_writer::end_tag('div');
+    $out .= html_writer::end_tag('div'); // side-right
+    $out .= html_writer::end_tag('div'); // wrapper
     $main_out .= $out;
 
-    $main_out .= html_writer::end_tag('div'); // wrapper
+    $main_out .= html_writer::end_tag('div'); // course-content
     echo $main_out;
 
 
