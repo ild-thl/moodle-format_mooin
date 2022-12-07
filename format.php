@@ -98,6 +98,7 @@ $main_out .= html_writer::link($continue_url, $start_continue, array('title' => 
 
 $main_out .= html_writer::end_tag('div'); // title-overlay
 $main_out .= html_writer::end_tag('div'); // course-title-header
+$main_out .= html_writer::start_tag('div', ['class' => 'inner-wrapper']); //inner-wrapper
 // $lesson = new lesson($lessonrecord);
 
 if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
@@ -243,6 +244,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $main_out .= $out_first_part;
     // Add rendere here
 
+    $main_out .= html_writer::end_tag('div'); // inner-wrapper
     $main_out .= html_writer::end_tag('div'); // main-container
 
 
