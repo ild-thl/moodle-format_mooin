@@ -80,8 +80,10 @@ $main_out .= html_writer::start_tag('div', ['class' => 'main-container bg-white'
 $main_out .= html_writer::start_tag('div', ['class' => 'course-title-header']); // course-title-header
 
 //Course Images mobile & desktop
-$main_out .= html_writer::empty_tag('img', array('src' => '', 'class' => 'course-image d-block d-md-none'));
-$main_out .= html_writer::empty_tag('img', array('src' => '', 'class' => 'course-image d-none d-md-block'));
+$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($course->id, true), 'class' => 'course-image d-block d-md-none')); //mobile
+$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($course->id, false), 'class' => 'course-image d-none d-md-block')); //desktop
+//$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($courseid, $mobile = true), 'class' => 'course-image d-block d-md-none')); //mobile
+//$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($courseid, $mobile = false), 'class' => 'course-image d-none d-md-block')); //desktop
 
 
 $main_out .= html_writer::start_tag('div', ['class' => 'title-overlay']);
