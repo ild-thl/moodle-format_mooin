@@ -216,7 +216,7 @@ function print_badges($records, $details = false, $highlight = false, $badgename
             $detail = '<br />' . $record->name;
         }
         $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
-        $lis .= html_writer::tag('li', $link);
+        $lis .= html_writer::tag('li', $link, array('class' => 'new-badge-layer')); // new-badge-layer class for the "new badge overlay"
     }
     echo html_writer::tag('ul', $lis, array('class' => 'badges-list badges'));
 }
@@ -241,7 +241,8 @@ function display_user_and_availbale_badges($userid, $courseid) {
     if ($coursebadges) {
         $result = print_badges($coursebadges, false, true, true);
     } else {
-        $result .= html_writer::start_span() . get_string('no_badges_available', 'format_mooin') . html_writer::end_span();
+        //$result .= html_writer::start_span() . get_string('no_badges_available', 'format_mooin') . html_writer::end_span();
+        $result .= html_writer::div('','no-badges-img');
     }
     return $result;
 }
@@ -657,7 +658,7 @@ function get_last_news($courseid, $forum_type) {
             $url_disc = new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
             if ($forum_type == 'news') {
                 // Falls es neue Nachrichten gibt
-                $out .= html_writer::start_span('count-container inline-batch fw-700 mr-1') .'4'. html_writer::end_span(); //Notification Counter
+                $out .= html_writer::start_span('count-container inline-badge fw-700 mr-1') .'4'. html_writer::end_span(); //Notification Counter
                 // sonst print 0
                 $out .= '0 ';
 
@@ -672,7 +673,7 @@ function get_last_news($courseid, $forum_type) {
                 $param =  array('id' => $courseid );
                 $oc_f = $DB->get_record_sql($cond_in_forum_posts, $param);
                 if (count($oc_foren) > 1 || count($oc_f)) {
-                    $out .= html_writer::start_span('count-container inline-batch fw-700 mr-1') .'4'. html_writer::end_span(); //Notification Counter
+                    $out .= html_writer::start_span('count-container inline-badge fw-700 mr-1') .'4'. html_writer::end_span(); //Notification Counter
                     $out .= html_writer::link($url_disc, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin'), 'class' =>'primary-link'));
                 } /* else {
                     $out .= html_writer::link($newsurl, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin')));
@@ -695,7 +696,7 @@ function get_last_news($courseid, $forum_type) {
             $out .= html_writer::start_tag('div', ['class' =>'news-card d-flex']); // top_card_news justify-content-between
 
 
-            $out .= html_writer::start_tag('div'); // align-items-center
+            //$out .= html_writer::start_tag('div'); // align-items-center
 
 
 
@@ -704,17 +705,19 @@ function get_last_news($courseid, $forum_type) {
             } else {
                  $out .= html_writer::start_span('chat-icon') . html_writer::end_span();
             }
-            $out .= html_writer::end_tag('div'); // align-items-center
+            //$out .= html_writer::end_tag('div'); // align-items-center
 
 
 
             $out .= html_writer::start_tag('div', ['class' => 'news-card-inner pt-1']);
             $out .= html_writer::start_span('caption d-none d-md-block');
-            $out .= html_writer::start_span('fw-700 text-primary') . get_string('letze_beitrag','format_mooin') . '  ' . html_writer::end_span() . html_writer::start_span('in-news'). ' von ' . $user->firstname . ' - ' . $created_news . html_writer::end_span();
+            $out .= html_writer::start_span('fw-700 text-primary') . get_string('letze_beitrag','format_mooin') . '  ' . html_writer::end_span() . html_writer::start_span(''). ' von ' . $user->firstname . ' - ' . $created_news . html_writer::end_span();
             $out .= html_writer::end_span();
 
-            $out .= html_writer::start_span('caption d-sm-block d-md-none');
+            $out .= html_writer::start_span('caption d-flex d-md-none justify-content-between');
             $out .= html_writer::start_span('fw-700 ') . get_string('latest_contribution_mobile','format_mooin') . '  ' . html_writer::end_span();
+            $out .= html_writer::link($newsurl, get_string('all_news_mobile', 'format_mooin'), array('title' => get_string('all_news_mobile', 'format_mooin'), 'class' =>'primary-link text-primary'));
+
             $out .= html_writer::end_span();
 
 
@@ -726,8 +729,8 @@ function get_last_news($courseid, $forum_type) {
 
             //$out .= html_writer::div($OUTPUT->user_picture($user, array('courseid'=>$courseid)), 'new_user_picture d-none d-md-block');
 
-            $out .= html_writer::nonempty_tag('p', $news_forum_post->subject, ['class' => 'fw-600 text-truncate']); // fw-600 text-truncate
-            $out .= html_writer::start_span('in-community pb-2'). ' von ' . $user->firstname . ' - ' . $created_news.html_writer::end_span();
+            $out .= html_writer::nonempty_tag('p', $news_forum_post->subject, ['class' => 'fw-500 text-truncate']); // fw-600 text-truncate
+            //$out .= html_writer::start_span('in-community pb-2'). ' von ' . $user->firstname . ' - ' . $created_news.html_writer::end_span();
 
             // $out .= html_writer::nonempty_tag('p',$news_forum_post->message, ['class' => 'd-none d-md-block message']); // d-none d-md-block
             $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-block message']); // d-none d-md-block
@@ -740,15 +743,15 @@ function get_last_news($courseid, $forum_type) {
             $forum_discussion_url = new moodle_url('/mod/forum/discuss.php', array('d' => $news_forum_post->discussion));
             $discussion_url = html_writer::link($forum_discussion_url, get_string('discussion_news', 'format_mooin'), array('title' => get_string('discussion_news', 'format_mooin')));
             $out .= $discussion_url;
+            $out .= html_writer::end_tag('div'); // div
             $out .= html_writer::end_tag('div'); // news-card-inner
-            $out .= html_writer::end_tag('div'); // d-none d-md-block text-right
-            $out .= html_writer::end_tag('div'); // top_card_news
+            $out .= html_writer::end_tag('div'); // news-card
 
             $out .= html_writer::end_tag('div'); //container
-            $out .= html_writer::start_tag('div', ['class' => 'seperator']); //Seperator lline
-            $out .= html_writer::end_tag('div'); //Seperator lline
+            $out .= html_writer::div('','seperator');
 
-            $out .= html_writer::end_tag('div'); // card_news
+
+            $out .= html_writer::end_tag('div'); // news
         }
         }
      else {
@@ -840,6 +843,7 @@ function get_progress_bar_course($p, $width) {
                 array('style' => 'width: ' . $width . '%; height: 15px; border: 1px; background: #aaa; solid #aaa; margin: 0 auto; padding: 0;  border-radius: 12px')
             ) .
             html_writer::start_span('',['style' => 'font-weight: bold']) . $p . '%' . html_writer::end_span() .
+            html_writer::start_span(' d-sm-inline d-md-none ') . ' bearbeitet' . html_writer::end_span() .
             html_writer::start_span(' d-none d-md-inline ') . ' des Kurses bearbeitet' . html_writer::end_span() , // 'style' => 'float: left;font-size: 12px; margin-left: 12px',
             array( 'style' => 'position: relative')); // 'class' => 'oc-progress-div',
     return $result;
@@ -939,16 +943,16 @@ function get_headerimage_url($courseid, $mobile = true) {
         $filearea = 'headerimagedesktop';
     }
     $filename = '';
-    $sql = 'select 0, filename 
-              from {files} 
+    $sql = 'select 0, filename
+              from {files}
              where contextid = :contextid
                and component = :component
                and filearea = :filearea
                and itemid = :courseid
                and mimetype like :mimetype';
 
-    $params = array('contextid' => $context->id, 
-                    'component' => 'format_mooin', 
+    $params = array('contextid' => $context->id,
+                    'component' => 'format_mooin',
                     'filearea' => $filearea,
                     'courseid' => $courseid,
                     'mimetype' => 'image/%');
