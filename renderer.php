@@ -423,7 +423,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         // Title with section navigation links.
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
         $sectiontitle = '';
-        $sectiontitle .= html_writer::start_tag('div', array('class' => 'section-navigation navigationtitle'));
+        $sectiontitle .= html_writer::start_tag('div', array('id' => 'custom-top-nav', 'class' => 'section-navigation navigationtitle'));
         $sectiontitle .= html_writer::tag('span', $sectionnavlinks['previous'], array('class' => 'mdl-left'));
         $sectiontitle .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'mdl-right'));
         // Title attributes
@@ -434,27 +434,28 @@ class format_mooin_renderer extends format_section_renderer_base {
         }
         $sectionname = html_writer::tag('span', $this->section_title_without_link($thissection, $course));
         $sectiontitle .= $this->output->heading($sectionname, 3, $classes);
+          // Progress bar anzeige
+          $check_sequence = $DB->get_records('course_sections', ['course' => $course->id, 'section' => $displaysection], '', 'sequence');
+          $val = array_values($check_sequence);
+          if (!$this->page->user_is_editing() &&  !empty($val[0]->sequence) ) {
+              $v = get_section_grades($displaysection);
+              $ocp = round($v);
+              if ($ocp != -1) {
+                  $sectiontitle .= '<br />' . get_progress_bar($ocp, 100, $displaysection);
+              } else {
+                  $completionthistile = section_progress($modinfo->sections[$displaysection], $modinfo->cms);
+
+                  // use the completion_indicator to show the right percentage in secton
+                  $section_percent = completion_indicator($completionthistile['completed'], $completionthistile['outof'], true, false);
+
+                  $sectiontitle .= '<br />' . get_progress_bar($section_percent['percent'], 100, $displaysection);
+              }
+          }
 
         $sectiontitle .= html_writer::end_tag('div');
 
 
-        // Progress bar anzeige
-        $check_sequence = $DB->get_records('course_sections', ['course' => $course->id, 'section' => $displaysection], '', 'sequence');
-        $val = array_values($check_sequence);
-        if (!$this->page->user_is_editing() &&  !empty($val[0]->sequence) ) {
-            $v = get_section_grades($displaysection);
-            $ocp = round($v);
-            if ($ocp != -1) {
-                $sectiontitle .= '<br />' . get_progress_bar($ocp, 100, $displaysection);
-            } else {
-                $completionthistile = section_progress($modinfo->sections[$displaysection], $modinfo->cms);
 
-                // use the completion_indicator to show the right percentage in secton
-                $section_percent = completion_indicator($completionthistile['completed'], $completionthistile['outof'], true, false);
-
-                $sectiontitle .= '<br />' . get_progress_bar($section_percent['percent'], 100, $displaysection);
-            }
-        }
 
 
         echo $sectiontitle;

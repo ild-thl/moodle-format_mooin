@@ -84,7 +84,7 @@ $main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($c
 $main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($course->id, false), 'class' => 'course-image d-none d-md-block', 'alt' => 'course image')); //desktop
 
 
-$main_out .= html_writer::start_tag('div', ['class' => 'title-overlay']);
+$main_out .= html_writer::start_tag('div', ['class' => 'title-overlay fade-out']);
 $main_out .= html_writer::start_tag('p');
 $main_out .= get_string('welcome', 'format_mooin');
 $main_out .= html_writer::end_tag('p');

@@ -9,14 +9,14 @@ function get_progress_bar($p, $width, $sectionid = 0) {
                 html_writer::tag('div',
                     html_writer::tag('div',
                         '',
-                        array('style' => 'width: ' . $p . '%; height: 15px; border: 0px; background: #9ADC00; text-align: center; float: left; border-radius: 12px', 'id' => 'mooin4ection' . $sectionid)
+                        array('style' => 'width: ' . $p . '%; height: 15px; border: 0px; background: #7fb99f; text-align: center; float: left; border-radius: 12px', 'id' => 'mooin4ection' . $sectionid)
                     ),
-                    array('style' => 'width: ' . $width . '%; height: 15px; border: 1px; background: #aaa; solid #aaa; margin: 0 auto; padding: 0;  border-radius: 12px')
+                    array('style' => 'width: ' . $width . '%; height: 15px; border: 1px; background: #C4DDD2; solid #aaa; margin: 0 auto; padding: 0;  border-radius: 12px')
                 ) .
                 // html_writer::tag('div', $p . '%', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);margin-top: -8px;left: 50%;')) .
             html_writer::tag('div', '', array('style' => 'clear: both;'))  .
             html_writer::start_span('',['style' => 'float: left;font-size: 12px; margin-left: 12px']) . $p .' % bearbeitet' . html_writer::end_span(), //, 'id' => 'oc-progress-text-' . $sectionid
-            array( 'style' => 'position: relative')); // 'class' => 'oc-progress-div',
+            array( 'style' => 'position: absolute', 'class' => 'mooin-progress-bar')); // 'class' => 'oc-progress-div',
     return $result;
 }
 /**
