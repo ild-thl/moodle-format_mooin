@@ -109,9 +109,9 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
             $last_section = 1;
         } else {
             // continue learning
-            if ($section = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                if ($section->name) {
-                    $start_continue = get_string('continue', 'format_mooin') . ' ' . $section->name;
+            if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
+                if ($continuesection->name) {
+                    $start_continue = get_string('continue', 'format_mooin') . ' ' . $continuesection->name;
                 } else {
                     $start_continue = get_string('continue', 'format_mooin') . ' ' . get_string('sectionname', 'format_mooin') . ' ' . $last_section;
                 }
@@ -207,11 +207,14 @@ if (get_user_in_course($course->id) != null) { //Nötig?
 
     echo $OUTPUT->render_from_template('format_mooin/mooin_mainpage', $templatecontext);
 }
+
+//*/
 if (!empty($displaysection)) {
     $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
 } else {
     $renderer->print_multiple_section_page($course, null, null, null, null);
 }
+//*/
 
 // Include course format js module.
 $PAGE->requires->js('/course/format/mooin/format.js');
