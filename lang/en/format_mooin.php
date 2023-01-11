@@ -33,7 +33,7 @@ $string['all_discussions'] = 'Ungelesene Beiträge in den Diskussionsforen';
 $string['old_discussion'] = 'Altere Discussions';
 $string['old_news'] = 'Altere News';
 $string['all_news'] = 'Newsforum';
-$string['letze_beitrag'] = 'Letzer Beitrag ';
+$string['letze_beitrag'] = 'Letzter Beitrag ';
 $string['discussion_news'] = 'Zur Nachricht';
 $string['newsectionname'] = 'New name for topic {$a}';
 $string['sectionname'] = 'Topic';
@@ -101,7 +101,7 @@ $string['certificate_overview_description'] = '<h5>Herlichen Glückwunsch! Sie h
 $string['certificate_overview'] = 'Es gibt noch kein Zertifikat für diese Kurs!';
 $string['user_card_title'] = 'Teilnehmende des Kurses';
 $string['user_in_course'] = 'Personen <span class="fw-400">nehmen teil</span>';
-$string['new_user'] = ' Neu hinzugekommen : ';
+$string['new_user'] = ' Neu hinzugekommen: ';
 $string['no_user'] = ' Kein Teilnehmer würde hinzugefügt!';
 /* $string['course'] = 'Kurs';
 $string['participants'] = 'Kursteilnehmer';
