@@ -28,6 +28,9 @@ require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/completionlib.php');
 require_once('locallib.php');
 
+// Call the js complete_section
+// $PAGE->requires->js_call_amd('format_mooin/complete_section');
+
 global $PAGE;
 
 // require_once($CFG->dir.'./mod/lesson.php');
@@ -75,8 +78,15 @@ $neben_out = null;
 $out = null;
 $out_first_part = null;
 
+// get the default image first
+// $imgeurl = $CFG->wwwroot . '/course/format/mooin/images/cover.jpg';
+
 $main_out .= html_writer::start_tag('div', ['class'=>'wrapper']);
+
+// $img = html_writer::empty_tag('img', array('src' => $imgeurl, 'style' =>'width: 600; height: 355;border-top-left-radius: .625rem;border-top-right-radius: .625rem;')); // $opacity
+
 $main_out .= html_writer::start_tag('div', ['class' => 'main-container bg-white']); // 'main-container
+// $main_out .= html_writer::div($img, 'cover_img', array('style' => 'margin: 0rem -2rem 0rem -2rem;') );
 $main_out .= html_writer::start_tag('div', ['class' => 'course-title-header']); // course-title-header
 
 //Course Images mobile & desktop
@@ -95,8 +105,8 @@ $main_out .= $course->fullname;
 $main_out .= html_writer::end_tag('h2'); //h2
 
 // Continue Button in Course Header -- needs Buttontext
-$continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section));
-$main_out .= html_writer::link($continue_url, $start_continue, array('title' => $start_continue, 'class' => 'mooin-btn mooin-btn-primary btn-continue d-flex d-md-none'));
+//$continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section));
+//$main_out .= html_writer::link($continue_url, $start_continue, array('title' => $start_continue, 'class' => 'mooin-btn mooin-btn-primary btn-continue d-flex d-md-none'));
 
 $main_out .= html_writer::end_tag('div'); // title-overlay
 $main_out .= html_writer::end_tag('div'); // course-title-header
@@ -105,6 +115,7 @@ $main_out .= html_writer::start_tag('div', ['class' => 'inner-wrapper']); //inne
 
 if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // newsforum
+    
     $check_news = get_last_news($course->id, 'news');
     if ($check_news != null) {
         $main_out .= $check_news;
@@ -201,6 +212,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
 
     $out_first_part .= html_writer::start_tag('div', ['class' => 'icon-batch']);
     $out_first_part .= html_writer::start_span('award-icon') . html_writer::end_span();
+
     $out_first_part .= html_writer::start_span('count-container count-certificate fw-700') .'4'. html_writer::end_span(); //Notification Counter
     $out_first_part .= html_writer::end_div();
 
@@ -223,10 +235,12 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $out_first_part .= html_writer::start_tag('div', ['class' => 'even-columns']);
     $out_first_part .= html_writer::start_tag('div', ['class' => 'mooin-btn mooin-btn-special']);
 
-    $diskussions_url = new moodle_url('/mod/forum/view.php', array('f' => $dis->id, 'tab'=>'1'));
+    $diskussions_url = news_forum_url($course->id, 'general'); // new moodle_url('/mod/forum/view.php', array('f' => $dis->id, 'tab'=>'1'));
     $out_first_part .= html_writer::start_tag('div', ['class' => 'icon-batch']);
     $out_first_part .= html_writer::start_span('chat-icon') . html_writer::end_span();
-    $out_first_part .= html_writer::start_span('count-container count-discussion fw-700') .'4'. html_writer::end_span(); //Notification Counter
+    $unread_forum_number = get_unread_news_forum($course->id, 'genral');
+    // echo get_unread_news_forum($course->id, 'general');
+    $out_first_part .= html_writer::start_span('count-container count-discussion fw-700') . $unread_forum_number. html_writer::end_span(); //Notification Counter
     $out_first_part .= html_writer::end_div();
     $out_first_part .= html_writer::link($diskussions_url, get_string('forums', 'format_mooin'), array('title' => get_string('forums', 'format_mooin'), 'class' => 'stretched-link'));
 
@@ -312,16 +326,15 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
 
     // $out .= html_writer::start_tag('p', array('div' => 'caption fw-700 text-primary pl-2'));
 
-    $check_diskussion = get_last_news($course->id, 'general');
+   $check_diskussion = get_last_forum_discussion($course->id, 'general'); //get_last_news($course->id, 'general')
     if ($check_diskussion!= null) {
         $out .= $check_diskussion;
     } else {
         $out .= '';
     }
-    $out .= html_writer::end_tag('div'); // d-flex align-items-center
+    // $out .= html_writer::end_tag('div'); // d-flex align-items-center
 
-
-    // $out .= html_writer::end_tag('div'); // diskussion_card
+    $out .= html_writer::end_tag('div'); // diskussion_card
 
 
 
@@ -334,9 +347,10 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     } else {
         $out .= '';
     }
+    
     $out .= html_writer::end_tag('div'); // container
     $out .= html_writer::end_tag('div'); // community
-    $out .= html_writer::end_tag('div'); // side-right
+    // $out .= html_writer::end_tag('div'); // side-right
     $out .= html_writer::end_tag('div'); // wrapper
     $main_out .= $out;
 
@@ -348,6 +362,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
 }if (!empty($displaysection)) {
     $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
 } else {
+    $PAGE->navbar;
     $renderer->print_multiple_section_page($course, null, null, null, null);
 
 }

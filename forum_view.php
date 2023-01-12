@@ -24,6 +24,7 @@
 require_once('../../../config.php');
 require_once('../../../mod/forum/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
+require_once('../mooin/locallib.php');
 
 $id = optional_param('id', 0, PARAM_INT);       // Course Module ID
 $f = optional_param('f', 0, PARAM_INT);        // Forum ID
@@ -117,6 +118,8 @@ $PAGE->set_heading($course->fullname);
 
 echo $OUTPUT->header();
 
+// Print Navbar in layout
+echo navbar(get_string('discussions', 'format_mooin'));
 /// Some capability checks.
 if (empty($cm->visible) and !has_capability('moodle/course:viewhiddenactivities', $context)) {
     notice(get_string("activityiscurrentlyhidden"));
@@ -153,17 +156,30 @@ $oc_counter = 0;
     echo '<br>';
     echo html_writer::start_div('border-card'); //open outer div
 
+    
+    $value = '1';
     if (count($oc_foren) >= 1) {
+        
         foreach ($oc_foren as $oc_forum) {
-            // var_dump($oc_forum->id);
+            $cm = get_coursemodule_from_instance('forum', $oc_forum->id, $course->id);
+            
+            $forum->istracked = forum_tp_is_tracked($oc_forum);
+            if ($forum->istracked) {
+                $forum->unreadpostscount = forum_tp_count_forum_unread_posts($cm, $course);
+            }
 
             $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $course->id, 'module' => $oc_m->id));
 
             // blocks/oc_mooc_nav/forum_view.php?showall=false&
-            $oc_link = html_writer::link(new moodle_url('/mod/forum/view.php?f=' . $oc_forum->id .'&tab='.'1'), $oc_forum->name);
+            $oc_link = html_writer::link(new moodle_url('/course/format/mooin/forums.php?f=' . $oc_forum->id .'&tab='.'1'), $oc_forum->name); // /mod/forum/view.php
             if ($oc_cm->visible == 1) {
-                echo html_writer::div($oc_link, 'all_forum_list');
-                // $oc_counter++;
+                $forum_element =  html_writer::div($oc_link, 'forum_title');
+                if ($forum->unreadpostscount >= 1) {
+                    $forum_unread = html_writer::div($forum->unreadpostscount, 'count-container inline-batch fw-700 mr-1');
+                    echo html_writer::start_span('forum_elemts_in_list') . $forum_element . ' ' . $forum_unread. html_writer::end_span();
+                } else {
+                    echo html_writer::start_span('forum_elemts_in_list') . $forum_element . html_writer::end_span();
+                }
             }
         }
         if ($oc_counter > 1) {
