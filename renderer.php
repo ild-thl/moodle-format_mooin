@@ -153,21 +153,23 @@ class format_mooin_renderer extends format_section_renderer_base {
             }
 
             if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
-                $url = new moodle_url('/course/view.php');
-                $controls['chapteroff'] = array(
+                //$url = new moodle_url('/course/view.php');
+                $url->param('unsetchapter', $section->id);
+                $controls['unsetchapter'] = array(
                     'url' => $url,
                     'icon' => 'i/settings',
-                    'name' => get_string('chapteroff', 'format_mooin'),
+                    'name' => get_string('unsetchapter', 'format_mooin'),
                     'pixattr' => array('class' => ''),
                     //'attr' => array('class' => 'icon editing_delete')
                 );
             }
             else {
-                $url = new moodle_url('/course/view.php');
-                $controls['chapteron'] = array(
+                //$url = new moodle_url('/course/view.php');
+                $url->param('setchapter', $section->id);
+                $controls['setchapter'] = array(
                     'url' => $url,
                     'icon' => 'i/settings',
-                    'name' => get_string('chapteron', 'format_mooin'),
+                    'name' => get_string('setchapter', 'format_mooin'),
                     'pixattr' => array('class' => ''),
                     //'attr' => array('class' => 'icon editing_delete')
                 );

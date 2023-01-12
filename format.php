@@ -67,6 +67,29 @@ $renderer = $PAGE->get_renderer('format_mooin');
 
 // mooin: print tiles here
 $sectionnumber = optional_param('section', 0, PARAM_INT);
+$unsetchapter = optional_param('unsetchapter', 0, PARAM_INT);
+$setchapter = optional_param('setchapter', 0, PARAM_INT);
+
+// set or unset chapter
+if ($setchapter > 0 && has_capability('moodle/course:update', $context)) {
+    if ($csection = $DB->get_record('course_sections', array('id' => $setchapter))) {
+        $csectiontitle = $csection->name;
+    }
+    else {
+        $csetciontitle = 'chapter '.$setchapter;
+    }
+    $chapter = new stdClass();
+    $chapter->courseid = $course->id;
+    $chapter->title = $csectiontitle;
+    $chapter->sectionid = $setchapter;
+    $chapter->chapter = 0;
+    $DB->insert_record('format_mooin_chapter', $chapter);
+}
+
+if ($unsetchapter > 0 && has_capability('moodle/course:update', $context)) {
+    $DB->delete_records('format_mooin_chapter', array('sectionid' => $unsetchapter));
+}
+
 $progress = null;
 
 // $Out is the card-output in course page
