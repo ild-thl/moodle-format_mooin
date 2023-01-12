@@ -110,6 +110,8 @@ $string['social_media'] = 'Social Media';
 $string['discuss'] = 'Allgemeines Diskussionsforum'; */
 $string['welcome'] = 'Herzlich Willkommen im Kurs';
 $string['unenrol'] = 'Aus diesem Kurs abmelden';
+$string['forum_unread'] = 'Ungelesenen Forum(s)';
+$string['discussions'] = 'Alle Diskussionen';
 
 // added by Jonas
 $string['unread_news'] = ' ungelesene Beiträge im ';

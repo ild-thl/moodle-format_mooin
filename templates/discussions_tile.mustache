@@ -1,12 +1,12 @@
-
+{{#discussion}}
 <div class="news">
 
 
     <div class="d-none d-md-inline-block align-items-center pb-3">
-      <span class="count-container inline-badge fw-700 mr-1">12</span>
-      <a href="{{news_url}}" class="primary-link">{{#str}} all_discussions, format_mooin {{/str}}</a>
+      <span class="count-container inline-badge fw-700 mr-1">{{neue_forum_number}}</span>
+      <a href="{{disc_url}}" class="primary-link">{{#str}} all_discussions, format_mooin {{/str}}</a>
     </div>
-    {{#discussion}}
+    
     <div class="news-card d-flex">
       <span class="chat-icon"></span>
       <div class="news-card-inner pt-1">
@@ -30,5 +30,6 @@
         </div>
       </div>
     </div>
-    {{/discussion}}
+    
 </div>
+{{/discussion}}

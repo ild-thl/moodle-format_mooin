@@ -23,6 +23,7 @@
 require_once('../../../config.php');
 require_once('../../../mod/forum/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
+require_once('../mooin/locallib.php');
 
 $id = optional_param('id', 0, PARAM_INT);       // Course ID
 $cmid = optional_param('cmid', 0, PARAM_INT);       // Course module ID
@@ -51,7 +52,9 @@ if ($page) {
 if ($search) {
     $params['search'] = $search;
 }
-$PAGE->set_url('/mod/forum/view.php', $params); // /course/format/mooin/forums.php', $params
+$PAGE->set_url('/course/format/mooin/forums.php', $params);  // /mod/forum/view.php', $params
+
+
 
 if ($cmid > 0) {
     if (!$cm = $DB->get_record('course_modules', array('id' => $cmid))) {
@@ -133,9 +136,11 @@ $PAGE->add_body_class('forumtype-' . $forum->type);
 $PAGE->set_heading($course->fullname);
 //print_object($PAGE);die();
 echo $OUTPUT->header();
+// echo $output->heading($pagetitle);
 
 //echo $OUTPUT->navbar();
 /// Some capability checks.
+
 if (empty($cm->visible) and !has_capability('moodle/course:viewhiddenactivities', $context)) {
     notice(get_string("activityiscurrentlyhidden"));
 }
@@ -190,7 +195,7 @@ $advancedsearch_url = new moodle_url('/mod/forum/search.php', array('id' => $cou
 $strsearch = get_string('search');
 $strgo = get_string('go');
 
-$searchform = '<div class="searchform">' . $strsearch;
+/* $searchform = '<div class="searchform">' . $strsearch;
 $searchform .= '<form action="' . $CFG->wwwroot . '/mod/forum/search.php" style="display:inline"><fieldset class="invisiblefieldset">';
 $searchform .= '<legend class="accesshide">' . $strsearch . '</legend>';
 $searchform .= '<input name="id" type="hidden" value="' . $course->id . '" />';  // course
@@ -201,7 +206,7 @@ $searchform .= '</fieldset></form>';
 $searchform .= html_writer::link($advancedsearch_url, get_string('advancedsearch', 'block_search_forums')) . $OUTPUT->help_icon('search') . '<br />';
 $searchform .= html_writer::link($mythreads_url, get_string('my_threads', 'format_mooin'));
 $searchform .= '</div>';
-echo $searchform;
+echo $searchform; */
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Forum abonnieren Link

@@ -87,8 +87,8 @@ function oc_forum_print_latest_discussions($course, $forum, $maxdiscussions = -1
     }
 
     if ($canstart) {
-        echo '<div class="singlebutton forumaddnew">';
-        echo "<form id=\"newdiscussionform\" method=\"get\" action=\"$CFG->wwwroot/course/format/mooin/forum_post.php\">";
+        echo '<div class="py-3">'; // singlebutton forumaddnew
+        echo "<form  id=\"newdiscussionform\" method=\"get\" action=\"$CFG->wwwroot/course/format/mooin/forum_post.php\">";
         echo '<div>';
         echo "<input type=\"hidden\" name=\"forum\" value=\"$forum->id\" />";
         switch ($forum->type) {
@@ -103,7 +103,7 @@ function oc_forum_print_latest_discussions($course, $forum, $maxdiscussions = -1
                 $buttonadd = get_string('addanewdiscussion', 'forum');
                 break;
         }
-        echo '<input type="submit" value="'.$buttonadd.'" />';
+        echo '<input class="btn btn-primary mb-2" type="submit" value="'.$buttonadd.'" />';
         echo '</div>';
         echo '</form>';
         echo "</div>\n";
@@ -163,7 +163,7 @@ function oc_forum_print_latest_discussions($course, $forum, $maxdiscussions = -1
 
     $canviewparticipants = has_capability('moodle/course:viewparticipants',$context);
 
-    $strdatestring = get_string('strftimerecentfull');
+    $strdatestring = get_string('strftimedatefullshort'); // strftimerecentfull
 
     // Check if the forum is tracked.
     if ($cantrack = forum_tp_can_track_forums($forum)) {
@@ -179,7 +179,7 @@ function oc_forum_print_latest_discussions($course, $forum, $maxdiscussions = -1
     }
 
     if ($displayformat == 'header') {
-        echo '<table cellspacing="0" class="forumheaderlist">';
+        echo '<table cellspacing="0" class="table discussion-list">'; // forumheaderlist
         echo '<thead>';
         echo '<tr>';
         echo '<th class="header topic" scope="col">'.get_string('discussion', 'forum').'</th>';
@@ -187,6 +187,7 @@ function oc_forum_print_latest_discussions($course, $forum, $maxdiscussions = -1
         if ($groupmode > 0) {
             echo '<th class="header group" scope="col">'.get_string('group').'</th>';
         }
+        
         if (has_capability('mod/forum:viewdiscussion', $context)) {
             echo '<th class="header replies" scope="col">'.get_string('replies', 'forum').'</th>';
             // If the forum can be tracked, display the unread column.
@@ -196,7 +197,7 @@ function oc_forum_print_latest_discussions($course, $forum, $maxdiscussions = -1
                     echo '<a title="'.get_string('markallread', 'forum').
                          '" href="'.$CFG->wwwroot.'/mod/forum/markposts.php?f='.
                          $forum->id.'&amp;mark=read&amp;returnpage=view.php&sesskey='.sesskey().'">'.
-                         '<img src="'.$OUTPUT->pix_url('t/markasread') . '" class="iconsmall" alt="'.get_string('markallread', 'forum').'" /></a>';
+                         '<img src="'.$OUTPUT->image_url('t/markasread') . '" class="iconsmall" alt="'.get_string('markallread', 'forum').'" /></a>'; // $OUTPUT->pix_url('t/markasread')
                 }
                 echo '</th>';
             }
@@ -221,8 +222,9 @@ function oc_forum_print_latest_discussions($course, $forum, $maxdiscussions = -1
         }
 
         if (!empty($replies[$discussion->discussion])) {
-            $discussion->replies = $replies[$discussion->discussion]->replies;
             $discussion->lastpostid = $replies[$discussion->discussion]->lastpostid;
+            $discussion->replies = $replies[$discussion->discussion]->replies;
+            
         } else {
             $discussion->replies = 0;
         }

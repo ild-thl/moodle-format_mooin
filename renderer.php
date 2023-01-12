@@ -461,12 +461,12 @@ class format_mooin_renderer extends format_section_renderer_base {
         //$PAGE->navbar->add('Perial'.$displaysection);
         // nav_bar_in_single_section($course, $displaysection);
        // var_dump($PAGE->context );
-
-       for ($i=1; $i <= $sections; $i++) {
+        
+       /* for ($i=1; $i <= $sections; $i++) { 
             if (array_key_exists('btnComplete-'.$i, $_POST) && $i == $displaysection) {
                 complete_section($USER->id, $course->id, $i);
             }
-       }
+       } */
         // Title with section navigation links.
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
         $sectiontitle = '';
@@ -518,57 +518,67 @@ class format_mooin_renderer extends format_section_renderer_base {
         if($this->courserenderer->course_section_cm_list($course, $thissection, $displaysection)) {
 
         }
+        $bottom_button_data = [];
+        
+        // var_dump($section_course);
         foreach ($section_course as $k => $v) {
             foreach ($modules_course as $key => $value) {
-
                if ($value->section == $v->id && $v->section == $displaysection) {
-                       //  var_dump($v ) ;
-                        //echo 'JiJo'.$displaysection;
-                        //echo $value->module . '\n';
-                        $del = strpos($v->sequence, $value->id);
-                        if ($del !== false) { // str_contains($v->sequence, $value->id)
-                            if ($value->module === '24') {
-                                continue;
-                            } else if ($value->module === '13'){
-                               //  Button bar
-                                $bar = '';
-                                $q = $USER->id .' ' . $course->id . ' ' . $displaysection;
-                                $check_in_up = $DB->get_record('user_preferences', ['value' => $q]);
-                                if (!$check_in_up) {
-                                    if (!$this->page->user_is_editing()) {
-                                        $bar .= html_writer::start_tag('form', array('method' => 'post', 'style' => 'margin-top: 40px;'));
-                                        $bar .= html_writer::start_tag('input', array('class'=>'bottom_complete btn btn-outline-secondary', 'id' => 'id_bottom_complete-' .$displaysection, 'type' => 'submit', 'name'=> 'btnComplete-'.$displaysection,'value' => 'Seite als bearbeitet markieren', 'onclick' => complete_section($USER->id, $course->id, $displaysection) )); // 'onclick' => $this->the_click( $section, $course->id, $USER->id)
+                    $del = strpos($v->sequence, $value->id);
+                    if ($del !== false) { // str_contains($v->sequence, $value->id)
+                        // Add all the section data into an array to work with later
+                        array_push($bottom_button_data, $value);      
+                    }
+                }
+            }      
+        }
+        // show the button im bottom of the page
+        
+        $found = false;
+        foreach($bottom_button_data as $subArray) {
 
-                                        // $bar .= html_writer::start_span('bottom_button') . 'Seite als bearbeitet markieren' . html_writer::end_span();
-                                        $bar .= html_writer::end_tag('input');
-                                        $bar .= html_writer::end_tag('form');
-                                    }
-                                } else {
-                                    if (!$this->page->user_is_editing()) {
-                                        $bar .= html_writer::start_tag('div', array('class'=>'complete_section btn btn-outline-secondary', 'id' => 'id_bottom_complete-' .$displaysection, 'style' => 'margin-top: 40px;'));
-
-                                        $bar .= html_writer::start_span('bottom_button') . 'Seite als bearbeitet markieren' . html_writer::end_span();
-                                        $bar .= html_writer::end_tag('div');
-                                    }
-                                }
-
-
-                                echo $bar;
-                            }
-                        }
-                        /* if (strpos($value->module, '11') == true) {
-
-                        } else if ($value->module == '13' ) {
-
-                        }  */
-               }
+            if ($subArray->module != '13') {
+                $found = true;
+                break;
             }
+        }
+        
+        for ($i=0; $i < count($bottom_button_data); $i++) { 
+            if ($found) { // $bottom_button_data[$i]->module === '24'
+                break;
+            } else {
+                //  Button bar
+                $bar = '';
+                $q = $USER->id .' ' . $course->id . ' ' . $displaysection;
+                $check_in_up = $DB->get_record('user_preferences', ['value' => $q]);
+                if (!$check_in_up) {
+                    if (!$this->page->user_is_editing()) {
+                        // $bar .= html_writer::start_tag('form', array( 'style' => 'margin-top: 40px;')); // 'method' => 'post',
+                        $bar .= html_writer::start_tag('button', array('class'=>'bottom_complete btn btn-outline-secondary', 'id' => 'id_bottom_complete-' .$displaysection, 'name'=> 'btnComplete-'.$displaysection,'value' => 'Seite als bearbeitet markieren' )); // , 'type' => 'submit', 'onclick' => complete_section( $section, $course->id, $USER->id)
+                                                
+                        $bar .= html_writer::start_span('bottom_button') . 'Seite als bearbeitet markieren' . html_writer::end_span();
+                        $bar .= html_writer::end_tag('button');
+                        //$bar .= html_writer::end_tag('form');
+                    }
+                    echo $bar;
+                    break;
+                } else {
+                    if (!$this->page->user_is_editing()) {
+                        $bar .= html_writer::start_tag('div', array('class'=>'complete_section btn btn-outline-secondary', 'id' => 'id_bottom_complete-' .$displaysection, 'style' => 'margin-top: 40px;'));
+                
+                        $bar .= html_writer::start_span('bottom_button') . 'Seite als bearbeitet markieren' . html_writer::end_span();
+                        $bar .= html_writer::end_tag('div');
+                    }
+                    echo $bar;
+                    break;
+                }
+            } 
 
         }
 
         echo $this->section_footer();
         echo $this->end_section_list();
-
+        
         // Display section bottom navigation.
         $sectionbottomnav = '';
         $sectionbottomnav .= html_writer::start_tag('div', array('class' => 'section-navigation mdl-bottom'));
