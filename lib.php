@@ -188,14 +188,20 @@ class format_mooin extends format_base {
      * @return array This will be passed in ajax respose
      */
     public function ajax_section_move() {
-        global $PAGE;
+        global $PAGE, $DB;
         $titles = [];
         $course = $this->get_course();
         $modinfo = get_fast_modinfo($course);
         $renderer = $this->get_renderer($PAGE);
         if ($renderer && ($sections = $modinfo->get_section_info_all())) {
             foreach ($sections as $number => $section) {
-                $titles[$number] = $renderer->section_title($section, $course);
+                if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                    $section->name = $chapter->title;
+                    $titles[$number] = $renderer->section_title_without_link($section, $course);
+                }
+                else {
+                    $titles[$number] = $renderer->section_title($section, $course);
+                }
             }
         }
         return ['sectiontitles' => $titles, 'action' => 'move'];
@@ -444,4 +450,32 @@ function format_mooin_inplace_editable($itemtype, $itemid, $newvalue) {
             [$itemid, 'mooin'], MUST_EXIST);
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
+}
+
+function format_mooin_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+    require_login($course, true);
+    
+    if ($filearea != 'headerimagemobile' and $filearea != 'headerimagedesktop') {
+        return false;
+    }
+
+    $itemid = (int)array_shift($args); // The first item in the $args array.
+
+    // Extract the filename / filepath from the $args array.
+    $filename = array_pop($args); // The last item in the $args array.
+    if (!$args) {
+        $filepath = '/'; // Array $args is empty => the path is '/'.
+    } else {
+        $filepath = '/' . implode('/', $args) . '/'; // Array $args contains elements of the filepath.
+    }
+
+    // Retrieve the file from the Files API.
+    $fs = get_file_storage();
+    $file = $fs->get_file($context->id, 'format_mooin', $filearea, $itemid, '/', $filename);
+    if (!$file) {
+        return false; // The file does not exist.
+    }
+
+    // Finally send the file - in this case with a cache lifetime of 0 seconds and no filtering.
+    send_stored_file($file, 0, 0, $forcedownload, $options);
 }

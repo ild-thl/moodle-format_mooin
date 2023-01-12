@@ -39,16 +39,16 @@ $string['showfromothers'] = 'Abschnitt anzeigen';
 $string['privacy:metadata'] = 'Das mooin Kursformat-Plugin speichert keine persönlichen Daten.';
 $string['map_title'] = 'Karte der Teilnehmenden';
 $string['map_descr'] = 'Die Stadt des Teilnehmers in der ganzen Welt';
-$string['badges'] = 'KURSBADGES';
+$string['badges'] = 'Meine Kursbadges';
 $string['community'] = 'Community';
-$string['forums'] = 'DISKUSSIONSFOREN';
-$string['my_forum'] = 'FOREN';
-$string['participants'] = 'TEILNEHMENDE';
-$string['certificates'] = 'KURSZERTIFIKATE';
+$string['forums'] = 'Diskussionsforen';
+$string['my_forum'] = 'Foren';
+$string['participants'] = 'Teilnehmende';
+$string['certificates'] = 'Meine Kurszertifikate';
 $string['badges_certificates'] = 'Badges und Zertifikate';
-$string['continue'] = 'BEGINNEN';
+$string['continue'] = 'Beginnen';
 $string['progress'] = 'Kursforschritt';
-$string['unenrol'] = 'AUS KURS AUSSCHREIBEN';
+$string['unenrol'] = 'Aus Kurs ausschreiben';
 $string['my_badges'] = 'Badges';
 $string['available_badges'] = 'Verfügbare Badges';
 $string['awarded_badges'] = 'Kürzlich verliehene Badges';
@@ -74,7 +74,7 @@ $string['owner'] = 'Inhaber';
 $string['no_badges_awarded'] = 'Bisher wurden noch keine Badges in diesem Kurs verliehen';
 $string['no_badges_available'] = 'In diesem Kurs sind noch keine Badges verfügbar';
 $string['badge_overview_description'] = '<h5>Mit diesen Kursbadges bzw. digitalen Lernabzeichen können Sie den anderen Teilnehmerinnen und Teilnehmern hier auf demo.oncampus.de und auch der ganzen Welt im Web zeigen, welche Kursfortschritte Sie bereits gemacht haben.
-										<br />Weitere Informationen gibt es in der <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a> 
+										<br />Weitere Informationen gibt es in der <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a>
 										und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a></h5>';
 $string['all_forums'] = 'Alle Diskussionsforen';
 $string['course_groups'] = 'Kursgruppen';
@@ -97,3 +97,12 @@ $string['social_media'] = 'Social Media';
 $string['discuss'] = 'Allgemeines Diskussionsforum'; */
 
 $string['unenrol'] = 'Aus diesem Kurs abmelden';
+
+
+// added by Jonas
+$string['unread_news'] = ' ungelesene Beiträge im ';
+$string['all_news_mobile'] = 'Alle Beiträge';
+$string['by'] = 'von ';
+$string['latest_contribution_mobile'] = 'Neuster Beitrag:';
+$string['show_all_infos'] = ' Alle Infos anzeigen';
+$string['all_news'] = 'Newsforum';

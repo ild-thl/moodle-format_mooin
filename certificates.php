@@ -39,11 +39,12 @@ $PAGE->set_url('/course/format/mooin/certificates.php', array('id' => $course->i
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->navbar();
+//echo $OUTPUT->navbar();
 $out_certificat = null;
 $val = false;
 echo '<br />';
 echo '<br />';
+echo html_writer::start_div('mooin-md-container'); //open outer div
 echo html_writer::tag('h2', html_writer::tag('div', get_string('my_certificate', 'format_mooin'), array('class' => 'oc_badges_text')));
 
 echo html_writer::tag('div', get_string('certificate_overview_description', 'format_mooin'));
@@ -85,9 +86,9 @@ echo '<br />';
         }
     }
     // echo $cm_id;
-    if (count($templatedata) > 0) { // 
-        for ($i=0; $i < count($templatedata); $i++) { 
-            
+    if (count($templatedata) > 0) { //
+        for ($i=0; $i < count($templatedata); $i++) {
+
                 $templatedata[$i]->certificate_name = 'Certificate';
                 $templatedata[$i]->preview_url = (
                 new moodle_url(
@@ -101,7 +102,7 @@ echo '<br />';
     }else {
         $templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
     }
-     
+
     if (gettype($templatedata) == 'string') {
     $val = false;
 } else {
@@ -110,7 +111,7 @@ echo '<br />';
 $templatedatas = (object)[
     'data' => $templatedata,
     'value' => $val
-    
+
 ];
 
     */
@@ -120,12 +121,12 @@ $templatedatas = (object)[
 
 if (is_string($templatedata) == 1) {
     $out_certificat = $templatedata;
-} 
+}
 if (is_string($templatedata) != 1) {
-    
+
     $imageurl = 'images/certificat.png';
-    for ($i=0; $i < count($templatedata); $i++) { 
-        
+    for ($i=0; $i < count($templatedata); $i++) {
+
         $out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_body', 'style'=>'display:grid; cursor:pointer']); // certificat_card
 
         $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto' . $opacity));
@@ -135,7 +136,7 @@ if (is_string($templatedata) != 1) {
         $out_certificat .= html_writer::link($certificat_url, ' ' . $templatedata[$i]->course_name . ' ' . $templatedata[$i]->index);
         // $out_certificat .= html_writer::end_tag('button'); // button
         $out_certificat .= html_writer::end_tag('div'); // certificat_body
-        
+
     }
 
 }
@@ -147,6 +148,7 @@ $result = show_certificat($courseid);
 
 echo $result;
 
+echo html_writer::end_div(); //close outer div
 echo $OUTPUT->footer();
 
 /**
@@ -158,7 +160,7 @@ echo $OUTPUT->footer();
     global $DB, $OUTPUT;
 
     $he = $DB->get_record('modules', ['name' =>'ilddigitalcert']);
-    
+
     $te = $DB->get_records('course_modules', ['module' =>$he->id]);
 
     $ze = $DB->get_records('course_sections', ['course' =>$courseid]);
@@ -166,7 +168,7 @@ echo $OUTPUT->footer();
 
     // $cm_id = 0;
     $templatedata = array();
-   
+
     $a = 1;
     foreach ($ze as $key => $value) {
         foreach ($te as $k => $v) {
@@ -182,8 +184,8 @@ echo $OUTPUT->footer();
         }
     }
     if (count($templatedata) > 0) {
-        for ($i=0; $i < count($templatedata); $i++) { 
-            
+        for ($i=0; $i < count($templatedata); $i++) {
+
                 $templatedata[$i]->certificate_name = 'Certificate';
                 $templatedata[$i]->preview_url = (
                 new moodle_url(
