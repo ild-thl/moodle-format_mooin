@@ -495,6 +495,7 @@ class format_mooin_renderer extends format_section_renderer_base {
     /**
      * Generate the display of the header part of a section before
      * course modules are included
+     * This function is used if user is editing
      *
      * @param stdClass $section The course_section entry from DB
      * @param stdClass $course The course entry from DB
@@ -503,9 +504,14 @@ class format_mooin_renderer extends format_section_renderer_base {
      * @return string HTML to output.
      */
     protected function section_header($section, $course, $onsectionpage, $sectionreturn=null) {
+        global $DB;
         $o = '';
         $currenttext = '';
         $sectionstyle = '';
+
+        if ($section->section == 0) {
+            //$sectionstyle = ' hidden';
+        }
 
         if ($section->section != 0) {
             // Only in the non-general sections.
@@ -528,7 +534,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         $leftcontent = $this->section_left_content($section, $course, $onsectionpage);
         $o.= html_writer::tag('div', $leftcontent, array('class' => 'left side'));
-
+        
         $rightcontent = $this->section_right_content($section, $course, $onsectionpage);
         $o.= html_writer::tag('div', $rightcontent, array('class' => 'right side'));
         $o.= html_writer::start_tag('div', array('class' => 'content'));
@@ -543,9 +549,17 @@ class format_mooin_renderer extends format_section_renderer_base {
         if ($hasnamenotsecpg || $hasnamesecpg) {
             $classes = '';
         }
-        $sectionname = html_writer::tag('span', $this->section_title($section, $course));
+        if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+            $section->name = $chapter->title;
+            $sectionname = html_writer::tag('span', $this->section_title_without_link($section, $course));
+        }
+        else {
+            $sectionname = html_writer::tag('span', $this->section_title($section, $course));
+        }
+        
         $o .= $this->output->heading($sectionname, 3, 'sectionname' . $classes, "sectionid-{$section->id}-title");
 
+        
         $o .= $this->section_availability($section);
 
         return $o;

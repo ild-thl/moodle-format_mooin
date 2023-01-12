@@ -188,14 +188,20 @@ class format_mooin extends format_base {
      * @return array This will be passed in ajax respose
      */
     public function ajax_section_move() {
-        global $PAGE;
+        global $PAGE, $DB;
         $titles = [];
         $course = $this->get_course();
         $modinfo = get_fast_modinfo($course);
         $renderer = $this->get_renderer($PAGE);
         if ($renderer && ($sections = $modinfo->get_section_info_all())) {
             foreach ($sections as $number => $section) {
-                $titles[$number] = $renderer->section_title($section, $course);
+                if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                    $section->name = $chapter->title;
+                    $titles[$number] = $renderer->section_title_without_link($section, $course);
+                }
+                else {
+                    $titles[$number] = $renderer->section_title($section, $course);
+                }
             }
         }
         return ['sectiontitles' => $titles, 'action' => 'move'];
