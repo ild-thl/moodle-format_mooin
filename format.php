@@ -28,6 +28,9 @@ require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/completionlib.php');
 require_once('locallib.php');
 
+// Call the js complete_section
+// $PAGE->requires->js_call_amd('format_mooin/complete_section');
+
 global $PAGE;
 
 // require_once($CFG->dir.'./mod/lesson.php');
@@ -102,6 +105,7 @@ $out_first_part = null;
 
 if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // newsforum
+    
     $check_news = get_last_news($course->id, 'news');
     if ($check_news != null) {
         $news = $check_news;
@@ -113,6 +117,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $grade_in_course = get_course_grades($course->id);
 
     $course_grade = round($grade_in_course);
+    $progressbar  = null;
     if ($course_grade != -1) {
         $progressbar .= html_writer::start_span('') . get_progress_bar_course($course_grade, 100) . html_writer::end_span();
         $progress = $course_grade;
@@ -158,7 +163,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $participants_url = new moodle_url('/course/format/mooin/participants.php', array('id' => $course->id));
 
     // Add rendere here
-
+    $badges = null;
     ob_start();
     $badges .= display_user_and_availbale_badges($USER->id, $course->id);
     $badges .= ob_get_contents();
@@ -170,8 +175,8 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
 
 
 
-    if (get_last_news($course->id, 'general') != null) { //Nötig?
-        $check_diskussion = get_last_news($course->id, 'general');
+    if (get_last_forum_discussion($course->id, 'general') != null) { //Nötig? get_last_news
+        $check_diskussion = get_last_forum_discussion($course->id, 'general');
     }
 
     // $check_diskussion = get_last_news($course->id, 'general');
@@ -235,6 +240,7 @@ if (get_user_in_course($course->id) != null) { //Nötig?
 if (!empty($displaysection)) {
     $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
 } else {
+    $PAGE->navbar;
     $renderer->print_multiple_section_page($course, null, null, null, null);
 }
 //*/
