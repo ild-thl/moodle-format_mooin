@@ -547,16 +547,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $o .= $this->output->heading($sectionname, 3, 'sectionname' . $classes, "sectionid-{$section->id}-title");
 
         $o .= $this->section_availability($section);
-/*
-        $o .= html_writer::start_tag('div', array('class' => 'summary'));
-        if ($section->uservisible || $section->visible) {
-            // Show summary if section is available or has availability restriction information.
-            // Do not show summary if section is hidden but we still display it because of course setting
-            // "Hidden sections are shown in collapsed form".
-            $o .= $this->format_summary_text($section);
-        }
-        $o .= html_writer::end_tag('div');
-//*/
+
         return $o;
     }
 
@@ -569,6 +560,7 @@ class format_mooin_renderer extends format_section_renderer_base {
      * @return string HTML to output.
      */
     protected function section_summary($section, $course, $mods) {
+        global $DB;
         $classattr = 'section main section-summary clearfix';
         $linkclasses = '';
 
@@ -595,81 +587,15 @@ class format_mooin_renderer extends format_section_renderer_base {
         $o .= html_writer::start_tag('div', array('class' => 'content'));
 
         if ($section->uservisible) {
-            $title = html_writer::tag('a', $title,
+            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                $title = html_writer::tag('h2', $chapter->title);
+            }
+            else {
+                $title = html_writer::tag('a', $title,
                     array('href' => course_get_url($course, $section->section), 'class' => $linkclasses));
+            }
         }
         $o .= $this->output->heading($title, 3, 'section-title');
-/*
-        $o .= $this->section_availability($section);
-        $o.= html_writer::start_tag('div', array('class' => 'summarytext'));
-
-        if ($section->uservisible || $section->visible) {
-            // Show summary if section is available or has availability restriction information.
-            // Do not show summary if section is hidden but we still display it because of course setting
-            // "Hidden sections are shown in collapsed form".
-            $o .= $this->format_summary_text($section);
-        }
-        $o.= html_writer::end_tag('div');
-        $o.= $this->section_activity_summary($section, $course, null);
-//*/
-        $o .= html_writer::end_tag('div');
-        $o .= html_writer::end_tag('li');
-
-        return $o;
-    }
-
-    /**
-     * Generate the title of a chapter for display on the 'course index page'
-     *
-     * @param stdClass $section The course_section entry from DB
-     * @param stdClass $course The course entry from DB
-     * @param array    $mods (argument not used)
-     * @return string HTML to output.
-     */
-    protected function chapter_title($section, $course, $title) {
-        $classattr = 'section main section-summary clearfix';
-        $linkclasses = '';
-
-        // If section is hidden then display grey section link
-        if (!$section->visible) {
-            $classattr .= ' hidden';
-            $linkclasses .= ' dimmed_text';
-        } else if (course_get_format($course)->is_section_current($section)) {
-            $classattr .= ' current';
-        }
-
-        $o = '';
-        $o .= html_writer::start_tag('li', [
-            'id' => 'section-'.$section->section,
-            'class' => $classattr,
-            'role' => 'region',
-            'aria-label' => $title,
-            'data-sectionid' => $section->section
-        ]);
-
-        $o .= html_writer::tag('div', '', array('class' => 'left side'));
-        $o .= html_writer::tag('div', '', array('class' => 'right side'));
-        $o .= html_writer::start_tag('div', array('class' => 'content'));
-/*
-        if ($section->uservisible) {
-            $title = html_writer::tag('a', $title,
-                    array('href' => course_get_url($course, $section->section), 'class' => $linkclasses));
-        }
-        */
-        $o .= $this->output->heading($title, 3, 'section-title');
-
-        //$o .= $this->section_availability($section);
-        $o.= html_writer::start_tag('div', array('class' => 'summarytext'));
-/*
-        if ($section->uservisible || $section->visible) {
-            // Show summary if section is available or has availability restriction information.
-            // Do not show summary if section is hidden but we still display it because of course setting
-            // "Hidden sections are shown in collapsed form".
-            $o .= $this->format_summary_text($section);
-        }
-        */
-        $o.= html_writer::end_tag('div');
-        //$o.= $this->section_activity_summary($section, $course, null);
 
         $o .= html_writer::end_tag('div');
         $o .= html_writer::end_tag('li');
@@ -677,70 +603,4 @@ class format_mooin_renderer extends format_section_renderer_base {
         return $o;
     }
 
-    /**
-     * Generate the display of the header part of a chapter
-     *
-     * @param stdClass $section The course_section entry from DB
-     * @param stdClass $course The course entry from DB
-     * @param bool $onsectionpage true if being printed on a single-section page
-     * @param int $sectionreturn The section to return to after an action
-     * @return string HTML to output.
-     */
-    protected function chapter_header($section, $course, $onsectionpage, $sectionreturn=null, $title) {
-        $o = '';
-        $currenttext = '';
-        $sectionstyle = '';
-
-        if ($section->section != 0) {
-            // Only in the non-general sections.
-            if (!$section->visible) {
-                $sectionstyle = ' hidden';
-            }
-            if (course_get_format($course)->is_section_current($section)) {
-                $sectionstyle = ' current';
-            }
-        }
-
-        $o .= html_writer::start_tag('li', [
-            'id' => 'section-'.$section->section,
-            'class' => 'section main clearfix'.$sectionstyle,
-            'role' => 'region',
-            'aria-labelledby' => "sectionid-{$section->id}-title",
-            'data-sectionid' => $section->section,
-            'data-sectionreturnid' => $sectionreturn // 0
-        ]);
-
-        $leftcontent = $this->section_left_content($section, $course, $onsectionpage);
-        $o.= html_writer::tag('div', $leftcontent, array('class' => 'left side'));
-
-        $rightcontent = $this->section_right_content($section, $course, $onsectionpage);
-        $o.= html_writer::tag('div', $rightcontent, array('class' => 'right side'));
-        $o.= html_writer::start_tag('div', array('class' => 'content'));
-
-        // When not on a section page, we display the section titles except the general section if null
-        $hasnamenotsecpg = (!$onsectionpage && ($section->section != 0 || !is_null($section->name)));
-
-        // When on a section page, we only display the general section title, if title is not the default one
-        $hasnamesecpg = ($onsectionpage && ($section->section == 0 && !is_null($section->name)));
-
-        $classes = ' accesshide';
-        if ($hasnamenotsecpg || $hasnamesecpg) {
-            $classes = '';
-        }
-        $sectionname = html_writer::tag('span', $title);
-        $o .= $this->output->heading($sectionname, 3, 'sectionname' . $classes, "sectionid-{$section->id}-title");
-
-        $o .= $this->section_availability($section);
-/*
-        $o .= html_writer::start_tag('div', array('class' => 'summary'));
-        if ($section->uservisible || $section->visible) {
-            // Show summary if section is available or has availability restriction information.
-            // Do not show summary if section is hidden but we still display it because of course setting
-            // "Hidden sections are shown in collapsed form".
-            $o .= $this->format_summary_text($section);
-        }
-        $o .= html_writer::end_tag('div');
-*/
-        return $o;
-    }
 }
