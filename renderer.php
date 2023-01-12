@@ -107,6 +107,8 @@ class format_mooin_renderer extends format_section_renderer_base {
      * @return array of edit control items
      */
     protected function section_edit_control_items($course, $section, $onsectionpage = false) {
+        global $DB;
+
         if (!$this->page->user_is_editing()) {
             return [];
         }
@@ -149,7 +151,30 @@ class format_mooin_renderer extends format_section_renderer_base {
                     ],
                 ];
             }
+
+            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                $url = new moodle_url('/course/view.php');
+                $controls['chapteroff'] = array(
+                    'url' => $url,
+                    'icon' => 'i/settings',
+                    'name' => get_string('chapteroff', 'format_mooin'),
+                    'pixattr' => array('class' => ''),
+                    //'attr' => array('class' => 'icon editing_delete')
+                );
+            }
+            else {
+                $url = new moodle_url('/course/view.php');
+                $controls['chapteron'] = array(
+                    'url' => $url,
+                    'icon' => 'i/settings',
+                    'name' => get_string('chapteron', 'format_mooin'),
+                    'pixattr' => array('class' => ''),
+                    //'attr' => array('class' => 'icon editing_delete')
+                );
+            }
         }
+
+
 
         $parentcontrols = parent::section_edit_control_items($course, $section, $onsectionpage);
 
@@ -556,6 +581,24 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         // Close single-section div.
         echo html_writer::end_tag('div');
+    }
+
+    /**
+     * Generate the content to displayed on the right part of a section
+     * before course modules are included
+     *
+     * @param stdClass $section The course_section entry from DB
+     * @param stdClass $course The course entry from DB
+     * @param bool $onsectionpage true if being printed on a section page
+     * @return string HTML to output.
+     */
+    protected function section_right_content($section, $course, $onsectionpage) {
+        $o = $this->output->spacer();
+
+        $controls = $this->section_edit_control_items($course, $section, $onsectionpage);
+        $o .= $this->section_edit_control_menu($controls, $course, $section);
+
+        return $o;
     }
 
     /**
