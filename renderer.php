@@ -239,6 +239,72 @@ class format_mooin_renderer extends format_section_renderer_base {
         // XHTML
         return $navbarcontent;
     }
+
+    /**
+     * Generate next/previous section links for naviation
+     *
+     * @param stdClass $course The course entry from DB
+     * @param array $sections The course_sections entries from the DB
+     * @param int $sectionno The section number in the course which is being displayed
+     * @return array associative array with previous and next section link
+     */
+    protected function get_nav_links($course, $sections, $sectionno) {
+        global $DB;
+        // FIXME: This is really evil and should by using the navigation API.
+        $course = course_get_format($course)->get_course();
+        $canviewhidden = has_capability('moodle/course:viewhiddensections', context_course::instance($course->id))
+            or !$course->hiddensections;
+
+        $links = array('previous' => '', 'next' => '');
+        $back = $sectionno - 1;
+
+        if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $sections[$back]->id))) {
+            $sections[$back]->name = $chapter->title;
+            $sections[$back]->ischapter = true;
+        }
+        else {
+            $sections[$back]->ischapter = false;
+        }
+
+        while ($back > 0 and empty($links['previous'])) {
+            if (($canviewhidden || $sections[$back]->uservisible) && $sections[$back]->ischapter == false) {
+                $params = array();
+                if (!$sections[$back]->visible) {
+                    $params = array('class' => 'dimmed_text');
+                }
+                $previouslink = html_writer::tag('span', $this->output->larrow(), array('class' => 'larrow'));
+                $previouslink .= get_section_name($course, $sections[$back]);
+                $links['previous'] = html_writer::link(course_get_url($course, $back), $previouslink, $params);
+            }
+            $back--;
+        }
+
+        $forward = $sectionno + 1;
+
+        if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $sections[$forward]->id))) {
+            $sections[$forward]->name = $chapter->title;
+            $sections[$forward]->ischapter = true;
+        }
+        else if ($sections[$forward]) {
+            $sections[$forward]->ischapter = false;
+        }
+
+        $numsections = course_get_format($course)->get_last_section_number();
+        while ($forward <= $numsections and empty($links['next'])) {
+            if (($canviewhidden || $sections[$forward]->uservisible) && $sections[$forward]->ischapter == false) {
+                $params = array();
+                if (!$sections[$forward]->visible) {
+                    $params = array('class' => 'dimmed_text');
+                }
+                $nextlink = get_section_name($course, $sections[$forward]);
+                $nextlink .= html_writer::tag('span', $this->output->rarrow(), array('class' => 'rarrow'));
+                $links['next'] = html_writer::link(course_get_url($course, $forward), $nextlink, $params);
+            }
+            $forward++;
+        }
+
+        return $links;
+    }
     
     /**
      * Output the html for a multiple section page
