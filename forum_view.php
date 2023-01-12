@@ -119,7 +119,8 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
 // Print Navbar in layout
-echo navbar(get_string('discussions', 'format_mooin'));
+// echo $OUTPUT->navbar(get_string('discussions', 'format_mooin'));
+// echo navbar(get_string('discussions', 'format_mooin'));
 /// Some capability checks.
 if (empty($cm->visible) and !has_capability('moodle/course:viewhiddenactivities', $context)) {
     notice(get_string("activityiscurrentlyhidden"));

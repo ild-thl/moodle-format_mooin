@@ -1,0 +1,23 @@
+<div class="course-progress pb-3">
+  <div class="container-md">
+    <br>
+    <h2>{{#str}} progress, format_mooin {{/str}}</h2>
+    <div class="two-thirds">
+      <div>
+        <!--<span>{{{progressbar}}}</span>-->
+        <div class="progressbar">
+          <div class="progressbar-inner"></div>
+        </div>
+        <span class="fw-700">{{progress}} %</span> des Kurses bearbeitet.
+      </div>
+      <div>
+        <a href="{{{continue_url}}}" class="mooin-btn mooin-btn-primary btn-continue">{{#str}} continue, format_mooin {{/str}}</a>
+      </div>
+    </div>
+  </div>
+</div>
+{{#js}}
+require(['theme_mooin/progress-bar'], function(module) {
+module.updateProgressbar({{progress}});
+})
+{{/js}}

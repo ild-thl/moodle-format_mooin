@@ -62,7 +62,7 @@ if ($cmid > 0) {
     }
     if (!$course = $DB->get_record("course", array("id" => $cm->course))) {
         print_error('coursemisconf');
-        
+
     }
     $PAGE->set_course($course);
     if (!$forum = $DB->get_record('forum', array('id' => $cm->instance))){
@@ -138,7 +138,7 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 // echo $output->heading($pagetitle);
 
-echo navbar($forum->name);
+//echo $OUTPUT->navbar();
 /// Some capability checks.
 
 if (empty($cm->visible) and !has_capability('moodle/course:viewhiddenactivities', $context)) {

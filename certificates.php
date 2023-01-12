@@ -39,7 +39,7 @@ $PAGE->set_url('/course/format/mooin/certificates.php', array('id' => $course->i
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->navbar();
+//echo $OUTPUT->navbar();
 $out_certificat = null;
 $val = false;
 echo '<br />';

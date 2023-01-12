@@ -1,0 +1,35 @@
+{{#discussion}}
+<div class="news">
+
+
+    <div class="d-none d-md-inline-block align-items-center pb-3">
+      <span class="count-container inline-badge fw-700 mr-1">{{neue_forum_number}}</span>
+      <a href="{{disc_url}}" class="primary-link">{{#str}} all_discussions, format_mooin {{/str}}</a>
+    </div>
+    
+    <div class="news-card d-flex">
+      <span class="chat-icon"></span>
+      <div class="news-card-inner pt-1">
+        <span class="caption d-none d-md-block">
+          <a href="{{discussion_url}}" class="fw-700 text-primary">{{#str}} letze_beitrag, format_mooin{{/str}}</a>
+          von {{{user_firstname}}} - {{{created_news}}}
+        </span>
+        <span class="caption d-flex d-md-none justify-content-between">
+          <span class="fw-700">{{#str}} latest_contribution_mobile, format_mooin{{/str}}</span>
+          <a href="{{news_url}}" class="primary-link text-primary">{{#str}} all_news_mobile, format_mooin {{/str}}</a>
+        </span>
+        <div class="position-relative pt-0 pt-md-1">
+          <span class="new_user_picture d-none d-md-block">{{{user_picture}}}</span>
+          <p class="fw-500 text-truncate">{{{news_title}}}</p>
+          <div class="d-none d-md-block message">
+            {{{news_text}}}
+          </div>
+        </div>
+        <div class="primary-link d-none d-md-block text-right">
+          <a href="{{discussion_url}}">{{#str}} discussion_news, format_mooin {{/str}}</a>
+        </div>
+      </div>
+    </div>
+    
+</div>
+{{/discussion}}

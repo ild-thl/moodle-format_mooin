@@ -70,6 +70,29 @@ $renderer = $PAGE->get_renderer('format_mooin');
 
 // mooin: print tiles here
 $sectionnumber = optional_param('section', 0, PARAM_INT);
+$unsetchapter = optional_param('unsetchapter', 0, PARAM_INT);
+$setchapter = optional_param('setchapter', 0, PARAM_INT);
+
+// set or unset chapter
+if ($setchapter > 0 && has_capability('moodle/course:update', $context)) {
+    if ($csection = $DB->get_record('course_sections', array('id' => $setchapter))) {
+        $csectiontitle = $csection->name;
+    }
+    else {
+        $csetciontitle = 'chapter '.$setchapter;
+    }
+    $chapter = new stdClass();
+    $chapter->courseid = $course->id;
+    $chapter->title = $csectiontitle;
+    $chapter->sectionid = $setchapter;
+    $chapter->chapter = 0;
+    $DB->insert_record('format_mooin_chapter', $chapter);
+}
+
+if ($unsetchapter > 0 && has_capability('moodle/course:update', $context)) {
+    $DB->delete_records('format_mooin_chapter', array('sectionid' => $unsetchapter));
+}
+
 $progress = null;
 
 // $Out is the card-output in course page
@@ -78,39 +101,6 @@ $neben_out = null;
 $out = null;
 $out_first_part = null;
 
-// get the default image first
-// $imgeurl = $CFG->wwwroot . '/course/format/mooin/images/cover.jpg';
-
-$main_out .= html_writer::start_tag('div', ['class'=>'wrapper']);
-
-// $img = html_writer::empty_tag('img', array('src' => $imgeurl, 'style' =>'width: 600; height: 355;border-top-left-radius: .625rem;border-top-right-radius: .625rem;')); // $opacity
-
-$main_out .= html_writer::start_tag('div', ['class' => 'main-container bg-white']); // 'main-container
-// $main_out .= html_writer::div($img, 'cover_img', array('style' => 'margin: 0rem -2rem 0rem -2rem;') );
-$main_out .= html_writer::start_tag('div', ['class' => 'course-title-header']); // course-title-header
-
-//Course Images mobile & desktop
-$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($course->id, true), 'class' => 'course-image d-block d-md-none')); //mobile
-$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($course->id, false), 'class' => 'course-image d-none d-md-block')); //desktop
-//$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($courseid, $mobile = true), 'class' => 'course-image d-block d-md-none')); //mobile
-//$main_out .= html_writer::empty_tag('img', array('src' => get_headerimage_url($courseid, $mobile = false), 'class' => 'course-image d-none d-md-block')); //desktop
-
-
-$main_out .= html_writer::start_tag('div', ['class' => 'title-overlay']);
-$main_out .= html_writer::start_tag('p');
-$main_out .= get_string('welcome', 'format_mooin');
-$main_out .= html_writer::end_tag('p');
-$main_out .= html_writer::start_tag('h2'); //h2
-$main_out .= $course->fullname;
-$main_out .= html_writer::end_tag('h2'); //h2
-
-// Continue Button in Course Header -- needs Buttontext
-//$continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section));
-//$main_out .= html_writer::link($continue_url, $start_continue, array('title' => $start_continue, 'class' => 'mooin-btn mooin-btn-primary btn-continue d-flex d-md-none'));
-
-$main_out .= html_writer::end_tag('div'); // title-overlay
-$main_out .= html_writer::end_tag('div'); // course-title-header
-$main_out .= html_writer::start_tag('div', ['class' => 'inner-wrapper']); //inner-wrapper
 // $lesson = new lesson($lessonrecord);
 
 if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
@@ -118,254 +108,142 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     
     $check_news = get_last_news($course->id, 'news');
     if ($check_news != null) {
-        $main_out .= $check_news;
+        $news = $check_news;
     } else {
 
-        $main_out .= '';
+        $news = false;
     }
 
-    $out_first_part .= html_writer::start_tag('div', array('class' => 'course-progress')); // first_frontpage_mooin
-    // progress & start/continue learning button
-    // progress card
-    $out_first_part .= html_writer::start_tag('div', array('class' => 'container')); // container
-    $out_first_part .= html_writer::nonempty_tag('h2',get_string('progress', 'format_mooin'));
-    $out_first_part .= html_writer::start_tag('div', array('class' => 'even-columns')); // even-columns
-
-    $out_first_part .= html_writer::start_tag('div'); // array('class' =>'progress_card col-10')
-    // To Remove
-    /* $mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
-                    FROM {modules} m, {course_modules} cm
-                WHERE cm.course = ? AND cm.completiongradeitemnumber >= ? AND cm.module = m.id AND m.visible = 1", array($course->id, 0));
-    echo count($mods);
-    var_dump($mods); */
     $grade_in_course = get_course_grades($course->id);
 
     $course_grade = round($grade_in_course);
+    $progressbar  = null;
     if ($course_grade != -1) {
-        $out_first_part .= html_writer::start_span('') . get_progress_bar_course($course_grade, 100) . html_writer::end_span();
-    }else {
-        $out_first_part .= get_progress_bar_course(0, 100);
+        $progressbar .= html_writer::start_span('') . get_progress_bar_course($course_grade, 100) . html_writer::end_span();
+        $progress = $course_grade;
+    } else {
+        $progressbar .= get_progress_bar_course(0, 100);
+        $progress = 0;
     }
 
-    $out_first_part .= html_writer::end_tag('div');
-    // TODO get last visited section from userpref
-    $out_first_part .= html_writer::start_tag('div'); // array('class' =>'start_contnue_card')
     $sectionnumber = 1;
     $continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $sectionnumber));
-    $continue_link = html_writer::link($continue_url, get_string('continue', 'format_mooin'), array('title' => get_string('continue', 'format_mooin')));
-    // echo '&nbsp;';
+
     $start_continue = get_string('start', 'format_mooin');
     // get last visited section from userpref
     if (isset($last_section)) {
         if ($last_section == 0) {
             // start learning
             $last_section = 1;
-        }
-        else {
+        } else {
             // continue learning
-            if ($section = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                if ($section->name) {
-                    $start_continue = get_string('continue', 'format_mooin').' '.$section->name;
+            if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
+                if ($continuesection->name) {
+                    $start_continue = get_string('continue', 'format_mooin') . ' ' . $continuesection->name;
+                } else {
+                    $start_continue = get_string('continue', 'format_mooin') . ' ' . get_string('sectionname', 'format_mooin') . ' ' . $last_section;
                 }
-                else {
-                    $start_continue = get_string('continue', 'format_mooin').' '.get_string('sectionname', 'format_mooin').' '.$last_section;
-                }
-            }
-            else {
+            } else {
                 $start_continue = get_string('continue', 'format_mooin');
             }
         }
-    }
-    else {
+    } else {
         // start learning
         $last_section = 1;
     }
     $continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section));
-    $out_first_part.= html_writer::link($continue_url, $start_continue, array('title' => $start_continue, 'class' => 'mooin-btn mooin-btn-primary btn-continue'));
-    // echo $continue_link;
 
-    $out_first_part .= html_writer::end_tag('div'); // start_contnue_card
-    $out_first_part .= html_writer::end_tag('div'); // even-columns
-    $out_first_part .= html_writer::end_tag('div'); // container
-    $out_first_part .= html_writer::end_tag('div'); // course-progress
-
-    // $main_out .= $out_first_part;
-    // Badges mobile buttons
-    $out_first_part .= html_writer::start_tag('div',['class' => 'badges-mobile-mooin-btn d-sm-block d-md-none']);
-    $out_first_part .= html_writer::start_tag('div', ['class' => 'container']);
-    $out_first_part .= html_writer::nonempty_tag('h2',get_string('badges_certificates', 'format_mooin'));
-    $out_first_part .= html_writer::start_tag('div', ['class' => 'even-columns']);
-    $out_first_part .= html_writer::start_tag('div', ['class' => 'mooin-btn mooin-btn-special']);
-
-    $badges_url = new moodle_url('/course/format/mooin/badges.php', array('id' => $course->id));
-
-    $out_first_part .= html_writer::start_tag('div', ['class' => 'icon-batch']);
-    $out_first_part .= html_writer::start_span('badges-icon') . html_writer::end_span();
-    $out_first_part .= html_writer::start_span('count-container count-certificate fw-700') .'4'. html_writer::end_span(); //Notification Counter
-    $out_first_part .= html_writer::end_div();
-
-    $out_first_part .= html_writer::link($badges_url, get_string('course_badges', 'format_mooin'), array('title' => get_string('course_badges', 'format_mooin'), 'class'=> 'stretched-link'));
-
-    $out_first_part .= html_writer::end_div();
-    $out_first_part .= html_writer::start_tag('div', ['class' => 'mooin-btn mooin-btn-special']);
-    $certificate_url = new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id));
-
-    $out_first_part .= html_writer::start_tag('div', ['class' => 'icon-batch']);
-    $out_first_part .= html_writer::start_span('award-icon') . html_writer::end_span();
-
-    $out_first_part .= html_writer::start_span('count-container count-certificate fw-700') .'4'. html_writer::end_span(); //Notification Counter
-    $out_first_part .= html_writer::end_div();
-
-    $out_first_part .= html_writer::link($certificate_url, get_string('my_certificate', 'format_mooin'), array('title' => get_string('my_certificate', 'format_mooin'), 'class'=> 'stretched-link'));
-
-    $out_first_part .= html_writer::end_div();
-    $out_first_part .= html_writer::end_tag('div'); // even-columns
-    $out_first_part .= html_writer::end_tag('div'); // container
-    $out_first_part .= html_writer::end_tag('div'); //badges-mobile-mooin-btn
-
-    // Community mobile buttons (später ändern)
     // $dis = $DB->get_record('forum', ['course'=> $course->id, 'type'=>'general']);
     $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1 ';
-    $param_first = array('id_course'=>$course->id, 'type_forum'=>'general');
+    $param_first = array('id_course' => $course->id, 'type_forum' => 'general');
     // $new_in_course = $DB->get_record('forum', ['course' =>$courseid, 'type' => $forum_type]);
     $dis = $DB->get_record_sql($sql_first, $param_first);
-    $out_first_part .= html_writer::start_tag('div',['class' => 'community-mobile-mooin-btn d-sm-block d-md-none']);
-    $out_first_part .= html_writer::start_tag('div', ['class' => 'container']);
-    $out_first_part .= html_writer::nonempty_tag('h2',get_string('community', 'format_mooin'));
-    $out_first_part .= html_writer::start_tag('div', ['class' => 'even-columns']);
-    $out_first_part .= html_writer::start_tag('div', ['class' => 'mooin-btn mooin-btn-special']);
 
-    $diskussions_url = news_forum_url($course->id, 'general'); // new moodle_url('/mod/forum/view.php', array('f' => $dis->id, 'tab'=>'1'));
-    $out_first_part .= html_writer::start_tag('div', ['class' => 'icon-batch']);
-    $out_first_part .= html_writer::start_span('chat-icon') . html_writer::end_span();
-    $unread_forum_number = get_unread_news_forum($course->id, 'genral');
-    // echo get_unread_news_forum($course->id, 'general');
-    $out_first_part .= html_writer::start_span('count-container count-discussion fw-700') . $unread_forum_number. html_writer::end_span(); //Notification Counter
-    $out_first_part .= html_writer::end_div();
-    $out_first_part .= html_writer::link($diskussions_url, get_string('forums', 'format_mooin'), array('title' => get_string('forums', 'format_mooin'), 'class' => 'stretched-link'));
-
-    /* $out_first_part .= html_writer::start_tag('a', ['class'=> 'mooin-btn mooin-btn-special mooin-btn-icon']);
-    $out_first_part .= html_writer::start_span('icon-wrapper chat-icon') . get_string('forums', 'format_mooin') . html_writer::end_span();
-    $out_first_part .= html_writer::end_tag('a'); */
-    $out_first_part .= html_writer::end_div();
-    $out_first_part .= html_writer::start_div();
+    $diskussions_url = new moodle_url('/mod/forum/view.php', array('f' => $dis->id, 'tab' => '1'));
     $participants_url = new moodle_url('/course/format/mooin/participants.php', array('id' => $course->id));
-    $out_first_part .= html_writer::link($participants_url, get_string('users', 'format_mooin'), array('title' => get_string('users', 'format_mooin'), 'class'=> 'mooin-btn mooin-btn-special btn-participants'));
 
-    $out_first_part .= html_writer::end_div();
-    $out_first_part .= html_writer::end_tag('div'); // even-columns
-    $out_first_part .= html_writer::end_tag('div'); // container
-    $out_first_part .= html_writer::end_tag('div'); //badges-mobile-mooin-btn
-
-    $main_out .= $out_first_part;
     // Add rendere here
-
-    $main_out .= html_writer::end_tag('div'); // inner-wrapper
-    $main_out .= html_writer::end_tag('div'); // main-container
-
-
-    // Sidebar Card
-    $out .= html_writer::start_tag('div', array('class' => 'side-right d-none d-md-inline-block')); // side-right d-none d-md-inline-block
-    // Badges and certificates
-
-    $out .= html_writer::start_tag('div', ['class' => 'badges']); // badges
-    $out .= html_writer::start_tag('div', ['class' => 'container pt-2']); // container
-    $out .= html_writer::nonempty_tag('h2',get_string('badges_certificates', 'format_mooin'));
-    $out .= html_writer::start_tag('div', array('class' => 'badges-card')); // badges-card
-    $out .= html_writer::start_tag('div', array('class' => 'd-flex align-items-center')); // d-flex align-items-center
-    $out .= html_writer::start_span('icon-wrapper badges-icon') . html_writer::end_span();
-    $badges_url = new moodle_url('/course/format/mooin/badges.php', array('id' => $course->id));
-    $out .= html_writer::start_tag('p', array('class' => 'caption fw-700 text-primary pl-2'));
-    $out .= html_writer::link($badges_url, get_string('badges', 'format_mooin'), array('title' => get_string('badges', 'format_mooin')));
-    $out .= html_writer::end_tag('p'); // p
-    $out .= html_writer::end_tag('div'); // align-items-center
-
-
-    $out .= html_writer::start_tag('div', array('class' => 'badges-card-inner'));
+    $badges = null;
     ob_start();
-    $out .= display_user_and_availbale_badges($USER->id, $course->id);
-    $out .= ob_get_contents();
+    $badges .= display_user_and_availbale_badges($USER->id, $course->id);
+    $badges .= ob_get_contents();
     ob_end_clean();
-    $out .= html_writer::end_tag('div'); // badges-card-inner
-    $bottom_badge_link = html_writer::link($badges_url, get_string('see_badges', 'format_mooin'), array('title' => get_string('see_badges', 'format_mooin')));
-    $out .= html_writer::div($bottom_badge_link, 'primary-link d-block text-right');
-    $out .= html_writer::end_tag('div'); // badges-card
-    // $out .= html_writer::end_tag('div');
 
-
-    $out .= html_writer::start_tag('div', array('class' => 'certificate-card')); // certificate-card
-    $out .= html_writer::start_tag('div', array('class' => 'd-flex align-items-center')); // d-flex align-items-center
-    $out .= html_writer::start_span('icon-wrapper award-icon') . html_writer::end_span();
     $certificates_url = new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id));
-    // $out .= html_writer::tag('p', get_string('certificates', 'format_mooin'));
-    //$out .= html_writer::start_tag('p', array('div' => 'caption fw-700 text-primary pl-2'));
-    $out .= html_writer::link($certificates_url, get_string('certificates', 'format_mooin'), array('title' => get_string('certificates', 'format_mooin'), 'class' => 'caption fw-700 text-primary pl-2'));
-    //$out .= html_writer::end_tag('p'); // p
-    $out .= html_writer::end_tag('div'); // align-items-center
 
-    $out .= html_writer::start_tag('div', array('class' => 'certificate-card-inner')); // certificate-card-inner
-    $out .= show_certificat($course->id);// get_certificate($course->id);
-    // $out .= ob_get_contents();
-    $out .= html_writer::end_tag('div'); // certificate-card-inner
-    $bottom_certificate_link = html_writer::link($certificates_url, get_string('see_badges', 'format_mooin'), array('title' => get_string('see_badges', 'format_mooin')));
-    $out .= html_writer::div($bottom_certificate_link, 'primary-link d-block text-right');
-    $out .= html_writer::end_tag('div');// certificate-card
+    //$out .= show_certificat($course->id); // get_certificate($course->id);
 
-    $out .= html_writer::end_tag('div'); //container
-    $out .= html_writer::end_tag('div'); // badges
 
-    // Community
-    $out .= html_writer::start_tag('div', ['class' =>'community']); // community
-    $out .= html_writer::start_tag('div', ['class' =>'container']); // container
-    $out .= html_writer::nonempty_tag('h2',get_string('community', 'format_mooin'));
 
-    $out .= html_writer::start_tag('div', array('class' => 'forum-card')); // forum-card
-
-    //$out .= html_writer::start_tag('div', array('class' => 'forum-card-inner')); // forum-card-inner
-    $out .= html_writer::start_tag('div', array('class' => 'd-flex align-items-center')); // d-flex align-items-center
-
-    // $out .= html_writer::start_tag('p', array('div' => 'caption fw-700 text-primary pl-2'));
-
-   $check_diskussion = get_last_forum_discussion($course->id, 'general'); //get_last_news($course->id, 'general')
-    if ($check_diskussion!= null) {
-        $out .= $check_diskussion;
-    } else {
-        $out .= '';
+    if (get_last_forum_discussion($course->id, 'general') != null) { //Nötig? get_last_news
+        $check_diskussion = get_last_forum_discussion($course->id, 'general');
     }
-    // $out .= html_writer::end_tag('div'); // d-flex align-items-center
 
-    $out .= html_writer::end_tag('div'); // diskussion_card
+    // $check_diskussion = get_last_news($course->id, 'general');
+    // if ($check_diskussion != null) {
+    //     $out .= $check_diskussion;
+    // } else {
+    //     $out .= '';
+    // }
+
 
 
 
 
     // Participants
-
+if (get_user_in_course($course->id) != null) { //Nötig?
     $user_card_list = get_user_in_course($course->id);
-    if ($user_card_list != null) {
-        $out .= $user_card_list;
-    } else {
-        $out .= '';
+}
+    // $user_card_list = get_user_in_course($course->id);
+    // if ($user_card_list != null) {
+    //     $out .= $user_card_list;
+    // } else {
+    //     $out .= '';
+    // }
+
+
+
+    $templatecontext = [
+        'course_headerimage_mobil' => get_headerimage_url($course->id, true),
+        'course_headerimage_desktop' => get_headerimage_url($course->id, false),
+        'coursename' => $course->fullname,
+        'continue_url' => new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section)),
+        'continue_text' => $start_continue,
+        'news' => $news,
+        // 'progressbar' => $progressbar,
+        'badges_url' => new moodle_url('/course/format/mooin/badges.php', array('id' => $course->id)),
+        'certificate_url' => new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id)),
+        'discussions_url' => $diskussions_url,
+        'participants_url' => $participants_url,
+        'badges' => $badges,
+        'certificates' => show_certificat($course->id),
+        'discussion' => $check_diskussion,
+        'userlist' => $user_card_list,
+        'progress' => $progress
+
+    ];
+
+    $coursecontext = context_course::instance($course->id);
+
+    //Show 'Edit Header' Symbol only if user has capability to update
+    if (has_capability('moodle/course:update', $coursecontext)) {
+        $gear_icon = html_writer::span('', 'bi bi-gear-fill');
+        $edit_header_url = new moodle_url('/course/format/mooin/edit_header.php', array('course' => $course->id));
+        $edit_header_link = html_writer::link($edit_header_url, $gear_icon);
+        $templatecontext['edit_header_link'] = $edit_header_link;
     }
-    
-    $out .= html_writer::end_tag('div'); // container
-    $out .= html_writer::end_tag('div'); // community
-    // $out .= html_writer::end_tag('div'); // side-right
-    $out .= html_writer::end_tag('div'); // wrapper
-    $main_out .= $out;
 
-    $main_out .= html_writer::end_tag('div'); // course-content
-    echo $main_out;
+    echo $OUTPUT->render_from_template('format_mooin/mooin_mainpage', $templatecontext);
+}
 
-
-
-}if (!empty($displaysection)) {
+//*/
+if (!empty($displaysection)) {
     $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
 } else {
     $PAGE->navbar;
     $renderer->print_multiple_section_page($course, null, null, null, null);
-
 }
+//*/
 
 // Include course format js module.
 $PAGE->requires->js('/course/format/mooin/format.js');

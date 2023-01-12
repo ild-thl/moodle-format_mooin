@@ -35,7 +35,7 @@ $PAGE->set_url('/course/format/mooin/badges.php', array('id' => $course->id));
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->navbar();
+// echo $OUTPUT->navbar();
 
 $blockrecord = $DB->get_record('block_instances', array('blockname' => 'badges', 'parentcontextid' => $context->instanceid), '*', MUST_EXIST); // oc_mooc_nav || $context->id
 
