@@ -243,7 +243,7 @@ function display_user_and_availbale_badges($userid, $courseid) {
         $result = print_badges($coursebadges, false, true, true);
     } else {
         //$result .= html_writer::start_span() . get_string('no_badges_available', 'format_mooin') . html_writer::end_span();
-        $result .= html_writer::div('', 'no-badges-img');
+        $result = null;
     }
     return $result;
 }
@@ -575,7 +575,7 @@ function show_certificat($courseid) {
     // if ( get_certificate($courseid)) {
     // TO-DO
     $templ = get_certificate($courseid);
-    $out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
+    //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
 
     if (is_string($templ) == 1) {
         $out_certificat = $templ;
@@ -600,7 +600,7 @@ function show_certificat($courseid) {
     }
     // $out_certificat .= html_writer::end_tag('div'); // certificat_card
     // $out_certificat .= html_writer::end_tag('div'); // certificat_card
-     $out_certificat .= html_writer::end_tag('div'); // certificat_card
+     //$out_certificat .= html_writer::end_tag('div'); // certificat_card
 
     // $out_certificat; //echo
     //  }
