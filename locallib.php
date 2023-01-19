@@ -366,7 +366,7 @@ function display_user_and_availbale_badges($userid, $courseid) {
         $result = print_badges($coursebadges, false, true, true);
     } else {
         //$result .= html_writer::start_span() . get_string('no_badges_available', 'format_mooin') . html_writer::end_span();
-        $result .= html_writer::div('', 'no-badges-img');
+        $result = null;
     }
     return $result;
 }
@@ -647,7 +647,7 @@ function get_certificate($courseid) {
     } else {
         $te = [];
     }
-    
+
 
     $ze = $DB->get_records('course_sections', ['course' =>$courseid]);
     $course = $DB->get_record('course', ['id' =>$courseid]);
@@ -683,7 +683,8 @@ function get_certificate($courseid) {
             $templatedata[$i]->course_name = $course->fullname;
         }
     }else {
-        $templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
+        //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
+        $templatedata = null;
     }
 
     return $templatedata;
@@ -698,7 +699,7 @@ function show_certificat($courseid) {
     // if ( get_certificate($courseid)) {
     // TO-DO
     $templ = get_certificate($courseid);
-        $out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
+    //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
 
     if (is_string($templ) == 1) {
         $out_certificat = $templ;
@@ -708,7 +709,7 @@ function show_certificat($courseid) {
         $imageurl = 'images/certificat.png';
             for ($i=0; $i < count($templ); $i++) {
 
-                $out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_body', 'style'=>'display:grid; cursor:pointer']); // certificat_card
+            $out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_body', 'style'=>'display:grid; cursor:pointer']); // certificat_card
 
             $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
 
@@ -723,7 +724,7 @@ function show_certificat($courseid) {
     }
     // $out_certificat .= html_writer::end_tag('div'); // certificat_card
     // $out_certificat .= html_writer::end_tag('div'); // certificat_card
-    // $out_certificat .= html_writer::end_tag('div'); // certificat_card
+     //$out_certificat .= html_writer::end_tag('div'); // certificat_card
 
     // $out_certificat; //echo
     //  }
@@ -731,7 +732,7 @@ function show_certificat($courseid) {
 }
 // News functions
 /**
- * Get the right link news or foren 
+ * Get the right link news or foren
  * @param int $courseid
  * @param string $forum_type
  * @return array
@@ -750,7 +751,7 @@ function news_forum_url($courseid, $forum_type){
     $newsurl = new moodle_url('/course/format/mooin/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
     $url_disc = new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
     if ($new_in_course == true) {
-       
+
         if ($forum_type == 'news') {
             $result = $newsurl;
         } else {
@@ -787,19 +788,19 @@ function news_forum_url($courseid, $forum_type){
 function get_last_news($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
 
-    // Get all the forum (news)  in the course       
+    // Get all the forum (news)  in the course
     $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
     $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
     $new_in_course = $DB->get_record_sql($sql_first, $param_first);
-       
+
     // Some test to fetch the forum with discussion within it
-    
+
     // get the news annoucement & forum discussion for a specific news or forum
     if ($new_in_course == true) {
         $out = null;
         $cond = 'SELECT * FROM mdl_forum_discussions WHERE forum = :id  ORDER BY ID DESC LIMIT 1';
         $param =  array('id' => $new_in_course->id);
-        
+
         $discussions_in_new = $DB->get_record_sql($cond, $param, IGNORE_MISSING);
         if ($discussions_in_new != false) {
 
@@ -816,7 +817,7 @@ function get_last_news($courseid, $forum_type) {
             $out .= html_writer::start_tag('div', ['class'=> 'news']); // card_news
             $out .= html_writer::start_tag('div', ['class'=> 'container']); //container
             $out .= html_writer::nonempty_tag('h2',get_string('news', 'format_mooin'),['class' => 'mb-1']);
-            
+
             $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-inline-block align-items-center mb-3']); //right_part_new
 
             $news_forum_id = $new_in_course->id;
@@ -833,12 +834,12 @@ function get_last_news($courseid, $forum_type) {
 
                 } else {
                     $out .= html_writer::link($newsurl, get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin')));;
-                }                             
+                }
 
-                
-            } 
+
+            }
             $out .= html_writer::end_tag('div'); // right_part_new
-            
+
             $out .= html_writer::start_tag('div', ['class' =>'news-card d-flex']); // top_card_news justify-content-between
 
             $out .= html_writer::start_tag('div'); // align-items-center
@@ -888,18 +889,18 @@ function get_last_forum_discussion($courseid, $forum_type) {
     $param_second = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
     $news_course = $DB->get_record_sql($sql_second, $param_second);
 
-    //  Get the last discussion in course from the DB 
+    //  Get the last discussion in course from the DB
     //  If the last forum in DB has no discussion, we check in the previous
     $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
 
     $sql = 'SELECT * FROM mdl_forum f
         JOIN mdl_forum_discussions fd ON fd.forum = f.id
-        JOIN mdl_forum_posts fp ON fp.discussion = fd.id 
+        JOIN mdl_forum_posts fp ON fp.discussion = fd.id
         WHERE f.course = :id_course AND f.type = :type_forum
         ORDER BY fd.id DESC LIMIT 1';
 
     $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
-    
+
     // Some test to fetch the forum with discussion within it
     // get the news annoucement & forum discussion for a specific news or forum
     // var_dump($new_in_course);
@@ -922,7 +923,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
             $news_forum_id = $news_course->id;
             $newsurl = new moodle_url('/course/format/mooin/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
             $url_disc = new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
-            
+
                 $sql = 'SELECT * FROM mdl_forum WHERE course = :cid AND type != :tid ORDER BY ID ASC';
                 $param = array('cid' =>$courseid, 'tid' => 'news');
                 $oc_foren = $DB->get_records_sql($sql, $param);
@@ -942,12 +943,12 @@ function get_last_forum_discussion($courseid, $forum_type) {
                     } */
                 } else {
                     $out .= html_writer::link($newsurl, get_string('all_forums', 'format_mooin'), array('title' => get_string('all_forums', 'format_mooin')));
-                }  
+                }
 
             // }
 
             $out .= html_writer::end_tag('div'); // right_part_new
-            
+
             $out .= html_writer::start_tag('div', ['class' =>'news-card d-flex']); // top_card_news justify-content-between
 
             $out .= html_writer::start_tag('div'); // align-items-center
@@ -988,7 +989,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
             $forum_discussion_url = new moodle_url('/mod/forum/discuss.php', array('d' => $value->discussion));
             $discussion_url = html_writer::link($forum_discussion_url, get_string('discussion_news', 'format_mooin'), array('title' => get_string('discussion_news', 'format_mooin')));
             $out .= $discussion_url;
-            
+
             $out .= html_writer::end_tag('div'); // news-card-inner
             $out .= html_writer::end_tag('div'); // d-none d-md-block text-right
             $out .= html_writer::end_tag('div'); // top_card_news
@@ -1039,7 +1040,7 @@ function get_course_grades($courseid) {
         $mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
                     FROM {modules} m, {course_modules} cm
                     WHERE cm.course = ? AND cm.completiongradeitemnumber >= 0 AND cm.module = m.id AND m.visible = 1", array($courseid)); // AND cm.completion !=0
-        
+
         /* $other_mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
                             FROM {modules} m, {course_modules} cm
                             WHERE cm.course = ?", array($courseid));
@@ -1240,39 +1241,39 @@ function get_headerimage_url($courseid, $mobile = true) {
 
 /**
  * Return the unread news and forum in a course
- * 
+ *
  * @param int courseid
  * @param string forum_type
  * @return int Number of all unread news and forums
  */
 function get_unread_news_forum($courseid, $forum_type) {
-    
+
     global $DB;
 
     $oc_m = $DB->get_record('modules', array('name' => 'forum'));
     // $sql = 'SELECT * FROM mdl_forum WHERE course = :courseid AND type = :';
-    
-    
-    
-    //Get the module Data 
+
+
+
+    //Get the module Data
     /* if ($forum_type == 'news') {
         $oc_m = $DB->get_record('modules', array('id' => 2));
-    }  
+    }
     if ($forum_type == 'general') {
         $oc_m = $DB->get_record('modules', array('id' => 9));
     } */
     $result = 0;
     if ($forum_type == 'news') {
-        $sql = 'SELECT * FROM mdl_forum WHERE course = :cid AND type = :tid ORDER BY ID DESC'; // 
+        $sql = 'SELECT * FROM mdl_forum WHERE course = :cid AND type = :tid ORDER BY ID DESC'; //
         $param = array('cid' =>$courseid, 'tid' => 'news'); // 'tid' => 'news'
         $oc_foren = $DB->get_records_sql($sql, $param);
     } else {
-        $sql = 'SELECT * FROM mdl_forum WHERE course = :cid AND type != :tid ORDER BY ID DESC'; // 
-        $param = array('cid' =>$courseid, 'tid' => 'news'); // 
+        $sql = 'SELECT * FROM mdl_forum WHERE course = :cid AND type != :tid ORDER BY ID DESC'; //
+        $param = array('cid' =>$courseid, 'tid' => 'news'); //
         $oc_foren = $DB->get_records_sql($sql, $param);
     }
     if (count($oc_foren) >= 1) {
-        
+
         foreach ($oc_foren as $oc_forum) {
             $cm = get_coursemodule_from_instance('forum', $oc_forum->id, $courseid);
 
@@ -1282,13 +1283,13 @@ function get_unread_news_forum($courseid, $forum_type) {
                     $oc_forum->unreadpostscount = forum_tp_count_forum_unread_posts($cm, $course);
                 }
 
-            $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $courseid,'module' => $oc_m->id)); // 
-            
+            $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $courseid,'module' => $oc_m->id)); //
+
             //if ($oc_cm->visible == 1) {
-                $result += intval($oc_forum->unreadpostscount);                
+                $result += intval($oc_forum->unreadpostscount);
             //}
         }
-        
+
     }
     return $result;
 }
@@ -1310,7 +1311,7 @@ function user_print_forum($courseid) {
     $sql_in_forum = 'SELECT * FROM mdl_forum_discussions ORDER BY ID DESC LIMIT 1'; // WHERE forum = :id
     // $param_in_forum = ['id'=> $forum_in_course->id];
     $discuss_forum_in_course = $DB->get_record_sql($sql_in_forum,  [],IGNORE_MISSING);
-    
+
     $result = new stdClass;
     if ($discuss_forum_in_course->userid == $discuss_forum_in_course->usermodified) {
         $result = $DB->get_record('user',['id'=>$discuss_forum_in_course->userid]);
@@ -1318,7 +1319,7 @@ function user_print_forum($courseid) {
         $result = $DB->get_record('user',['id'=>$discuss_forum_in_course->usermodified]);
     }
 
-    
+
     return $result;
 }
 
@@ -1356,7 +1357,7 @@ function navbar($displaysection = 0) {
                     $content = '';
                 }
             } else if (gettype($displaysection) == 'integer') {
-                
+
                 // $val  = ' Kap. '. ' '.$displaysection .' > Lek.  '. ' ' .$displaysection .'.'. $displaysection . ':';
                 $val = ' Kap '. $displaysection . ' :' . ' Kapitel Name' .' > Lek  '. ' ' . $displaysection .'.'. $displaysection;
                 $item = $items[$i];
@@ -1378,8 +1379,8 @@ function navbar($displaysection = 0) {
                     $item = $items[$i];
                     $item->hideicon = true;
                     if ($i === 0) {
-                        $content = html_writer::tag('li', $before . $OUTPUT->render($item)); 
-                    } 
+                        $content = html_writer::tag('li', $before . $OUTPUT->render($item));
+                    }
                     else if ($i === $itemcount - 3) {
                         $content = html_writer::tag('li', $before . ' > '. $OUTPUT->render($item));
                     } else if ($i === $itemcount - 2) {
@@ -1388,15 +1389,15 @@ function navbar($displaysection = 0) {
                         $content = html_writer::tag('li', $before . ' > '. $OUTPUT->render($item));
                     }  */else {
                         $content = '';
-                    } 
+                    }
                 }
                 if ($itemcount <= 3) {
                     $val = $displaysection;
                     $item = $items[$i];
                     $item->hideicon = true;
                     if ($i == 0) {
-                        $content = html_writer::tag('li', $before . $OUTPUT->render($item)); 
-                    }/*  
+                        $content = html_writer::tag('li', $before . $OUTPUT->render($item));
+                    }/*
                     else if ($i === $itemcount - 3) {
                         $content = html_writer::tag('li', $before . ' > '. $val);
                     } */ else if ($i == $itemcount - 1) {
@@ -1405,7 +1406,7 @@ function navbar($displaysection = 0) {
                         $content = html_writer::tag('li', '');
                     } else {
                         $content = '';
-                    } 
+                    }
                 }
             }
             /*  {
@@ -1418,7 +1419,7 @@ function navbar($displaysection = 0) {
         $navbarcontent = html_writer::tag('span', get_string('pagepath'),
                 array('class' => 'accesshide', 'id' => 'navbar-label'));
         // $navbarcontent .= html_writer::start_tag('nav', array('aria-labelledby' => 'navbar-label'));
-        
+
         $navbarcontent .= html_writer::tag('nav',
                 html_writer::tag('ul', join('', $htmlblocks),array('class' => "navmenu", 'id'=> 'menu'),array('aria-labelledby' => 'navbar-label')),
                 );

@@ -107,7 +107,7 @@ $out_first_part = null;
 
 if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // newsforum
-    
+
     $check_news = get_last_news($course->id, 'news');
     if ($check_news != null) {
         $news = $check_news;
@@ -193,7 +193,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
 
 
     // Participants
-if (get_user_in_course($course->id) != null) { //Nötig?
+if (get_user_in_course($course->id) != null) {
     $user_card_list = get_user_in_course($course->id);
 }
     // $user_card_list = get_user_in_course($course->id);
@@ -221,7 +221,8 @@ if (get_user_in_course($course->id) != null) { //Nötig?
         'certificates' => show_certificat($course->id),
         'discussion' => $check_diskussion,
         'userlist' => $user_card_list,
-        'progress' => $progress
+        'progress' => $progress,
+        'topics' => $renderer->print_multiple_section_page($course, null, null, null, null)
 
     ];
 

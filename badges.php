@@ -129,10 +129,12 @@ ob_start();
 display_user_and_availbale_badges($USER->id, $courseid);
 $out = ob_get_contents();
 ob_end_clean();
-if ($out != '<ul class="badges"></ul>') {
+if ($out != '') {
     echo $out;
 } else {
-    echo html_writer::tag('div', get_string('no_badges_available', 'format_mooin'), array('class' => 'oc-no-badges'));
+    //echo html_writer::tag('div', get_string('no_badges_available', 'format_mooin'), array('class' => 'oc-no-badges'));
+    echo html_writer::tag('div', '', array('class' => 'no-badges-img'));
+
 }
 
 // Badges, die man erreichen kann (in diesem Kurs und Plattformbadges)
@@ -142,6 +144,8 @@ if ($out != '<ul class="badges"></ul>') {
 // echo html_writer::tag('div', get_string('in_format_mooin', 'format_mooin'), array('class' => 'oc_badges_text'));
 // display_badges(0, 0);
 
+
+/*
 // in den letzten 24h/7d an Teilnehmer diesen Kurses verliehene Badges
 $out = html_writer::tag('div', get_string('awarded_badges', 'format_mooin'), array('class' => 'oc_badges_text'));
 echo html_writer::tag('h2', $out);
@@ -167,5 +171,6 @@ echo html_writer::end_div(); //close outer div
 //display_highscore($courseid);
 //echo html_writer::tag('div', get_string('in_format_mooin', 'format_mooin'), array('class' => 'oc_badges_text'));
 
+*/
 
 echo $OUTPUT->footer();
