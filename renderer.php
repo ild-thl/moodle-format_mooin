@@ -282,7 +282,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $canviewhidden = has_capability('moodle/course:viewhiddensections', context_course::instance($course->id))
             or !$course->hiddensections;
 
-        $links = array('previous' => '', 'next' => '');
+        $links = array('previous' => '', 'previous_top' => '', 'next' => '', 'next_top' => '');
         $back = $sectionno - 1;
 
         if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $sections[$back]->id))) {
@@ -300,8 +300,11 @@ class format_mooin_renderer extends format_section_renderer_base {
                     $params = array('class' => 'dimmed_text');
                 }
                 $previouslink = html_writer::tag('span', $this->output->larrow(), array('class' => 'larrow'));
-                $previouslink .= get_section_name($course, $sections[$back]);
+                $previouslink .= get_string('previous_lesson','format_mooin');
                 $links['previous'] = html_writer::link(course_get_url($course, $back), $previouslink, $params);
+
+                $previouslink_top = html_writer::tag('span', $this->output->larrow(), array('class' => 'larrow'));
+                $links['previous_top'] = html_writer::link(course_get_url($course, $back), $previouslink_top, $params);
             }
             $back--;
         }
@@ -323,9 +326,12 @@ class format_mooin_renderer extends format_section_renderer_base {
                 if (!$sections[$forward]->visible) {
                     $params = array('class' => 'dimmed_text');
                 }
-                $nextlink = get_section_name($course, $sections[$forward]);
+                $nextlink = get_string('next_lesson','format_mooin');
                 $nextlink .= html_writer::tag('span', $this->output->rarrow(), array('class' => 'rarrow'));
                 $links['next'] = html_writer::link(course_get_url($course, $forward), $nextlink, $params);
+
+                $nextlink_top = html_writer::tag('span', $this->output->rarrow(), array('class' => 'rarrow'));
+                $links['next_top'] = html_writer::link(course_get_url($course, $forward), $nextlink_top, $params);
             }
             $forward++;
         }
@@ -475,8 +481,8 @@ class format_mooin_renderer extends format_section_renderer_base {
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
         $sectiontitle = '';
         $sectiontitle .= html_writer::start_tag('div', array('id' => 'custom-top-nav', 'class' => 'section-navigation navigationtitle'));
-        $sectiontitle .= html_writer::tag('span', $sectionnavlinks['previous'], array('class' => 'mdl-left'));
-        $sectiontitle .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'mdl-right'));
+        $sectiontitle .= html_writer::tag('span', $sectionnavlinks['previous_top'], array('class' => 'mdl-left')); //Screenreader?
+        $sectiontitle .= html_writer::tag('span', $sectionnavlinks['next_top'], array('class' => 'mdl-right'));
         // Title attributes
         $classes = 'sectionname';
         if (!$thissection->visible) {
@@ -727,7 +733,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         if ($section->uservisible) {
             if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
-                $title = html_writer::tag('h2', $chapter->title);
+                $title = $chapter->title;
             }
             else {
                 $title = html_writer::tag('a', $title,

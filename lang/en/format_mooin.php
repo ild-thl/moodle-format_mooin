@@ -119,3 +119,5 @@ $string['all_news_mobile'] = 'Alle Beiträge';
 $string['by'] = 'von ';
 $string['latest_contribution_mobile'] = 'Neuster Beitrag:';
 $string['show_all_infos'] = ' Alle Infos anzeigen';
+$string['next_lesson'] = 'Nächste Lektion';
+$string['previous_lesson'] = 'Vorherige Lektion';
