@@ -26,6 +26,9 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/course/format/renderer.php');
 require_once('locallib.php');
 
+global $PAGE;
+$PAGE->requires->js_call_amd('format_mooin/complete_section');
+
 /**
  * Basic renderer for mooin format.
  *
@@ -494,26 +497,38 @@ class format_mooin_renderer extends format_section_renderer_base {
           // Progress bar anzeige
           $check_sequence = $DB->get_records('course_sections', ['course' => $course->id, 'section' => $displaysection], '', 'sequence');
           $val = array_values($check_sequence);
+          //var_dump($val[0]);
           if (!$this->page->user_is_editing() &&  !empty($val[0]->sequence) ) {
-              $v = get_section_grades($displaysection);
-              $ocp = round($v);
-              if ($ocp != -1) {
-                  $sectiontitle .= '<br />' . get_progress_bar($ocp, 100, $displaysection);
-              } else {
-                  $completionthistile = section_progress($modinfo->sections[$displaysection], $modinfo->cms);
+                // Get the right section from DB to the use in the get_progress
+                // Check if the sequence in course_sections is a list or a single element
+                
+                $element = $DB->get_record('course_modules', ['id'=> $val[0]->sequence], 'section', IGNORE_MISSING);
+                //echo "Element";
+                //var_dump($element);
+                $sec_in_course_modules = $element->section;
+                $v =  get_progress($course->id, $sec_in_course_modules); // get_section_grades($displaysection);
+                // var_dump($sec_in_course_modules);
 
-                  // use the completion_indicator to show the right percentage in secton
-                  $section_percent = completion_indicator($completionthistile['completed'], $completionthistile['outof'], true, false);
+                if (gettype($v) == 'array') {
+                    $ocp = round($v['percentage']);
+                } else {
+                    $ocp = round($v);
+                }
+                
+                if ($ocp != -1) {
+                    $sectiontitle .= '<br />' . get_progress_bar($ocp, 100, $sec_in_course_modules); // $displaysection
+                } else {
+                    
+                    $completionthistile = section_progress($modinfo->sections[$displaysection], $modinfo->cms); // $sec_in_course_modules
+                    // var_dump($completionthistile);
+                    // use the completion_indicator to show the right percentage in secton
+                    $section_percent = completion_indicator($completionthistile['completed'], $completionthistile['outof'], true, false);
 
-                  $sectiontitle .= '<br />' . get_progress_bar($section_percent['percent'], 100, $displaysection);
-              }
+                    $sectiontitle .= '<br />' . get_progress_bar($section_percent['percent'], 100, $sec_in_course_modules); // $displaysection
+                }
           }
 
         $sectiontitle .= html_writer::end_tag('div');
-
-
-
-
 
         echo $sectiontitle;
         // Now the list of sections..
@@ -559,14 +574,18 @@ class format_mooin_renderer extends format_section_renderer_base {
             } else {
                 //  Button bar
                 $bar = '';
-                $q = $USER->id .' ' . $course->id . ' ' . $displaysection;
+                $element = $DB->get_record('course_modules', ['id'=> $val[0]->sequence], 'section', IGNORE_MISSING);
+                //echo "Element";
+                //var_dump($element);
+                $sec_in_course_modules = $element->section;
+                $q = $USER->id . '-' . $course->id . '-' . $displaysection; // $sec_in_course_modules
                 $check_in_up = $DB->get_record('user_preferences', ['value' => $q]);
                 if (!$check_in_up) {
                     if (!$this->page->user_is_editing()) {
                         // $bar .= html_writer::start_tag('form', array( 'style' => 'margin-top: 40px;')); // 'method' => 'post',
-                        $bar .= html_writer::start_tag('button', array('class'=>'bottom_complete btn btn-outline-secondary', 'id' => 'id_bottom_complete-' .$displaysection, 'name'=> 'btnComplete-'.$displaysection,'value' => 'Seite als bearbeitet markieren' )); // , 'type' => 'submit', 'onclick' => complete_section( $section, $course->id, $USER->id)
-
-                        $bar .= html_writer::start_span('bottom_button') . 'Seite als bearbeitet markieren' . html_writer::end_span();
+                        $bar .= html_writer::start_tag('button', array('class'=>'btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Seite als bearbeitet markieren', )); // , 'type' => 'submit'
+                                                
+                        $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Seite als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('button');
                         //$bar .= html_writer::end_tag('form');
                     }
@@ -574,9 +593,9 @@ class format_mooin_renderer extends format_section_renderer_base {
                     break;
                 } else {
                     if (!$this->page->user_is_editing()) {
-                        $bar .= html_writer::start_tag('div', array('class'=>'complete_section btn btn-outline-secondary', 'id' => 'id_bottom_complete-' .$displaysection, 'style' => 'margin-top: 40px;'));
-
-                        $bar .= html_writer::start_span('bottom_button') . 'Seite als bearbeitet markieren' . html_writer::end_span();
+                        $bar .= html_writer::start_tag('div', array('class'=>'comp_btn btn btn-outline-secondary complete_section-' .$sec_in_course_modules, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'style' => 'margin-top: 40px;'));
+                
+                        $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Seite als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('div');
                     }
                     echo $bar;
@@ -604,7 +623,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         // Close single-section div.
         echo html_writer::end_tag('div');
     }
-
+ 
     /**
      * Generate the content to displayed on the right part of a section
      * before course modules are included

@@ -29,6 +29,8 @@ require_once('../mooin/locallib.php');
 
 global $DB, $PAGE, $USER;
 
+$PAGE->requires->js_call_amd('format_mooin/complete_section');
+
 $contextid    = optional_param('contextid', 0, PARAM_INT); // One of this or.
 $courseid     = optional_param('id', 0, PARAM_INT); // This are required. required_param('id', PARAM_INT);
 
@@ -39,27 +41,15 @@ if ($contextid) {
     }
     $course = $DB->get_record('course', array('id' => $context->instanceid), '*', MUST_EXIST);
 } else {
-    $course = $DB->get_record('course', array('id' => $_POST['courseid']), '*', MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $_POST['course_id']), '*', MUST_EXIST);
     $context = context_course::instance($course->id, MUST_EXIST);
 }
 
 $courseformat = course_get_format($course);
 $course_new = $courseformat->get_course();
 
-// $url = new moodle_url('/course/format/mooin/complete_section.php');
-// Get all the section list from DB
-$sections = ($DB->count_records('course_sections', ['course' =>$course->id])) - 1;
+// $url = new moodle_url('/course/view.php', array('id' => $course->id));
 
-echo 'Perial';
 // Get the POST Data from complete_section.js
-$sec = intval($_POST['section']);
-complete_section($USER->id, $course->id, $sec);
-// LOOP throught the section list to get the right one and change the state from progress bar
-/* for ($i=1; $i <= $sections; $i++) { 
-    parse_str($i, $out);
-    if ( $i == $sec) { // array_key_exists($out, $_POST) && 
-        echo($sections);
-        echo $i;
-        
-    }
-} */
+$sec = intval($_POST['section_inside_course']);
+complete_section($sec, $course->id, $USER->id);
