@@ -24,25 +24,53 @@ define(['jquery', 'core/notification'], function($, Notification) {
     Y.log('Test in complete_section');
     // Y.log($('.bottom_complete'));
     var section_number = [];
-    $('.bottom_complete').click(function(event) {
+    var section_inside_course = [];
+    $('.btn_comp').click(function(event) {
+        // Y.log(event);
         section_number = event.currentTarget.id.substring(19); // .explode('-', event.currentTarget.id);
-        Y.log(section_number);
-        var value = $("#mooin4ection" + section_number);
-        value.css('width', '100%');
-        var data = {};
-        data.section = section_number;
+        section_inside_course = event.currentTarget.name.split('-');
+        // Y.log(section_inside_course[1]);
+       // Var percentage = 100;
+        // Y.log(section_number);
+        // Var value = $("#mooin4ection" + section_number);
+        // Var another_value = $('#mooin4ection-text-' + section_number);
+        // Var btn_bottom = $('.bottom_complete-' + section_number);
+        var course_id = event.currentTarget.classList[3].split('-');
+        // Var disable_btn_button = $('#id_bottom_complete-' + section_number);
+        // Var show_percentage_text = String(percentage + '% der Lektion bearbeitet');
+
+        var value = String('mooin4ection' + section_number);
+        var another_value = String('mooin4ection-text-' + section_number);
+        var disable_btn_button = String('id_bottom_complete-' + section_number);
+        var percentage = '100%';
+        var percentage_text = String(percentage + '% der Lektion bearbeitet');
+
+
+        var dataSend = {};
+        dataSend.section = section_number;
+        dataSend.percentage = percentage;
+        dataSend.section_inside_course = section_inside_course[1];
+        dataSend.course_id = course_id[1];
+        // Y.log(dataSend);
         $.ajax({
             type: 'POST',
-            url: 'complete_section.php',
-            data: data,
-            success: (data) => {
-                Y.log(data);
+            url: 'format/mooin/complete_section.php', // Format/mooin/
+            data: dataSend,
+            success: (dataSend) => {
+                Y.log(dataSend);
                 Notification.addNotification({
                     message: ' You have successfully complete this section',
                     type: 'success'
                 });
                 // Window.location.reload();
             },
+            error: function(xhr, status, error) {
+                Y.log(error);
+            }
+        }).done(function () {
+            $('#' + value, window.parent.document).css('width', percentage);
+            $('#' + another_value, window.parent.document).html(percentage_text);
+            $('#' + disable_btn_button, window.parent.document).css('cursor', 'unset');
         });
     });
 });

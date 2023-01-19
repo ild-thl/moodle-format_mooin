@@ -2,25 +2,6 @@
 // require_once('../../../mod/forum/lib.php');
 
 /**
- * Get  Progress bar
- */
-function get_progress_bar($p, $width, $sectionid = 0) {
-    //$p_width = $width / 100 * $p;
-    $result = html_writer::tag('div',
-                html_writer::tag('div',
-                    html_writer::tag('div',
-                '',
-                array('style' => 'width: ' . $p . '%; height: 15px; border: 0px; background: #7fb99f; text-align: center; float: left; border-radius: 12px', 'id' => 'mooin4ection' . $sectionid)
-            ),
-            array('style' => 'width: ' . $width . '%; height: 15px; border: 1px; background: #C4DDD2; solid #aaa; margin: 0 auto; padding: 0;  border-radius: 12px')
-        ) .
-            // html_writer::tag('div', $p . '%', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);margin-top: -8px;left: 50%;')) .
-            html_writer::tag('div', '', array('style' => 'clear: both;'))  .
-            html_writer::start_span('',['style' => 'float: left;font-size: 12px; margin-left: 12px']) . $p .' % bearbeitet' . html_writer::end_span(), //, 'id' => 'oc-progress-text-' . $sectionid
-            array( 'style' => 'position: absolute', 'class' => 'mooin-progress-bar')); // 'class' => 'oc-progress-div',
-    return $result;
-}
-/**
  * Count the number of course modules with completion tracking activated
  * in this section, and the number which the student has completed
  * Exclude labels if we are using sub tiles, as these are not checkable
@@ -30,6 +11,9 @@ function get_progress_bar($p, $width, $sectionid = 0) {
  * @return array with the completion data x items complete out of y
  */
 function section_progress($sectioncmids, $coursecms) {
+    /* global $PAGE;
+    $PAGE->requires->js_call_amd('format_mooin/complete_section'); */
+
     $completed = 0;
     $outof = 0;
 
@@ -37,13 +21,13 @@ function section_progress($sectioncmids, $coursecms) {
     foreach ($sectioncmids as $cmid) {
 
         $thismod = $coursecms[$cmid];
-        // var_dump($COURSE->id);
+        
         if ($thismod->uservisible && !$thismod->deletioninprogress) {
-
-            if ($thismod->modname == 'label') { // $this->completioninfo->is_enabled($thismod)
+            // var_dump($thismod);
+            if ($thismod->modname == 'label') { // $this->completioninfo->is_enabled($thismod) ||  && isset($_POST['section'])
                 $outof = 1;
 
-                $com_value = $USER->id . ' ' . $COURSE->id . ' ' . $thismod->sectionnum;
+                $com_value = $USER->id . '-' . $COURSE->id . '-' . $thismod->sectionnum;  //
                 $value_pref = $DB->record_exists('user_preferences', array('value' => $com_value));
                 if ($value_pref) {
                     $completed = 1;
@@ -91,97 +75,236 @@ function completion_indicator($numcomplete, $numoutof, $aspercent, $isoverall) {
  * @param int $userid (argument not used)
  * @param int $courseid (argument not used)
  */
-function complete_section($userid, $cid, $section) {
+function complete_section($section, $cid, $userid) {
     global $DB;
+    /* $PAGE;
+    $PAGE->requires->js_call_amd('format_mooin/complete_section'); */
 
     $res = false;
-        $q = $userid .' ' . $cid. ' ' .$section;
-    $value_check = $DB->record_exists('user_preferences', array('value' => $q));
-        $id = $DB->count_records('user_preferences', array('userid'=> $userid));
+    // if (isset($_POST['section'])) {
+         // Make a DB save into table user_preference
+        $label_complete = $userid . '-' . $cid . '-' . $section;
+        //$DB->insert_record('user_preferences', ['userid'=> $userid, 'name'=> 'section_progress_label' . $label_complete, 'value'=> $label_complete], true, false);
 
+        // $q = $userid .' ' . $cid. ' ' .$section;
+        $value_check = $DB->record_exists('user_preferences', array('value' => $label_complete));
+            $id = $DB->count_records('user_preferences', array('userid'=> $userid));
 
-        if ( array_key_exists('btnComplete-'.$section, $_POST)) { // isset($_POST["id_bottom_complete-".$section])
-        $res = true;
-        // echo ' Inside Complete Section '. $res;
-        $values = new stdClass();
-        $values->id = $id + 1;
-        $values->userid = $userid;
-            $values->name = 'section_progess_with_text'.$q;
-        $values->value = $q;
+        
+        // if ( array_key_exists('btnComplete-'.$section, $_POST)) { // isset($_POST["id_bottom_complete-".$section]) ||  array_key_exists('btnComplete-'.$section
+            
+            $res = true;
+                // echo ' Inside Complete Section '. $res;
+            $values = new stdClass();
+            $values->id = $id + 1;
+            $values->userid = $userid;
+            $values->name = 'section_progress_label-' . $label_complete;
+            $values->value = $label_complete;
 
-        if (!$value_check) {
+            if (!$value_check) {
                 $DB->insert_record('user_preferences',$values, true, false );
-        }
+            }
 
-    }
-    return $res;
+        // }
+    
+    //}
+   return $res;
 }
-/**
- * get the section grade function
- */
-function get_section_grades(&$section) {
-    global $DB, $CFG, $USER, $COURSE, $SESSION;
-    require_once($CFG->libdir . '/gradelib.php');
+    /**
+     * get the section grade function
+    */
+    function get_section_grades(&$section) {
+        global $DB, $CFG, $USER, $COURSE, $SESSION;
+        require_once($CFG->libdir . '/gradelib.php');
 
-    if (isset($section)) {
-        // $mods = get_course_section_mods($COURSE->id, $section);//print_object($mods);
-        // Find a way to get the right section from the DB
+        if (isset($section)) {
+            // $mods = get_course_section_mods($COURSE->id, $section);//print_object($mods);
+            // Find a way to get the right section from the DB
 
-        $sec = $DB->get_record_sql("SELECT cs.id
-                        FROM {course_sections} cs
-                        WHERE cs.course = ? AND cs.section = ?", array($COURSE->id, $section));
+            $sec = $DB->get_record_sql("SELECT cs.id
+                            FROM {course_sections} cs
+                            WHERE cs.course = ? AND cs.section = ?", array($COURSE->id, $section));
 
-        /*  var_dump($sec);
-            echo('SEC.'); */
-        $mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
-                        FROM {modules} m, {course_modules} cm
-                    WHERE cm.course = ? AND cm.section= ? AND cm.completion !=0 AND cm.module = m.id AND m.visible = 1", array($COURSE->id, (int)$sec->id));
+            $mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
+                            FROM {modules} m, {course_modules} cm
+                        WHERE cm.course = ? AND cm.section= ? AND cm.completion !=0 AND cm.module = m.id AND m.visible = 1", array($COURSE->id, (int)$sec->id));
 
 
-        $percentage = 0;
-        $mods_counter = 0;
-        $max_grade = 10.0;
+            $percentage = 0;
+            $mods_counter = 0;
 
-        foreach ($mods as $mod) {
-            if ($mod->visible == 1) { // ($mod->modname == 'hvp') &&
-                $skip = false;
+            foreach ($mods as $mod) {
+                if ($mod->visible == 1) { // ($mod->modname == 'hvp') &&
+                    $skip = false;
 
-                if (isset($mod->availability)) {
-                    $availability = json_decode($mod->availability);
-                    foreach ($availability->c as $criteria) {
-                        if ($criteria->type == 'language' && ($criteria->id != $SESSION->lang)) {
-                            $skip = true;
+                    if (isset($mod->availability)) {
+                        $availability = json_decode($mod->availability);
+                        foreach ($availability->c as $criteria) {
+                            if ($criteria->type == 'language' && ($criteria->id != $SESSION->lang)) {
+                                $skip = true;
+                            }
                         }
                     }
-                }
-                if (!$skip) {
-                    $grading_info = grade_get_grades($mod->course, 'mod', $mod->modname, $mod->instance, $USER->id); // 'hvp'
-                        $grading_info = (object)($grading_info);// new, convert an array to object
-                    if ($mod->modname == 'forum') {
-                        $user_grade = $grading_info->items[1]->grades[$USER->id]->grade;
-                    } else {
-                        $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
-                    }
+                    if (!$skip) {
+                        $grading_info = grade_get_grades($mod->course, 'mod', $mod->modname, $mod->instance, $USER->id); // 'hvp'
+                            $grading_info = (object)($grading_info);// new, convert an array to object
+                        if ($mod->modname == 'forum') {
+                            $user_grade = $grading_info->items[1]->grades[$USER->id]->grade;
+                        } else {
+                            $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
+                        }
 
-                    $percentage += $user_grade;
-                    $mods_counter++;
-                    // var_dump($grading_info->items[0]);
+                        $percentage += $user_grade;
+                        $mods_counter++;
+                        // var_dump($grading_info->items[0]);
+                    }
                 }
             }
-        }
 
-        if ($mods_counter != 0) {
+            if ($mods_counter != 0) {
 
-            return ($percentage / $mods_counter) * $max_grade; //$percentage * $mods_counter; // $percentage / $mods_counter
+                return ($percentage / $mods_counter);
+            } else {
+                return -1;
+            }
         } else {
             return -1;
         }
-    } else {
-        return -1;
     }
-}
 
+    // Test 
+    /**
+     * Get the section grade from hvp activity
+     * @parameter int section
+     * return int
+    */
+    function get_progress($courseId, $sectionId) {
+        global $DB, $CFG, $USER, $SESSION, $PAGE;
+        require_once($CFG->libdir . '/gradelib.php');
+        
 
+        /* if (!$module = $DB->get_record('modules', array('name' => 'hvp'))) {
+            return false;
+        } */
+
+        // $cm = $DB->get_records('course_modules', array('section' => $sectionId, 'course' => $courseId, 'module' => $module->id));
+        /* $sec = $DB->get_record_sql("SELECT cs.id
+                            FROM {course_sections} cs
+                            WHERE cs.course = ? AND cs.section = ?", array($courseId, $section)); */
+
+        $cm = $DB->get_records_sql("SELECT cm.*, m.name as modname
+                    FROM {modules} m, {course_modules} cm
+                    WHERE cm.course = ? AND cm.section= ? AND cm.module = m.id AND cm.completion >=0 ", array($courseId, $sectionId)); // AND m.visible = 1
+   
+        if (count($cm) == 0) {
+            return false;
+            /* $progress = array('sectionid' => $sectionId, 'percentage' => 0);
+            return $progress; */
+        }
+
+        if(isset($SESSION->lang)) {
+            $user_lang = $SESSION->lang;
+        } else {
+            $user_lang = $USER->lang;
+        }
+
+        //var_dump($cm);
+        if (isset($sectionId)) {
+            $percentage = 0;
+            $mods_counter = 0;
+
+            foreach ($cm as $mod) {
+                    if ($mod->visible == 1) {
+                        $skip = false;
+        
+                        if (isset($mod->availability)) {
+                            $availability = json_decode($mod->availability);
+                            foreach ($availability->c as $criteria) {
+                                if ($criteria->type == 'language' && ($criteria->id != $user_lang)) {
+                                    $skip = true;
+                                }
+                            }
+                        }
+        
+                        if ($mod->completion == 0) {
+                            $skip = true;
+                        }
+        
+                        if (!$skip) {
+                            $grading_info = grade_get_grades($mod->course, 'mod', $mod->modname, $mod->instance, $USER->id); // hvp
+                            $grading_info = (object)$grading_info;
+                            $max_grade = 100;
+                            
+                            /* if($mod->modname == 'label') {
+                                
+                               if($mod->completion == 0 && isset($_POST['percentage'])) {
+                                    
+                               }
+                              
+                                
+                            } */
+                             if ($mod->modname != 'hvp') {
+                                
+                                if (count($grading_info->items) >= 1 && isset($grading_info->items[0]->grades[$USER->id]->grade)) {
+                                    $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
+                                } else {
+                                    
+                                    $exist_check = $DB->record_exists('course_modules_completion', ['coursemoduleid'=>$mod->id, 'userid'=>$USER->id]);
+                                    if ($exist_check) {
+                                        $user_grade = $max_grade;
+                                    }else {
+                                        $user_grade = 0;
+                                    }
+                                }
+
+                            } else {
+                                $user_grade = $grading_info->items[0]->grades[$USER->id]->grade; 
+                                
+                            }
+                            
+                            $percentage += $user_grade;
+                            $mods_counter++;     
+                            
+                        }
+                    }
+                // }
+            }
+            
+            
+            if ($mods_counter != 0) {
+                $progress = array('sectionid' => $sectionId, 'percentage' => $percentage / $mods_counter);
+                return $progress;
+            } else {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
+        // return $progress;
+    }
+
+    /**
+    * Get  Progress bar
+    */
+    function get_progress_bar($p, $width, $sectionid = 0) {
+        //$p_width = $width / 100 * $p;
+        $result = html_writer::tag('div',
+                    html_writer::tag('div',
+                        html_writer::tag('div',
+                            '',
+                            array('style' => 'width: ' . $p . '%; height: 15px; border: 0px; background: #7fb99f; text-align: center; float: left; border-radius: 12px; transition: width 2s ease-in-out', 'id' => 'mooin4ection' . $sectionid)
+                        ),
+                        array('style' => 'width: ' . $width . '%; height: 15px; border: 1px; background: #C4DDD2; solid #aaa; margin: 0 auto; padding: 0;  border-radius: 12px;') // 
+                    ) .
+                    // html_writer::tag('div', $p .'% der Lektion bearbeitet', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);margin-top: -8px;left: 50%;','id' => 'mooin4ection-text-' . $sectionid)) .
+                    html_writer::tag('div', '', array('style' => 'clear: both;'))  .
+                    // html_writer::start_span('',['style' => 'float: left;font-size: 12px; margin-left: 12px; margin-top: 5px;font-weight: bold']) . $p . '% ' . html_writer::end_span() . // .' % bearbeitet' 
+                    // html_writer::tag('div', $p .'% der Lektion bearbeitet', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);left: 50%;','id' => 'mooin4ection-text-' . $sectionid)) . // margin-top: -8px;
+                    html_writer::tag('div', $p. '% der Lektion bearbeitet', array('style' => 'float: left; font-size: 12px; display: contents; margin-left: 12px; padding-left: 5px;color: #555; width: 100%', 'id' => 'mooin4ection-text-' . $sectionid)) , // text-align: center; position: absolute;
+                    array( 'style' => 'float: left; position: absolute', 'class' => 'mooin4ection-div'));
+        return $result;
+    }
+    // End Test
 // Badges functions
 /**
  *
@@ -648,7 +771,7 @@ function news_forum_url($courseid, $forum_type){
         }
     } else {
         // TO-DO Print an image to inform the user, for not availabble news or foren
-        var_dump($new_in_course);
+        // var_dump($new_in_course);
         if ($forum_type != 'news') {
             $result = $url_disc;
         }
@@ -779,6 +902,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
     
     // Some test to fetch the forum with discussion within it
     // get the news annoucement & forum discussion for a specific news or forum
+    // var_dump($new_in_course);
     if (count($new_in_course) > 0) {
         $out = null;
         foreach ($new_in_course as $key => $value) {
@@ -940,22 +1064,20 @@ function get_course_grades($courseid) {
                 if (!$skip) {
                     $grading_info = grade_get_grades($mod->course, 'mod', $mod->modname, $mod->instance, $USER->id);
                     $grading_info = (object)($grading_info);// new, convert an array to object
-                    if ($mod->modname == 'forum') {
-                        $user_grade = $grading_info->items[1]->grades[$USER->id]->grade;
+                    /* if ($mod->modname == 'forum') {
+                        $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
                     } else {
                         $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
-                    }
+                    } */
+                    $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
                     //echo ('Grade : ' . $user_grade);
                     if ($user_grade > 0) {
                         $percentage += $user_grade ; // $user_grade
                         $mods_counter++;
                     }
-                    // var_dump($mod->completion);
-
                 }
             }
         }
-        // echo ('Percentage : '. $mods_counter);
         if ($mods_counter != 0) {
             return ($max_grade * $mods_counter) /$number_element; //$percentage * $mods_counter; // $percentage / $mods_counter
         } else {
@@ -984,7 +1106,7 @@ function get_progress_bar_course($p, $width) {
             html_writer::start_span('',['style' => 'font-weight: bold']) . $p . '%' . html_writer::end_span() .
             html_writer::start_span(' d-sm-inline d-md-none ') . ' bearbeitet' . html_writer::end_span() .
             html_writer::start_span(' d-none d-md-inline ') . ' des Kurses bearbeitet' . html_writer::end_span() , // 'style' => 'float: left;font-size: 12px; margin-left: 12px',
-            array( 'style' => 'position: relative')); // 'class' => 'oc-progress-div',
+            array( 'style' => 'float: left; position: relative')); // 'class' => 'oc-progress-div',
     return $result;
 }
 
@@ -1154,7 +1276,7 @@ function get_unread_news_forum($courseid, $forum_type) {
         foreach ($oc_foren as $oc_forum) {
             $cm = get_coursemodule_from_instance('forum', $oc_forum->id, $courseid);
 
-            $course = $DB->get_record("course", array("id" => $cm->course));
+            $course = $DB->get_record("course", array("id" => $courseid)); // $cm->course
             $oc_forum->istracked = forum_tp_is_tracked($oc_forum);
                 if ($oc_forum->istracked) {
                     $oc_forum->unreadpostscount = forum_tp_count_forum_unread_posts($cm, $course);
