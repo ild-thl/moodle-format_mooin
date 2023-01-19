@@ -10,6 +10,9 @@
       </div>
       <div class="badges-card-inner">
         {{{badges}}}
+        {{^badges}}
+        <div class="no-badges-img"></div>
+        {{/badges}}
       </div>
       <div class="primary-link d-block text-right">
         <a href="{{badges_url}}">{{#str}} see_badges, format_mooin {{/str}}</a>
@@ -23,6 +26,9 @@
       </div>
       <div class="certificate-card-inner">
         {{{certificates}}}
+        {{^certificates}}
+        <div class="no-certificates-img"></div>
+        {{/certificates}}
       </div>
       <div class="primary-link d-block text-right">
         <a href="{{certificate_url}}">{{#str}} see_badges, format_mooin {{/str}}</a>
