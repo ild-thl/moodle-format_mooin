@@ -560,7 +560,8 @@ function get_certificate($courseid) {
             $templatedata[$i]->course_name = $course->fullname;
         }
     }else {
-        $templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
+        //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
+        $templatedata = null;
     }
 
     return $templatedata;
