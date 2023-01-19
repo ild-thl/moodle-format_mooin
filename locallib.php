@@ -700,28 +700,31 @@ function show_certificat($courseid) {
     // TO-DO
     $templ = get_certificate($courseid);
     //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
-
-    if (is_string($templ) == 1) {
-        $out_certificat = $templ;
-    }
-    if (is_string($templ) != 1) {
-
-        $imageurl = 'images/certificat.png';
-            for ($i=0; $i < count($templ); $i++) {
-
-            $out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_body', 'style'=>'display:grid; cursor:pointer']); // certificat_card
-
-            $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
-
-            // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
-            $certificat_url = $templ[$i]->preview_url;
-            $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->course_name . ' ' . $templ[$i]->index);
-            // $out_certificat .= html_writer::end_tag('button'); // button
-            $out_certificat .= html_writer::end_tag('div'); // certificat_body
-
+        // var_dump($templ);
+        if (isset($templ)) {
+            if (is_string($templ) == 1) {
+                $out_certificat = $templ;
+            }
+            if (is_string($templ) != 1) {
+        
+                $imageurl = 'images/certificat.png';
+                    for ($i=0; $i < count($templ); $i++) {
+        
+                    $out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_body', 'style'=>'display:grid; cursor:pointer']); // certificat_card
+        
+                    $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
+        
+                    // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
+                    $certificat_url = $templ[$i]->preview_url;
+                    $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->course_name . ' ' . $templ[$i]->index);
+                    // $out_certificat .= html_writer::end_tag('button'); // button
+                    $out_certificat .= html_writer::end_tag('div'); // certificat_body
+        
+                }
+        
+            }
         }
-
-    }
+    
     // $out_certificat .= html_writer::end_tag('div'); // certificat_card
     // $out_certificat .= html_writer::end_tag('div'); // certificat_card
      //$out_certificat .= html_writer::end_tag('div'); // certificat_card
