@@ -169,11 +169,11 @@ $oc_counter = 0;
                 $forum->unreadpostscount = forum_tp_count_forum_unread_posts($cm, $course);
             }
 
-            $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $course->id, 'module' => $oc_m->id));
-
+            $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $course->id, 'module' => $oc_m->id), '*', $strictness=IGNORE_MISSING);
             // blocks/oc_mooc_nav/forum_view.php?showall=false&
+            // var_dump($oc_m->visible);
             $oc_link = html_writer::link(new moodle_url('/course/format/mooin/forums.php?f=' . $oc_forum->id .'&tab='.'1'), $oc_forum->name); // /mod/forum/view.php
-            if ($oc_cm->visible == 1) {
+            if (intval($oc_cm->visible) === 1) {
                 $forum_element =  html_writer::div($oc_link, 'forum_title');
                 if ($forum->unreadpostscount >= 1) {
                     $forum_unread = html_writer::div($forum->unreadpostscount, 'count-container inline-batch fw-700 mr-1');

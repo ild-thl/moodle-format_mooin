@@ -28,11 +28,13 @@ require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/completionlib.php');
 require_once('locallib.php');
 
-// Call the js complete_section
-// $PAGE->requires->js_call_amd('format_mooin/complete_section');
+
 
 global $PAGE;
 
+// Call the js complete_section
+// $PAGE->requires->js_call_amd('format_mooin/complete_section');
+ 
 // require_once($CFG->dir.'./mod/lesson.php');
 
 // Horrible backwards compatible parameter aliasing.
