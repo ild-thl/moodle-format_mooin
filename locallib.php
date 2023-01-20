@@ -639,54 +639,73 @@ function cmp_badges_desc($a, $b) {
  * @return array
  */
 function get_certificate($courseid) {
-    global $DB, $OUTPUT;
-
-    $he = $DB->get_record('modules', ['name' =>'ilddigitalcert']);
-    if ($he == true) {
-        $te = $DB->get_records('course_modules', ['module' =>$he->id]);
-    } else {
-        $te = [];
-    }
-
-
-    $ze = $DB->get_records('course_sections', ['course' =>$courseid]);
-    $course = $DB->get_record('course', ['id' =>$courseid]);
-
-    // $cm_id = 0;
+    
+    global $DB;
     $templatedata = array();
 
-    $a = 1;
-    foreach ($ze as $key => $value) {
-        foreach ($te as $k => $v) {
-            if ($value->id == $v->section) {
-                // var_dump($v);
-                $cm_id = $v->id;
-                array_push($templatedata, (object)[
-                    'id'=> $v->id,
-                    'index' => $a++,
-                    'module' => $value->module,
-                    'section' => $v->section
-                ]) ;
+    // $tables = $DB->get_tables_from_schema();
+    $table = new xmldb_table('ilddigitalcert_issued');
+    if($DB->get_manager()->table_exists($table)) {
+        $pe = $DB->get_records('ilddigitalcert_issued', ['courseid'=>$courseid], 'id', '*');
+    
+        $he = $DB->get_record('modules', ['name' =>'ilddigitalcert']);
+        
+        
+        if ($he == true) {
+            $te = $DB->get_records('course_modules', ['module' =>$he->id]);
+        } else {
+            $te = [];
+        }
+    
+        
+        $ze = $DB->get_records('course_sections', ['course' =>$courseid]);
+        $course = $DB->get_record('course', ['id' =>$courseid]);
+    
+        // var_dump($pe);
+        // $cm_id = 0;
+        
+        $a = 1;
+        foreach ($pe as $key => $value) {
+            foreach ($te as $k => $v) {
+                if ($value->cmid == $v->id) {
+                    // var_dump($v);
+                    // $cm_id = $v->id;
+                    array_push($templatedata, (object)[
+                        'id'=> $v->id,
+                        'index' => $a++,
+                        'module' => $value->module,
+                        'section' => $v->section,
+                        'enrolmentid' => $value->enrolmentid,
+                        'courseid' => $value->courseid,
+                        'certificat_id' => $value->id,
+                        'user_id' => $value->userid
+    
+                    ]) ;
+                }
             }
         }
-    }
-    if (count($templatedata) > 0) {
-        for ($i=0; $i < count($templatedata); $i++) {
-
-            $templatedata[$i]->certificate_name = 'Certificate';
+        if (count($templatedata) > 0) {
+            for ($i=0; $i < count($templatedata); $i++) {
+    
+                $templatedata[$i]->certificate_name = 'Certificate';
                 $templatedata[$i]->preview_url = (
-                new moodle_url(
-                    '/mod/ilddigitalcert/view.php',
-                    array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->section)
-                )
-            )->out(false);
-            $templatedata[$i]->course_name = $course->fullname;
+                    new moodle_url(
+                        '/mod/ilddigitalcert/view.php',
+                        array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->certificat_id, 'ueid'=>$templatedata[$i]->enrolmentid)
+                    )
+                )->out(false);
+                $templatedata[$i]->course_name = $course->fullname;
+                
+            }
+        }else {
+            //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
+            $templatedata = null;
         }
-    }else {
-        //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
+    
+        
+    } else {
         $templatedata = null;
     }
-
     return $templatedata;
 }
 /**
@@ -695,6 +714,7 @@ function get_certificate($courseid) {
  * @return array
  */
 function show_certificat($courseid) {
+    global $USER;
     $out_certificat = null;
     // if ( get_certificate($courseid)) {
     // TO-DO
@@ -707,20 +727,34 @@ function show_certificat($courseid) {
             }
             if (is_string($templ) != 1) {
         
-                $imageurl = 'images/certificat.png';
+                // $imageurl = 'images/certificat.png';
+                $out_certificat .= html_writer::start_tag('div',['class'=>'certificat_list', 'style'=>'display:flex']); // certificat_body
                     for ($i=0; $i < count($templ); $i++) {
-        
-                    $out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_body', 'style'=>'display:grid; cursor:pointer']); // certificat_card
-        
-                    $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
-        
-                    // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
-                    $certificat_url = $templ[$i]->preview_url;
-                    $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->course_name . ' ' . $templ[$i]->index);
-                    // $out_certificat .= html_writer::end_tag('button'); // button
-                    $out_certificat .= html_writer::end_tag('div'); // certificat_body
+                        if ($templ[$i]->user_id == $USER->id) {
+                            $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer']); // certificat_card
+            
+                            // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
+                
+                            // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
+                            $certificat_url = $templ[$i]->preview_url;
+                            $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->course_name . ' ' . $templ[$i]->index);
+                            // $out_certificat .= html_writer::end_tag('button'); // button
+                            $out_certificat .= html_writer::end_tag('div'); // certificat_body
+                        } else {
+                            $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer; opacity: 0.20']); // certificat_card
+            
+                        // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
+            
+                        // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
+                            $certificat_url = $templ[$i]->preview_url;
+                            $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->course_name . ' ' . $templ[$i]->index);
+                            // $out_certificat .= html_writer::end_tag('button'); // button
+                            $out_certificat .= html_writer::end_tag('div'); // certificat_body
+                        }
+                        
         
                 }
+                $out_certificat .= html_writer::end_tag('div'); // certificat_body
         
             }
         }
@@ -934,9 +968,9 @@ function get_last_forum_discussion($courseid, $forum_type) {
                 $cond_in_forum_posts = 'SELECT * FROM mdl_forum_discussions WHERE course = :id ORDER BY ID DESC LIMIT 1';
                 $param =  array('id' => $courseid );
                 $oc_f = $DB->get_record_sql($cond_in_forum_posts, $param);
-                // var_dump($oc_foren);
+                // var_dump((array)$oc_f);
                 $ar_for = (array)$oc_foren;
-                if (count($ar_for) > 1 || count($oc_f)) {
+                if (count($ar_for) > 1 || count((array)$oc_f) != 0) {
                     $unread_forum_number = get_unread_news_forum($courseid, 'genral');
                     /* if ($unread_forum_number >= 1) {
                         $out .= html_writer::start_span('count-container inline-batch fw-700 mr-1') . $unread_forum_number . html_writer::end_span(); //Notification Counter
