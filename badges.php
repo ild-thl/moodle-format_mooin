@@ -39,9 +39,14 @@ echo $OUTPUT->header();
 
 $blockrecord = $DB->get_record('block_instances', array('blockname' => 'badges', 'parentcontextid' => $context->instanceid), '*', MUST_EXIST); // oc_mooc_nav || $context->id
 
-// $blockinstance = block_instance('badges', $blockrecord); // oc_mooc_nav
+$blockinstance = block_instance('badges', $blockrecord); // oc_mooc_nav
 // $total = $blockinstance->config->capira_questions;//0;
-// $min_prozent = $blockinstance->config->capira_min;
+if (isset($blockinstance->config->capira_min)) {
+    $min_prozent = $blockinstance->config->capira_min;
+} else {
+    $min_prozent = $blockinstance->config;
+}
+
 // var_dump($blockrecord);
 $cert_m = $DB->get_record('modules', array('name' => 'simplecertificate'));
 
