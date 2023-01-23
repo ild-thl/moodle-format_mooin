@@ -431,6 +431,36 @@ class format_mooin extends format_base {
         // Return everything (nothing to hide).
         return $this->get_format_options();
     }
+
+    /**
+     * Updates the value in the database and modifies this object respectively.
+     *
+     * ALWAYS check user permissions before performing an update! Throw exceptions if permissions are not sufficient
+     * or value is not legit.
+     *
+     * @param stdClass $section
+     * @param string $itemtype
+     * @param mixed $newvalue
+     * @return \core\output\inplace_editable
+     */
+    public function inplace_editable_update_section_name($section, $itemtype, $newvalue) {
+        global $DB;
+        if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
+            $context = context_course::instance($section->course);
+            external_api::validate_context($context);
+            require_capability('moodle/course:update', $context);
+
+            $newtitle = clean_param($newvalue, PARAM_TEXT);
+            if (strval($section->name) !== strval($newtitle)) {
+                course_update_section($section->course, $section, array('name' => $newtitle));
+            }
+            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                $chapter->title = $newtitle;
+                $DB->update_record('format_mooin_chapter', $chapter);
+            }
+            return $this->inplace_editable_render_section_name($section, ($itemtype === 'sectionname'), true);
+        }
+    }
 }
 
 /**
