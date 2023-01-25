@@ -1526,3 +1526,45 @@ function get_course_chapters($courseid) {
 
     return $coursechapters;
 }
+
+function get_sections_for_chapter($chapterid) {
+    global $DB;
+    $result = '';
+    if ($chapter = $DB->get_record('format_mooin_chapter', array('id' => $chapterid))) {
+        $chapters = get_course_chapters($chapter->courseid);
+        $start = 0;
+        $end = 0;
+        foreach ($chapters as $c) {
+            if ($c->id == $chapterid) {
+                $start = $c->section;
+                continue;
+            }
+            if ($start != 0) {
+                $end = $c->section;
+                break;
+            }
+        }
+       
+        if ($start != 0) {
+            if ($end == 0) { // only 1 chapter exists
+                // TODO
+
+            }
+            else {
+                $i = $start + 1;
+                while ($i < $end) {
+                    if ($result == '') {
+                        $result .= 'section-'.$i;
+                    }
+                    else {
+                        $result .= ' section-'.$i;
+                    }
+                    $i++;
+                }
+            }
+        }
+        
+        print_object($start.'-'.$end.' sections: '.$result);
+    }
+    return $result;
+}

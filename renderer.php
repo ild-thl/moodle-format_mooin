@@ -753,13 +753,18 @@ class format_mooin_renderer extends format_section_renderer_base {
         if ($section->uservisible) {
             if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
                 $title = $chapter->title;
+                get_sections_for_chapter($chapter->id);
+                $o .= $this->output->heading($title, 3, 'section-title');
             }
             else {
                 $title = html_writer::tag('a', $title,
                     array('href' => course_get_url($course, $section->section), 'class' => $linkclasses));
+                    $o .= $this->output->heading($title, 3, 'section-title');
             }
         }
-        $o .= $this->output->heading($title, 3, 'section-title');
+        else {
+            $o .= $this->output->heading($title, 3, 'section-title');
+        }
 
         $o .= html_writer::end_tag('div');
         $o .= html_writer::end_tag('li');
