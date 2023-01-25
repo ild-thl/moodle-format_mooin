@@ -198,6 +198,7 @@ class format_mooin extends format_base {
                 if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
                     $section->name = $chapter->title;
                     $titles[$number] = $renderer->section_title_without_link($section, $course);
+                    // TODO if changing the order of chapters, also change chapter number in db
                 }
                 else {
                     $titles[$number] = $renderer->section_title($section, $course);

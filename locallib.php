@@ -1366,101 +1366,163 @@ function user_print_forum($courseid) {
     * @return string XHTML navbar
 */
 function navbar($displaysection = 0) {
-        global $COURSE, $PAGE, $OUTPUT;
-        $items = $PAGE->navbar->get_items(); //$this->page
-        $itemcount = count($items);
-        if ($itemcount === 0) {
-            return '';
-        }
+    global $COURSE, $PAGE, $OUTPUT;
+    $items = $PAGE->navbar->get_items(); //$this->page
+    $itemcount = count($items);
+    if ($itemcount === 0) {
+        return '';
+    }
 
-        $htmlblocks = array();
-        // Iterate the navarray and display each node
-        $separator = get_separator();
-        $before = '&nbsp';
-        for ($i=0;$i < $itemcount;$i++) {
-            if( $displaysection == 0) {
-                $val = $COURSE->shortname;
+    $htmlblocks = array();
+    // Iterate the navarray and display each node
+    $separator = get_separator();
+    $before = '&nbsp';
+    for ($i=0;$i < $itemcount;$i++) {
+        if( $displaysection == 0) {
+            $val = $COURSE->shortname;
+            $item = $items[$i];
+            $item->hideicon = true;
+            if ($i===0) {
+                $content = html_writer::tag('li', $OUTPUT->render($item)); // $this
+            } else
+            if($i === $itemcount - 2) {
+                $content = html_writer::tag('li', '  ');
+            }else
+            if ($i === $itemcount - 1) {
+                $content = html_writer::tag('li', '  '. ' > '.$val); // $separator.$this->render($item)
+            } else {
+                $content = '';
+            }
+        } else if (gettype($displaysection) == 'integer') {
+
+            // $val  = ' Kap. '. ' '.$displaysection .' > Lek.  '. ' ' .$displaysection .'.'. $displaysection . ':';
+            $val = ' Kap '. $displaysection . ' :' . ' Kapitel Name' .' > Lek  '. ' ' . $displaysection .'.'. $displaysection;
+            $item = $items[$i];
+            $item->hideicon = true;
+            if ($i===0) {
+                $content = html_writer::tag('li', '  '); // $this->render($item)
+            } else
+            if($i === $itemcount - 2) {
+                $content = html_writer::tag('li', '  '. $OUTPUT->render($item)); // $this
+            }else
+            if ($i === $itemcount - 1) {
+                $content = html_writer::tag('li', $before . ' > '.$val, ['class'=>'breadcrumd_in_section']); // $separator.$this->render($item)
+            } else {
+                $content = '';
+            }
+        } else if (gettype($displaysection) === 'string') {
+            if ($itemcount >= 4) {
+                $val = $displaysection;
                 $item = $items[$i];
                 $item->hideicon = true;
-                if ($i===0) {
-                    $content = html_writer::tag('li', $OUTPUT->render($item)); // $this
-                } else
-                if($i === $itemcount - 2) {
-                    $content = html_writer::tag('li', '  ');
-                }else
-                if ($i === $itemcount - 1) {
-                    $content = html_writer::tag('li', '  '. ' > '.$val); // $separator.$this->render($item)
-                } else {
+                if ($i === 0) {
+                    $content = html_writer::tag('li', $before . $OUTPUT->render($item));
+                }
+                else if ($i === $itemcount - 3) {
+                    $content = html_writer::tag('li', $before . ' > '. $OUTPUT->render($item));
+                } else if ($i === $itemcount - 2) {
+                    $content = html_writer::tag('li', $before . ' > '. $val); // $separator.$this->render($item)
+                }/*  else if($i === $itemcount - 1) {
+                    $content = html_writer::tag('li', $before . ' > '. $OUTPUT->render($item));
+                }  */else {
                     $content = '';
-                }
-            } else if (gettype($displaysection) == 'integer') {
-
-                // $val  = ' Kap. '. ' '.$displaysection .' > Lek.  '. ' ' .$displaysection .'.'. $displaysection . ':';
-                $val = ' Kap '. $displaysection . ' :' . ' Kapitel Name' .' > Lek  '. ' ' . $displaysection .'.'. $displaysection;
-                $item = $items[$i];
-                $item->hideicon = true;
-                if ($i===0) {
-                    $content = html_writer::tag('li', '  '); // $this->render($item)
-                } else
-                if($i === $itemcount - 2) {
-                    $content = html_writer::tag('li', '  '. $OUTPUT->render($item)); // $this
-                }else
-                if ($i === $itemcount - 1) {
-                    $content = html_writer::tag('li', $before . ' > '.$val, ['class'=>'breadcrumd_in_section']); // $separator.$this->render($item)
-                } else {
-                    $content = '';
-                }
-            } else if (gettype($displaysection) === 'string') {
-                if ($itemcount >= 4) {
-                    $val = $displaysection;
-                    $item = $items[$i];
-                    $item->hideicon = true;
-                    if ($i === 0) {
-                        $content = html_writer::tag('li', $before . $OUTPUT->render($item));
-                    }
-                    else if ($i === $itemcount - 3) {
-                        $content = html_writer::tag('li', $before . ' > '. $OUTPUT->render($item));
-                    } else if ($i === $itemcount - 2) {
-                        $content = html_writer::tag('li', $before . ' > '. $val); // $separator.$this->render($item)
-                    }/*  else if($i === $itemcount - 1) {
-                        $content = html_writer::tag('li', $before . ' > '. $OUTPUT->render($item));
-                    }  */else {
-                        $content = '';
-                    }
-                }
-                if ($itemcount <= 3) {
-                    $val = $displaysection;
-                    $item = $items[$i];
-                    $item->hideicon = true;
-                    if ($i == 0) {
-                        $content = html_writer::tag('li', $before . $OUTPUT->render($item));
-                    }/*
-                    else if ($i === $itemcount - 3) {
-                        $content = html_writer::tag('li', $before . ' > '. $val);
-                    } */ else if ($i == $itemcount - 1) {
-                        $content = html_writer::tag('li', $before . ' > '. $OUTPUT->render($item) ); // $separator.$this->render($item)
-                    } else if($i == $itemcount - 2) {
-                        $content = html_writer::tag('li', '');
-                    } else {
-                        $content = '';
-                    }
                 }
             }
-            /*  {
-                $content = html_writer::tag('li', $separator.$this->render($item));
-            } */
-            $htmlblocks[] = $content;
+            if ($itemcount <= 3) {
+                $val = $displaysection;
+                $item = $items[$i];
+                $item->hideicon = true;
+                if ($i == 0) {
+                    $content = html_writer::tag('li', $before . $OUTPUT->render($item));
+                }/*
+                else if ($i === $itemcount - 3) {
+                    $content = html_writer::tag('li', $before . ' > '. $val);
+                } */ else if ($i == $itemcount - 1) {
+                    $content = html_writer::tag('li', $before . ' > '. $OUTPUT->render($item) ); // $separator.$this->render($item)
+                } else if($i == $itemcount - 2) {
+                    $content = html_writer::tag('li', '');
+                } else {
+                    $content = '';
+                }
+            }
         }
+        /*  {
+            $content = html_writer::tag('li', $separator.$this->render($item));
+        } */
+        $htmlblocks[] = $content;
+    }
 
-        //accessibility: heading for navbar list  (MDL-20446)
-        $navbarcontent = html_writer::tag('span', get_string('pagepath'),
-                array('class' => 'accesshide', 'id' => 'navbar-label'));
-        // $navbarcontent .= html_writer::start_tag('nav', array('aria-labelledby' => 'navbar-label'));
+    //accessibility: heading for navbar list  (MDL-20446)
+    $navbarcontent = html_writer::tag('span', get_string('pagepath'),
+            array('class' => 'accesshide', 'id' => 'navbar-label'));
+    // $navbarcontent .= html_writer::start_tag('nav', array('aria-labelledby' => 'navbar-label'));
 
-        $navbarcontent .= html_writer::tag('nav',
-                html_writer::tag('ul', join('', $htmlblocks),array('class' => "navmenu", 'id'=> 'menu'),array('aria-labelledby' => 'navbar-label')),
-                );
-        // $navbarcontent .= html_writer::start_tag('ul', array('id' => "menu"));
-        // XHTML
-        return $navbarcontent;
+    $navbarcontent .= html_writer::tag('nav',
+            html_writer::tag('ul', join('', $htmlblocks),array('class' => "navmenu", 'id'=> 'menu'),array('aria-labelledby' => 'navbar-label')),
+            );
+    // $navbarcontent .= html_writer::start_tag('ul', array('id' => "menu"));
+    // XHTML
+    return $navbarcontent;
+}
+
+function unset_chapter($sectionid) {
+    global $DB;
+
+    $DB->delete_records('format_mooin_chapter', array('sectionid' => $sectionid));
+    if ($csection = $DB->get_record('course_sections', array('id' => $sectionid))) {
+        sort_course_chapters($csection->course);
+    }
+}
+
+function set_chapter($sectionid) {
+    global $DB;
+    
+    if ($DB->get_record('format_mooin_chapter', array('sectionid' => $sectionid))) {
+        return;
+    }
+
+    if ($csection = $DB->get_record('course_sections', array('id' => $sectionid))) {
+        $csectiontitle = $csection->name;
+    }
+    else {
+        return;
+    }
+
+    $chapter = new stdClass();
+    $chapter->courseid = $csection->course;
+    $chapter->title = $csectiontitle;
+    $chapter->sectionid = $sectionid;
+    $chapter->chapter = 0;
+    $DB->insert_record('format_mooin_chapter', $chapter);
+
+    sort_course_chapters($csection->course);
+}
+
+function sort_course_chapters($courseid) {
+    global $DB;
+    $coursechapters = get_course_chapters($courseid);
+    $number = 0;
+    foreach ($coursechapters as $coursechapter) {
+        $number++;
+        if ($existingcoursechapter = $DB->get_record('format_mooin_chapter', array('id' => $coursechapter->id))) {
+            $existingcoursechapter->chapter = $number;
+            $DB->update_record('format_mooin_chapter', $existingcoursechapter);
+        }
+    }
+}
+
+function get_course_chapters($courseid) {
+    global $DB;
+
+    $sql = 'SELECT c.*, s.section 
+              FROM {format_mooin_chapter} as c, {course_sections} as s 
+             WHERE s.course = :courseid 
+               and s.id = c.sectionid 
+          order by s.section asc';
+
+    $params = array('courseid' => $courseid);
+
+    $coursechapters = $DB->get_records_sql($sql, $params);
+
+    return $coursechapters;
 }
