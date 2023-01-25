@@ -1546,25 +1546,33 @@ function get_sections_for_chapter($chapterid) {
         }
        
         if ($start != 0) {
-            if ($end == 0) { // only 1 chapter exists
-                // TODO
-
+            if ($end == 0) {
+                $end = get_last_section($chapter->courseid) + 1;
             }
-            else {
-                $i = $start + 1;
-                while ($i < $end) {
-                    if ($result == '') {
-                        $result .= 'section-'.$i;
-                    }
-                    else {
-                        $result .= ' section-'.$i;
-                    }
-                    $i++;
+            $i = $start + 1;
+            while ($i < $end) {
+                if ($result == '') {
+                    $result .= 'section-'.$i;
                 }
+                else {
+                    $result .= ' section-'.$i;
+                }
+                $i++;
             }
         }
-        
-        print_object($start.'-'.$end.' sections: '.$result);
     }
     return $result;
+}
+
+function get_last_section($courseid) {
+    global $DB;
+    
+    $lastsection = 0;
+    $count = $DB->count_records('course_sections', array('course' => $courseid));
+
+    if ($count > 0) {
+        $lastsection = $count - 1;
+    }
+
+    return $lastsection;
 }

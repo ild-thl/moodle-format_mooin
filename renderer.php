@@ -736,6 +736,8 @@ class format_mooin_renderer extends format_section_renderer_base {
             $classattr .= ' current';
         }
 
+        $chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id));
+
         $title = get_section_name($course, $section);
         $o = '';
         $o .= html_writer::start_tag('li', [
@@ -751,10 +753,16 @@ class format_mooin_renderer extends format_section_renderer_base {
         $o .= html_writer::start_tag('div', array('class' => 'content'));
 
         if ($section->uservisible) {
-            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+            if ($chapter) {
                 $title = $chapter->title;
-                get_sections_for_chapter($chapter->id);
-                $o .= $this->output->heading($title, 3, 'section-title');
+                $sectionids = get_sections_for_chapter($chapter->id);
+                $h = $this->output->heading($title, 3, 'section-title');
+                $o .= html_writer::tag('a', $h,
+                    array('href' => '.multi',
+                          'data-toggle' => 'collapse',
+                          'role' => 'button',
+                          'area-expanded' => 'false',
+                          'area-controls' => $sectionids));
             }
             else {
                 $title = html_writer::tag('a', $title,
