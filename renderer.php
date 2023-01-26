@@ -761,8 +761,8 @@ class format_mooin_renderer extends format_section_renderer_base {
                     array('href' => '.multi',
                           'data-toggle' => 'collapse',
                           'role' => 'button',
-                          'area-expanded' => 'false',
-                          'area-controls' => $sectionids));
+                          'aria-expanded' => 'false',
+                          'aria-controls' => $sectionids));
             }
             else {
                 $title = html_writer::tag('a', $title,
