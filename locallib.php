@@ -21,7 +21,7 @@ function section_progress($sectioncmids, $coursecms) {
     foreach ($sectioncmids as $cmid) {
 
         $thismod = $coursecms[$cmid];
-        
+
         if ($thismod->uservisible && !$thismod->deletioninprogress) {
             // var_dump($thismod);
             if ($thismod->modname == 'label') { // $this->completioninfo->is_enabled($thismod) ||  && isset($_POST['section'])
@@ -90,9 +90,9 @@ function complete_section($section, $cid, $userid) {
         $value_check = $DB->record_exists('user_preferences', array('value' => $label_complete));
             $id = $DB->count_records('user_preferences', array('userid'=> $userid));
 
-        
+
         // if ( array_key_exists('btnComplete-'.$section, $_POST)) { // isset($_POST["id_bottom_complete-".$section]) ||  array_key_exists('btnComplete-'.$section
-            
+
             $res = true;
                 // echo ' Inside Complete Section '. $res;
             $values = new stdClass();
@@ -106,7 +106,7 @@ function complete_section($section, $cid, $userid) {
             }
 
         // }
-    
+
     //}
    return $res;
 }
@@ -172,7 +172,7 @@ function complete_section($section, $cid, $userid) {
         }
     }
 
-    // Test 
+    // Test
     /**
      * Get the section grade from hvp activity
      * @parameter int section
@@ -181,7 +181,7 @@ function complete_section($section, $cid, $userid) {
     function get_progress($courseId, $sectionId) {
         global $DB, $CFG, $USER, $SESSION, $PAGE;
         require_once($CFG->libdir . '/gradelib.php');
-        
+
 
         /* if (!$module = $DB->get_record('modules', array('name' => 'hvp'))) {
             return false;
@@ -195,7 +195,7 @@ function complete_section($section, $cid, $userid) {
         $cm = $DB->get_records_sql("SELECT cm.*, m.name as modname
                     FROM {modules} m, {course_modules} cm
                     WHERE cm.course = ? AND cm.section= ? AND cm.module = m.id AND cm.completion >=0 ", array($courseId, $sectionId)); // AND m.visible = 1
-   
+
         if (count($cm) == 0) {
             return false;
             /* $progress = array('sectionid' => $sectionId, 'percentage' => 0);
@@ -216,7 +216,7 @@ function complete_section($section, $cid, $userid) {
             foreach ($cm as $mod) {
                     if ($mod->visible == 1) {
                         $skip = false;
-        
+
                         if (isset($mod->availability)) {
                             $availability = json_decode($mod->availability);
                             foreach ($availability->c as $criteria) {
@@ -225,30 +225,30 @@ function complete_section($section, $cid, $userid) {
                                 }
                             }
                         }
-        
+
                         if ($mod->completion == 0) {
                             $skip = true;
                         }
-        
+
                         if (!$skip) {
                             $grading_info = grade_get_grades($mod->course, 'mod', $mod->modname, $mod->instance, $USER->id); // hvp
                             $grading_info = (object)$grading_info;
                             $max_grade = 100;
-                            
+
                             /* if($mod->modname == 'label') {
-                                
+
                                if($mod->completion == 0 && isset($_POST['percentage'])) {
-                                    
+
                                }
-                              
-                                
+
+
                             } */
                              if ($mod->modname != 'hvp') {
-                                
+
                                 if (count($grading_info->items) >= 1 && isset($grading_info->items[0]->grades[$USER->id]->grade)) {
                                     $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
                                 } else {
-                                    
+
                                     $exist_check = $DB->record_exists('course_modules_completion', ['coursemoduleid'=>$mod->id, 'userid'=>$USER->id]);
                                     if ($exist_check) {
                                         $user_grade = $max_grade;
@@ -258,19 +258,19 @@ function complete_section($section, $cid, $userid) {
                                 }
 
                             } else {
-                                $user_grade = $grading_info->items[0]->grades[$USER->id]->grade; 
-                                
+                                $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
+
                             }
-                            
+
                             $percentage += $user_grade;
-                            $mods_counter++;     
-                            
+                            $mods_counter++;
+
                         }
                     }
                 // }
             }
-            
-            
+
+
             if ($mods_counter != 0) {
                 $progress = array('sectionid' => $sectionId, 'percentage' => $percentage / $mods_counter);
                 return $progress;
@@ -294,11 +294,11 @@ function complete_section($section, $cid, $userid) {
                             '',
                             array('style' => 'width: ' . $p . '%; height: 15px; border: 0px; background: #7fb99f; text-align: center; float: left; border-radius: 12px; transition: width 2s ease-in-out', 'id' => 'mooin4ection' . $sectionid)
                         ),
-                        array('style' => 'width: ' . $width . '%; height: 15px; border: 1px; background: #C4DDD2; solid #aaa; margin: 0 auto; padding: 0;  border-radius: 12px;') // 
+                        array('style' => 'width: ' . $width . '%; height: 15px; border: 1px; background: #C4DDD2; solid #aaa; margin: 0 auto; padding: 0;  border-radius: 12px;') //
                     ) .
                     // html_writer::tag('div', $p .'% der Lektion bearbeitet', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);margin-top: -8px;left: 50%;','id' => 'mooin4ection-text-' . $sectionid)) .
                     html_writer::tag('div', '', array('style' => 'clear: both;'))  .
-                    // html_writer::start_span('',['style' => 'float: left;font-size: 12px; margin-left: 12px; margin-top: 5px;font-weight: bold']) . $p . '% ' . html_writer::end_span() . // .' % bearbeitet' 
+                    // html_writer::start_span('',['style' => 'float: left;font-size: 12px; margin-left: 12px; margin-top: 5px;font-weight: bold']) . $p . '% ' . html_writer::end_span() . // .' % bearbeitet'
                     // html_writer::tag('div', $p .'% der Lektion bearbeitet', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);left: 50%;','id' => 'mooin4ection-text-' . $sectionid)) . // margin-top: -8px;
                     html_writer::tag('div', $p. '% der Lektion bearbeitet', array('style' => 'float: left; font-size: 12px; display: contents; margin-left: 12px; padding-left: 5px;color: #555; width: 100%', 'id' => 'mooin4ection-text-' . $sectionid)) , // text-align: center; position: absolute;
                     array( 'style' => 'float: left; position: absolute', 'class' => 'mooin4ection-div'));
@@ -639,7 +639,7 @@ function cmp_badges_desc($a, $b) {
  * @return array
  */
 function get_certificate($courseid) {
-    
+
     global $DB;
     $templatedata = array();
 
@@ -647,23 +647,23 @@ function get_certificate($courseid) {
     $table = new xmldb_table('ilddigitalcert_issued');
     if($DB->get_manager()->table_exists($table)) {
         $pe = $DB->get_records('ilddigitalcert_issued', ['courseid'=>$courseid], 'id', '*');
-    
+
         $he = $DB->get_record('modules', ['name' =>'ilddigitalcert']);
-        
-        
+
+
         if ($he == true) {
             $te = $DB->get_records('course_modules', ['module' =>$he->id]);
         } else {
             $te = [];
         }
-    
-        
+
+
         $ze = $DB->get_records('course_sections', ['course' =>$courseid]);
         $course = $DB->get_record('course', ['id' =>$courseid]);
-    
+
         // var_dump($pe);
         // $cm_id = 0;
-        
+
         $a = 1;
         foreach ($pe as $key => $value) {
             foreach ($te as $k => $v) {
@@ -679,14 +679,14 @@ function get_certificate($courseid) {
                         'courseid' => $value->courseid,
                         'certificat_id' => $value->id,
                         'user_id' => $value->userid
-    
+
                     ]) ;
                 }
             }
         }
         if (count($templatedata) > 0) {
             for ($i=0; $i < count($templatedata); $i++) {
-    
+
                 $templatedata[$i]->certificate_name = 'Certificate';
                 $templatedata[$i]->preview_url = (
                     new moodle_url(
@@ -695,14 +695,14 @@ function get_certificate($courseid) {
                     )
                 )->out(false);
                 $templatedata[$i]->course_name = $course->fullname;
-                
+
             }
         }else {
             //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
             $templatedata = null;
         }
-    
-        
+
+
     } else {
         $templatedata = null;
     }
@@ -726,15 +726,15 @@ function show_certificat($courseid) {
                 $out_certificat = $templ;
             }
             if (is_string($templ) != 1) {
-        
+
                 // $imageurl = 'images/certificat.png';
                 $out_certificat .= html_writer::start_tag('div',['class'=>'certificat_list', 'style'=>'display:flex']); // certificat_body
                     for ($i=0; $i < count($templ); $i++) {
                         if ($templ[$i]->user_id == $USER->id) {
                             $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer']); // certificat_card
-            
+
                             // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
-                
+
                             // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
                             $certificat_url = $templ[$i]->preview_url;
                             $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->course_name . ' ' . $templ[$i]->index);
@@ -742,23 +742,23 @@ function show_certificat($courseid) {
                             $out_certificat .= html_writer::end_tag('div'); // certificat_body
                         } else {
                             $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer; opacity: 0.20']); // certificat_card
-            
+
                         // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
-            
+
                         // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
                             $certificat_url = $templ[$i]->preview_url;
                             $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->course_name . ' ' . $templ[$i]->index);
                             // $out_certificat .= html_writer::end_tag('button'); // button
                             $out_certificat .= html_writer::end_tag('div'); // certificat_body
                         }
-                        
-        
+
+
                 }
                 $out_certificat .= html_writer::end_tag('div'); // certificat_body
-        
+
             }
         }
-    
+
     // $out_certificat .= html_writer::end_tag('div'); // certificat_card
     // $out_certificat .= html_writer::end_tag('div'); // certificat_card
      //$out_certificat .= html_writer::end_tag('div'); // certificat_card
@@ -863,13 +863,16 @@ function get_last_news($courseid, $forum_type) {
             if ($forum_type == 'news') {
                 // Falls es neue Nachrichten gibt
                 $unread_news_number = get_unread_news_forum($courseid, 'news');
+                $new_news = false;
 
                 if ($unread_news_number >= 1) {
                     $out .= html_writer::start_span('count-container inline-batch fw-700 mr-1') . $unread_news_number . html_writer::end_span(); //Notification Counter
                     $out .= get_string('unread_news', 'format_mooin');
                     $out .= html_writer::link($newsurl, get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin'), 'class' =>'primary-link'));
+                    $new_news = true;
 
                 } else {
+                    $new_news = false;
                     $out .= html_writer::link($newsurl, get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin')));;
                 }
 
@@ -900,7 +903,8 @@ function get_last_news($courseid, $forum_type) {
                 'news_title' => $news_forum_post->subject,
                 'news_text' => $news_forum_post->message,
                 'discussion_url' => $forum_discussion_url,
-                'neue_news_number' => $unread_news_number
+                'neue_news_number' => $unread_news_number,
+                'new_news' => $new_news
                 //'discussion_url' => $url_disc
             ];
         }
@@ -970,8 +974,15 @@ function get_last_forum_discussion($courseid, $forum_type) {
                 $oc_f = $DB->get_record_sql($cond_in_forum_posts, $param);
                 // var_dump((array)$oc_f);
                 $ar_for = (array)$oc_foren;
+                $new_news = false;
+
                 if (count($ar_for) > 1 || count((array)$oc_f) != 0) {
                     $unread_forum_number = get_unread_news_forum($courseid, 'genral');
+                    //echo $unread_forum_number;
+
+                    if ($unread_forum_number >= 1) {
+                        $new_news = true;
+                    }
                     /* if ($unread_forum_number >= 1) {
                         $out .= html_writer::start_span('count-container inline-batch fw-700 mr-1') . $unread_forum_number . html_writer::end_span(); //Notification Counter
                         $out .= html_writer::link($url_disc, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin'), 'class' =>'primary-link'));
@@ -1046,13 +1057,22 @@ function get_last_forum_discussion($courseid, $forum_type) {
                 'news_title' => $value->subject,
                 'news_text' => $value->message,
                 'discussion_url' => $forum_discussion_url,
-                'neue_forum_number' => $unread_forum_number
+                'neue_forum_number' => $unread_forum_number,
+                'new_news' => $new_news
                 //'discussion_url' => $url_disc
             ];
         }
     } else {
         // $out = null;
-        $templatecontext = [];
+        $news_forum_id = $news_course->id;
+        $url_disc = new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
+        $templatecontext = [
+            'disc_url' => $url_disc,
+            'neue_forum_number' => 0,
+            'no_discussions_available' => true,
+            'no_news' => false,
+            'new_news' => false
+        ];
     }
     return $templatecontext;
 }
@@ -1476,7 +1496,7 @@ function unset_chapter($sectionid) {
 
 function set_chapter($sectionid) {
     global $DB;
-    
+
     if ($DB->get_record('format_mooin_chapter', array('sectionid' => $sectionid))) {
         return;
     }
@@ -1514,10 +1534,10 @@ function sort_course_chapters($courseid) {
 function get_course_chapters($courseid) {
     global $DB;
 
-    $sql = 'SELECT c.*, s.section 
-              FROM {format_mooin_chapter} as c, {course_sections} as s 
-             WHERE s.course = :courseid 
-               and s.id = c.sectionid 
+    $sql = 'SELECT c.*, s.section
+              FROM {format_mooin_chapter} as c, {course_sections} as s
+             WHERE s.course = :courseid
+               and s.id = c.sectionid
           order by s.section asc';
 
     $params = array('courseid' => $courseid);
@@ -1530,7 +1550,7 @@ function get_course_chapters($courseid) {
 function get_sections_for_chapter($chapterid) {
     global $DB;
     $result = '';
-    
+
     $sids = get_sectionids_for_chapter($chapterid);
 
     foreach ($sids as $sid) {
@@ -1547,9 +1567,74 @@ function get_sections_for_chapter($chapterid) {
     return $result;
 }
 
+function get_chapter_for_section($sectionid) {
+    global $DB;
+    $chapter = null;
+    if ($section = $DB->get_record('course_sections', array('id' => $sectionid))) {
+        $chapters = get_course_chapters($section->course);
+
+        foreach ($chapters as $c) {
+            if ($section->section > $c->section && ($chapter = null||$c->section > $chapter)) {
+                $chapter = $c->chapter;
+                echo $chapter.' ';
+            }
+        }
+    }
+    return $chapter;
+}
+
+function is_first_section_of_chapter($sectionid) {
+    global $DB;
+    $chapter = null;
+    if ($section = $DB->get_record('course_sections', array('id' => $sectionid))) {
+
+        $chapters = get_course_chapters($section->course);
+
+        foreach ($chapters as $c) {
+            if ($section->section == $c->section +1) {
+               return true;
+            }
+        }
+    }
+    return false;
+}
+
+function is_last_section_of_chapter($sectionid) {
+    global $DB;
+    $chapter = null;
+    if ($section = $DB->get_record('course_sections', array('id' => $sectionid))) {
+
+        $chapters = get_course_chapters($section->course);
+        $chapter = get_chapter_for_section($sectionid);
+
+        $start = 0;
+        $end = 0;
+        foreach ($chapters as $c) {
+            if ($c->chapter == $chapter) {
+                $start = $c->section;
+                continue;
+            }
+            if ($start != 0) {
+                $end = $c->section;
+                break;
+            }
+        }
+        if ($start != 0) {
+            if ($end == 0) {
+                $end = get_last_section($section->course) + 1;
+            }
+        }
+
+        if ($section -> section == $end-1) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function get_last_section($courseid) {
     global $DB;
-    
+
     $lastsection = 0;
     $count = $DB->count_records('course_sections', array('course' => $courseid));
 
@@ -1562,13 +1647,13 @@ function get_last_section($courseid) {
 
 function get_section_prefix($section) {
     global $DB;
-    
+
     $sectionprefix = '';
-    
+
     $parentchapter = get_parent_chapter($section);
     $sids = get_sectionids_for_chapter($parentchapter->id);
     $sectionprefix .= $parentchapter->chapter.'.'.(array_search($section->id, $sids) + 1);
-    
+
     return $sectionprefix;
 }
 
