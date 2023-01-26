@@ -529,6 +529,12 @@ class format_mooin extends format_base {
             $this->update_course_format_options(array('numsections' => $course->numsections - 1));
         }
 
+        if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+            require_once('locallib.php');
+            $DB->delete_records('format_mooin_chapter', array('id' => $chapter->id));
+            sort_course_chapters($course->id);
+        }
+
         return true;
     }
 }
