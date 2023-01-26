@@ -462,6 +462,75 @@ class format_mooin extends format_base {
             return $this->inplace_editable_render_section_name($section, ($itemtype === 'sectionname'), true);
         }
     }
+
+    /**
+     * Deletes a section
+     *
+     * Do not call this function directly, instead call {@link course_delete_section()}
+     *
+     * @param int|stdClass|section_info $section
+     * @param bool $forcedeleteifnotempty if set to false section will not be deleted if it has modules in it.
+     * @return bool whether section was deleted
+     */
+    public function delete_section($section, $forcedeleteifnotempty = false) {
+        global $DB;
+        if (!$this->uses_sections()) {
+            // Not possible to delete section if sections are not used.
+            return false;
+        }
+        if (!is_object($section)) {
+            $section = $DB->get_record('course_sections', array('course' => $this->get_courseid(), 'section' => $section),
+                'id,section,sequence,summary');
+        }
+        if (!$section || !$section->section) {
+            // Not possible to delete 0-section.
+            return false;
+        }
+
+        if (!$forcedeleteifnotempty && (!empty($section->sequence) || !empty($section->summary))) {
+            return false;
+        }
+
+        $course = $this->get_course();
+
+        // Remove the marker if it points to this section.
+        if ($section->section == $course->marker) {
+            course_set_marker($course->id, 0);
+        }
+
+        $lastsection = $DB->get_field_sql('SELECT max(section) from {course_sections}
+                            WHERE course = ?', array($course->id));
+
+        // Find out if we need to descrease the 'numsections' property later.
+        $courseformathasnumsections = array_key_exists('numsections',
+            $this->get_format_options());
+        $decreasenumsections = $courseformathasnumsections && ($section->section <= $course->numsections);
+
+        // Move the section to the end.
+        move_section_to($course, $section->section, $lastsection, true);
+
+        // Delete all modules from the section.
+        foreach (preg_split('/,/', $section->sequence, -1, PREG_SPLIT_NO_EMPTY) as $cmid) {
+            course_delete_module($cmid);
+        }
+
+        // Delete section and it's format options.
+        $DB->delete_records('course_format_options', array('sectionid' => $section->id));
+        $DB->delete_records('course_sections', array('id' => $section->id));
+        rebuild_course_cache($course->id, true);
+
+        // Delete section summary files.
+        $context = \context_course::instance($course->id);
+        $fs = get_file_storage();
+        $fs->delete_area_files($context->id, 'course', 'section', $section->id);
+
+        // Descrease 'numsections' if needed.
+        if ($decreasenumsections) {
+            $this->update_course_format_options(array('numsections' => $course->numsections - 1));
+        }
+
+        return true;
+    }
 }
 
 /**

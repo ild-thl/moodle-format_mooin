@@ -1508,6 +1508,10 @@ function set_chapter($sectionid) {
         return;
     }
 
+    if (!$csectiontitle) {
+        $csectiontitle = get_string('new_chapter', 'format_mooin');
+    }
+
     $chapter = new stdClass();
     $chapter->courseid = $csection->course;
     $chapter->title = $csectiontitle;
