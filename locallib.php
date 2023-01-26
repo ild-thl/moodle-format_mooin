@@ -1576,7 +1576,6 @@ function get_chapter_for_section($sectionid) {
         foreach ($chapters as $c) {
             if ($section->section > $c->section && ($chapter = null||$c->section > $chapter)) {
                 $chapter = $c->chapter;
-                echo $chapter.' ';
             }
         }
     }
