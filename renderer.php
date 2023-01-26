@@ -700,6 +700,7 @@ class format_mooin_renderer extends format_section_renderer_base {
             $classes = '';
         }
         if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+            //$section->name = get_string('chapter', 'format_mooin').' '.$chapter->chapter.' - '.$chapter->title;
             $section->name = $chapter->title;
             $sectionname = html_writer::tag('span', $this->section_title_without_link($section, $course));
         }
@@ -754,7 +755,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         if ($section->uservisible) {
             if ($chapter) {
-                $title = $chapter->title;
+                $title = $chapter->chapter.' - '.$chapter->title;
                 $sectionids = get_sections_for_chapter($chapter->id);
                 $h = $this->output->heading($title, 3, 'section-title');
                 $o .= html_writer::tag('a', $h,
@@ -765,6 +766,9 @@ class format_mooin_renderer extends format_section_renderer_base {
                           'aria-controls' => $sectionids));
             }
             else {
+                // TODO generate section prefix (number like 1.2)
+                $sectionprefix = get_section_prefix($section);
+                $title = $sectionprefix.' - '.$title;
                 $title = html_writer::tag('a', $title,
                     array('href' => course_get_url($course, $section->section), 'class' => $linkclasses));
                     $o .= $this->output->heading($title, 3, 'section-title');

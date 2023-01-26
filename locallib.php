@@ -1530,37 +1530,20 @@ function get_course_chapters($courseid) {
 function get_sections_for_chapter($chapterid) {
     global $DB;
     $result = '';
-    if ($chapter = $DB->get_record('format_mooin_chapter', array('id' => $chapterid))) {
-        $chapters = get_course_chapters($chapter->courseid);
-        $start = 0;
-        $end = 0;
-        foreach ($chapters as $c) {
-            if ($c->id == $chapterid) {
-                $start = $c->section;
-                continue;
+    
+    $sids = get_sectionids_for_chapter($chapterid);
+
+    foreach ($sids as $sid) {
+        if ($section = $DB->get_record('course_sections', array('id' => $sid))) {
+            if ($result == '') {
+                $result .= 'section-'.$section->section;
             }
-            if ($start != 0) {
-                $end = $c->section;
-                break;
-            }
-        }
-       
-        if ($start != 0) {
-            if ($end == 0) {
-                $end = get_last_section($chapter->courseid) + 1;
-            }
-            $i = $start + 1;
-            while ($i < $end) {
-                if ($result == '') {
-                    $result .= 'section-'.$i;
-                }
-                else {
-                    $result .= ' section-'.$i;
-                }
-                $i++;
+            else {
+                $result .= ' section-'.$section->section;
             }
         }
     }
+
     return $result;
 }
 
@@ -1575,4 +1558,63 @@ function get_last_section($courseid) {
     }
 
     return $lastsection;
+}
+
+function get_section_prefix($section) {
+    global $DB;
+    
+    $sectionprefix = '';
+    
+    $parentchapter = get_parent_chapter($section);
+    $sids = get_sectionids_for_chapter($parentchapter->id);
+    $sectionprefix .= $parentchapter->chapter.'.'.(array_search($section->id, $sids) + 1);
+    
+    return $sectionprefix;
+}
+
+function get_parent_chapter($section) {
+    global $DB;
+
+    $chapters = $DB->get_records('format_mooin_chapter', array('courseid' => $section->course));
+    foreach ($chapters as $chapter) {
+        $sids = get_sectionids_for_chapter($chapter->id);
+        if (in_array($section->id, $sids)) {
+            return $chapter;
+        }
+    }
+
+    return false;
+}
+
+function get_sectionids_for_chapter($chapterid) {
+    global $DB;
+    $result = array();
+    if ($chapter = $DB->get_record('format_mooin_chapter', array('id' => $chapterid))) {
+        $chapters = get_course_chapters($chapter->courseid);
+        $start = 0;
+        $end = 0;
+        foreach ($chapters as $c) {
+            if ($c->id == $chapterid) {
+                $start = $c->section;
+                continue;
+            }
+            if ($start != 0) {
+                $end = $c->section;
+                break;
+            }
+        }
+        if ($coursesections = $DB->get_records('course_sections', array('course' => $chapter->courseid), 'section', 'section, id')) {
+            if ($start != 0) {
+                if ($end == 0) {
+                    $end = get_last_section($chapter->courseid) + 1;
+                }
+                $i = $start + 1;
+                while ($i < $end) {
+                    $result[] = $coursesections[$i]->id;
+                    $i++;
+                }
+            }
+        }
+    }
+    return $result;
 }
