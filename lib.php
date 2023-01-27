@@ -197,11 +197,11 @@ class format_mooin extends format_base {
             foreach ($sections as $number => $section) {
                 if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
                     $section->name = $chapter->title;
-                    $titles[$number] = $renderer->section_title_without_link($section, $course);
+                    $titles[$number] = $chapter->chapter.' '.$renderer->section_title_without_link($section, $course);
                     sort_course_chapters($course->id);
                 }
                 else {
-                    $titles[$number] = $renderer->section_title($section, $course);
+                    $titles[$number] = get_section_prefix($section).' '.$renderer->section_title($section, $course);
                 }
             }
         }

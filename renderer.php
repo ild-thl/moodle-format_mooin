@@ -709,10 +709,10 @@ class format_mooin_renderer extends format_section_renderer_base {
         if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
             //$section->name = get_string('chapter', 'format_mooin').' '.$chapter->chapter.' - '.$chapter->title;
             $section->name = $chapter->title;
-            $sectionname = html_writer::tag('span', $this->section_title_without_link($section, $course));
+            $sectionname = $chapter->chapter.' '.html_writer::tag('span', $this->section_title_without_link($section, $course));
         }
         else {
-            $sectionname = html_writer::tag('span', $this->section_title($section, $course));
+            $sectionname = get_section_prefix($section).' '.html_writer::tag('span', $this->section_title($section, $course));
         }
 
         $o .= $this->output->heading($sectionname, 3, 'sectionname' . $classes, "sectionid-{$section->id}-title");
