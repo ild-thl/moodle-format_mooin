@@ -1706,3 +1706,17 @@ function get_sectionids_for_chapter($chapterid) {
     }
     return $result;
 }
+
+function get_expand_string($section) {
+    global $DB, $USER;
+    $expand = '';
+    $last_section = get_user_preferences('format_mooin_last_section_in_course_'.$section->course, 0, $USER->id);
+    $parentchapter = get_parent_chapter($section);
+    $sectionids = get_sectionids_for_chapter($parentchapter->id);
+    if ($record = $DB->get_record('course_sections', array('course' => $section->course, 'section' => $last_section))) {
+        if (in_array($record->id, $sectionids)) {
+            $expand = ' show';
+        }
+    }
+    return $expand;
+}

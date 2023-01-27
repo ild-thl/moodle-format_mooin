@@ -782,7 +782,8 @@ class format_mooin_renderer extends format_section_renderer_base {
             } else {
                 $chapter = get_chapter_for_section($section->id);
                 if (is_first_section_of_chapter($section->id)) {
-                    $o .= html_writer::start_tag('div', array('class' => 'collapse chapter-' . $chapter));
+                    $expand = get_expand_string($section);
+                    $o .= html_writer::start_tag('div', array('class' => 'collapse chapter-' . $chapter.$expand));
                 }
                 $o .= html_writer::start_tag('li', [
                         'id' => 'section-' . $section->section,
