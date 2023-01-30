@@ -153,7 +153,7 @@ class format_mooin extends format_base {
      * @return void
      */
     public function extend_course_navigation($navigation, navigation_node $node) {
-        global $PAGE;
+        global $PAGE, $DB;
         // If section is specified in course/view.php, make sure it is expanded in navigation.
         if ($navigation->includesectionnum === false) {
             $selectedsection = optional_param('section', null, PARAM_INT);
@@ -176,6 +176,40 @@ class format_mooin extends format_base {
             if ($generalsection) {
                 // We found the node - now remove it.
                 $generalsection->remove();
+            }
+        }
+
+        require_once('locallib.php');
+        $courseid = $this->get_course()->id;
+        if ($sections = $DB->get_records('course_sections', array('course' => $courseid))) {
+            foreach ($sections as $section) {
+                $sectionnode = $node->get($section->id, navigation_node::TYPE_SECTION);
+                $sectionnode->remove();
+                if ($section->section == 0) {
+                    continue;
+                }
+                $title = 'NULL';
+                $url = '';
+                if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                    $title = '<b>'.$chapter->chapter.' - '.$chapter->title.'</b>';
+                    if (count(get_sectionids_for_chapter($chapter->id)) > 0) {
+                        $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
+                    }
+                }
+                else {
+                    if ($section->name) {
+                        $title = get_section_prefix($section).' - '.$section->name;
+                    }
+                    else {
+                        $title = get_section_prefix($section).' - '.$title;
+                    }
+                    $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section));
+                }
+                $newnode = $node->add(
+                    $title,
+                    $url
+                );
+                $newnode->make_inactive();
             }
         }
     }
