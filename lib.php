@@ -181,7 +181,7 @@ class format_mooin extends format_base {
 
         require_once('locallib.php');
         $courseid = $this->get_course()->id;
-        if ($sections = $DB->get_records('course_sections', array('course' => $courseid))) {
+        if ($sections = $DB->get_records('course_sections', array('course' => $courseid), 'section')) {
             foreach ($sections as $section) {
                 $sectionnode = $node->get($section->id, navigation_node::TYPE_SECTION);
                 $sectionnode->remove();
@@ -233,9 +233,9 @@ class format_mooin extends format_base {
         if ($renderer && ($sections = $modinfo->get_section_info_all())) {
             foreach ($sections as $number => $section) {
                 if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                    sort_course_chapters($course->id);
                     $section->name = $chapter->title;
                     $titles[$number] = $chapter->chapter.' '.$renderer->section_title_without_link($section, $course);
-                    sort_course_chapters($course->id);
                 }
                 else {
                     $titles[$number] = get_section_prefix($section).' '.$renderer->section_title($section, $course);
