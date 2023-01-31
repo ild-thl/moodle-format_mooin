@@ -183,36 +183,37 @@ class format_mooin extends format_base {
         $courseid = $this->get_course()->id;
         if ($sections = $DB->get_records('course_sections', array('course' => $courseid), 'section')) {
             foreach ($sections as $section) {
-                $sectionnode = $node->get($section->id, navigation_node::TYPE_SECTION);
-                $sectionnode->remove();
-                if ($section->section == 0) {
-                    continue;
-                }
-                $title = 'NULL';
-                $url = '';
-                $pre = $section->name;
-                if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
-                    $pre = $chapter->chapter.' - ';
-                    $title = '<b>'.$pre.$chapter->title.'</b>';
-                    if (count(get_sectionids_for_chapter($chapter->id)) > 0) {
-                        $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
+                if ($sectionnode = $node->get($section->id, navigation_node::TYPE_SECTION)) {
+                    $sectionnode->remove();
+                    if ($section->section == 0) {
+                        continue;
                     }
-                }
-                else {
-                    $pre = get_section_prefix($section).' - ';
-                    if ($section->name) {
-                        $title = $pre.$section->name;
+                    $title = 'NULL';
+                    $url = '';
+                    $pre = $section->name;
+                    if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                        $pre = $chapter->chapter.' - ';
+                        $title = '<b>'.$pre.$chapter->title.'</b>';
+                        if (count(get_sectionids_for_chapter($chapter->id)) > 0) {
+                            $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
+                        }
                     }
                     else {
-                        $title = $pre.$title;
+                        $pre = get_section_prefix($section).' - ';
+                        if ($section->name) {
+                            $title = $pre.$section->name;
+                        }
+                        else {
+                            $title = $pre.$title;
+                        }
+                        $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section));
                     }
-                    $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section));
+                    $sectionnode->text = $title;
+                    $sectionnode->shorttext = $pre;
+                    $sectionnode->action = $url;
+                    $sectionnode->$key = null;
+                    $node->add_node($sectionnode);
                 }
-                $sectionnode->text = $title;
-                $sectionnode->shorttext = $pre;
-                $sectionnode->action = $url;
-                $sectionnode->$key = null;
-                $node->add_node($sectionnode);
             }
         }
     }

@@ -750,7 +750,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $o = '';
 
 
-        if ($section->uservisible) {
+        //if ($section->uservisible) {
             if ($chapter) {
                 $o .= html_writer::start_tag('li', [
                     'id' => 'section-' . $section->section,
@@ -777,6 +777,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                             'aria-controls' => $sectionids
                         )
                     );
+                // TODO mark as completed when all section of chapter are completed
                 $o .= html_writer::end_tag('div');
                 $o .= html_writer::end_tag('li');
             } else {
@@ -796,26 +797,35 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $o .= html_writer::tag('div', '', array('class' => 'left side'));
                 $o .= html_writer::tag('div', '', array('class' => 'right side'));
                 $o .= html_writer::start_tag('div', array('class' => 'content'));
-                // TODO generate section prefix (number like 1.2)
+                
                 $sectionprefix = get_section_prefix($section);
                 $title = $sectionprefix . ' - ' . $title;
-                $title = html_writer::tag(
-                    'a',
-                    $title,
-                    array('href' => course_get_url($course, $section->section), 'class' => $linkclasses)
-                );
+                if ($section->uservisible) {
+                    $title = html_writer::tag(
+                        'a',
+                        $title,
+                        array('href' => course_get_url($course, $section->section), 'class' => $linkclasses)
+                    );
+                }
+                else {
+                    // TODO: mark as not available yet
+                }
                 $o .= $this->output->heading($title, 3, 'section-title');
+                if ($progress = get_progress($course->id, $section->id)['percentage'] == 100) {
+                    // TODO mark as completed
+                    $o .= get_string('completed', 'format_mooin');
+                }
                 $o .= html_writer::end_tag('div');
                 $o .= html_writer::end_tag('li');
                 if (is_last_section_of_chapter($section->id)) {
                     $o .= html_writer::end_tag('div');
                 }
             }
-        } else {
-            $o .= $this->output->heading($title, 3, 'section-title');
-            $o .= html_writer::end_tag('div');
-            $o .= html_writer::end_tag('li');
-        }
+        //} else {
+        //    $o .= $this->output->heading($title, 3, 'section-title');
+        //    $o .= html_writer::end_tag('div');
+        //    $o .= html_writer::end_tag('li');
+        //}
 
 
 
