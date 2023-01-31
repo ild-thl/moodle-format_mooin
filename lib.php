@@ -190,26 +190,28 @@ class format_mooin extends format_base {
                 }
                 $title = 'NULL';
                 $url = '';
+                $pre = $section->name;
                 if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
-                    $title = '<b>'.$chapter->chapter.' - '.$chapter->title.'</b>';
+                    $pre = $chapter->chapter.' - ';
+                    $title = '<b>'.$pre.$chapter->title.'</b>';
                     if (count(get_sectionids_for_chapter($chapter->id)) > 0) {
                         $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
                     }
                 }
                 else {
+                    $pre = get_section_prefix($section).' - ';
                     if ($section->name) {
-                        $title = get_section_prefix($section).' - '.$section->name;
+                        $title = $pre.$section->name;
                     }
                     else {
-                        $title = get_section_prefix($section).' - '.$title;
+                        $title = $pre.$title;
                     }
                     $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section));
                 }
-                $newnode = $node->add(
-                    $title,
-                    $url
-                );
-                $newnode->make_inactive();
+                $sectionnode->text = $title;
+                $sectionnode->shorttext = $pre;
+                $sectionnode->action = $url;
+                $node->add_node($sectionnode);
             }
         }
     }
