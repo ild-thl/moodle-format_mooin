@@ -127,6 +127,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         $controls = [];
         if ($section->section && has_capability('moodle/course:setcurrentsection', $coursecontext)) {
+            /*
             if ($course->marker == $section->section) {  // Show the "light globe" on/off.
                 $url->param('marker', 0);
                 $highlightoff = get_string('highlightoff');
@@ -154,7 +155,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                     ],
                 ];
             }
-
+            */
             if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
                 //$url = new moodle_url('/course/view.php');
                 $url->param('unsetchapter', $section->id);
