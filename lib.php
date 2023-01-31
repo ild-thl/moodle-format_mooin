@@ -211,6 +211,7 @@ class format_mooin extends format_base {
                 $sectionnode->text = $title;
                 $sectionnode->shorttext = $pre;
                 $sectionnode->action = $url;
+                $sectionnode->$key = null;
                 $node->add_node($sectionnode);
             }
         }
