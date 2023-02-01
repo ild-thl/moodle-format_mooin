@@ -755,7 +755,7 @@ class format_mooin_renderer extends format_section_renderer_base {
             if ($chapter) {
                 $o .= html_writer::start_tag('li', [
                     'id' => 'section-' . $section->section,
-                    'class' => $classattr,
+                    'class' => $classattr . ' chapter',
                     'role' => 'region',
                     'aria-label' => $title,
                     'data-sectionid' => $section->section
@@ -766,7 +766,9 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $o .= html_writer::start_tag('div', array('class' => 'content'));
                 $title = $chapter->chapter . ' - ' . $chapter->title;
                 $sectionids = get_sections_for_chapter($chapter->id);
-                $h = $this->output->heading($title, 3, 'section-title');
+                $h = html_writer::span('','list-marker');
+                $h .= $this->output->heading($title, 3, 'section-title');
+
                 $o .= html_writer::tag(
                         'a',
                         $h,
@@ -774,7 +776,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                             'href' => '.chapter-' . $chapter->chapter,
                             'data-toggle' => 'collapse',
                             'role' => 'button',
-                            'aria-expanded' => 'false',
+                            'aria-expanded' => 'false', //Set true if get_expand_string($section); -> show
                             'aria-controls' => $sectionids
                         )
                     );
@@ -785,11 +787,11 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $chapter = get_chapter_for_section($section->id);
                 if (is_first_section_of_chapter($section->id)) {
                     $expand = get_expand_string($section);
-                    $o .= html_writer::start_tag('div', array('class' => 'collapse chapter-' . $chapter.$expand));
+                    $o .= html_writer::start_tag('div', array('class' => 'collapse chapter-content chapter-' . $chapter.$expand));
                 }
                 $o .= html_writer::start_tag('li', [
                         'id' => 'section-' . $section->section,
-                        'class' => $classattr,
+                        'class' => $classattr . ' lesson',
                         'role' => 'region',
                         'aria-label' => $title,
                         'data-sectionid' => $section->section
@@ -798,7 +800,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $o .= html_writer::tag('div', '', array('class' => 'left side'));
                 $o .= html_writer::tag('div', '', array('class' => 'right side'));
                 $o .= html_writer::start_tag('div', array('class' => 'content'));
-                
+
                 $sectionprefix = get_section_prefix($section);
                 $title = $sectionprefix . ' - ' . $title;
                 if ($section->uservisible) {
