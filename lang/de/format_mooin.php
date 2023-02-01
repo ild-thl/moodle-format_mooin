@@ -111,3 +111,4 @@ $string['all_news'] = 'Newsforum';
 $string['new_chapter'] = 'Neue Kapitel';
 $string['setchapter'] = 'Kapitel Einstellen';
 $string['unsetchapter'] = 'Kapitel Deaktivieren';
+$string['completed'] = 'Fertig';

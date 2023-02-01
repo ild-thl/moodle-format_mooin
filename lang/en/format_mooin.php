@@ -128,3 +128,4 @@ $string['previous_lesson'] = 'Vorherige Lektion';
 $string['new_chapter'] = 'New Chapter';
 $string['setchapter'] = 'Set Chapter';
 $string['unsetchapter'] = 'Unset Chapter';
+$string['completed'] = 'Done';
