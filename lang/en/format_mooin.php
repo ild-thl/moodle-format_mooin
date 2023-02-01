@@ -127,3 +127,4 @@ $string['previous_lesson'] = 'Vorherige Lektion';
 // Chapter in course
 $string['new_chapter'] = 'New Chapter';
 $string['set_chapter'] = 'Set Chapter';
+$string['unsetchapter'] = 'Unset Chapter';
