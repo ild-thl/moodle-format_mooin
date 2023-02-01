@@ -109,5 +109,5 @@ $string['all_news'] = 'Newsforum';
 
 // Chapter in course
 $string['new_chapter'] = 'Neue Kapitel';
-$string['set_chapter'] = 'Kapitel Einstellen';
+$string['setchapter'] = 'Kapitel Einstellen';
 $string['unsetchapter'] = 'Kapitel Deaktivieren';
