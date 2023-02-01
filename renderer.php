@@ -128,6 +128,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         $controls = [];
         if ($section->section && has_capability('moodle/course:setcurrentsection', $coursecontext)) {
+            /*
             if ($course->marker == $section->section) {  // Show the "light globe" on/off.
                 $url->param('marker', 0);
                 $highlightoff = get_string('highlightoff');
@@ -155,7 +156,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                     ],
                 ];
             }
-
+            */
             if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
                 //$url = new moodle_url('/course/view.php');
                 $url->param('unsetchapter', $section->id);
@@ -431,6 +432,8 @@ class format_mooin_renderer extends format_section_renderer_base {
      */
     public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection) {
         global $PAGE, $DB, $USER;
+        $PAGE->requires->js_call_amd('theme_mooin/navigation-header', 'scrollHeader');
+
 
         $modinfo = get_fast_modinfo($course);
         $course = course_get_format($course)->get_course();
@@ -485,8 +488,9 @@ class format_mooin_renderer extends format_section_renderer_base {
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
         $sectiontitle = '';
         $sectiontitle .= html_writer::start_tag('div', array('id' => 'custom-top-nav', 'class' => 'section-navigation navigationtitle'));
+        $sectiontitle .= html_writer::start_tag('div', array('class' => 'inner-title-navigation'));
+
         $sectiontitle .= html_writer::tag('span', $sectionnavlinks['previous_top'], array('class' => 'mdl-left')); //Screenreader?
-        $sectiontitle .= html_writer::tag('span', $sectionnavlinks['next_top'], array('class' => 'mdl-right'));
         // Title attributes
         $classes = 'sectionname';
         if (!$thissection->visible) {
@@ -495,6 +499,10 @@ class format_mooin_renderer extends format_section_renderer_base {
         }
         $sectionname = html_writer::tag('span', $this->section_title_without_link($thissection, $course));
         $sectiontitle .= $this->output->heading($sectionname, 3, $classes);
+        $sectiontitle .= html_writer::tag('span', $sectionnavlinks['next_top'], array('class' => 'mdl-right'));
+
+        $sectiontitle .= html_writer::end_tag('div');
+
           // Progress bar anzeige
           $check_sequence = $DB->get_records('course_sections', ['course' => $course->id, 'section' => $displaysection], '', 'sequence');
           $val = array_values($check_sequence);
@@ -502,7 +510,7 @@ class format_mooin_renderer extends format_section_renderer_base {
           if (!$this->page->user_is_editing() &&  !empty($val[0]->sequence) ) {
                 // Get the right section from DB to the use in the get_progress
                 // Check if the sequence in course_sections is a list or a single element
-                
+
                 $element = $DB->get_record('course_modules', ['id'=> $val[0]->sequence], 'section', IGNORE_MISSING);
                 //echo "Element";
                 //var_dump($element);
@@ -515,11 +523,11 @@ class format_mooin_renderer extends format_section_renderer_base {
                 } else {
                     $ocp = round($v);
                 }
-                
+
                 if ($ocp != -1) {
                     $sectiontitle .= '<br />' . get_progress_bar($ocp, 100, $sec_in_course_modules); // $displaysection
                 } else {
-                    
+
                     $completionthistile = section_progress($modinfo->sections[$displaysection], $modinfo->cms); // $sec_in_course_modules
                     // var_dump($completionthistile);
                     // use the completion_indicator to show the right percentage in secton
@@ -625,7 +633,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         // Close single-section div.
         echo html_writer::end_tag('div');
     }
- 
+
     /**
      * Generate the content to displayed on the right part of a section
      * before course modules are included
@@ -702,11 +710,12 @@ class format_mooin_renderer extends format_section_renderer_base {
             $classes = '';
         }
         if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+            //$section->name = get_string('chapter', 'format_mooin').' '.$chapter->chapter.' - '.$chapter->title;
             $section->name = $chapter->title;
-            $sectionname = html_writer::tag('span', $this->section_title_without_link($section, $course));
+            $sectionname = $chapter->chapter.' '.html_writer::tag('span', $this->section_title_without_link($section, $course));
         }
         else {
-            $sectionname = html_writer::tag('span', $this->section_title($section, $course));
+            $sectionname = get_section_prefix($section).' '.html_writer::tag('span', $this->section_title($section, $course));
         }
 
         $o .= $this->output->heading($sectionname, 3, 'sectionname' . $classes, "sectionid-{$section->id}-title");
@@ -738,33 +747,90 @@ class format_mooin_renderer extends format_section_renderer_base {
             $classattr .= ' current';
         }
 
+        $chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id));
+
         $title = get_section_name($course, $section);
         $o = '';
-        $o .= html_writer::start_tag('li', [
-            'id' => 'section-'.$section->section,
-            'class' => $classattr,
-            'role' => 'region',
-            'aria-label' => $title,
-            'data-sectionid' => $section->section
-        ]);
 
-        $o .= html_writer::tag('div', '', array('class' => 'left side'));
-        $o .= html_writer::tag('div', '', array('class' => 'right side'));
-        $o .= html_writer::start_tag('div', array('class' => 'content'));
 
-        if ($section->uservisible) {
-            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
-                $title = $chapter->title;
+        //if ($section->uservisible) {
+            if ($chapter) {
+                $o .= html_writer::start_tag('li', [
+                    'id' => 'section-' . $section->section,
+                    'class' => $classattr,
+                    'role' => 'region',
+                    'aria-label' => $title,
+                    'data-sectionid' => $section->section
+                ]);
+
+                $o .= html_writer::tag('div', '', array('class' => 'left side'));
+                $o .= html_writer::tag('div', '', array('class' => 'right side'));
+                $o .= html_writer::start_tag('div', array('class' => 'content'));
+                $title = $chapter->chapter . ' - ' . $chapter->title;
+                $sectionids = get_sections_for_chapter($chapter->id);
+                $h = $this->output->heading($title, 3, 'section-title');
+                $o .= html_writer::tag(
+                        'a',
+                        $h,
+                        array(
+                            'href' => '.chapter-' . $chapter->chapter,
+                            'data-toggle' => 'collapse',
+                            'role' => 'button',
+                            'aria-expanded' => 'false',
+                            'aria-controls' => $sectionids
+                        )
+                    );
+                // TODO mark as completed when all section of chapter are completed
+                $o .= html_writer::end_tag('div');
+                $o .= html_writer::end_tag('li');
+            } else {
+                $chapter = get_chapter_for_section($section->id);
+                if (is_first_section_of_chapter($section->id)) {
+                    $expand = get_expand_string($section);
+                    $o .= html_writer::start_tag('div', array('class' => 'collapse chapter-' . $chapter.$expand));
+                }
+                $o .= html_writer::start_tag('li', [
+                        'id' => 'section-' . $section->section,
+                        'class' => $classattr,
+                        'role' => 'region',
+                        'aria-label' => $title,
+                        'data-sectionid' => $section->section
+                    ]);
+
+                $o .= html_writer::tag('div', '', array('class' => 'left side'));
+                $o .= html_writer::tag('div', '', array('class' => 'right side'));
+                $o .= html_writer::start_tag('div', array('class' => 'content'));
+                
+                $sectionprefix = get_section_prefix($section);
+                $title = $sectionprefix . ' - ' . $title;
+                if ($section->uservisible) {
+                    $title = html_writer::tag(
+                        'a',
+                        $title,
+                        array('href' => course_get_url($course, $section->section), 'class' => $linkclasses)
+                    );
+                }
+                else {
+                    // TODO: mark as not available yet
+                }
+                $o .= $this->output->heading($title, 3, 'section-title');
+                if ($progress = get_progress($course->id, $section->id)['percentage'] == 100) {
+                    // TODO mark as completed
+                    $o .= get_string('completed', 'format_mooin');
+                }
+                $o .= html_writer::end_tag('div');
+                $o .= html_writer::end_tag('li');
+                if (is_last_section_of_chapter($section->id)) {
+                    $o .= html_writer::end_tag('div');
+                }
             }
-            else {
-                $title = html_writer::tag('a', $title,
-                    array('href' => course_get_url($course, $section->section), 'class' => $linkclasses));
-            }
-        }
-        $o .= $this->output->heading($title, 3, 'section-title');
+        //} else {
+        //    $o .= $this->output->heading($title, 3, 'section-title');
+        //    $o .= html_writer::end_tag('div');
+        //    $o .= html_writer::end_tag('li');
+        //}
 
-        $o .= html_writer::end_tag('div');
-        $o .= html_writer::end_tag('li');
+
 
         return $o;
     }

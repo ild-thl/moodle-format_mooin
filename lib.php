@@ -153,7 +153,7 @@ class format_mooin extends format_base {
      * @return void
      */
     public function extend_course_navigation($navigation, navigation_node $node) {
-        global $PAGE;
+        global $PAGE, $DB;
         // If section is specified in course/view.php, make sure it is expanded in navigation.
         if ($navigation->includesectionnum === false) {
             $selectedsection = optional_param('section', null, PARAM_INT);
@@ -178,6 +178,44 @@ class format_mooin extends format_base {
                 $generalsection->remove();
             }
         }
+
+        require_once('locallib.php');
+        $courseid = $this->get_course()->id;
+        if ($sections = $DB->get_records('course_sections', array('course' => $courseid), 'section')) {
+            foreach ($sections as $section) {
+                if ($sectionnode = $node->get($section->id, navigation_node::TYPE_SECTION)) {
+                    $sectionnode->remove();
+                    if ($section->section == 0) {
+                        continue;
+                    }
+                    $title = 'NULL';
+                    $url = '';
+                    $pre = $section->name;
+                    if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                        $pre = $chapter->chapter.' - ';
+                        $title = '<b>'.$pre.$chapter->title.'</b>';
+                        if (count(get_sectionids_for_chapter($chapter->id)) > 0) {
+                            $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
+                        }
+                    }
+                    else {
+                        $pre = get_section_prefix($section).' - ';
+                        if ($section->name) {
+                            $title = $pre.$section->name;
+                        }
+                        else {
+                            $title = $pre.$title;
+                        }
+                        $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section));
+                    }
+                    $sectionnode->text = $title;
+                    $sectionnode->shorttext = $pre;
+                    $sectionnode->action = $url;
+                    $sectionnode->$key = null;
+                    $node->add_node($sectionnode);
+                }
+            }
+        }
     }
 
     /**
@@ -196,11 +234,12 @@ class format_mooin extends format_base {
         if ($renderer && ($sections = $modinfo->get_section_info_all())) {
             foreach ($sections as $number => $section) {
                 if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                    sort_course_chapters($course->id);
                     $section->name = $chapter->title;
-                    $titles[$number] = $renderer->section_title_without_link($section, $course);
+                    $titles[$number] = $chapter->chapter.' '.$renderer->section_title_without_link($section, $course);
                 }
                 else {
-                    $titles[$number] = $renderer->section_title($section, $course);
+                    $titles[$number] = get_section_prefix($section).' '.$renderer->section_title($section, $course);
                 }
             }
         }
@@ -430,6 +469,111 @@ class format_mooin extends format_base {
     public function get_config_for_external() {
         // Return everything (nothing to hide).
         return $this->get_format_options();
+    }
+
+    /**
+     * Updates the value in the database and modifies this object respectively.
+     *
+     * ALWAYS check user permissions before performing an update! Throw exceptions if permissions are not sufficient
+     * or value is not legit.
+     *
+     * @param stdClass $section
+     * @param string $itemtype
+     * @param mixed $newvalue
+     * @return \core\output\inplace_editable
+     */
+    public function inplace_editable_update_section_name($section, $itemtype, $newvalue) {
+        global $DB;
+        if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
+            $context = context_course::instance($section->course);
+            external_api::validate_context($context);
+            require_capability('moodle/course:update', $context);
+
+            $newtitle = clean_param($newvalue, PARAM_TEXT);
+            if (strval($section->name) !== strval($newtitle)) {
+                course_update_section($section->course, $section, array('name' => $newtitle));
+            }
+            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                $chapter->title = $newtitle;
+                $DB->update_record('format_mooin_chapter', $chapter);
+            }
+            return $this->inplace_editable_render_section_name($section, ($itemtype === 'sectionname'), true);
+        }
+    }
+
+    /**
+     * Deletes a section
+     *
+     * Do not call this function directly, instead call {@link course_delete_section()}
+     *
+     * @param int|stdClass|section_info $section
+     * @param bool $forcedeleteifnotempty if set to false section will not be deleted if it has modules in it.
+     * @return bool whether section was deleted
+     */
+    public function delete_section($section, $forcedeleteifnotempty = false) {
+        global $DB;
+        if (!$this->uses_sections()) {
+            // Not possible to delete section if sections are not used.
+            return false;
+        }
+        if (!is_object($section)) {
+            $section = $DB->get_record('course_sections', array('course' => $this->get_courseid(), 'section' => $section),
+                'id,section,sequence,summary');
+        }
+        if (!$section || !$section->section) {
+            // Not possible to delete 0-section.
+            return false;
+        }
+
+        if (!$forcedeleteifnotempty && (!empty($section->sequence) || !empty($section->summary))) {
+            return false;
+        }
+
+        $course = $this->get_course();
+
+        // Remove the marker if it points to this section.
+        if ($section->section == $course->marker) {
+            course_set_marker($course->id, 0);
+        }
+
+        $lastsection = $DB->get_field_sql('SELECT max(section) from {course_sections}
+                            WHERE course = ?', array($course->id));
+
+        // Find out if we need to descrease the 'numsections' property later.
+        $courseformathasnumsections = array_key_exists('numsections',
+            $this->get_format_options());
+        $decreasenumsections = $courseformathasnumsections && ($section->section <= $course->numsections);
+
+        // Move the section to the end.
+        move_section_to($course, $section->section, $lastsection, true);
+
+        // Delete all modules from the section.
+        foreach (preg_split('/,/', $section->sequence, -1, PREG_SPLIT_NO_EMPTY) as $cmid) {
+            course_delete_module($cmid);
+        }
+
+        // Delete section and it's format options.
+        $DB->delete_records('course_format_options', array('sectionid' => $section->id));
+        $DB->delete_records('course_sections', array('id' => $section->id));
+        rebuild_course_cache($course->id, true);
+
+        // Delete section summary files.
+        $context = \context_course::instance($course->id);
+        $fs = get_file_storage();
+        $fs->delete_area_files($context->id, 'course', 'section', $section->id);
+
+        // Descrease 'numsections' if needed.
+        if ($decreasenumsections) {
+            $this->update_course_format_options(array('numsections' => $course->numsections - 1));
+        }
+
+        if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+            require_once('locallib.php');
+            $DB->delete_records('format_mooin_chapter', array('id' => $chapter->id));
+            sort_course_chapters($course->id);
+        }
+
+        return true;
     }
 }
 

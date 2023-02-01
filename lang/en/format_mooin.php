@@ -56,7 +56,7 @@ $string['users'] = 'TEILNEHMENDE';
 $string['certificates'] = 'Meine Kurszertifikate';
 $string['badges_certificates'] = 'Badges und Zertifikate';
 $string['continue'] = 'BEGINNEN';
-$string['progress'] = 'Kursforschritt';
+$string['progress'] = 'Kursfortschritt';
 $string['unenrol'] = 'AUS KURS AUSSCHREIBEN';
 $string['my_badges'] = 'Badges';
 $string['available_badges'] = 'Verfügbare Badges';
@@ -115,6 +115,8 @@ $string['discussions'] = 'Alle Diskussionen';
 
 // added by Jonas
 $string['unread_news'] = ' ungelesene Beiträge im ';
+$string['unread_discussions'] = 'ungelesene Beiträge in den';
+$string['discussion_forum'] = 'Diskussionsforen';
 $string['all_news_mobile'] = 'Alle Beiträge';
 $string['by'] = 'von ';
 $string['latest_contribution_mobile'] = 'Neuster Beitrag:';
