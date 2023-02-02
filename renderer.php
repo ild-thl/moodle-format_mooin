@@ -803,45 +803,33 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $o .= html_writer::tag('div', '', array('class' => 'right side'));
                 $o .= html_writer::start_tag('div', array('class' => 'content'));
 
+                // mark as completed
+                $completed = '';
+                $user_complete_label = $USER->id . '-' . $COURSE->id . '-' . $section->section;  //
+                $label_complete = $DB->record_exists('user_preferences', array('value' => $user_complete_label));
+                if (is_array(get_progress($course->id, $section->id))) {
+                    $progress_result = intval(get_progress($course->id, $section->id)['percentage']);
+                    if ($progress_result == 100) {
+                        $completed .= ' completed';
+                    }
+                } 
+                else if($label_complete) {
+                    $completed .= ' completed';
+                }
+
                 $sectionprefix = get_section_prefix($section);
                 $title = $sectionprefix . ' - ' . $title;
                 if ($section->uservisible) {
                     $title = html_writer::tag(
                         'a',
                         $title,
-                        array('href' => course_get_url($course, $section->section), 'class' => $linkclasses)
+                        array('href' => course_get_url($course, $section->section), 'class' => $linkclasses.$completed)
                     );
                 }
                 else {
                     // TODO: mark as not available yet
                 }
                 $o .= $this->output->heading($title, 3, 'section-title');
-               
-                
-                $user_complete_label = $USER->id . '-' . $COURSE->id . '-' . $section->section;  //
-                $label_complete = $DB->record_exists('user_preferences', array('value' => $user_complete_label));
-
-                if (is_array(get_progress($course->id, $section->id))) {
-                    $progress_result = get_progress($course->id, $section->id)['percentage'];
-                    
-                    if (gettype($progress_result == 'integer')) {
-                        if ($progress = $progress_result == 100) {
-                            // TODO mark as completed
-                            $o .= get_string('completed', 'format_mooin');
-                        }
-                    } elseif (gettype($progress_result == 'double')) {
-                        $progress_result = intval($progress_result);
-                        if ($progress = $progress_result == 100) {
-                            // TODO mark as completed
-                            $o .= get_string('completed', 'format_mooin');
-                        }
-                    }
-                } elseif ($label_complete) {
-                    $o .= get_string('completed', 'format_mooin');
-                } else {
-                    $o .= '';
-                }
-                
                 
                 $o .= html_writer::end_tag('div');
                 $o .= html_writer::end_tag('li');
