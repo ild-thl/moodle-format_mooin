@@ -11,9 +11,6 @@
  * @return array with the completion data x items complete out of y
  */
 function section_progress($sectioncmids, $coursecms) {
-    /* global $PAGE;
-    $PAGE->requires->js_call_amd('format_mooin/complete_section'); */
-
     $completed = 0;
     $outof = 0;
 
@@ -23,8 +20,7 @@ function section_progress($sectioncmids, $coursecms) {
         $thismod = $coursecms[$cmid];
 
         if ($thismod->uservisible && !$thismod->deletioninprogress) {
-            // var_dump($thismod);
-            if ($thismod->modname == 'label') { // $this->completioninfo->is_enabled($thismod) ||  && isset($_POST['section'])
+            if ($thismod->modname == 'label') { 
                 $outof = 1;
 
                 $com_value = $USER->id . '-' . $COURSE->id . '-' . $thismod->sectionnum;  //
@@ -77,16 +73,12 @@ function completion_indicator($numcomplete, $numoutof, $aspercent, $isoverall) {
  */
 function complete_section($section, $cid, $userid) {
     global $DB;
-    /* $PAGE;
-    $PAGE->requires->js_call_amd('format_mooin/complete_section'); */
+
 
     $res = false;
-    // if (isset($_POST['section'])) {
-         // Make a DB save into table user_preference
-        $label_complete = $userid . '-' . $cid . '-' . $section;
-        //$DB->insert_record('user_preferences', ['userid'=> $userid, 'name'=> 'section_progress_label' . $label_complete, 'value'=> $label_complete], true, false);
 
-        // $q = $userid .' ' . $cid. ' ' .$section;
+        $label_complete = $userid . '-' . $cid . '-' . $section;
+
         $value_check = $DB->record_exists('user_preferences', array('value' => $label_complete));
             $id = $DB->count_records('user_preferences', array('userid'=> $userid));
 
@@ -94,7 +86,6 @@ function complete_section($section, $cid, $userid) {
         // if ( array_key_exists('btnComplete-'.$section, $_POST)) { // isset($_POST["id_bottom_complete-".$section]) ||  array_key_exists('btnComplete-'.$section
 
             $res = true;
-                // echo ' Inside Complete Section '. $res;
             $values = new stdClass();
             $values->id = $id + 1;
             $values->userid = $userid;
@@ -104,11 +95,67 @@ function complete_section($section, $cid, $userid) {
             if (!$value_check) {
                 $DB->insert_record('user_preferences',$values, true, false );
             }
-
-        // }
-
-    //}
-   return $res;
+    // Check the DB in Table course_sections, to see how many label was inside the section and update the completion value for each lignes
+    /* $sequences_in_sections = $DB->get_record('course_sections', ['course'=> $cid, 'section'=>$section], 'sequence', IGNORE_MISSING);
+    var_dump($sequences_in_sections->sequence);
+    // transform the result to and array, so that we can loop throught and make some resquest in table course_modules for updating the completion value for each ligne
+    
+    $result_to_array = explode(",", $sequences_in_sections->sequence);
+    if (count($result_to_array) > 1) {
+        $update_completion_in_module = new stdClass();
+        foreach ($result_to_array as $key => $value) {
+            $update_completion_in_module = $DB->get_record('course_modules', ['id'=>$value], '*', IGNORE_MISSING);
+            if ($update_completion_in_module == '13') {
+                // Update the DB course_modules_completion, by addind a new row
+                $sql = 'SELECT * 
+                        FROM {course_modules_completion} cmc
+                        ORDER BY cmc.id  LIMIT 1';
+        
+                $params_array = [];
+                $last_value = $DB->get_record_sql($sql, $params_array);
+                $res = true;
+                // insert a new value under table course_modules_completion to save the new entry
+                $insert_data = new stdClass();
+                $insert_data->id = $last_value->id + 1;
+                $insert_data->coursemoduleid = $update_completion_in_module->section;
+                $insert_data->userid = $userid;
+                $insert_data->completionstate = 1;
+                $insert_data->viewed = 0;
+                $insert_data->overrideby = NULL;
+                $insert_data->timemodified = time();
+        
+                $DB->insert_record('course_modules_completion', $insert_data, true, false);
+        
+            }
+        }
+    } else {
+        $update_completion_in_module = $DB->get_record('course_modules', ['id'=>$sequences_in_sections->sequence], '*', IGNORE_MISSING);
+        if ($update_completion_in_module) {
+            // Update the DB course_modules_completion, by addind a new row
+            $sql = 'SELECT * 
+                    FROM {course_modules_completion} cmc
+                    ORDER BY cmc.id  LIMIT 1';
+    
+            $params_array = [];
+            $last_value = $DB->get_record_sql($sql, $params_array);
+            $res = true;
+            // insert a new value under table course_modules_completion to save the new entry
+            $insert_data = new stdClass();
+            $insert_data->id = $last_value->id + 1;
+            $insert_data->coursemoduleid = $update_completion_in_module->section;
+            $insert_data->userid = $userid;
+            $insert_data->completionstate = 1;
+            $insert_data->viewed = 0;
+            $insert_data->overrideby = NULL;
+            $insert_data->timemodified = time();
+    
+            $DB->insert_record('course_modules_completion', $insert_data, true, false);
+    
+        } 
+    } */
+    
+    
+    return $res;
 }
     /**
      * get the section grade function
@@ -174,7 +221,7 @@ function complete_section($section, $cid, $userid) {
 
     // Test
     /**
-     * Get the section grade from hvp activity
+     * Get the section grade or the modules completion from activity
      * @parameter int section
      * return int
     */
@@ -188,9 +235,9 @@ function complete_section($section, $cid, $userid) {
         } */
 
         // $cm = $DB->get_records('course_modules', array('section' => $sectionId, 'course' => $courseId, 'module' => $module->id));
-        /* $sec = $DB->get_record_sql("SELECT cs.id
+        $sec = $DB->get_record_sql("SELECT cs.id
                             FROM {course_sections} cs
-                            WHERE cs.course = ? AND cs.section = ?", array($courseId, $section)); */
+                            WHERE cs.course = ? AND cs.section = ?", array($courseId, $sectionId));
 
         $cm = $DB->get_records_sql("SELECT cm.*, m.name as modname
                     FROM {modules} m, {course_modules} cm
@@ -250,6 +297,7 @@ function complete_section($section, $cid, $userid) {
                                 } else {
 
                                     $exist_check = $DB->record_exists('course_modules_completion', ['coursemoduleid'=>$mod->id, 'userid'=>$USER->id]);
+                                    // mod.section == course_sections.id
                                     if ($exist_check) {
                                         $user_grade = $max_grade;
                                     }else {
@@ -301,7 +349,7 @@ function complete_section($section, $cid, $userid) {
                     // html_writer::start_span('',['style' => 'float: left;font-size: 12px; margin-left: 12px; margin-top: 5px;font-weight: bold']) . $p . '% ' . html_writer::end_span() . // .' % bearbeitet'
                     // html_writer::tag('div', $p .'% der Lektion bearbeitet', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);left: 50%;','id' => 'mooin4ection-text-' . $sectionid)) . // margin-top: -8px;
                     html_writer::tag('div', $p. '% der Lektion bearbeitet', array('style' => 'float: left; font-size: 12px; display: contents; margin-left: 12px; padding-left: 5px;color: #555; width: 100%', 'id' => 'mooin4ection-text-' . $sectionid)) , // text-align: center; position: absolute;
-                    array( 'style' => 'float: left; position: absolute', 'class' => 'mooin4ection-div'));
+                    array( 'style' => 'width: 75%; margin: 0 auto', 'class' => 'mooin4ection-div')); // float: left; position: absolute; 
         return $result;
     }
     // End Test
@@ -310,9 +358,12 @@ function complete_section($section, $cid, $userid) {
  *
  */
 function print_badges($records, $details = false, $highlight = false, $badgename = false) {
-    global $DB;
+    global $DB, $COURSE, $USER, $PAGE;
+
+    
     $lis = '';
-    foreach ($records as $record) {
+    
+    foreach ($records as $key => $record) {
         if ($record->type == 2) {
             $context = context_course::instance($record->courseid);
         } else {
@@ -326,7 +377,13 @@ function print_badges($records, $details = false, $highlight = false, $badgename
             }
         }
         $imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $record->id, '/', 'f1', false);
-        $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'badge-image', 'style' => 'width: 100px; height: 100px;' . $opacity));
+        // After the ajax call and save into the DB
+        
+        $value =  'badge'.'-'. $USER->id .'-' . $COURSE->id . '-' . $key;
+        $value_check = $DB->record_exists('user_preferences', array('value' => $value));
+                
+        $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'bg-image', 'style' => 'width: 100px; height: 100px;' . $opacity));
+
         if (isset($record->uniquehash)) {
             $url = new moodle_url('/badges/badge.php', array('hash' => $record->uniquehash));
         } else {
@@ -338,21 +395,61 @@ function print_badges($records, $details = false, $highlight = false, $badgename
             $detail = '<br />' . $user->firstname . ' ' . $user->lastname . '<br />(' . date('d.m.y H:i', $record->dateissued) . ')';
         } else if ($badgename) {
             $detail = '<br />' . $record->name;
+            
         }
         $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
-        $lis .= html_writer::tag('li', $link, array('class' => 'new-badge-layer')); // new-badge-layer class for the "new badge overlay"
+        if ($value_check) {
+            $lis .= html_writer::tag('li', $link, array('class' => 'all-badge-layer' , 'id'=>'badge-' . $key));
+        } else {
+            $lis .= html_writer::tag('li', $link, array('class' => 'new-badge-layer' , 'id'=>'badge-' . $key));
+        }
+         // new-badge-layer class for the "new badge overlay"
     }
     echo html_writer::tag('ul', $lis, array('class' => 'badges-list badges'));
 }
 
 /**
+ * Function to remove the new badge
+ * @parameter int position_in_the_list
+ * @parameter int user_id
+ * @paremater int course_id
+ * 
+ * save the result in the user_preferences DB
+*/
+function badge_remove($user_id, $course_id, $badge_position) {
+    global $DB;
+
+    $result = false;
+    $value = 'badge' . '-' .$user_id . '-' . $course_id . '-' . $badge_position;
+    // Check if the value already in the DB
+    $value_check = $DB->record_exists('user_preferences', array('value' => $value));
+    // Make a DB request in user_preferences
+    $preferences = $DB->get_records('user_preferences',['userid'=>$user_id], 'id', '*');
+
+    
+    $data_preferences = new stdClass();
+
+    $data_preferences->id = count($preferences) + 1;
+    $data_preferences->userid = $user_id;
+    $data_preferences->name = 'user_see_in_course_' . $value;
+    $data_preferences->value = $value;
+    if (!$value_check) {
+        $result = true;
+        $DB->insert_record('user_preferences',$data_preferences, true, false );
+    }
+
+    return $result;
+}
+/**
  *
  */
 function display_user_and_availbale_badges($userid, $courseid) {
-    global $CFG, $USER;
+    global $CFG, $USER, $PAGE;
     $result = null;
     require_once($CFG->dirroot . '/badges/renderer.php');
 
+    // $PAGE->requires->js_call_amd('format_mooin/remove_badge');
+    
     $coursebadges = get_badges($courseid, null, null, null);
     $userbadges = badges_get_user_badges($userid, $courseid, null, null, null, true);
 
@@ -375,7 +472,9 @@ function display_user_and_availbale_badges($userid, $courseid) {
  *
  */
 function get_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
-    global $DB;
+    global $DB, $PAGE;
+
+    $PAGE->requires->js_call_amd('format_mooin/remove_badge');
     $params = array();
     $sql = 'SELECT
                 b.*
@@ -493,6 +592,8 @@ function display_badges($userid = 0, $courseid = 0, $since = 0, $print = true) {
     global $CFG, $PAGE, $USER, $SITE;
     require_once($CFG->dirroot . '/badges/renderer.php');
 
+    // the jquery call come here
+    $PAGE->requires->js_call_amd('format_mooin/remove_badge');
     // Determine context.
     if (isloggedin()) {
         $context = context_user::instance($USER->id);
@@ -616,16 +717,14 @@ function get_user_lastaccess_sql($accesssince='') {
     }
 }
 function cmp_badges_asc($a, $b) {
-	if($a->badgecount == $b->badgecount)
-{
+	if($a->badgecount == $b->badgecount){
         return 0;
     }
     return ($a->badgecount < $b->badgecount) ? -1 : 1;
 }
 
 function cmp_badges_desc($a, $b) {
-	if($a->badgecount == $b->badgecount)
-{
+	if($a->badgecount == $b->badgecount){
         return 0;
     }
     return ($a->badgecount > $b->badgecount) ? -1 : 1;
@@ -1087,28 +1186,92 @@ function get_course_grades($courseid) {
     require_once($CFG->libdir . '/gradelib.php');
 
     if (isset($courseid)) {
-        // $mods = get_course_section_mods($COURSE->id, $section);//print_object($mods);
 
-        /* $sec = $DB->get_records_sql("SELECT cs.id
+        $sec = $DB->get_records_sql("SELECT cs.*
                     FROM {course_sections} cs
-                    WHERE cs.course = ?", array($courseid)); */
+                    WHERE cs.course = ? AND cs.section != 0 AND cs.sequence != '' ", array($courseid));
 
 
-        $mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
+        /* $mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
                     FROM {modules} m, {course_modules} cm
-                    WHERE cm.course = ? AND cm.completiongradeitemnumber >= 0 AND cm.module = m.id AND m.visible = 1", array($courseid)); // AND cm.completion !=0
+                    WHERE cm.course = ? AND cm.completiongradeitemnumber >= 0 AND cm.module = m.id AND m.visible = 1", array($courseid)); */
 
-        /* $other_mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
-                            FROM {modules} m, {course_modules} cm
-                            WHERE cm.course = ?", array($courseid));
+        $other_mods = $DB->get_records_sql("SELECT cm.*, cs.name as sectionname, cs.section as sectionincourse
+                            FROM {course_modules} cm 
+                            LEFT JOIN {course_sections} cs ON cm.section = cs.id
+                            WHERE cm.course = ? AND cs.section != 0", array($courseid));
 
-        var_dump($other_mods); */
         $percentage = 0;
         $mods_counter = 0;
         $max_grade = 100.0;
-        $number_element = count($mods);
-        foreach ($mods as $mod) {
-            if ($mod->visible == 1) { // ($mod->modname == 'hvp')
+        $number_element = count($other_mods);
+        $seq = [];
+        foreach ($sec as $val) {
+            $seq = explode(",",$val->sequence);
+            if ( count($seq) >= 1) {
+                
+                // Go throught the course_modules table and find a way to know exactly which module containts the section
+                for ($i=0; $i < count($seq); $i++) {
+                   
+                    
+                    // Get_record to know if one of the module ein label is
+                    $label_req = $DB->get_record('course_modules', ['id'=>$seq[$i]], '*');
+                    if (is_object($label_req)) {
+                        if ($label_req->module == '26') {
+                            $grading_info = grade_get_grades($label_req->course, 'mod', 'hvp', $label_req->instance, $USER->id);
+                            $grading_info = (object)($grading_info);// new, convert an array to object
+                            
+                            $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
+                            if ($user_grade > 0) {
+                                 $mods_counter++;
+                             }
+                        } elseif ($label_req->module == '13' ) {
+                            $value = $USER->id . '-' . $courseid . '-'. $val->section;
+                            
+                            $exist_check_label = $DB->record_exists('user_preferences', ['userid'=>$USER->id, 'name'=>'section_progress_label-'.$value , 'value'=>$value]);
+                            
+                           
+                            if ($exist_check_label) {
+                                
+                                $mods_counter++;
+                            }else {
+                                // Count the label Activity number in a section, that is not completed                                
+                                $sql_first = $DB->get_records_sql("SELECT cm.*
+                                                         FROM {course_modules} cm
+                                                         WHERE cm.course = ? AND cm.section = ? AND cm.module = ? ", array($courseid, $val->id, '13'));
+                                // Count the Other Activity in the same section as before
+                                $sql_second = $DB->get_records_sql("SELECT cm.*
+                                                        FROM {course_modules} cm
+                                                        WHERE cm.course = ? AND cm.section = ? AND cm.module != '13' ", array($courseid, $val->id));
+                                
+                                $number_element--;
+                                if (count($sql_first)>= 1 && count($sql_second) == 0) {
+                                    $number_element += 1;
+                                }
+                            }
+                           
+                        } else {
+                            // Check if the module completion has be push in DB mdl_modules_completion
+                            $exist_check = $DB->record_exists('course_modules_completion', ['coursemoduleid'=>$seq[$i], 'userid'=>$USER->id]);
+                            if ($exist_check) {
+                                
+                                $mods_counter++;
+                            }
+                        }
+                    }
+                    
+                    
+                }
+                
+            }
+            
+        }
+        
+        
+       
+        //$number_element -= $count_label;
+        /* foreach ($other_mods as $mod) { // $mods
+            if ($mod->visible == 1) {
                 $skip = false;
 
                 if (isset($mod->availability)) {
@@ -1120,31 +1283,52 @@ function get_course_grades($courseid) {
                     }
                 }
                 if (!$skip) {
-                    $grading_info = grade_get_grades($mod->course, 'mod', $mod->modname, $mod->instance, $USER->id);
-                    $grading_info = (object)($grading_info);// new, convert an array to object
-                    /* if ($mod->modname == 'forum') {
+                    $value = $USER->id . '-' . $courseid . '-'. $mod->sectionincourse;
+                        
+                        $exist_check_label = $DB->record_exists('user_preferences', ['userid'=>$USER->id, 'name'=>'section_progress_label-'.$value , 'value'=>$value]);
+                        
+                   if ($mod->module == '13' && $exist_check_label) {
+                        // $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
+                        // if ($exist_check_label) {
+                            $mods_counter++;
+                            foreach ($sec as $val) {
+                                $string_to_array = explode(',', $val->sequence);
+                                if ($mod->module) {
+                                    # code...
+                                }
+                            }
+                        // }
+                   } elseif ($mod->module == '26') {
+                        $grading_info = grade_get_grades($mod->course, 'mod', 'hvp', $mod->instance, $USER->id);
+                        $grading_info = (object)($grading_info);// new, convert an array to object
+                        
                         $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
-                    } else {
-                        $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
-                    } */
-                    $user_grade = $grading_info->items[0]->grades[$USER->id]->grade;
-                    //echo ('Grade : ' . $user_grade);
-                    if ($user_grade > 0) {
-                        $percentage += $user_grade ; // $user_grade
-                        $mods_counter++;
-                    }
+                        if ($user_grade > 0) {
+                            $mods_counter++;
+                        }
+                   } else {
+                        // Check if the module completion has be push in DB mdl_modules_completion
+                        $exist_check = $DB->record_exists('course_modules_completion', ['coursemoduleid'=>$mod->id, 'userid'=>$USER->id]);
+                        if ($exist_check) {
+                            $mods_counter++;
+                        }
+                   }
                 }
             }
-        }
+        } */
+        
         if ($mods_counter != 0) {
-            return ($max_grade * $mods_counter) /$number_element; //$percentage * $mods_counter; // $percentage / $mods_counter
+            
+            $percentage = ($mods_counter / $number_element)* $max_grade;
         } else {
             return -1;
         }
     } else {
         return -1;
     }
+    return $percentage;
 }
+
 /**
  * Get the course progress
  * @param int p the progress course variable
@@ -1654,10 +1838,13 @@ function get_section_prefix($section) {
     $sectionprefix = '';
 
     $parentchapter = get_parent_chapter($section);
-    $sids = get_sectionids_for_chapter($parentchapter->id);
-    $sectionprefix .= $parentchapter->chapter.'.'.(array_search($section->id, $sids) + 1);
+    if (is_object($parentchapter)) {
+        $sids = get_sectionids_for_chapter($parentchapter->id);
+        $sectionprefix .= $parentchapter->chapter.'.'.(array_search($section->id, $sids) + 1);
 
-    return $sectionprefix;
+        return $sectionprefix;
+    }
+    
 }
 
 function get_parent_chapter($section) {

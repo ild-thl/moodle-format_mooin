@@ -211,7 +211,7 @@ class format_mooin extends format_base {
                     $sectionnode->text = $title;
                     $sectionnode->shorttext = $pre;
                     $sectionnode->action = $url;
-                    $sectionnode->$key = null;
+                    // $sectionnode->$key = null;
                     $node->add_node($sectionnode);
                 }
             }
@@ -233,6 +233,7 @@ class format_mooin extends format_base {
         $renderer = $this->get_renderer($PAGE);
         if ($renderer && ($sections = $modinfo->get_section_info_all())) {
             foreach ($sections as $number => $section) {
+                var_dump(($section));
                 if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
                     sort_course_chapters($course->id);
                     $section->name = $chapter->title;

@@ -43,7 +43,7 @@ define(['jquery', 'core/notification'], function($, Notification) {
         var another_value = String('mooin4ection-text-' + section_number);
         var disable_btn_button = String('id_bottom_complete-' + section_number);
         var percentage = '100%';
-        var percentage_text = String(percentage + '% der Lektion bearbeitet');
+        var percentage_text = String(percentage + ' der Lektion bearbeitet');
 
 
         var dataSend = {};

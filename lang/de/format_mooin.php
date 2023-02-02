@@ -106,3 +106,9 @@ $string['by'] = 'von ';
 $string['latest_contribution_mobile'] = 'Neuster Beitrag:';
 $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['all_news'] = 'Newsforum';
+
+// Chapter in course
+$string['new_chapter'] = 'Neue Kapitel';
+$string['setchapter'] = 'Kapitel Einstellen';
+$string['unsetchapter'] = 'Kapitel Deaktivieren';
+$string['completed'] = 'Fertig';

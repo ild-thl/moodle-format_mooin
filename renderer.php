@@ -27,6 +27,7 @@ require_once($CFG->dirroot.'/course/format/renderer.php');
 require_once('locallib.php');
 
 global $PAGE;
+// Call jquery amd
 $PAGE->requires->js_call_amd('format_mooin/complete_section');
 
 /**
@@ -591,8 +592,8 @@ class format_mooin_renderer extends format_section_renderer_base {
                 if (!$check_in_up) {
                     if (!$this->page->user_is_editing()) {
                         // $bar .= html_writer::start_tag('form', array( 'style' => 'margin-top: 40px;')); // 'method' => 'post',
-                        $bar .= html_writer::start_tag('button', array('class'=>'btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Seite als bearbeitet markieren', )); // , 'type' => 'submit'
-
+                        $bar .= html_writer::start_tag('button', array('type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Seite als bearbeitet markieren', )); // , 'type' => 'submit'
+                                                
                         $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Seite als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('button');
                         //$bar .= html_writer::end_tag('form');
@@ -601,8 +602,9 @@ class format_mooin_renderer extends format_section_renderer_base {
                     break;
                 } else {
                     if (!$this->page->user_is_editing()) {
-                        $bar .= html_writer::start_tag('div', array('class'=>'comp_btn btn btn-outline-secondary complete_section-' .$sec_in_course_modules, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'style' => 'margin-top: 40px;'));
-
+                        $bar .= html_writer::start_tag('div', array('type'=>'button','class'=>'comp_btn btn btn-secondary complete_section-' .$sec_in_course_modules, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'style' => 'position: relative;margin: -32px -117px; width: auto;
+                        top: 50%;left: 50%;color: black;font-size: 13px;display: inline-flex;'));// margin-top: 40px
+                
                         $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Seite als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('div');
                     }
@@ -733,7 +735,7 @@ class format_mooin_renderer extends format_section_renderer_base {
      * @return string HTML to output.
      */
     protected function section_summary($section, $course, $mods) {
-        global $DB;
+        global $DB, $USER, $COURSE;
         $classattr = 'section main section-summary clearfix';
         $linkclasses = '';
 
@@ -814,10 +816,33 @@ class format_mooin_renderer extends format_section_renderer_base {
                     // TODO: mark as not available yet
                 }
                 $o .= $this->output->heading($title, 3, 'section-title');
-                if ($progress = get_progress($course->id, $section->id)['percentage'] == 100) {
-                    // TODO mark as completed
+               
+                
+                $user_complete_label = $USER->id . '-' . $COURSE->id . '-' . $section->section;  //
+                $label_complete = $DB->record_exists('user_preferences', array('value' => $user_complete_label));
+
+                if (is_array(get_progress($course->id, $section->id))) {
+                    $progress_result = get_progress($course->id, $section->id)['percentage'];
+                    
+                    if (gettype($progress_result == 'integer')) {
+                        if ($progress = $progress_result == 100) {
+                            // TODO mark as completed
+                            $o .= get_string('completed', 'format_mooin');
+                        }
+                    } elseif (gettype($progress_result == 'double')) {
+                        $progress_result = intval($progress_result);
+                        if ($progress = $progress_result == 100) {
+                            // TODO mark as completed
+                            $o .= get_string('completed', 'format_mooin');
+                        }
+                    }
+                } elseif ($label_complete) {
                     $o .= get_string('completed', 'format_mooin');
+                } else {
+                    $o .= '';
                 }
+                
+                
                 $o .= html_writer::end_tag('div');
                 $o .= html_writer::end_tag('li');
                 if (is_last_section_of_chapter($section->id)) {
