@@ -1189,7 +1189,7 @@ function get_course_grades($courseid) {
 
         $sec = $DB->get_records_sql("SELECT cs.*
                     FROM {course_sections} cs
-                    WHERE cs.course = ? AND cs.section != 0 ", array($courseid));
+                    WHERE cs.course = ? AND cs.section != 0 AND cs.sequence != '' ", array($courseid));
 
 
         /* $mods = $DB->get_records_sql("SELECT cm.*, m.name as modname
@@ -1197,9 +1197,9 @@ function get_course_grades($courseid) {
                     WHERE cm.course = ? AND cm.completiongradeitemnumber >= 0 AND cm.module = m.id AND m.visible = 1", array($courseid)); */
 
         $other_mods = $DB->get_records_sql("SELECT cm.*, cs.name as sectionname, cs.section as sectionincourse
-                            FROM {course_modules} cm
+                            FROM {course_modules} cm 
                             LEFT JOIN {course_sections} cs ON cm.section = cs.id
-                            WHERE cm.course = ? AND cs.section != 0 ", array($courseid));
+                            WHERE cm.course = ? AND cs.section != 0", array($courseid));
 
         $percentage = 0;
         $mods_counter = 0;
@@ -1241,12 +1241,12 @@ function get_course_grades($courseid) {
                                                          WHERE cm.course = ? AND cm.section = ? AND cm.module = ? ", array($courseid, $val->id, '13'));
                                 // Count the Other Activity in the same section as before
                                 $sql_second = $DB->get_records_sql("SELECT cm.*
-                                FROM {course_modules} cm
-                                WHERE cm.course = ? AND cm.section = ? AND cm.module != '13' ", array($courseid, $val->id));
+                                                        FROM {course_modules} cm
+                                                        WHERE cm.course = ? AND cm.section = ? AND cm.module != '13' ", array($courseid, $val->id));
                                 
                                 $number_element--;
                                 if (count($sql_first)>= 1 && count($sql_second) == 0) {
-                                    $number_element++;
+                                    $number_element += 1;
                                 }
                             }
                            
@@ -1838,10 +1838,13 @@ function get_section_prefix($section) {
     $sectionprefix = '';
 
     $parentchapter = get_parent_chapter($section);
-    $sids = get_sectionids_for_chapter($parentchapter->id);
-    $sectionprefix .= $parentchapter->chapter.'.'.(array_search($section->id, $sids) + 1);
+    if (is_object($parentchapter)) {
+        $sids = get_sectionids_for_chapter($parentchapter->id);
+        $sectionprefix .= $parentchapter->chapter.'.'.(array_search($section->id, $sids) + 1);
 
-    return $sectionprefix;
+        return $sectionprefix;
+    }
+    
 }
 
 function get_parent_chapter($section) {

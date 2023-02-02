@@ -735,7 +735,7 @@ class format_mooin_renderer extends format_section_renderer_base {
      * @return string HTML to output.
      */
     protected function section_summary($section, $course, $mods) {
-        global $DB;
+        global $DB, $USER, $COURSE;
         $classattr = 'section main section-summary clearfix';
         $linkclasses = '';
 
@@ -814,10 +814,33 @@ class format_mooin_renderer extends format_section_renderer_base {
                     // TODO: mark as not available yet
                 }
                 $o .= $this->output->heading($title, 3, 'section-title');
-                if ($progress = get_progress($course->id, $section->id)['percentage'] == 100) {
-                    // TODO mark as completed
+               
+                
+                $user_complete_label = $USER->id . '-' . $COURSE->id . '-' . $section->section;  //
+                $label_complete = $DB->record_exists('user_preferences', array('value' => $user_complete_label));
+
+                if (is_array(get_progress($course->id, $section->id))) {
+                    $progress_result = get_progress($course->id, $section->id)['percentage'];
+                    
+                    if (gettype($progress_result == 'integer')) {
+                        if ($progress = $progress_result == 100) {
+                            // TODO mark as completed
+                            $o .= get_string('completed', 'format_mooin');
+                        }
+                    } elseif (gettype($progress_result == 'double')) {
+                        $progress_result = intval($progress_result);
+                        if ($progress = $progress_result == 100) {
+                            // TODO mark as completed
+                            $o .= get_string('completed', 'format_mooin');
+                        }
+                    }
+                } elseif ($label_complete) {
                     $o .= get_string('completed', 'format_mooin');
+                } else {
+                    $o .= '';
                 }
+                
+                
                 $o .= html_writer::end_tag('div');
                 $o .= html_writer::end_tag('li');
                 if (is_last_section_of_chapter($section->id)) {
