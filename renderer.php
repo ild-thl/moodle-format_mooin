@@ -791,17 +791,6 @@ class format_mooin_renderer extends format_section_renderer_base {
                     $expand = get_expand_string($section);
                     $o .= html_writer::start_tag('div', array('class' => 'collapse chapter-content chapter-' . $chapter.$expand));
                 }
-                $o .= html_writer::start_tag('li', [
-                        'id' => 'section-' . $section->section,
-                        'class' => $classattr . ' lesson',
-                        'role' => 'region',
-                        'aria-label' => $title,
-                        'data-sectionid' => $section->section
-                    ]);
-
-                $o .= html_writer::tag('div', '', array('class' => 'left side'));
-                $o .= html_writer::tag('div', '', array('class' => 'right side'));
-                $o .= html_writer::start_tag('div', array('class' => 'content'));
 
                 // mark as completed
                 $completed = '';
@@ -817,18 +806,38 @@ class format_mooin_renderer extends format_section_renderer_base {
                     $completed .= ' completed';
                 }
 
+                // mark as locked/invisible
+                $locked = '';
+                if (!$section->uservisible) {
+                    $locked = ' locked';
+                }
+
+                $o .= html_writer::start_tag('li', [
+                        'id' => 'section-' . $section->section,
+                        'class' => $classattr . ' lesson'.$completed.$locked,
+                        'role' => 'region',
+                        'aria-label' => $title,
+                        'data-sectionid' => $section->section
+                    ]);
+
+                $o .= html_writer::tag('div', '', array('class' => 'left side'));
+                $o .= html_writer::tag('div', '', array('class' => 'right side'));
+                $o .= html_writer::start_tag('div', array('class' => 'content'));
+
                 $sectionprefix = get_section_prefix($section);
                 $title = $sectionprefix . ' - ' . $title;
+                
                 if ($section->uservisible) {
                     $title = html_writer::tag(
                         'a',
                         $title,
-                        array('href' => course_get_url($course, $section->section), 'class' => $linkclasses.$completed)
+                        array('href' => course_get_url($course, $section->section), 'class' => $linkclasses)
                     );
                 }
                 else {
-                    // TODO: mark as not available yet
+                    // TODO $title = html_writer::tag('span', $title, array('class' => $locked));
                 }
+
                 $o .= $this->output->heading($title, 3, 'section-title');
                 
                 $o .= html_writer::end_tag('div');
