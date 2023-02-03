@@ -153,7 +153,7 @@ class format_mooin extends format_base {
      * @return void
      */
     public function extend_course_navigation($navigation, navigation_node $node) {
-        global $PAGE, $DB;
+        global $PAGE, $DB, $CFG;
         // If section is specified in course/view.php, make sure it is expanded in navigation.
         if ($navigation->includesectionnum === false) {
             $selectedsection = optional_param('section', null, PARAM_INT);
@@ -179,7 +179,7 @@ class format_mooin extends format_base {
             }
         }
 
-        require_once('locallib.php');
+        require_once($CFG->dirroot.'/course/format/mooin/locallib.php');
         $courseid = $this->get_course()->id;
         if ($sections = $DB->get_records('course_sections', array('course' => $courseid), 'section')) {
             foreach ($sections as $section) {
