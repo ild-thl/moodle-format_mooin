@@ -1907,3 +1907,36 @@ function get_expand_string($section) {
     }
     return $expand;
 }
+
+function get_chapter_info($chapter) {
+    global $USER, $DB;
+    $info = array();
+
+    $chaptercompleted = false;
+    $lastvisited = false;
+
+    $sectionids = get_sectionids_for_chapter($chapter->id);
+    $completedsections = 0;
+
+    foreach ($sectionids as $sectionid) {
+        $progress = get_progress($chapter->courseid, $sectionid);
+
+        if (is_array($progress) && intval($progress['percentage']) == 100) {
+            $completedsections++;
+        }
+
+        $last_section = get_user_preferences('format_mooin_last_section_in_course_'.$chapter->courseid, 0, $USER->id);
+        if ($record = $DB->get_record('course_sections', array('course' => $chapter->courseid, 'section' => $last_section))) {
+            if ($record->id == $sectionid) {
+                $lastvisited = true;
+            }
+        }
+    }
+    if ($completedsections == count($sectionids)) {
+        $chaptercompleted = true;
+    }
+
+    $info['completed'] = $chaptercompleted;
+    $info['lastvisited'] = $lastvisited;
+    return $info;
+}

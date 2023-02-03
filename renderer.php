@@ -755,9 +755,21 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         //if ($section->uservisible) {
             if ($chapter) {
+                $chapterinfo = get_chapter_info($chapter);
+                
+                $chaptercompleted = '';
+                if ($chapterinfo['completed'] == true) {
+                    $chaptercompleted = ' completed';
+                }
+
+                $lastvisited = 'false';
+                if ($chapterinfo['lastvisited'] == true) {
+                    $lastvisited = 'true';
+                }
+
                 $o .= html_writer::start_tag('li', [
                     'id' => 'section-' . $section->section,
-                    'class' => $classattr . ' chapter',
+                    'class' => $classattr . ' chapter'.$chaptercompleted,
                     'role' => 'region',
                     'aria-label' => $title,
                     'data-sectionid' => $section->section
@@ -778,7 +790,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                             'href' => '.chapter-' . $chapter->chapter,
                             'data-toggle' => 'collapse',
                             'role' => 'button',
-                            'aria-expanded' => 'false', //Set true if get_expand_string($section); -> show
+                            'aria-expanded' => $lastvisited, //'false', //Set true if get_expand_string($section); -> show
                             'aria-controls' => $sectionids
                         )
                     );
