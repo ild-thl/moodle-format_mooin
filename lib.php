@@ -276,11 +276,11 @@ class format_mooin extends format_base {
             $courseconfig = get_config('moodlecourse');
             $courseformatoptions = [
                 'hiddensections' => [
-                    'default' => $courseconfig->hiddensections,
+                    'default' => 0, // mooin: show hint
                     'type' => PARAM_INT,
                 ],
                 'coursedisplay' => [
-                    'default' => $courseconfig->coursedisplay,
+                    'default' => 1, // mooin: only one section per page
                     'type' => PARAM_INT,
                 ],
             ];
@@ -314,6 +314,7 @@ class format_mooin extends format_base {
             ];
             $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
         }
+        return array();
         return $courseformatoptions;
     }
 
@@ -359,6 +360,7 @@ class format_mooin extends format_base {
      *     this object contains information about the course before update
      * @return bool whether there were any changes to the options values
      */
+    /*
     public function update_course_format_options($data, $oldcourse = null) {
         $data = (array)$data;
         if ($oldcourse !== null) {
@@ -374,7 +376,7 @@ class format_mooin extends format_base {
         }
         return $this->update_format_options($data);
     }
-
+    //*/
     /**
      * Whether this format allows to delete sections.
      *
