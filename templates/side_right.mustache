@@ -7,9 +7,11 @@
         <p class="caption fw-700 text-primary pl-2">
           <a href="{{badges_url}}">{{#str}} badges, format_mooin {{/str}}</a>
         </p>
+        {{{manage_badges_link}}}
       </div>
-      <div class="badges-card-inner">
+      <div class="badges-card-inner d-flex align-items-center">
         {{{badges}}}
+        <span class="text-nowrap pr-1">+ 4</span>
         {{^badges}}
         <div class="no-badges-img"></div>
         {{/badges}}
@@ -18,11 +20,20 @@
         <a href="{{badges_url}}">{{#str}} see_badges, format_mooin {{/str}}</a>
       </div>
     </div>
+
     <div class="certificate-card">
+
+
       <div class="d-flex align-items-center">
         <span class="icon-wrapper award-icon"></span>
         <a href="{{certificate_url}}" class="caption fw-700 text-primary pl-2">{{#str}} certificates, format_mooin
           {{/str}}</a>
+        {{#has_capability}}
+        <button type="button" class="btn info-tip" data-toggle="tooltip" data-placement="top"
+          title="Zertifikate werden in den Lektionen angelegt.">
+          <span class="bi bi-info-circle-fill"></span>
+        </button>
+        {{/has_capability}}
       </div>
       <div class="certificate-card-inner">
         {{{certificates}}}
@@ -40,6 +51,12 @@
 <div class="community">
   <div class="container">
     <h2>{{#str}} community, format_mooin {{/str}}</h2>
+    {{#has_capability}}
+    <button type="button" class="btn info-tip" data-toggle="tooltip" data-placement="top"
+      title="Diskussionsforen werden in den Lektionen angelegt.">
+      <span class="bi bi-info-circle-fill"></span>
+    </button>
+    {{/has_capability}}
     <div class="forum-card">
       <div class="d-flex align-items-center">
         {{> format_mooin/discussions_tile}}
@@ -51,7 +68,8 @@
           <div class="d-flex">
             <span class="icon-wrapper participant-icon"></span>
             <div>
-              <a href="{{participants_url}}" class="caption fw-700 text-primary">{{#str}} user_card_title, format_mooin {{/str}}</a>
+              <a href="{{participants_url}}" class="caption fw-700 text-primary">{{#str}} user_card_title, format_mooin
+                {{/str}}</a>
               <br>
               <span class="fw-700">{{user_count}} {{#str}} user_in_course, format_mooin {{/str}}</span>
               <p class="caption fw-700">{{#str}} new_user, format_mooin {{/str}}</p>

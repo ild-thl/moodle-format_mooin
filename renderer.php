@@ -388,8 +388,8 @@ class format_mooin_renderer extends format_section_renderer_base {
             if (!$showsection) {
                 continue;
             }
-
-            if (!$this->page->user_is_editing() && $course->coursedisplay == COURSE_DISPLAY_MULTIPAGE) {
+            $course->coursedisplay = 1;
+            if (!$this->page->user_is_editing()) {
                 // Display section summary only.
                 $out .= $this->section_summary($thissection, $course, null);
             } else {
@@ -759,9 +759,21 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         //if ($section->uservisible) {
             if ($chapter) {
+                $chapterinfo = get_chapter_info($chapter);
+                
+                $chaptercompleted = '';
+                if ($chapterinfo['completed'] == true) {
+                    $chaptercompleted = ' completed';
+                }
+
+                $lastvisited = 'false';
+                if ($chapterinfo['lastvisited'] == true) {
+                    $lastvisited = 'true';
+                }
+
                 $o .= html_writer::start_tag('li', [
                     'id' => 'section-' . $section->section,
-                    'class' => $classattr . ' chapter',
+                    'class' => $classattr . ' chapter'.$chaptercompleted,
                     'role' => 'region',
                     'aria-label' => $title,
                     'data-sectionid' => $section->section
@@ -782,7 +794,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                             'href' => '.chapter-' . $chapter->chapter,
                             'data-toggle' => 'collapse',
                             'role' => 'button',
-                            'aria-expanded' => 'false', //Set true if get_expand_string($section); -> show
+                            'aria-expanded' => $lastvisited, //'false', //Set true if get_expand_string($section); -> show
                             'aria-controls' => $sectionids
                         )
                     );
@@ -795,9 +807,30 @@ class format_mooin_renderer extends format_section_renderer_base {
                     $expand = get_expand_string($section);
                     $o .= html_writer::start_tag('div', array('class' => 'collapse chapter-content chapter-' . $chapter.$expand));
                 }
+
+                // mark as completed
+                $completed = '';
+                $user_complete_label = $USER->id . '-' . $COURSE->id . '-' . $section->section;  //
+                $label_complete = $DB->record_exists('user_preferences', array('value' => $user_complete_label));
+                if (is_array(get_progress($course->id, $section->id))) {
+                    $progress_result = intval(get_progress($course->id, $section->id)['percentage']);
+                    if ($progress_result == 100) {
+                        $completed .= ' completed';
+                    }
+                } 
+                else if($label_complete) {
+                    $completed .= ' completed';
+                }
+
+                // mark as locked/invisible
+                $locked = '';
+                if (!$section->uservisible) {
+                    $locked = ' locked';
+                }
+
                 $o .= html_writer::start_tag('li', [
                         'id' => 'section-' . $section->section,
-                        'class' => $classattr . ' lesson',
+                        'class' => $classattr . ' lesson'.$completed.$locked,
                         'role' => 'region',
                         'aria-label' => $title,
                         'data-sectionid' => $section->section
@@ -809,6 +842,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
                 $sectionprefix = get_section_prefix($section);
                 $title = $sectionprefix . ' - ' . $title;
+                
                 if ($section->uservisible) {
                     $title = html_writer::tag(
                         'a',
@@ -817,35 +851,10 @@ class format_mooin_renderer extends format_section_renderer_base {
                     );
                 }
                 else {
-                    // TODO: mark as not available yet
+                    // TODO $title = html_writer::tag('span', $title, array('class' => $locked));
                 }
-                $o .= $this->output->heading($title, 3, 'section-title');
-               
-                
-                $user_complete_label = $USER->id . '-' . $COURSE->id . '-' . $section->section;  //
-                $label_complete = $DB->record_exists('user_preferences', array('value' => $user_complete_label));
 
-                if (is_array(get_progress($course->id, $section->id))) {
-                    $progress_result = get_progress($course->id, $section->id)['percentage'];
-                    
-                    if (gettype($progress_result == 'integer')) {
-                        if ($progress = $progress_result == 100) {
-                            // TODO mark as completed
-                            $o .= get_string('completed', 'format_mooin');
-                        }
-                    } elseif (gettype($progress_result == 'double')) {
-                        $progress_result = intval($progress_result);
-                        if ($progress = $progress_result == 100) {
-                            // TODO mark as completed
-                            $o .= get_string('completed', 'format_mooin');
-                        }
-                    }
-                } elseif ($label_complete) {
-                    $o .= get_string('completed', 'format_mooin');
-                } else {
-                    $o .= '';
-                }
-                
+                $o .= $this->output->heading($title, 3, 'section-title');
                 
                 $o .= html_writer::end_tag('div');
                 $o .= html_writer::end_tag('li');
