@@ -150,7 +150,9 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // $new_in_course = $DB->get_record('forum', ['course' =>$courseid, 'type' => $forum_type]);
     $dis = $DB->get_record_sql($sql_first, $param_first);
 
-    $diskussions_url = new moodle_url('/mod/forum/view.php', array('f' => $dis->id, 'tab' => '1'));
+   //  $diskussions_url = new moodle_url('/mod/forum/view.php', array('f' => $dis->id, 'tab' => '1'));
+   $diskussions_url = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $course->id));
+
     $participants_url = new moodle_url('/course/format/mooin/participants.php', array('id' => $course->id));
 
     // Add rendere here
@@ -168,18 +170,8 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
 
     if (get_last_forum_discussion($course->id, 'general') != null) { //Nötig? get_last_news
         $check_diskussion = get_last_forum_discussion($course->id, 'general');
+        // $check_diskussion = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $course->id));
     }
-
-    // $check_diskussion = get_last_news($course->id, 'general');
-    // if ($check_diskussion != null) {
-    //     $out .= $check_diskussion;
-    // } else {
-    //     $out .= '';
-    // }
-
-
-
-
 
     // Participants
 if (get_user_in_course($course->id) != null) {

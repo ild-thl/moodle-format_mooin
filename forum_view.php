@@ -110,7 +110,7 @@ if (!empty($CFG->enablerssfeeds) && !empty($CFG->forum_enablerssfeeds) && $forum
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
-/// Print header.
+// Print header.
 
 $PAGE->set_title($forum->name);
 $PAGE->add_body_class('forumtype-' . $forum->type);
@@ -121,6 +121,8 @@ echo $OUTPUT->header();
 // Print Navbar in layout
 // echo $OUTPUT->navbar(get_string('discussions', 'format_mooin'));
 // echo navbar(get_string('discussions', 'format_mooin'));
+echo navbar('All Forums');
+
 /// Some capability checks.
 if (empty($cm->visible) and !has_capability('moodle/course:viewhiddenactivities', $context)) {
     notice(get_string("activityiscurrentlyhidden"));

@@ -39,12 +39,13 @@ $PAGE->set_url('/course/format/mooin/certificates.php', array('id' => $course->i
 
 echo $OUTPUT->header();
 
-//echo $OUTPUT->navbar();
 $out_certificat = null;
 $val = false;
-echo '<br />';
-echo '<br />';
+/* echo '<br />';
+echo '<br />'; */
 echo html_writer::start_div('mooin-md-container'); //open outer div
+echo navbar('Kurszertifikate');
+
 echo html_writer::tag('h2', html_writer::tag('div', get_string('my_certificate', 'format_mooin'), array('class' => 'oc_badges_text')));
 
 echo html_writer::tag('div', get_string('certificate_overview_description', 'format_mooin'));
