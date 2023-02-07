@@ -238,13 +238,14 @@ if (!empty($displaysection)) {
 } else {
     $PAGE->navbar;
     $renderer->print_multiple_section_page($course, null, null, null, null);
+    // unenrol from course
+    if ($unenrolurl = get_unenrol_url($course->id)) {
+        echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'));
+    }
 }
 //*/
 
-// unenrol from course
-if ($unenrolurl = get_unenrol_url($course->id)) {
-    echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'));
-}
+
 
 // Include course format js module.
 $PAGE->requires->js('/course/format/mooin/format.js');
