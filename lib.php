@@ -220,7 +220,7 @@ class format_mooin extends format_base {
         // unenrol from course
         if ($unenrolurl = get_unenrol_url($courseid)) {
             $node->add(
-                get_string('unenrol'),
+                get_string('unenrol', 'format_mooin'),
                 $unenrolurl,
                 navigation_node::TYPE_CUSTOM,
                 null,

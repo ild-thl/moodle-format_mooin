@@ -241,5 +241,10 @@ if (!empty($displaysection)) {
 }
 //*/
 
+// unenrol from course
+if ($unenrolurl = get_unenrol_url($course->id)) {
+    echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'));
+}
+
 // Include course format js module.
 $PAGE->requires->js('/course/format/mooin/format.js');
