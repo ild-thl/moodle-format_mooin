@@ -34,7 +34,7 @@ global $PAGE;
 
 // Call the js complete_section
 // $PAGE->requires->js_call_amd('format_mooin/complete_section');
- 
+
 // require_once($CFG->dir.'./mod/lesson.php');
 
 // Horrible backwards compatible parameter aliasing.
@@ -217,12 +217,24 @@ if (get_user_in_course($course->id) != null) {
 
     $coursecontext = context_course::instance($course->id);
 
-    //Show 'Edit Header' Symbol only if user has capability to update
+    //Show 'Edit Gear' Symbol only if user has capability to update
     if (has_capability('moodle/course:update', $coursecontext)) {
         $gear_icon = html_writer::span('', 'bi bi-gear-fill');
+
         $edit_header_url = new moodle_url('/course/format/mooin/edit_header.php', array('course' => $course->id));
         $edit_header_link = html_writer::link($edit_header_url, $gear_icon);
+
+        $edit_newsforum = new moodle_url('');
+        $edit_newsforum_link = html_writer::link($edit_newsforum, $gear_icon);
+
+        $manage_badges_url = new moodle_url('/badges/view.php', array('type' => '2', 'id' => $course->id));
+        $manage_badges_link =  html_writer::link($manage_badges_url, $gear_icon, array('class' => 'manage-badges-gear'));
+
         $templatecontext['edit_header_link'] = $edit_header_link;
+        $templatecontext['edit_newsforum_link'] = $edit_header_link;
+        $templatecontext['manage_badges_link'] = $manage_badges_link;
+
+        $templatecontext['has_capability'] = true;
     }
 
     echo $OUTPUT->render_from_template('format_mooin/mooin_mainpage', $templatecontext);

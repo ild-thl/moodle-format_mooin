@@ -153,7 +153,7 @@ class format_mooin extends format_base {
      * @return void
      */
     public function extend_course_navigation($navigation, navigation_node $node) {
-        global $PAGE, $DB;
+        global $PAGE, $DB, $CFG;
         // If section is specified in course/view.php, make sure it is expanded in navigation.
         if ($navigation->includesectionnum === false) {
             $selectedsection = optional_param('section', null, PARAM_INT);
@@ -179,7 +179,7 @@ class format_mooin extends format_base {
             }
         }
 
-        require_once('locallib.php');
+        require_once($CFG->dirroot.'/course/format/mooin/locallib.php');
         $courseid = $this->get_course()->id;
         if ($sections = $DB->get_records('course_sections', array('course' => $courseid), 'section')) {
             foreach ($sections as $section) {
@@ -211,10 +211,22 @@ class format_mooin extends format_base {
                     $sectionnode->text = $title;
                     $sectionnode->shorttext = $pre;
                     $sectionnode->action = $url;
-                    $sectionnode->$key = null;
+                    // $sectionnode->$key = null;
                     $node->add_node($sectionnode);
                 }
             }
+        }
+
+        // unenrol from course
+        if ($unenrolurl = get_unenrol_url($courseid)) {
+            $node->add(
+                get_string('unenrol'),
+                $unenrolurl,
+                navigation_node::TYPE_CUSTOM,
+                null,
+                'format_mooin_item',
+                new pix_icon('i/user', '')
+            );
         }
     }
 
@@ -233,6 +245,7 @@ class format_mooin extends format_base {
         $renderer = $this->get_renderer($PAGE);
         if ($renderer && ($sections = $modinfo->get_section_info_all())) {
             foreach ($sections as $number => $section) {
+                var_dump(($section));
                 if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
                     sort_course_chapters($course->id);
                     $section->name = $chapter->title;
@@ -275,11 +288,11 @@ class format_mooin extends format_base {
             $courseconfig = get_config('moodlecourse');
             $courseformatoptions = [
                 'hiddensections' => [
-                    'default' => $courseconfig->hiddensections,
+                    'default' => 0, // mooin: show hint
                     'type' => PARAM_INT,
                 ],
                 'coursedisplay' => [
-                    'default' => $courseconfig->coursedisplay,
+                    'default' => 1, // mooin: only one section per page
                     'type' => PARAM_INT,
                 ],
             ];
@@ -313,6 +326,7 @@ class format_mooin extends format_base {
             ];
             $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
         }
+        return array();
         return $courseformatoptions;
     }
 
@@ -358,6 +372,7 @@ class format_mooin extends format_base {
      *     this object contains information about the course before update
      * @return bool whether there were any changes to the options values
      */
+    /*
     public function update_course_format_options($data, $oldcourse = null) {
         $data = (array)$data;
         if ($oldcourse !== null) {
@@ -373,7 +388,7 @@ class format_mooin extends format_base {
         }
         return $this->update_format_options($data);
     }
-
+    //*/
     /**
      * Whether this format allows to delete sections.
      *
