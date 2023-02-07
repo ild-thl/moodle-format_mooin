@@ -35,7 +35,6 @@ $PAGE->set_url('/course/format/mooin/badges.php', array('id' => $course->id));
 
 echo $OUTPUT->header();
 
-// echo $OUTPUT->navbar();
 
 $blockrecord = $DB->get_record('block_instances', array('blockname' => 'badges', 'parentcontextid' => $context->instanceid), '*', MUST_EXIST); // oc_mooc_nav || $context->id
 
@@ -115,9 +114,11 @@ if ($cert_m) {
         }
     }
 }
-echo '<br />';
-echo '<br />';
+/* echo '<br />';
+echo '<br />'; */
+
 echo html_writer::start_div('mooin-md-container'); //open outer div
+echo navbar('Badges');
 echo html_writer::tag('h2', html_writer::tag('div', get_string('course_badges', 'format_mooin'), array('class' => 'oc_badges_text')));
 
 echo html_writer::tag('div', get_string('badge_overview_description', 'format_mooin'));
