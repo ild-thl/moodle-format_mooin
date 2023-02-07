@@ -216,6 +216,18 @@ class format_mooin extends format_base {
                 }
             }
         }
+
+        // unenrol from course
+        if ($unenrolurl = get_unenrol_url($courseid)) {
+            $node->add(
+                get_string('unenrol'),
+                $unenrolurl,
+                navigation_node::TYPE_CUSTOM,
+                null,
+                'format_mooin_item',
+                new pix_icon('i/user', '')
+            );
+        }
     }
 
     /**

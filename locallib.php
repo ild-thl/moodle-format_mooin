@@ -1940,3 +1940,23 @@ function get_chapter_info($chapter) {
     $info['lastvisited'] = $lastvisited;
     return $info;
 }
+
+function get_unenrol_url($courseid) {
+    global $DB, $USER, $CFG;
+
+    if ($enrol = $DB->get_record('enrol', array('courseid' => $courseid, 'enrol' => 'autoenrol', 'status' => 0))) {	
+        if ($user_enrolment = $DB->get_record('user_enrolments', array('enrolid' => $enrol->id, 'userid' => $USER->id))) {
+            $unenrolurl = new moodle_url($CFG->wwwroot.'/enrol/autoenrol/unenrolself.php?enrolid='.$enrol->id);
+            return $unenrolurl;
+        }
+    }
+
+    if ($enrol = $DB->get_record('enrol', array('courseid' => $courseid, 'enrol' => 'self', 'status' => 0))) {	
+        if ($user_enrolment = $DB->get_record('user_enrolments', array('enrolid' => $enrol->id, 'userid' => $USER->id))) {
+            $unenrolurl = new moodle_url($CFG->wwwroot.'/enrol/self/unenrolself.php?enrolid='.$enrol->id);
+            return $unenrolurl;
+        }
+    }
+
+    return false;
+}
