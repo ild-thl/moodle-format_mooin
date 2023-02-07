@@ -441,7 +441,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $section_course = $DB->get_records('course_sections', array('course' =>$course->id));
         $sections = ($DB->count_records('course_sections', ['course' =>$course->id])) - 1;
 
-        
+
         $modinfo = get_fast_modinfo($course);
         $course = course_get_format($course)->get_course();
 
@@ -487,12 +487,20 @@ class format_mooin_renderer extends format_section_renderer_base {
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
         $sectiontitle = '';
         $sectiontitle .= html_writer::start_tag('div', array('id' => 'custom-top-nav', 'class' => 'section-navigation navigationtitle'));
-        $sectiontitle .= html_writer::start_tag('div', array('class' => 'inner-title-navigation'));
 
         // breadcrumb come here
         // Custom Navbar in single-section display by different view ( Desktop & Mobile )
-        $sectiontitle .=  navbar($displaysection);       
+        $sectiontitle .= html_writer::start_tag('div', array('class' => 'custom-navbar'));
+        $sectiontitle .=  navbar($displaysection);
+        $sectiontitle .= html_writer::end_tag('div');
+        $sectiontitle .= html_writer::start_tag('div', array('class' => 'custom-navbar-mobile'));
         $sectiontitle .= navbar_mobile($displaysection);
+        $sectiontitle .= html_writer::end_tag('div');
+
+        $sectiontitle .= html_writer::start_tag('div', array('class' => 'inner-title-navigation'));
+
+
+
 
         $sectiontitle .= html_writer::tag('span', $sectionnavlinks['previous_top'], array('class' => 'mdl-left')); //Screenreader?
         // Title attributes
@@ -597,7 +605,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                     if (!$this->page->user_is_editing()) {
                         // $bar .= html_writer::start_tag('form', array( 'style' => 'margin-top: 40px;')); // 'method' => 'post',
                         $bar .= html_writer::start_tag('button', array('type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Seite als bearbeitet markieren', )); // , 'type' => 'submit'
-                                                
+
                         $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Seite als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('button');
                         //$bar .= html_writer::end_tag('form');
@@ -608,7 +616,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                     if (!$this->page->user_is_editing()) {
                         $bar .= html_writer::start_tag('div', array('type'=>'button','class'=>'comp_btn btn btn-secondary complete_section-' .$sec_in_course_modules, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'style' => 'position: relative;margin: 0 auto; width: 38%;
                         top: 50%;color: black;font-size: 13px; cursor:unset'));// margin-top: 40px
-                
+
                         $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Seite als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('div');
                     }
@@ -752,7 +760,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         }
 
         $chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id));
-        
+
         $title = get_section_name($course, $section);
         $o = '';
 
@@ -760,7 +768,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         //if ($section->uservisible) {
             if ($chapter) {
                 $chapterinfo = get_chapter_info($chapter);
-                
+
                 $chaptercompleted = '';
                 if ($chapterinfo['completed'] == true) {
                     $chaptercompleted = ' completed';
@@ -817,7 +825,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                     if ($progress_result == 100) {
                         $completed .= ' completed';
                     }
-                } 
+                }
                 else if($label_complete) {
                     $completed .= ' completed';
                 }
@@ -842,7 +850,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
                 $sectionprefix = get_section_prefix($section);
                 $title = $sectionprefix . ' - ' . $title;
-                
+
                 if ($section->uservisible) {
                     $title = html_writer::tag(
                         'a',
@@ -855,7 +863,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 }
 
                 $o .= $this->output->heading($title, 3, 'section-title');
-                
+
                 $o .= html_writer::end_tag('div');
                 $o .= html_writer::end_tag('li');
                 if (is_last_section_of_chapter($section->id)) {
