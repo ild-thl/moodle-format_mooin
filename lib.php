@@ -119,14 +119,14 @@ class format_mooin extends format_base {
             } else {
                 $usercoursedisplay = $course->coursedisplay;
             }
-            if ($sectionno != 0 && $usercoursedisplay == COURSE_DISPLAY_MULTIPAGE) {
+            //if ($sectionno != 0 && $usercoursedisplay == COURSE_DISPLAY_MULTIPAGE) {
                 $url->param('section', $sectionno);
-            } else {
-                if (empty($CFG->linkcoursesections) && !empty($options['navigation'])) {
-                    return null;
-                }
-                $url->set_anchor('section-'.$sectionno);
-            }
+            //} else {
+            //    if (empty($CFG->linkcoursesections) && !empty($options['navigation'])) {
+            //        return null;
+            //    }
+            //    $url->set_anchor('section-'.$sectionno);
+            //}
         }
         return $url;
     }
