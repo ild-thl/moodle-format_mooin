@@ -818,15 +818,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
                 // mark as completed
                 $completed = '';
-                $user_complete_label = $USER->id . '-' . $COURSE->id . '-' . $section->section;  //
-                $label_complete = $DB->record_exists('user_preferences', array('value' => $user_complete_label));
-                if (is_array(get_progress($course->id, $section->id))) {
-                    $progress_result = intval(get_progress($course->id, $section->id)['percentage']);
-                    if ($progress_result == 100) {
-                        $completed .= ' completed';
-                    }
-                }
-                else if($label_complete) {
+                if (is_section_completed($course->id, $section)) {
                     $completed .= ' completed';
                 }
 
