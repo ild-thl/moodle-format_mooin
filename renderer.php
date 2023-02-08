@@ -830,9 +830,15 @@ class format_mooin_renderer extends format_section_renderer_base {
                     $locked = ' locked';
                 }
 
+                // highlight as last visited section
+                $lastvisitedsection = '';
+                if (get_user_preferences('format_mooin_last_section_in_course_'.$course->id, 0, $USER->id) == $section->section) {
+                    $lastvisitedsection = ' active';
+                }
+
                 $o .= html_writer::start_tag('li', [
                         'id' => 'section-' . $section->section,
-                        'class' => $classattr . ' lesson'.$completed.$locked,
+                        'class' => $classattr . ' lesson'.$completed.$locked.$lastvisitedsection,
                         'role' => 'region',
                         'aria-label' => $title,
                         'data-sectionid' => $section->section
