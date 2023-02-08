@@ -178,7 +178,7 @@ $PAGE->navbar->add('Participants');
  
 echo $OUTPUT->header();
 
-echo $OUTPUT->navbar();
+// echo $OUTPUT->navbar();
 // oncampus /////////////////////////////////////////////////////////////////////////
 //echo html_writer::tag('div', get_string('profile_city_descr', 'block_oc_mooc_nav'));
 
@@ -194,7 +194,7 @@ if($oc_m) {
 
 
 echo '<div class="userlist">';
-
+echo navbar('Participants');
 if ($isseparategroups and (!$currentgroup) ) {
     // The user is not in the group so show message and exit.
     echo $OUTPUT->heading(get_string("notingroup"));

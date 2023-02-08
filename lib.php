@@ -119,14 +119,14 @@ class format_mooin extends format_base {
             } else {
                 $usercoursedisplay = $course->coursedisplay;
             }
-            if ($sectionno != 0 && $usercoursedisplay == COURSE_DISPLAY_MULTIPAGE) {
+            //if ($sectionno != 0 && $usercoursedisplay == COURSE_DISPLAY_MULTIPAGE) {
                 $url->param('section', $sectionno);
-            } else {
-                if (empty($CFG->linkcoursesections) && !empty($options['navigation'])) {
-                    return null;
-                }
-                $url->set_anchor('section-'.$sectionno);
-            }
+            //} else {
+            //    if (empty($CFG->linkcoursesections) && !empty($options['navigation'])) {
+            //        return null;
+            //    }
+            //    $url->set_anchor('section-'.$sectionno);
+            //}
         }
         return $url;
     }
@@ -220,7 +220,7 @@ class format_mooin extends format_base {
         // unenrol from course
         if ($unenrolurl = get_unenrol_url($courseid)) {
             $node->add(
-                get_string('unenrol'),
+                get_string('unenrol', 'format_mooin'),
                 $unenrolurl,
                 navigation_node::TYPE_CUSTOM,
                 null,

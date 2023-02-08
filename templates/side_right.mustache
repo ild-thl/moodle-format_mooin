@@ -10,10 +10,15 @@
         {{{manage_badges_link}}}
       </div>
       <div class="badges-card-inner d-flex align-items-center">
+        {{#badges}}
         {{{badges}}}
         <span class="text-nowrap pr-1">+ 4</span>
+        {{/badges}}
         {{^badges}}
-        <div class="no-badges-img"></div>
+        <div class="d-flex w-100 align-items-center">
+          <div class="no-badges-img"></div>
+          <span class="no-badge-text">Keine Zertifikate verfügbar</span>
+        </div>
         {{/badges}}
       </div>
       <div class="primary-link d-block text-right">
@@ -38,7 +43,11 @@
       <div class="certificate-card-inner">
         {{{certificates}}}
         {{^certificates}}
-        <div class="no-certificates-img"></div>
+        <div class="d-flex w-100 align-items-center">
+          <div class="no-certificates-img"></div>
+          <span class="no-certificate-text">Keine Zertifikate verfügbar</span>
+        </div>
+
         {{/certificates}}
       </div>
       <div class="primary-link d-block text-right">
@@ -72,8 +81,8 @@
                 {{/str}}</a>
               <br>
               <span class="fw-700">{{user_count}} {{#str}} user_in_course, format_mooin {{/str}}</span>
-              <p class="caption fw-700">{{#str}} new_user, format_mooin {{/str}}</p>
-              <ul class="caption">{{{user_list}}}</ul>
+              <p class="caption-sm fw-700">{{#str}} new_user, format_mooin {{/str}}</p>
+              <ul class="caption-sm">{{{user_list}}}</ul>
             </div>
           </div>
           <div class="primary-link d-none d-md-block text-right">

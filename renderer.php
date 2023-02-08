@@ -441,7 +441,6 @@ class format_mooin_renderer extends format_section_renderer_base {
         $section_course = $DB->get_records('course_sections', array('course' =>$course->id));
         $sections = ($DB->count_records('course_sections', ['course' =>$course->id])) - 1;
 
-        //echo $this->navbar($displaysection);
 
         $modinfo = get_fast_modinfo($course);
         $course = course_get_format($course)->get_course();
@@ -453,8 +452,8 @@ class format_mooin_renderer extends format_section_renderer_base {
             print_error('unknowncoursesection', 'error', course_get_url($course),
                 format_string($course->fullname));
         }
-        $PAGE->navbar->ignore_active();
-        $PAGE->navbar->add('/ Kap.'.$displaysection);
+        // $PAGE->navbar->ignore_active();
+        // $PAGE->navbar->add('/ Kap.'.$displaysection);
         // Copy activity clipboard..
 
 
@@ -475,7 +474,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         // The requested section page.
         $thissection = $modinfo->get_section_info($displaysection);
-        //$PAGE->navbar->add('Perial'.$displaysection);
+        // $PAGE->navbar->add('Perial'.$displaysection);
         // nav_bar_in_single_section($course, $displaysection);
        // var_dump($PAGE->context );
 
@@ -488,7 +487,20 @@ class format_mooin_renderer extends format_section_renderer_base {
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
         $sectiontitle = '';
         $sectiontitle .= html_writer::start_tag('div', array('id' => 'custom-top-nav', 'class' => 'section-navigation navigationtitle'));
+
+        // breadcrumb come here
+        // Custom Navbar in single-section display by different view ( Desktop & Mobile )
+        $sectiontitle .= html_writer::start_tag('div', array('class' => 'custom-navbar'));
+        $sectiontitle .=  navbar($displaysection);
+        $sectiontitle .= html_writer::end_tag('div');
+        $sectiontitle .= html_writer::start_tag('div', array('class' => 'custom-navbar-mobile'));
+        $sectiontitle .= navbar_mobile($displaysection);
+        $sectiontitle .= html_writer::end_tag('div');
+
         $sectiontitle .= html_writer::start_tag('div', array('class' => 'inner-title-navigation'));
+
+
+
 
         $sectiontitle .= html_writer::tag('span', $sectionnavlinks['previous_top'], array('class' => 'mdl-left')); //Screenreader?
         // Title attributes
@@ -593,7 +605,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                     if (!$this->page->user_is_editing()) {
                         // $bar .= html_writer::start_tag('form', array( 'style' => 'margin-top: 40px;')); // 'method' => 'post',
                         $bar .= html_writer::start_tag('button', array('type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Seite als bearbeitet markieren', )); // , 'type' => 'submit'
-                                                
+
                         $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Seite als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('button');
                         //$bar .= html_writer::end_tag('form');
@@ -602,9 +614,9 @@ class format_mooin_renderer extends format_section_renderer_base {
                     break;
                 } else {
                     if (!$this->page->user_is_editing()) {
-                        $bar .= html_writer::start_tag('div', array('type'=>'button','class'=>'comp_btn btn btn-secondary complete_section-' .$sec_in_course_modules, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'style' => 'position: relative;margin: -32px -117px; width: auto;
-                        top: 50%;left: 50%;color: black;font-size: 13px;display: inline-flex;'));// margin-top: 40px
-                
+                        $bar .= html_writer::start_tag('div', array('type'=>'button','class'=>'comp_btn btn btn-secondary complete_section-' .$sec_in_course_modules, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'style' => 'position: relative;margin: 0 auto; width: 38%;
+                        top: 50%;color: black;font-size: 13px; cursor:unset'));// margin-top: 40px
+
                         $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Seite als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('div');
                     }
@@ -756,7 +768,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         //if ($section->uservisible) {
             if ($chapter) {
                 $chapterinfo = get_chapter_info($chapter);
-                
+
                 $chaptercompleted = '';
                 if ($chapterinfo['completed'] == true) {
                     $chaptercompleted = ' completed';
@@ -813,7 +825,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                     if ($progress_result == 100) {
                         $completed .= ' completed';
                     }
-                } 
+                }
                 else if($label_complete) {
                     $completed .= ' completed';
                 }
@@ -838,7 +850,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
                 $sectionprefix = get_section_prefix($section);
                 $title = $sectionprefix . ' - ' . $title;
-                
+
                 if ($section->uservisible) {
                     $title = html_writer::tag(
                         'a',
@@ -851,7 +863,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 }
 
                 $o .= $this->output->heading($title, 3, 'section-title');
-                
+
                 $o .= html_writer::end_tag('div');
                 $o .= html_writer::end_tag('li');
                 if (is_last_section_of_chapter($section->id)) {

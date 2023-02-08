@@ -138,8 +138,9 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 // echo $output->heading($pagetitle);
 
-//echo $OUTPUT->navbar();
-/// Some capability checks.
+echo navbar('Alle Forums');
+// echo navbar_mobile(get_string('all_forums', 'format_mooin'));
+// Some capability checks.
 
 if (empty($cm->visible) and !has_capability('moodle/course:viewhiddenactivities', $context)) {
     notice(get_string("activityiscurrentlyhidden"));
