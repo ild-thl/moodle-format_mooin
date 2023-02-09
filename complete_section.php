@@ -51,5 +51,6 @@ $course_new = $courseformat->get_course();
 // $url = new moodle_url('/course/view.php', array('id' => $course->id));
 
 // Get the POST Data from complete_section.js
+$section = intval($_POST['section']);
 $sec = intval($_POST['section_inside_course']);
-complete_section($sec, $course->id, $USER->id);
+complete_section($section, $course->id, $USER->id); // $sec
