@@ -18,12 +18,12 @@ function section_progress($sectioncmids, $coursecms) {
     foreach ($sectioncmids as $cmid) {
 
         $thismod = $coursecms[$cmid];
-
+        // var_dump($thismod->section);
         if ($thismod->uservisible && !$thismod->deletioninprogress) {
             if ($thismod->modname == 'label') { 
                 $outof = 1;
-
-                $com_value = $USER->id . '-' . $COURSE->id . '-' . $thismod->sectionnum;  //
+                // echo gettype($thismod->section);
+                $com_value = $USER->id . '-' . $COURSE->id . '-' . $thismod->section;  //$thismod->sectionnum
                 $value_pref = $DB->record_exists('user_preferences', array('value' => $com_value));
                 if ($value_pref) {
                     $completed = 1;
@@ -64,12 +64,11 @@ function completion_indicator($numcomplete, $numoutof, $aspercent, $isoverall) {
     return $progressdata;
 }
 /**
- * Set a section without h5p element as done
- *
- * @param stdclass $course
- * @param array $sections (argument not used)
+ * Set a section Label activity as done
+ * 
+ * @param array $section (argument not used)
  * @param int $userid (argument not used)
- * @param int $courseid (argument not used)
+ * @param int $cid (argument not used)
  */
 function complete_section($section, $cid, $userid) {
     global $DB;
@@ -80,10 +79,10 @@ function complete_section($section, $cid, $userid) {
         $label_complete = $userid . '-' . $cid . '-' . $section;
 
         $value_check = $DB->record_exists('user_preferences', array('value' => $label_complete));
-            $id = $DB->count_records('user_preferences', array('userid'=> $userid));
+        $id = $DB->count_records('user_preferences', array('userid'=> $userid));
 
 
-        // if ( array_key_exists('btnComplete-'.$section, $_POST)) { // isset($_POST["id_bottom_complete-".$section]) ||  array_key_exists('btnComplete-'.$section
+        if (!$value_check ) { // isset($_POST["id_bottom_complete-".$section]) ||  array_key_exists('btnComplete-'.$section, $_POST)
 
             $res = true;
             $values = new stdClass();
@@ -92,9 +91,10 @@ function complete_section($section, $cid, $userid) {
             $values->name = 'section_progress_label-' . $label_complete;
             $values->value = $label_complete;
 
-            if (!$value_check) {
+            // if (!$value_check) {
                 $DB->insert_record('user_preferences',$values, true, false );
-            }
+            // }
+        }
     // Check the DB in Table course_sections, to see how many label was inside the section and update the completion value for each lignes
     /* $sequences_in_sections = $DB->get_record('course_sections', ['course'=> $cid, 'section'=>$section], 'sequence', IGNORE_MISSING);
     var_dump($sequences_in_sections->sequence);
@@ -419,6 +419,7 @@ function print_badges($records, $details = false, $highlight = false, $badgename
 function badge_remove($user_id, $course_id, $badge_position) {
     global $DB;
 
+    // TO-DO
     $result = false;
     $value = 'badge' . '-' .$user_id . '-' . $course_id . '-' . $badge_position;
     // Check if the value already in the DB
@@ -467,6 +468,41 @@ function display_user_and_availbale_badges($userid, $courseid) {
     }
     return $result;
 }
+/**
+ *
+ */
+function get_number_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
+    global $DB, $PAGE;
+
+    $PAGE->requires->js_call_amd('format_mooin/remove_badge');
+    $params = array();
+    $sql = 'SELECT
+                b.*
+            FROM
+                {badge} b
+            WHERE b.type > 0
+			  AND b.status != 4 ';
+
+    if ($courseid == 0) {
+        $sql .= ' AND b.type = :type';
+        $params['type'] = 1;
+    }
+
+    if ($courseid != 0) {
+        $sql .= ' AND b.courseid = :courseid';
+        $params['courseid'] = $courseid;
+    }
+
+    if (!empty($search)) {
+        $sql .= ' AND (' . $DB->sql_like('b.name', ':search', false) . ') ';
+        $params['search'] = '%' . $DB->sql_like_escape($search) . '%';
+    }
+
+    $badges = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
+    
+    $result = count($badges);
+    return $result;
+}
 
 /**
  *
@@ -499,7 +535,7 @@ function get_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
     }
 
     $badges = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
-
+    
     return $badges;
 }
 /**
@@ -1230,7 +1266,8 @@ function get_course_grades($courseid) {
                                  $mods_counter++;
                              }
                         } elseif ($label_req->module == '13' ) {
-                            $value = $USER->id . '-' . $courseid . '-'. $val->section;
+                            // var_dump($val);
+                            $value = $USER->id . '-' . $courseid . '-'. $val->id; // $val->section
                             
                             $exist_check_label = $DB->record_exists('user_preferences', ['userid'=>$USER->id, 'name'=>'section_progress_label-'.$value , 'value'=>$value]);
                             

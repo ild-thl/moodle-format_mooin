@@ -299,13 +299,19 @@ class format_mooin_renderer extends format_section_renderer_base {
         }
 
         while ($back > 0 and empty($links['previous'])) {
-            if (($canviewhidden || $sections[$back]->uservisible) && $sections[$back]->ischapter == false) {
+            
+            if (($canviewhidden || $sections[$back]->uservisible) && empty($sections[$back]->ischapter)) { // $sections[$back]->ischapter == false
                 $params = array();
                 if (!$sections[$back]->visible) {
                     $params = array('class' => 'dimmed_text');
                 }
                 $previouslink = html_writer::tag('span', $this->output->larrow(), array('class' => 'larrow'));
-                $previouslink .= get_string('previous_lesson','format_mooin');
+                if(isset($sections[$back]->ischapter)) {
+                    $previouslink .= get_string('previous_lesson','format_mooin');
+                } else {
+                    $previouslink .= get_string('previous_chapter','format_mooin');
+                }
+                
                 $links['previous'] = html_writer::link(course_get_url($course, $back), $previouslink, $params);
 
                 $previouslink_top = html_writer::tag('span', $this->output->larrow(), array('class' => 'larrow'));
@@ -315,23 +321,28 @@ class format_mooin_renderer extends format_section_renderer_base {
         }
 
         $forward = $sectionno + 1;
-
-        if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $sections[$forward]->id))) {
-            $sections[$forward]->name = $chapter->title;
-            $sections[$forward]->ischapter = true;
-        }
-        else if ($sections[$forward]) {
-            $sections[$forward]->ischapter = false;
+        if (isset($sections[$forward]->id)) {
+            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $sections[$forward]->id))) {
+                $sections[$forward]->name = $chapter->title;
+                $sections[$forward]->ischapter = true;
+            }else if ($sections[$forward]) {
+                $sections[$forward]->ischapter = false;
+            }
         }
 
         $numsections = course_get_format($course)->get_last_section_number();
         while ($forward <= $numsections and empty($links['next'])) {
-            if (($canviewhidden || $sections[$forward]->uservisible) && $sections[$forward]->ischapter == false) {
+            if (($canviewhidden || $sections[$forward]->uservisible) && empty($sections[$forward]->ischapter)) { // $sections[$forward]->ischapter == false
                 $params = array();
                 if (!$sections[$forward]->visible) {
                     $params = array('class' => 'dimmed_text');
                 }
-                $nextlink = get_string('next_lesson','format_mooin');
+                if(isset($sections[$forward]->ischapter)) {
+                    $nextlink = get_string('next_lesson','format_mooin');
+                } else {
+                    $nextlink = get_string('next_chapter','format_mooin');
+                }
+                
                 $nextlink .= html_writer::tag('span', $this->output->rarrow(), array('class' => 'rarrow'));
                 $links['next'] = html_writer::link(course_get_url($course, $forward), $nextlink, $params);
 
@@ -530,20 +541,20 @@ class format_mooin_renderer extends format_section_renderer_base {
                 //var_dump($element);
                 $sec_in_course_modules = $element->section;
                 $v =  get_progress($course->id, $sec_in_course_modules); // get_section_grades($displaysection);
-                // var_dump($sec_in_course_modules);
+                // var_dump($v); // $sec_in_course_modules
 
                 if (gettype($v) == 'array') {
                     $ocp = round($v['percentage']);
                 } else {
                     $ocp = round($v);
                 }
-
+                // echo $ocp;
                 if ($ocp != -1) {
                     $sectiontitle .= '<br />' . get_progress_bar($ocp, 100, $sec_in_course_modules); // $displaysection
                 } else {
 
                     $completionthistile = section_progress($modinfo->sections[$displaysection], $modinfo->cms); // $sec_in_course_modules
-                    // var_dump($completionthistile);
+                    // var_dump($modinfo->cms);
                     // use the completion_indicator to show the right percentage in secton
                     $section_percent = completion_indicator($completionthistile['completed'], $completionthistile['outof'], true, false);
 
@@ -601,7 +612,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 //echo "Element";
                 //var_dump($element);
                 $sec_in_course_modules = $element->section;
-                $q = $USER->id . '-' . $course->id . '-' . $displaysection; // $sec_in_course_modules
+                $q = $USER->id . '-' . $course->id . '-' . $sec_in_course_modules; // $displaysection
                 $check_in_up = $DB->get_record('user_preferences', ['value' => $q]);
                 if (!$check_in_up) {
                     if (!$this->page->user_is_editing()) {
@@ -636,6 +647,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $sectionbottomnav = '';
         $sectionbottomnav .= html_writer::start_tag('div', array('class' => 'section-navigation mdl-bottom'));
         $sectionbottomnav .= html_writer::tag('span', $sectionnavlinks['previous'], array('class' => 'mdl-left'));
+
         $sectionbottomnav .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'mdl-right'));
         /* $sectionbottomnav .= html_writer::tag('div', $this->section_nav_selection($course, $sections, $displaysection),
             array('class' => 'mdl-align')); */
@@ -820,10 +832,19 @@ class format_mooin_renderer extends format_section_renderer_base {
 
                 // mark as completed
                 $completed = '';
-                if (is_section_completed($course->id, $section)) {
-                    $completed .= ' completed';
+                $user_complete_label = $USER->id . '-' . $COURSE->id . '-' . $section->id;  // $section->section
+                $label_complete = $DB->record_exists('user_preferences', array('value' => $user_complete_label));
+                if (is_array(get_progress($course->id, $section->id))) {
+                    $progress_result = intval(get_progress($course->id, $section->id)['percentage']);
+                    if ($progress_result == 100) {
+                        $completed .= ' completed';
+                    }
                 }
-
+                else if($label_complete) {
+                    if (is_section_completed($course->id, $section)) {
+                        $completed .= ' completed';
+                    }
+                }
                 // mark as locked/invisible
                 $locked = '';
                 if (!$section->uservisible) {

@@ -185,7 +185,12 @@ if (get_user_in_course($course->id) != null) {
     // }
 
 
-
+    // get_number_badges($course->id,null,null,null) - 3 ;
+    if(count(get_badges($course->id, null, null, null))  > 3) {
+        $badges_count = count(get_badges($course->id, null, null, null)) - 3;
+    } else {
+        $badges_count = 0;
+    }
     $templatecontext = [
         'course_headerimage_mobil' => get_headerimage_url($course->id, true),
         'course_headerimage_desktop' => get_headerimage_url($course->id, false),
@@ -203,7 +208,8 @@ if (get_user_in_course($course->id) != null) {
         'discussion' => $check_diskussion,
         'userlist' => $user_card_list,
         'progress' => $progress,
-        'topics' => $renderer->print_multiple_section_page($course, null, null, null, null)
+        'topics' => $renderer->print_multiple_section_page($course, null, null, null, null),
+        'other_badges' => $badges_count
 
     ];
 

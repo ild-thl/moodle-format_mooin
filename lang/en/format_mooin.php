@@ -123,6 +123,8 @@ $string['latest_contribution_mobile'] = 'Neuster Beitrag:';
 $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['next_lesson'] = 'Nächste Lektion';
 $string['previous_lesson'] = 'Vorherige Lektion';
+$string['next_chapter'] = 'Nächstes Kapitel';
+$string['previous_chapter'] = 'Vorheriges Kapitel';
 $string['topicoutline'] = 'Course content';
 
 // Chapter in course

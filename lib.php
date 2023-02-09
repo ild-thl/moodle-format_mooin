@@ -117,7 +117,12 @@ class format_mooin extends format_base {
                     $usercoursedisplay = COURSE_DISPLAY_SINGLEPAGE;
                 }
             } else {
-                $usercoursedisplay = $course->coursedisplay;
+                if(isset($course->coursedisplay)) {
+                    $usercoursedisplay = $course->coursedisplay;
+                }
+                else {
+                    $usercoursedisplay = 1;
+                }
             }
             //if ($sectionno != 0 && $usercoursedisplay == COURSE_DISPLAY_MULTIPAGE) {
                 $url->param('section', $sectionno);
