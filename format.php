@@ -189,7 +189,7 @@ if (get_user_in_course($course->id) != null) {
     if(count(get_badges($course->id, null, null, null))  > 3) {
         $badges_count = count(get_badges($course->id, null, null, null)) - 3;
     } else {
-        $badges_count = 0;
+        $badges_count = false;
     }
     $templatecontext = [
         'course_headerimage_mobil' => get_headerimage_url($course->id, true),
@@ -222,8 +222,15 @@ if (get_user_in_course($course->id) != null) {
         $edit_header_url = new moodle_url('/course/format/mooin/edit_header.php', array('course' => $course->id));
         $edit_header_link = html_writer::link($edit_header_url, $gear_icon);
 
-        $edit_newsforum = new moodle_url('');
+        // $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
+        // $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
+        // $new_in_course = $DB->get_record_sql($sql_first, $param_first);
+
+        $test = forum_get_course_forum($course->id, 'news');
+        $edit_newsforum = new moodle_url('/course/format/mooin/forums.php', array('f' => $test -> id, 'tab' => 1)); // mod/forum/view.php
+        //$edit_newsforum = new moodle_url($test);
         $edit_newsforum_link = html_writer::link($edit_newsforum, $gear_icon);
+
 
         $manage_badges_url = new moodle_url('/badges/view.php', array('type' => '2', 'id' => $course->id));
         $manage_badges_link =  html_writer::link($manage_badges_url, $gear_icon, array('class' => 'manage-badges-gear'));
