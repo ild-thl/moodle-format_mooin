@@ -372,7 +372,9 @@ class format_mooin_renderer extends format_section_renderer_base {
         $course = course_get_format($course)->get_course();
 
         $context = context_course::instance($course->id);
-        $out .= $this->output->heading($this->page_title(), 2, ''); //accesshide
+
+        $out .= $this->output->heading(get_string('topicoutline','format_mooin'), 2, ''); //accesshide
+        //$out .= $this->output->heading($this->page_title(), 2, ''); //accesshide
 
         // Copy activity clipboard..
         $out .= $this->course_activity_clipboard($course, 0);
@@ -839,18 +841,25 @@ class format_mooin_renderer extends format_section_renderer_base {
                     }
                 }
                 else if($label_complete) {
-                    $completed .= ' completed';
+                    if (is_section_completed($course->id, $section)) {
+                        $completed .= ' completed';
+                    }
                 }
-
                 // mark as locked/invisible
                 $locked = '';
                 if (!$section->uservisible) {
                     $locked = ' locked';
                 }
 
+                // highlight as last visited section
+                $lastvisitedsection = '';
+                if (get_user_preferences('format_mooin_last_section_in_course_'.$course->id, 0, $USER->id) == $section->section) {
+                    $lastvisitedsection = ' active';
+                }
+
                 $o .= html_writer::start_tag('li', [
                         'id' => 'section-' . $section->section,
-                        'class' => $classattr . ' lesson'.$completed.$locked,
+                        'class' => $classattr . ' lesson'.$completed.$locked.$lastvisitedsection,
                         'role' => 'region',
                         'aria-label' => $title,
                         'data-sectionid' => $section->section

@@ -229,7 +229,7 @@ if (get_user_in_course($course->id) != null) {
         $manage_badges_link =  html_writer::link($manage_badges_url, $gear_icon, array('class' => 'manage-badges-gear'));
 
         $templatecontext['edit_header_link'] = $edit_header_link;
-        $templatecontext['edit_newsforum_link'] = $edit_header_link;
+        $templatecontext['edit_newsforum_link'] = $edit_newsforum_link;
         $templatecontext['manage_badges_link'] = $manage_badges_link;
 
         $templatecontext['has_capability'] = true;
@@ -246,7 +246,7 @@ if (!empty($displaysection)) {
     $renderer->print_multiple_section_page($course, null, null, null, null);
     // unenrol from course
     if ($unenrolurl = get_unenrol_url($course->id)) {
-        echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'));
+        echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
     }
 }
 //*/

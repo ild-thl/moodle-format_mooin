@@ -106,6 +106,7 @@ $string['by'] = 'von ';
 $string['latest_contribution_mobile'] = 'Neuster Beitrag:';
 $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['all_news'] = 'Newsforum';
+$string['topicoutline'] = 'Kursinhalt';
 
 // Chapter in course
 $string['new_chapter'] = 'Neue Kapitel';
