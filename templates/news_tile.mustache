@@ -1,6 +1,7 @@
 {{#news}}
-<div class="news pb-3">
+<div class="news pb-4">
   <div class="container-md">
+
     {{{edit_newsforum_link}}}
     <br>
     <h2 class="mb-1">{{#str}} news, format_mooin {{/str}}</h2>
@@ -25,7 +26,7 @@
           von {{{user_firstname}}} - {{{created_news}}}
         </span>
         <span class="caption d-flex d-md-none justify-content-between">
-          <span class="fw-700">{{#str}} latest_contribution_mobile, format_mooin{{/str}}</span>
+          <a href="{{discussion_url}}" class="fw-700">{{#str}} latest_contribution_mobile, format_mooin{{/str}}</a>
           <a href="{{news_url}}" class="primary-link text-primary">{{#str}} all_news_mobile, format_mooin {{/str}}</a>
         </span>
         <div class="position-relative pt-0 pt-md-1">
@@ -45,4 +46,8 @@
     </div>
   </div>
 </div>
+{{/news}}
+{{^news}}
+Newsforum Einstellungen -
+{{{edit_newsforum_link}}}
 {{/news}}

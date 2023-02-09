@@ -33,7 +33,7 @@ $string['all_discussions'] = 'Ungelesene Beiträge in den Diskussionsforen';
 $string['old_discussion'] = 'Altere Discussions';
 $string['old_news'] = 'Altere News';
 $string['all_news'] = 'Newsforum';
-$string['letze_beitrag'] = 'Letzter Beitrag ';
+$string['letze_beitrag'] = 'Neuster Beitrag ';
 $string['discussion_news'] = 'Zur Nachricht';
 $string['newsectionname'] = 'New name for topic {$a}';
 $string['sectionname'] = 'Topic';
@@ -123,6 +123,7 @@ $string['latest_contribution_mobile'] = 'Neuster Beitrag:';
 $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['next_lesson'] = 'Nächste Lektion';
 $string['previous_lesson'] = 'Vorherige Lektion';
+$string['topicoutline'] = 'Course content';
 
 // Chapter in course
 $string['new_chapter'] = 'New Chapter';

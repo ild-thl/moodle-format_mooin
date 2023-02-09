@@ -2200,9 +2200,8 @@ function get_chapter_info($chapter) {
     $completedsections = 0;
 
     foreach ($sectionids as $sectionid) {
-        $progress = get_progress($chapter->courseid, $sectionid);
-
-        if (is_array($progress) && intval($progress['percentage']) == 100) {
+        $section = $DB->get_record('course_sections', array('id' => $sectionid));
+        if ($section && is_section_completed($chapter->courseid, $section)) {
             $completedsections++;
         }
 
@@ -2239,5 +2238,23 @@ function get_unenrol_url($courseid) {
         }
     }
 
+    return false;
+}
+
+function is_section_completed($courseid, $section) {
+    global $USER, $DB;
+    $user_complete_label = $USER->id . '-' . $courseid . '-' . $section->section;
+    $label_complete = $DB->record_exists('user_preferences', 
+        array('name' => 'section_progress_label-'.$user_complete_label, 
+              'value' => $user_complete_label));
+    if (is_array(get_progress($courseid, $section->id))) {
+        $progress_result = intval(get_progress($courseid, $section->id)['percentage']);
+        if ($progress_result == 100) {
+            return true;
+        }
+    }
+    else if($label_complete) {
+        return true;
+    }
     return false;
 }
