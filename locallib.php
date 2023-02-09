@@ -2280,7 +2280,7 @@ function get_unenrol_url($courseid) {
 
 function is_section_completed($courseid, $section) {
     global $USER, $DB;
-    $user_complete_label = $USER->id . '-' . $courseid . '-' . $section->section;
+    $user_complete_label = $USER->id . '-' . $courseid . '-' . $section->id;
     $label_complete = $DB->record_exists('user_preferences', 
         array('name' => 'section_progress_label-'.$user_complete_label, 
               'value' => $user_complete_label));
