@@ -170,6 +170,54 @@ class format_mooin extends format_base {
 
         // Check if there are callbacks to extend course navigation.
         parent::extend_course_navigation($navigation, $node);
+        
+        $courseid = $this->get_course()->id;
+
+        $competenciesnode = $node->get('competencies', navigation_node::TYPE_SETTING);
+        $competenciesnode->remove();
+        $gradesnode = $node->get('grades', navigation_node::TYPE_SETTING);
+        $gradesnode->remove();
+
+        $node->add(
+            get_string('news', 'format_mooin'),
+            new moodle_url('/course/format/mooin/forums.php', array('f' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_mooin_item',
+            new pix_icon('i/grades', '')
+        );
+
+        $node->add(
+            get_string('badges', 'format_mooin'),
+            new moodle_url('/course/format/mooin/badges.php', array('id' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_mooin_item',
+            new pix_icon('i/grades', '')
+        );
+
+        $node->add(
+            get_string('certificates', 'format_mooin'),
+            new moodle_url('/course/format/mooin/certificates.php', array('id' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_mooin_item',
+            new pix_icon('i/grades', '')
+        );
+
+        $node->add(
+            get_string('forums', 'format_mooin'),
+            new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_mooin_item',
+            new pix_icon('i/grades', '')
+        );
+
+        $participantsnode = $node->get('participants', navigation_node::TYPE_CONTAINER);
+        $participantsnode->remove();
+        $participantsnode->action = $url = new moodle_url('/course/format/mooin/participants.php', array('id' => $courseid));
+        $node->add_node($participantsnode);
 
         // We want to remove the general section if it is empty.
         $modinfo = get_fast_modinfo($this->get_course());
@@ -185,7 +233,7 @@ class format_mooin extends format_base {
         }
 
         require_once($CFG->dirroot.'/course/format/mooin/locallib.php');
-        $courseid = $this->get_course()->id;
+        
         if ($sections = $DB->get_records('course_sections', array('course' => $courseid), 'section')) {
             foreach ($sections as $section) {
                 if ($sectionnode = $node->get($section->id, navigation_node::TYPE_SECTION)) {
