@@ -120,7 +120,8 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $sectionnumber = 1;
     $continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $sectionnumber));
 
-    $start_continue = get_string('start', 'format_mooin');
+    $start_continue = get_string('startlesson', 'format_mooin');
+    $start_continue_no_lesson = get_string('start', 'format_mooin');
     // get last visited section from userpref
     if (isset($last_section)) {
         if ($last_section == 0) {
@@ -128,12 +129,9 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
             $last_section = 1;
         } else {
             // continue learning
+            $start_continue_no_lesson = get_string('continue_no_lesson', 'format_mooin');
             if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                if ($continuesection->name) {
-                    $start_continue = get_string('continue', 'format_mooin') . ' ' . $continuesection->name;
-                } else {
-                    $start_continue = get_string('continue', 'format_mooin') . ' ' . get_string('sectionname', 'format_mooin') . ' ' . $last_section;
-                }
+                $start_continue = get_string('continue', 'format_mooin', get_section_prefix($continuesection));
             } else {
                 $start_continue = get_string('continue', 'format_mooin');
             }
@@ -197,6 +195,7 @@ if (get_user_in_course($course->id) != null) {
         'coursename' => $course->fullname,
         'continue_url' => new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section)),
         'continue_text' => $start_continue,
+        'continue_text_no_lesson' => $start_continue_no_lesson,
         'news' => $news,
         // 'progressbar' => $progressbar,
         'badges_url' => new moodle_url('/course/format/mooin/badges.php', array('id' => $course->id)),

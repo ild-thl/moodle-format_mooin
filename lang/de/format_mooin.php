@@ -46,7 +46,8 @@ $string['my_forum'] = 'Foren';
 $string['participants'] = 'Teilnehmende';
 $string['certificates'] = 'Meine Kurszertifikate';
 $string['badges_certificates'] = 'Badges und Zertifikate';
-$string['continue'] = 'Beginnen';
+$string['continue'] = 'In Lektion {$a} weiterlernen';
+$string['continue_no_lesson'] = 'Weiterlernen';
 $string['progress'] = 'Kursfortschritt';
 $string['unenrol'] = 'Aus Kurs ausschreiben';
 $string['my_badges'] = 'Badges';
@@ -97,7 +98,8 @@ $string['social_media'] = 'Social Media';
 $string['discuss'] = 'Allgemeines Diskussionsforum'; */
 
 $string['unenrol'] = 'Aus diesem Kurs abmelden';
-
+$string['start'] = 'Beginnen';
+$string['startlesson'] = 'In Lektion 1.1 beginnen';
 
 // added by Jonas
 $string['unread_news'] = ' ungelesene Beiträge im ';
