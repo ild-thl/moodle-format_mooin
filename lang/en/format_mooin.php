@@ -114,6 +114,8 @@ $string['welcome'] = 'Herzlich Willkommen im Kurs';
 $string['unenrol'] = 'Aus diesem Kurs abmelden';
 $string['forum_unread'] = 'Ungelesenen Forum(s)';
 $string['discussions'] = 'Alle Diskussionen';
+$string['chapter'] = 'Chapter';
+$string['lesson'] = 'Lesson';
 
 // added by Jonas
 $string['unread_news'] = ' ungelesene Beiträge im ';

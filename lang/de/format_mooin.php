@@ -100,6 +100,8 @@ $string['discuss'] = 'Allgemeines Diskussionsforum'; */
 $string['unenrol'] = 'Aus diesem Kurs abmelden';
 $string['start'] = 'Beginnen';
 $string['startlesson'] = 'In Lektion 1.1 beginnen';
+$string['chapter'] = 'Kapitel';
+$string['lesson'] = 'Lektion';
 
 // added by Jonas
 $string['unread_news'] = ' ungelesene Beiträge im ';

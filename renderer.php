@@ -738,10 +738,10 @@ class format_mooin_renderer extends format_section_renderer_base {
         if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
             //$section->name = get_string('chapter', 'format_mooin').' '.$chapter->chapter.' - '.$chapter->title;
             $section->name = $chapter->title;
-            $sectionname = $chapter->chapter.' '.html_writer::tag('span', $this->section_title_without_link($section, $course));
+            $sectionname = get_string('chapter', 'format_mooin').' '.$chapter->chapter.' '.html_writer::tag('span', $this->section_title_without_link($section, $course));
         }
         else {
-            $sectionname = get_section_prefix($section).' '.html_writer::tag('span', $this->section_title($section, $course));
+            $sectionname = get_string('lesson', 'format_mooin').' '.get_section_prefix($section).' '.html_writer::tag('span', $this->section_title($section, $course));
         }
 
         $o .= $this->output->heading($sectionname, 3, 'sectionname' . $classes, "sectionid-{$section->id}-title");
@@ -804,7 +804,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $o .= html_writer::tag('div', '', array('class' => 'left side'));
                 $o .= html_writer::tag('div', '', array('class' => 'right side'));
                 $o .= html_writer::start_tag('div', array('class' => 'content'));
-                $title = $chapter->chapter . ' - ' . $chapter->title;
+                $title = get_string('chapter', 'format_mooin').' '.$chapter->chapter . ' - ' . $chapter->title;
                 $sectionids = get_sections_for_chapter($chapter->id);
                 $h = html_writer::span('','list-marker');
                 $h .= $this->output->heading($title, 3, 'section-title');
@@ -870,7 +870,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $o .= html_writer::start_tag('div', array('class' => 'content'));
 
                 $sectionprefix = get_section_prefix($section);
-                $title = $sectionprefix . ' - ' . $title;
+                $title = get_string('lesson', 'format_mooin').' '.$sectionprefix . ' - ' . $title;
 
                 if ($section->uservisible) {
                     $title = html_writer::tag(
