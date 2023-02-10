@@ -111,7 +111,7 @@ $oc_counter = 0;
 
 
     echo '<h2>' . get_string('all_forums', 'format_mooin') . '</h2>';
-    echo '<br>';
+    //echo '<br>';
     echo html_writer::start_div('border-card'); //open outer div
 
 
