@@ -219,7 +219,7 @@ if (get_user_in_course($course->id) != null) {
         $gear_icon = html_writer::span('', 'bi bi-gear-fill');
 
         $edit_header_url = new moodle_url('/course/format/mooin/edit_header.php', array('course' => $course->id));
-        $edit_header_link = html_writer::link($edit_header_url, $gear_icon);
+        $edit_header_link = html_writer::link($edit_header_url, $gear_icon, array('class' => 'edit-header-link'));
 
         // $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
         // $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
