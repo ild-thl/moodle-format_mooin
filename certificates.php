@@ -49,7 +49,7 @@ echo html_writer::start_div('mooin-md-container'); //open outer div
 
 echo html_writer::tag('h2', html_writer::tag('div', get_string('my_certificate', 'format_mooin'), array('class' => 'oc_badges_text')));
 
-echo html_writer::tag('div', get_string('certificate_overview_description', 'format_mooin'));
+echo html_writer::tag('p', get_string('certificate_overview_description', 'format_mooin'));
 echo '<br />';
 // $templatedata = get_certificate($courseid); // $course->id
 
