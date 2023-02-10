@@ -184,7 +184,7 @@ class format_mooin extends format_base {
             navigation_node::TYPE_CUSTOM,
             null,
             'format_mooin_item',
-            new pix_icon('i/grades', '')
+            new pix_icon('i/news', '')
         );
 
         $node->add(
@@ -193,7 +193,7 @@ class format_mooin extends format_base {
             navigation_node::TYPE_CUSTOM,
             null,
             'format_mooin_item',
-            new pix_icon('i/grades', '')
+            new pix_icon('i/badge', '')
         );
 
         $node->add(
@@ -202,7 +202,7 @@ class format_mooin extends format_base {
             navigation_node::TYPE_CUSTOM,
             null,
             'format_mooin_item',
-            new pix_icon('i/grades', '')
+            new pix_icon('t/award', '')
         );
 
         $node->add(
@@ -211,7 +211,7 @@ class format_mooin extends format_base {
             navigation_node::TYPE_CUSTOM,
             null,
             'format_mooin_item',
-            new pix_icon('i/grades', '')
+            new pix_icon('t/messages', '')
         );
 
         $participantsnode = $node->get('participants', navigation_node::TYPE_CONTAINER);
@@ -250,6 +250,7 @@ class format_mooin extends format_base {
                         if (count(get_sectionids_for_chapter($chapter->id)) > 0) {
                             $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
                         }
+                        $icon = new pix_icon('i/folder', '');
                     }
                     else {
                         $pre = get_section_prefix($section).' - ';
@@ -260,10 +261,14 @@ class format_mooin extends format_base {
                             $title = $pre.$title;
                         }
                         $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section));
+                        $icon = new pix_icon('i/navigationitem', '');
                     }
                     $sectionnode->text = $title;
                     $sectionnode->shorttext = $pre;
                     $sectionnode->action = $url;
+                    if (isset($icon)) {
+                        $sectionnode->icon = $icon;
+                    }
                     // $sectionnode->$key = null;
                     $node->add_node($sectionnode);
                 }
