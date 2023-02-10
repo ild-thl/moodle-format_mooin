@@ -48,8 +48,10 @@
 </div>
 {{/news}}
 {{^news}}
+{{#has_capability}}
 <div class="text-center text-md-right p-2 mr-md-5">
   <span>Newsforum Einstellungen -</span>
   {{{edit_newsforum_link}}}
 </div>
+{{/has_capability}}
 {{/news}}
