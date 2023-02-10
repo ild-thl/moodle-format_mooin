@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * @package   mod_forum 
+ * @package   mod_forum
  * @copyright 2023 ISY
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -106,21 +106,21 @@ $oc_f= $DB->get_records_sql($s,$p);
 $oc_showall = optional_param('showall', '', PARAM_RAW);
 $oc_counter = 0;
 
+    echo navbar('All Forums');
     echo html_writer::start_div('mooin-md-container'); //open outer div
 
-    echo navbar('All Forums');
-    
+
     echo '<h2>' . get_string('all_forums', 'format_mooin') . '</h2>';
     echo '<br>';
     echo html_writer::start_div('border-card'); //open outer div
 
-    
+
     $value = '1';
     if (count($oc_foren) >= 1) {
-        
+
         foreach ($oc_foren as $key => $oc_forum) {
             $cm = get_coursemodule_from_instance('forum', $oc_forum->id, $course->id);
-            
+
             if(is_object($cm)) {
                 $forum = $DB->get_record("forum", array("id" => $cm->instance));
 
@@ -131,7 +131,7 @@ $oc_counter = 0;
                 }
 
                 $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $course->id, 'module' => $oc_m->id), '*', $strictness=IGNORE_MISSING);
-                
+
                 $oc_link = html_writer::link(new moodle_url('/course/format/mooin/forums.php?f=' . $oc_forum->id .'&tab='.'1'), $oc_forum->name);
                 if (intval($oc_cm->visible) === 1) {
                     $forum_element =  html_writer::div($value++  . ' ' .$oc_link, 'forum_title');
@@ -144,16 +144,20 @@ $oc_counter = 0;
                     }
                 }
             }
-            
+
         }
         if ($oc_counter > 1) {
             ob_end_flush();
             echo $OUTPUT->footer($course);
             exit;
         }
+    } else {
+        echo html_writer::start_div('no-forum'); //open outer div
+        echo html_writer::end_div();
+
     }
     echo html_writer::end_div(); //close border-card div
     echo html_writer::end_div(); //close outer div
-  
+
 echo $OUTPUT->footer($course);
 
