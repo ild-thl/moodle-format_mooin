@@ -108,19 +108,21 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $grade_in_course = get_course_grades($course->id);
 
     $course_grade = round($grade_in_course);
+    var_dump($course_grade);
     $progressbar  = null;
-    if ($course_grade != -1) {
-        $progressbar .= html_writer::start_span('') . get_progress_bar_course($course_grade, 100) . html_writer::end_span();
-        $progress = $course_grade;
-    } else {
+    if($course_grade == 0){
         $progressbar .= get_progress_bar_course(0, 100);
         $progress = 0;
+    }else {
+        $progressbar .= html_writer::start_span('') . get_progress_bar_course($course_grade, 100) . html_writer::end_span();
+        $progress = $course_grade;
     }
 
     $sectionnumber = 1;
     $continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $sectionnumber));
 
-    $start_continue = get_string('start', 'format_mooin');
+    $start_continue = get_string('startlesson', 'format_mooin');
+    $start_continue_no_lesson = get_string('start', 'format_mooin');
     // get last visited section from userpref
     if (isset($last_section)) {
         if ($last_section == 0) {
@@ -128,12 +130,9 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
             $last_section = 1;
         } else {
             // continue learning
+            $start_continue_no_lesson = get_string('continue_no_lesson', 'format_mooin');
             if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                if ($continuesection->name) {
-                    $start_continue = get_string('continue', 'format_mooin') . ' ' . $continuesection->name;
-                } else {
-                    $start_continue = get_string('continue', 'format_mooin') . ' ' . get_string('sectionname', 'format_mooin') . ' ' . $last_section;
-                }
+                $start_continue = get_string('continue', 'format_mooin', get_section_prefix($continuesection));
             } else {
                 $start_continue = get_string('continue', 'format_mooin');
             }
@@ -191,12 +190,20 @@ if (get_user_in_course($course->id) != null) {
     } else {
         $badges_count = false;
     }
+
+    // unenrol from course
+    if ($unenrolurl = get_unenrol_url($course->id)) {
+        $unenrol_btn = html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
+        //echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
+    }
+
     $templatecontext = [
         'course_headerimage_mobil' => get_headerimage_url($course->id, true),
         'course_headerimage_desktop' => get_headerimage_url($course->id, false),
         'coursename' => $course->fullname,
         'continue_url' => new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section)),
         'continue_text' => $start_continue,
+        'continue_text_no_lesson' => $start_continue_no_lesson,
         'news' => $news,
         // 'progressbar' => $progressbar,
         'badges_url' => new moodle_url('/course/format/mooin/badges.php', array('id' => $course->id)),
@@ -209,7 +216,8 @@ if (get_user_in_course($course->id) != null) {
         'userlist' => $user_card_list,
         'progress' => $progress,
         'topics' => $renderer->print_multiple_section_page($course, null, null, null, null),
-        'other_badges' => $badges_count
+        'other_badges' => $badges_count,
+        'show_unenrol_btn' => $unenrol_btn
 
     ];
 
@@ -220,10 +228,17 @@ if (get_user_in_course($course->id) != null) {
         $gear_icon = html_writer::span('', 'bi bi-gear-fill');
 
         $edit_header_url = new moodle_url('/course/format/mooin/edit_header.php', array('course' => $course->id));
-        $edit_header_link = html_writer::link($edit_header_url, $gear_icon);
+        $edit_header_link = html_writer::link($edit_header_url, $gear_icon, array('class' => 'edit-header-link'));
 
-        $edit_newsforum = new moodle_url('');
+        // $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
+        // $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
+        // $new_in_course = $DB->get_record_sql($sql_first, $param_first);
+
+        $test = forum_get_course_forum($course->id, 'news');
+        $edit_newsforum = new moodle_url('/course/format/mooin/forums.php', array('f' => $test -> id, 'tab' => 1)); // mod/forum/view.php
+        //$edit_newsforum = new moodle_url($test);
         $edit_newsforum_link = html_writer::link($edit_newsforum, $gear_icon);
+
 
         $manage_badges_url = new moodle_url('/badges/view.php', array('type' => '2', 'id' => $course->id));
         $manage_badges_link =  html_writer::link($manage_badges_url, $gear_icon, array('class' => 'manage-badges-gear'));
@@ -244,10 +259,6 @@ if (!empty($displaysection)) {
 } else {
     $PAGE->navbar;
     $renderer->print_multiple_section_page($course, null, null, null, null);
-    // unenrol from course
-    if ($unenrolurl = get_unenrol_url($course->id)) {
-        echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
-    }
 }
 //*/
 

@@ -170,6 +170,54 @@ class format_mooin extends format_base {
 
         // Check if there are callbacks to extend course navigation.
         parent::extend_course_navigation($navigation, $node);
+        
+        $courseid = $this->get_course()->id;
+
+        $competenciesnode = $node->get('competencies', navigation_node::TYPE_SETTING);
+        $competenciesnode->remove();
+        $gradesnode = $node->get('grades', navigation_node::TYPE_SETTING);
+        $gradesnode->remove();
+
+        $node->add(
+            get_string('news', 'format_mooin'),
+            new moodle_url('/course/format/mooin/forums.php', array('f' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_mooin_item',
+            new pix_icon('i/news', '')
+        );
+
+        $node->add(
+            get_string('badges', 'format_mooin'),
+            new moodle_url('/course/format/mooin/badges.php', array('id' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_mooin_item',
+            new pix_icon('i/badge', '')
+        );
+
+        $node->add(
+            get_string('certificates', 'format_mooin'),
+            new moodle_url('/course/format/mooin/certificates.php', array('id' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_mooin_item',
+            new pix_icon('t/award', '')
+        );
+
+        $node->add(
+            get_string('forums', 'format_mooin'),
+            new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_mooin_item',
+            new pix_icon('t/messages', '')
+        );
+
+        $participantsnode = $node->get('participants', navigation_node::TYPE_CONTAINER);
+        $participantsnode->remove();
+        $participantsnode->action = $url = new moodle_url('/course/format/mooin/participants.php', array('id' => $courseid));
+        $node->add_node($participantsnode);
 
         // We want to remove the general section if it is empty.
         $modinfo = get_fast_modinfo($this->get_course());
@@ -185,7 +233,7 @@ class format_mooin extends format_base {
         }
 
         require_once($CFG->dirroot.'/course/format/mooin/locallib.php');
-        $courseid = $this->get_course()->id;
+        
         if ($sections = $DB->get_records('course_sections', array('course' => $courseid), 'section')) {
             foreach ($sections as $section) {
                 if ($sectionnode = $node->get($section->id, navigation_node::TYPE_SECTION)) {
@@ -202,6 +250,7 @@ class format_mooin extends format_base {
                         if (count(get_sectionids_for_chapter($chapter->id)) > 0) {
                             $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
                         }
+                        $icon = new pix_icon('i/folder', '');
                     }
                     else {
                         $pre = get_section_prefix($section).' - ';
@@ -212,10 +261,14 @@ class format_mooin extends format_base {
                             $title = $pre.$title;
                         }
                         $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section));
+                        $icon = new pix_icon('i/navigationitem', '');
                     }
                     $sectionnode->text = $title;
                     $sectionnode->shorttext = $pre;
                     $sectionnode->action = $url;
+                    if (isset($icon)) {
+                        $sectionnode->icon = $icon;
+                    }
                     // $sectionnode->$key = null;
                     $node->add_node($sectionnode);
                 }
@@ -250,7 +303,6 @@ class format_mooin extends format_base {
         $renderer = $this->get_renderer($PAGE);
         if ($renderer && ($sections = $modinfo->get_section_info_all())) {
             foreach ($sections as $number => $section) {
-                var_dump(($section));
                 if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
                     sort_course_chapters($course->id);
                     $section->name = $chapter->title;

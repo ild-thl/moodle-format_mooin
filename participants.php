@@ -128,7 +128,7 @@ $event = \core\event\user_list_viewed::create(array(
 ));
 $event->trigger();
 
-// changed by oncampus 
+// changed by oncampus
 //$bulkoperations = has_capability('moodle/course:bulkmessaging', $context);
 $bulkoperations = false;
 
@@ -194,7 +194,10 @@ if($oc_m) {
 
 
 echo '<div class="userlist">';
-echo navbar('participants');
+echo '<div mooin-md-container">';
+echo navbar('Participants');
+echo '<h2>'.get_string("participant_map","format_mooin").'</h2>';
+
 if ($isseparategroups and (!$currentgroup) ) {
     // The user is not in the group so show message and exit.
     echo $OUTPUT->heading(get_string("notingroup"));
@@ -544,7 +547,7 @@ $testnumberuser = $DB->get_recordset_sql("SELECT u.city, u.country $from $where"
 // var_dump($testnumberuser);
 // oncampus $table->initialbars(true);
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Here print the code for the online participants map
-$city_list = array(); 
+$city_list = array();
     $user_infos = [];
     $user_list_enrol = array();
     $test_array = [];
@@ -568,7 +571,7 @@ $city_list = array();
                         'accurance' =>  1]
                 );
             }
-        }         
+        }
     }
    // Build the template Array
    $array_temp = array();
@@ -598,12 +601,12 @@ $table->pagesize($perpage, $matchcount);
 
 if ($USER->username == 'riegerj') {
 	if (preg_match('/(badges)/', $sort) == 1) {
-		$select .= ", (SELECT count(*) FROM {badge} ocb, {badge_issued} ocbi 
-						WHERE ocb.courseid = :occourseid 
-						  AND ocb.id = ocbi.badgeid 
+		$select .= ", (SELECT count(*) FROM {badge} ocb, {badge_issued} ocbi
+						WHERE ocb.courseid = :occourseid
+						  AND ocb.id = ocbi.badgeid
 						  AND ocbi.userid = u.id) AS badgecount ";
 		$params['occourseid'] = $course->id;
-		// echo "$select $from $where $sort"; 
+		// echo "$select $from $where $sort";
 		// print_object($params);
 		// die();
 	}
@@ -647,7 +650,7 @@ if (count($rolenames) > 1) {
     $rolename = reset($rolenames);
     echo $rolename;
     echo '</div>';
-} 
+}
 */
 
 
@@ -683,10 +686,10 @@ if ($roleid > 0) {
         $editlink = '';
     }
     if ($course->id == SITEID and $roleid < 0) {
-        
+
         $strallparticipants = get_string('allsiteusers', 'role');
     } else {
-        
+
         $strallparticipants = get_string('allparticipants');
     }
     if ($matchcount < $totalcount) {
@@ -715,7 +718,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
             $alpha  = explode(',', get_string('alphabet', 'langconfig'));
 
            //*  removed by oncampus
-		   
+
 		   // Bar of first initials.
 
             echo '<div class="initialbar firstinitial">'.get_string('firstname').' : ';
@@ -748,14 +751,14 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                     echo ' <a href="'.$baseurl->out().'&amp;silast='.$letter.'">'.$letter.'</a>';
                 }
             }
-            echo '</div>'; 
+            echo '</div>';
 			//*/
 
             $pagingbar = new paging_bar($matchcount, intval($table->get_page_start() / $perpage), $perpage, $baseurl);
             $pagingbar->pagevar = 'spage';
             echo $OUTPUT->render($pagingbar);
         }
-       
+
         if ($matchcount > 0) {
             $usersprinted = array();
             foreach ($userlist as $user) {
@@ -808,7 +811,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                     $row->cells[1]->text .= \core_user\fields::get_display_name($field) . // get_user_field_name($field) .
                             get_string('labelsep', 'langconfig') . s($user->{$field}) . '<br />';
                 }
-                
+
                 if (($user->city or $user->country) and (!isset($hiddenfields['city']) or !isset($hiddenfields['country']))) {
                     $row->cells[1]->text .= get_string('city').get_string('labelsep', 'langconfig');
                     if ($user->city && !isset($hiddenfields['city'])) {
@@ -837,7 +840,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                 $row->cells[2] = new html_table_cell();
                 $row->cells[2]->attributes['class'] = 'links';
                 $row->cells[2]->text = '';
-                
+
                 $links = array();
 
                 if ($CFG->enableblogs && ($CFG->bloglevel != BLOG_USER_LEVEL || $USER->id == $user->id)) {
@@ -864,7 +867,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                     $row->cells[2]->text .= '<br /><input type="checkbox" class="usercheckbox" name="user'.$user->id.'" /> ';
                 }
                 $table->data = array($row);
-                
+
                 echo html_writer::table($table);
             }
 
@@ -890,7 +893,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 
     if ($userlist) {
         $usersprinted = array();
-		
+
         foreach ($userlist as $user) {
             if (in_array($user->id, $usersprinted)) { // Prevent duplicates by r.hidden - MDL-13935.
                 continue;
@@ -951,7 +954,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                 $data[] = $lastaccess;
             }
             // course/format/mooin
-			/* if (has_capability('format/mooin:readuserpage', $context)) { 
+			/* if (has_capability('format/mooin:readuserpage', $context)) {
 				$badges = '';
 				$ccontext = context_course::instance($course->id);
 				$roles = get_user_roles($ccontext, $user->id, false);
@@ -964,7 +967,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 				if ($not_a_teacher) {
 					$badges .= get_badges_list($user->id, $course->id);
 				}
-				
+
 				$data[] = $badges;
 			} */
             if ($mode === MODE_BRIEF && !isset($hiddenfields['badges']) && has_capability('format/mooin:aluhatsoff', $context)) {
@@ -972,7 +975,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 				$badges = '';
 				// $badges .= get_badges_list($user->id).get_badges_list($user->id, $course->id);
                 // var_dump(get_badges_list($user->id, $course->id));
-                
+
                 // nur wenn der teilnehmer kein teacher ist werden badges angezeigt
 				$ccontext = context_course::instance($course->id);
 				$roles = get_user_roles($ccontext, $user->id, false);
@@ -985,14 +988,14 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 				if ($not_a_teacher) {
 					$badges .= get_badges_list($user->id, $course->id);
 				}
-				
+
 				$data[] = $badges;
 				// oncampus Badges anzeigen ende
 			}
             $table->add_data($data);
         }
     }
-	
+
     $table->print_html();
 }
 
@@ -1058,7 +1061,7 @@ if ($enrol = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' =
 
 	}
 }
-
+echo '</div>';  // md-container.
 echo '</div>';  // Userlist.
 
 echo $OUTPUT->footer();
