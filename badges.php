@@ -27,7 +27,7 @@ $PAGE->set_heading($course->fullname);
 // $PAGE->set_pagetype('course-view-' . $course->format);
 // $PAGE->add_body_class('path-user');                     // So we can style it independently.
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
-$PAGE->navbar->add(get_string('my_badges', 'format_mooin'));
+// $PAGE->navbar->add(get_string('my_badges', 'format_mooin'));
 
 // require_once('./locallib.php');
 
@@ -116,9 +116,9 @@ if ($cert_m) {
 }
 /* echo '<br />';
 echo '<br />'; */
-echo navbar('Badges');
-echo html_writer::start_div('mooin-md-container'); //open outer div
 
+echo html_writer::start_div('mooin-md-container'); //open outer div
+echo navbar('badges');
 echo html_writer::tag('h2', html_writer::tag('div', get_string('course_badges', 'format_mooin'), array('class' => 'oc_badges_text')));
 
 echo html_writer::tag('p', get_string('badge_overview_description', 'format_mooin'));

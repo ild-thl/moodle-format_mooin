@@ -151,43 +151,12 @@ if (!has_capability('mod/forum:viewdiscussion', $context)) {
 }
 
 
-//////////// mooin ////////////////////////////////
-// Wenn mehrere Foren (Newsforum zählt nicht) vohanden sind,
-// wird hier nur eine Liste mit Links angezeigt
-
-/* global $USER, $DB;
-
-$oc_m = $DB->get_record('modules', array('name' => 'forum'));
-$oc_foren = $DB->get_records('forum', array('course' => $course->id, 'type' => 'general'));
-$oc_showall = optional_param('showall', '', PARAM_RAW);
-$oc_counter = 0;
-ob_start();
-if (count($oc_foren) >= 0 and $oc_showall == '') {
-    echo '<h2>' . get_string('all_forums', 'format_mooin') . '</h2>';
-    foreach ($oc_foren as $oc_forum) {
-        $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $course->id, 'module' => $oc_m->id));
-        $oc_link = html_writer::link(new moodle_url('/course/format/mooin/forums.php?showall=false&cmid=' . $oc_cm->id), $oc_forum->name);
-        if ($oc_cm->visible == 1) {
-            echo html_writer::tag('div', $oc_link);
-            $oc_counter++;
-        }
-    }
-    if ($oc_counter > 1) {
-        ob_end_flush();
-        echo $OUTPUT->footer($course);
-        exit;
-    }
-}
-ob_end_clean(); */
-
-///////////////////////////////////////////////////////
-
 echo $OUTPUT->heading(format_string($forum->name), 2);
 if (!empty($forum->intro) && $forum->type != 'single' && $forum->type != 'teacher') {
     echo $OUTPUT->box(format_module_intro('forum', $forum, $cm->id), 'generalbox', 'intro');
 }
 
-// mooin Link: Meine Beiträge und Suche//////////////////////////////////////////////////////////////////////////////////////////
+// mooin Link: Meine Beiträge und Suche
 
 
 $mythreads_url = new moodle_url('/mod/forum/user.php', array('id' => $USER->id, 'course' => $course->id));
@@ -196,19 +165,6 @@ $advancedsearch_url = new moodle_url('/mod/forum/search.php', array('id' => $cou
 $strsearch = get_string('search');
 $strgo = get_string('go');
 
-/* $searchform = '<div class="searchform">' . $strsearch;
-$searchform .= '<form action="' . $CFG->wwwroot . '/mod/forum/search.php" style="display:inline"><fieldset class="invisiblefieldset">';
-$searchform .= '<legend class="accesshide">' . $strsearch . '</legend>';
-$searchform .= '<input name="id" type="hidden" value="' . $course->id . '" />';  // course
-$searchform .= '<label class="accesshide" for="searchform_search">' . $strsearch . '</label>' .
-    '<input id="searchform_search" name="search" type="text" size="16" />';
-$searchform .= '<button id="searchform_button" type="submit" title="' . $strsearch . '">' . $strgo . '</button>';
-$searchform .= '</fieldset></form>';
-$searchform .= html_writer::link($advancedsearch_url, get_string('advancedsearch', 'block_search_forums')) . $OUTPUT->help_icon('search') . '<br />';
-$searchform .= html_writer::link($mythreads_url, get_string('my_threads', 'format_mooin'));
-$searchform .= '</div>';
-echo $searchform; */
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Forum abonnieren Link
 //$forum->forcesubscribe

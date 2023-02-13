@@ -106,10 +106,11 @@ $oc_f= $DB->get_records_sql($s,$p);
 $oc_showall = optional_param('showall', '', PARAM_RAW);
 $oc_counter = 0;
 
-    echo navbar('All Forums');
+    // echo navbar('All Forums');
     echo html_writer::start_div('mooin-md-container'); //open outer div
 
-
+    echo navbar('all_forums');
+    
     echo '<h2>' . get_string('all_forums', 'format_mooin') . '</h2>';
     //echo '<br>';
     echo html_writer::start_div('border-card'); //open outer div
