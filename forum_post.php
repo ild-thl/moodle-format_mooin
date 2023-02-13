@@ -58,7 +58,7 @@ if (!isloggedin() or isguestuser()) {
         // No referer+not logged in - probably coming in via email  See MDL-9052
         require_login();
     }
-
+    var_dump($forum);
     if (!empty($forum)) {      // User is starting a new discussion in a forum
         if (! $forum = $DB->get_record('forum', array('id' => $forum))) {
             print_error('invalidforumid', 'forum');

@@ -174,8 +174,8 @@ $PAGE->set_heading($course->fullname);
 $PAGE->set_pagetype('course-view-' . $course->format);
 $PAGE->add_body_class('path-user');                     // So we can style it independently.
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
-$PAGE->navbar->add('Participants');
-
+// $PAGE->navbar->add('Participants');
+ 
 echo $OUTPUT->header();
 
 // echo $OUTPUT->navbar();
@@ -192,10 +192,10 @@ if($oc_m) {
     }
 } */
 
-echo navbar('Participants');
+
 echo '<div class="userlist">';
 echo '<div mooin-md-container">';
-
+echo navbar('Participants');
 echo '<h2>'.get_string("participant_map","format_mooin").'</h2>';
 
 if ($isseparategroups and (!$currentgroup) ) {

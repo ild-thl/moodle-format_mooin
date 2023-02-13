@@ -108,13 +108,14 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $grade_in_course = get_course_grades($course->id);
 
     $course_grade = round($grade_in_course);
+    var_dump($course_grade);
     $progressbar  = null;
-    if ($course_grade != -1) {
-        $progressbar .= html_writer::start_span('') . get_progress_bar_course($course_grade, 100) . html_writer::end_span();
-        $progress = $course_grade;
-    } else {
+    if($course_grade == 0){
         $progressbar .= get_progress_bar_course(0, 100);
         $progress = 0;
+    }else {
+        $progressbar .= html_writer::start_span('') . get_progress_bar_course($course_grade, 100) . html_writer::end_span();
+        $progress = $course_grade;
     }
 
     $sectionnumber = 1;
