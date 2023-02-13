@@ -20,7 +20,7 @@ function section_progress($sectioncmids, $coursecms) {
         $thismod = $coursecms[$cmid];
         // var_dump($thismod);
         if ($thismod->uservisible && !$thismod->deletioninprogress) {
-            if ($thismod->modname == 'label') {
+            // if ($thismod->modname == 'label') {
                 $outof = 1;
                 // echo gettype($thismod->section);
                 $com_value = $USER->id . '-' . $COURSE->id . '-' . $thismod->section;  //$thismod->sectionnum
@@ -30,7 +30,7 @@ function section_progress($sectioncmids, $coursecms) {
                     }else {
                     $completed = 0;
                 }
-            }
+            // }
         }
     }
     return array('completed' => $completed, 'outof' => $outof);
@@ -1211,13 +1211,14 @@ function get_course_grades($courseid) {
         $sequence_point = 0;
         $section_point = $max_grade / $number_section;
 
-        
+        echo $section_point . '<br>';
         // $number_element = count($other_mods);
         $seq = [];
         foreach ($sec as $val) {
             $seq = explode(",",$val->sequence);
+
             $element_in_seq = count($seq);
-            $sequence_point = round($section_point / $element_in_seq);
+            $sequence_point = ($section_point / $element_in_seq);
             
             $section_complete_id = $USER->id . '-' . $courseid . '-' . $val->id; // $section->section
             $section_complete = $DB->record_exists('user_preferences', 
