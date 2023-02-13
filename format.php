@@ -189,6 +189,13 @@ if (get_user_in_course($course->id) != null) {
     } else {
         $badges_count = false;
     }
+
+    // unenrol from course
+    if ($unenrolurl = get_unenrol_url($course->id)) {
+        $unenrol_btn = html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
+        //echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
+    }
+
     $templatecontext = [
         'course_headerimage_mobil' => get_headerimage_url($course->id, true),
         'course_headerimage_desktop' => get_headerimage_url($course->id, false),
@@ -208,7 +215,8 @@ if (get_user_in_course($course->id) != null) {
         'userlist' => $user_card_list,
         'progress' => $progress,
         'topics' => $renderer->print_multiple_section_page($course, null, null, null, null),
-        'other_badges' => $badges_count
+        'other_badges' => $badges_count,
+        'show_unenrol_btn' => $unenrol_btn
 
     ];
 
@@ -250,10 +258,6 @@ if (!empty($displaysection)) {
 } else {
     $PAGE->navbar;
     $renderer->print_multiple_section_page($course, null, null, null, null);
-    // unenrol from course
-    if ($unenrolurl = get_unenrol_url($course->id)) {
-        echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
-    }
 }
 //*/
 
