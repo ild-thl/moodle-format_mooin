@@ -46,7 +46,8 @@ $string['my_forum'] = 'Foren';
 $string['participants'] = 'Teilnehmende';
 $string['certificates'] = 'Meine Kurszertifikate';
 $string['badges_certificates'] = 'Badges und Zertifikate';
-$string['continue'] = 'Beginnen';
+$string['continue'] = 'In Lektion {$a} weiterlernen';
+$string['continue_no_lesson'] = 'Weiterlernen';
 $string['progress'] = 'Kursfortschritt';
 $string['unenrol'] = 'Aus Kurs ausschreiben';
 $string['my_badges'] = 'Badges';
@@ -73,9 +74,9 @@ $string['badge_options'] = 'Badge Einstellungen';
 $string['owner'] = 'Inhaber';
 $string['no_badges_awarded'] = 'Bisher wurden noch keine Badges in diesem Kurs verliehen';
 $string['no_badges_available'] = 'In diesem Kurs sind noch keine Badges verfügbar';
-$string['badge_overview_description'] = '<h5>Mit diesen Kursbadges bzw. digitalen Lernabzeichen können Sie den anderen Teilnehmerinnen und Teilnehmern hier auf demo.oncampus.de und auch der ganzen Welt im Web zeigen, welche Kursfortschritte Sie bereits gemacht haben.
+$string['badge_overview_description'] = 'Mit diesen Kursbadges bzw. digitalen Lernabzeichen können Sie den anderen Teilnehmerinnen und Teilnehmern hier auf demo.oncampus.de und auch der ganzen Welt im Web zeigen, welche Kursfortschritte Sie bereits gemacht haben.
 										<br />Weitere Informationen gibt es in der <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a>
-										und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a></h5>';
+										und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a>';
 $string['all_forums'] = 'Alle Diskussionsforen';
 $string['course_groups'] = 'Kursgruppen';
 $string['course_groups_descr'] = 'Hier kannst Du sehen, welche Arbeitsgruppen es in diesem Kurs gibt und entscheiden, welcher Du beitreten möchtest:';
@@ -87,7 +88,7 @@ $string['cert_addtext'] = 'Lorem ipsum';
 $string['required_questions'] = 'Benötigte korrekte Antworten in %';
 $string['only_for_trainers'] = 'Nur für Admins und Trainer sichtbar';
 $string['my_certificate'] = 'Kurszertifikate';
-$string['certificate_overview_description'] = '<h5>Herlichen Glückwunsch! Sie haben die im Kurs enthaltenen Selbtsttest erfolgreich bearbeitet und können sich hier Ihre Teilnahmenbestätigung herunterladen.</h5>';
+$string['certificate_overview_description'] = 'Herlichen Glückwunsch! Sie haben die im Kurs enthaltenen Selbtsttest erfolgreich bearbeitet und können sich hier Ihre Teilnahmenbestätigung herunterladen.';
 $string['certificate_overview'] = 'Es gibt noch kein Zertifikat für diese Kurs!';
 /* $string['course'] = 'Kurs';
 $string['participants'] = 'Kursteilnehmer';
@@ -97,7 +98,10 @@ $string['social_media'] = 'Social Media';
 $string['discuss'] = 'Allgemeines Diskussionsforum'; */
 
 $string['unenrol'] = 'Aus diesem Kurs abmelden';
-
+$string['start'] = 'Beginnen';
+$string['startlesson'] = 'In Lektion 1.1 beginnen';
+$string['chapter'] = 'Kapitel';
+$string['lesson'] = 'Lektion';
 
 // added by Jonas
 $string['unread_news'] = ' ungelesene Beiträge im ';
@@ -107,6 +111,8 @@ $string['latest_contribution_mobile'] = 'Neuster Beitrag:';
 $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['all_news'] = 'Newsforum';
 $string['topicoutline'] = 'Kursinhalt';
+$string['participant_map'] = 'Karte der Teilnehmenden';
+
 
 // Chapter in course
 $string['new_chapter'] = 'Neue Kapitel';

@@ -55,7 +55,8 @@ $string['participants'] = 'Teilnehmende';
 $string['users'] = 'TEILNEHMENDE';
 $string['certificates'] = 'Meine Kurszertifikate';
 $string['badges_certificates'] = 'Badges und Zertifikate';
-$string['continue'] = 'BEGINNEN';
+$string['continue'] = 'Continue in lesson {$a}';
+$string['continue_no_lesson'] = 'Continue learning';
 $string['progress'] = 'Kursfortschritt';
 $string['unenrol'] = 'AUS KURS AUSSCHREIBEN';
 $string['my_badges'] = 'Badges';
@@ -95,7 +96,8 @@ $string['certificate'] = 'Teilnahmebestätigung';
 $string['cert_addtext'] = 'Lorem ipsum';
 $string['required_questions'] = 'Benötigte korrekte Antworten in %';
 $string['only_for_trainers'] = 'Nur für Admins und Trainer sichtbar';
-$string['start'] = ' Start';
+$string['start'] = 'Start learning';
+$string['startlesson'] = 'Start in lesson 1.1';
 $string['my_certificate'] = 'Kurszertifikate';
 $string['certificate_overview_description'] = '<h5>Herlichen Glückwunsch! Sie haben die im Kurs enthaltenen Selbtsttest erfolgreich bearbeitet und können sich hier Ihre Teilnahmenbestätigung herunterladen.</h5>';
 $string['certificate_overview'] = 'Es gibt noch kein Zertifikat für diese Kurs!';
@@ -112,6 +114,8 @@ $string['welcome'] = 'Herzlich Willkommen im Kurs';
 $string['unenrol'] = 'Aus diesem Kurs abmelden';
 $string['forum_unread'] = 'Ungelesenen Forum(s)';
 $string['discussions'] = 'Alle Diskussionen';
+$string['chapter'] = 'Chapter';
+$string['lesson'] = 'Lesson';
 
 // added by Jonas
 $string['unread_news'] = ' ungelesene Beiträge im ';
@@ -123,7 +127,12 @@ $string['latest_contribution_mobile'] = 'Neuster Beitrag:';
 $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['next_lesson'] = 'Nächste Lektion';
 $string['previous_lesson'] = 'Vorherige Lektion';
+$string['next_chapter'] = 'Nächstes Kapitel';
+$string['previous_chapter'] = 'Vorheriges Kapitel';
 $string['topicoutline'] = 'Course content';
+$string['participant_map'] = 'Map of participants';
+
+
 
 // Chapter in course
 $string['new_chapter'] = 'New Chapter';

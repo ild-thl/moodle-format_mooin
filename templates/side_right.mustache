@@ -12,7 +12,9 @@
       <div class="badges-card-inner d-flex align-items-center">
         {{#badges}}
         {{{badges}}}
-        <span class="text-nowrap pr-1">+ 4</span>
+        {{#other_badges}}
+        <span class="text-nowrap pr-1">+{{other_badges}}</span>
+        {{/other_badges}}
         {{/badges}}
         {{^badges}}
         <div class="d-flex w-100 align-items-center">
