@@ -111,6 +111,8 @@ $string['latest_contribution_mobile'] = 'Neuster Beitrag:';
 $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['all_news'] = 'Newsforum';
 $string['topicoutline'] = 'Kursinhalt';
+$string['participant_map'] = 'Karte der Teilnehmenden';
+
 
 // Chapter in course
 $string['new_chapter'] = 'Neue Kapitel';

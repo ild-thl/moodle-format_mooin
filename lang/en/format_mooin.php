@@ -130,6 +130,9 @@ $string['previous_lesson'] = 'Vorherige Lektion';
 $string['next_chapter'] = 'Nächstes Kapitel';
 $string['previous_chapter'] = 'Vorheriges Kapitel';
 $string['topicoutline'] = 'Course content';
+$string['participant_map'] = 'Map of participants';
+
+
 
 // Chapter in course
 $string['new_chapter'] = 'New Chapter';
