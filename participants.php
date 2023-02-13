@@ -174,7 +174,7 @@ $PAGE->set_heading($course->fullname);
 $PAGE->set_pagetype('course-view-' . $course->format);
 $PAGE->add_body_class('path-user');                     // So we can style it independently.
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
-$PAGE->navbar->add('Participants');
+// $PAGE->navbar->add('Participants');
  
 echo $OUTPUT->header();
 
@@ -194,7 +194,7 @@ if($oc_m) {
 
 
 echo '<div class="userlist">';
-echo navbar('Participants');
+echo navbar('participants');
 if ($isseparategroups and (!$currentgroup) ) {
     // The user is not in the group so show message and exit.
     echo $OUTPUT->heading(get_string("notingroup"));

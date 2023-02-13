@@ -108,7 +108,7 @@ $oc_counter = 0;
 
     echo html_writer::start_div('mooin-md-container'); //open outer div
 
-    echo navbar('All Forums');
+    echo navbar('all_forums');
     
     echo '<h2>' . get_string('all_forums', 'format_mooin') . '</h2>';
     echo '<br>';

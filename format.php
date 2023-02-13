@@ -189,7 +189,7 @@ if (get_user_in_course($course->id) != null) {
     if(count(get_badges($course->id, null, null, null))  > 3) {
         $badges_count = count(get_badges($course->id, null, null, null)) - 3;
     } else {
-        $badges_count = 0;
+        $badges_count = false;
     }
     $templatecontext = [
         'course_headerimage_mobil' => get_headerimage_url($course->id, true),
