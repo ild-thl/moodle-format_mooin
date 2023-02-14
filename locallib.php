@@ -349,7 +349,7 @@ function complete_section($section, $cid, $userid) {
                     html_writer::tag('div', '', array('style' => 'clear: both;'))  .
                     // html_writer::start_span('',['style' => 'float: left;font-size: 12px; margin-left: 12px; margin-top: 5px;font-weight: bold']) . $p . '% ' . html_writer::end_span() . // .' % bearbeitet'
                     // html_writer::tag('div', $p .'% der Lektion bearbeitet', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);left: 50%;','id' => 'mooin4ection-text-' . $sectionid)) . // margin-top: -8px;
-                    html_writer::tag('div', $p. '% der Lektion bearbeitet', array('style' => 'float: left; font-size: 12px; display: contents; margin-left: 12px; padding-left: 5px;color: #555; width: 100%', 'id' => 'mooin4ection-text-' . $sectionid)) , // text-align: center; position: absolute;
+                    html_writer::tag('div', '<b>'.$p.'% </b> der Lektion bearbeitet', array('style' => 'float: left; font-size: 12px; display: contents; margin-left: 12px; padding-left: 5px;color: #555; width: 100%', 'id' => 'mooin4ection-text-' . $sectionid)) , // text-align: center; position: absolute;
                     array( 'style' => 'width: 75%; margin: 0 auto', 'class' => 'mooin4ection-div')); // float: left; position: absolute;
         return $result;
     }
@@ -1219,10 +1219,10 @@ function get_course_grades($courseid) {
 
             $element_in_seq = count($seq);
             $sequence_point = ($section_point / $element_in_seq);
-            
+
             $section_complete_id = $USER->id . '-' . $courseid . '-' . $val->id; // $section->section
-            $section_complete = $DB->record_exists('user_preferences', 
-                array('name' => 'section_progress_label-'.$section_complete_id, 
+            $section_complete = $DB->record_exists('user_preferences',
+                array('name' => 'section_progress_label-'.$section_complete_id,
                     'value' => $section_complete_id));
             if ($section_complete) {
                 $percentage += $section_point;
@@ -1231,7 +1231,7 @@ function get_course_grades($courseid) {
                 // Go throught the course_modules table and find a way to know exactly which module containts the section
                 for ($i=0; $i < count($seq); $i++) {
                     // Check if the section exist in user_preferences Table
-                    
+
                     // Get_record to know if one of the module ein label is
                     $label_req = $DB->get_record('course_modules', ['id'=>$seq[$i]], '*');
                     if (is_object($label_req)) {
@@ -1247,14 +1247,14 @@ function get_course_grades($courseid) {
                             // Check if the module completion has be push in DB mdl_modules_completion
                             $exist_check = $DB->record_exists('course_modules_completion', ['coursemoduleid'=>$seq[$i], 'userid'=>$USER->id]);
                             if ($exist_check) {
-                                
+
                                 $percentage += $sequence_point;
                             }
                         }
-                    }                   
+                    }
                 }
-            } 
-        }       
+            }
+        }
 
     }
     return $percentage;
@@ -1628,15 +1628,15 @@ function navbar($displaysection = 0) {
                 $val = $displaysection;
                 $item = $items[$i];
                 $item->hideicon = true;
-                
+
                 if ($i == 0) {
-                    
+
                     $content = html_writer::tag('li', $before . ''); // $OUTPUT->render($item)
                 }
                 else if ($i === $itemcount - 3) {
                     $content = html_writer::tag('li', $before . ' / '. $OUTPUT->render($item));
                 } else if ($i == $itemcount - 1) {
-                    
+
                     $content = html_writer::tag('li', $before . $OUTPUT->render($item) . ' / ' . get_string($val, 'format_mooin')); // $separator.$this->render($item)
                 } else if($i == $itemcount - 2) {
                     $content = html_writer::tag('li', ''); // $OUTPUT->render($item)
