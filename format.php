@@ -108,7 +108,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $grade_in_course = get_course_grades($course->id);
 
     $course_grade = round($grade_in_course);
-    var_dump($course_grade);
+    
     $progressbar  = null;
     if($course_grade == 0){
         $progressbar .= get_progress_bar_course(0, 100);
@@ -190,7 +190,18 @@ if (get_user_in_course($course->id) != null) {
     } else {
         $badges_count = false;
     }
-
+    // Get Certificat number on moblie
+    if(count(get_certificate($course->id)) > 0) {
+        $certificates_number_mobile = count(get_certificate($course->id));
+    } else {
+        $certificates_number_mobile = false;
+    }
+    // Get Badges numbers on mobile
+    if(count(get_badges($course->id, null, null, null))  > 0) {
+        $badges_count_mobile = count(get_badges($course->id, null, null, null));
+    } else {
+        $badges_count_mobile = false;
+    }
     // unenrol from course
     if ($unenrolurl = get_unenrol_url($course->id)) {
         $unenrol_btn = html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
@@ -217,7 +228,9 @@ if (get_user_in_course($course->id) != null) {
         'progress' => $progress,
         'topics' => $renderer->print_multiple_section_page($course, null, null, null, null),
         'other_badges' => $badges_count,
-        'show_unenrol_btn' => $unenrol_btn
+        'show_unenrol_btn' => $unenrol_btn,
+        'certificates_number' => $certificates_number_mobile,
+        'badges_number' => $badges_count_mobile
 
     ];
 
