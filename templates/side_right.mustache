@@ -29,8 +29,6 @@
     </div>
 
     <div class="certificate-card">
-
-
       <div class="d-flex align-items-center">
         <span class="icon-wrapper award-icon"></span>
         <a href="{{certificate_url}}" class="caption fw-700 text-primary pl-2">{{#str}} certificates, format_mooin
@@ -42,8 +40,13 @@
         </button>
         {{/has_capability}}
       </div>
-      <div class="certificate-card-inner">
+      <div class="certificate-card-inner d-flex align-items-center">
+        {{#certificates}}
         {{{certificates}}}
+        {{#other_certificates}}
+        <span class="text-nowrap pr-1">+{{other_certificates}}</span>
+        {{/other_certificates}}
+        {{/certificates}}
         {{^certificates}}
         <div class="d-flex w-100 align-items-center">
           <div class="no-certificates-img"></div>
