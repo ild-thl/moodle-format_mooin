@@ -1,4 +1,4 @@
-{{#course_headerimage_desktop}}
+
 <div class="course-title-header">
   {{{edit_header_link}}}
   <img src="{{course_headerimage_mobil}}" alt="" class="course-image d-block d-md-none">
@@ -10,20 +10,6 @@
     <a href="{{{continue_url}}}" class="mooin-btn mooin-btn-primary btn-continue d-flex d-md-none">{{continue_text}}</a>
   </div>
 </div>
-{{/course_headerimage_desktop}}
-{{^course_headerimage_desktop}}
-<div class="course-title-header" style="min-height: 280px;">
-  {{{edit_header_link}}}
-  <img src="{{course_headerimage_mobil}}" alt="" class="course-image d-block d-md-none">
-  <img src="{{course_headerimage_desktop}}" alt="" class="course-image d-none d-md-block">
-
-  <div class="title-overlay fade-out">
-    <p>{{#str}} welcome, format_mooin {{/str}}</p>
-    <h2>{{coursename}}</h2>
-    <a href="{{{continue_url}}}" class="mooin-btn mooin-btn-primary btn-continue d-flex d-md-none">{{continue_text}}</a>
-  </div>
-</div>
-{{/course_headerimage_desktop}}
 
 {{#js}}
 require(['theme_mooin/title-overlay'], function(module) {
