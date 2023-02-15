@@ -175,7 +175,7 @@ $PAGE->set_pagetype('course-view-' . $course->format);
 $PAGE->add_body_class('path-user');                     // So we can style it independently.
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
 // $PAGE->navbar->add('Participants');
- 
+
 echo $OUTPUT->header();
 
 // echo $OUTPUT->navbar();
@@ -593,7 +593,7 @@ $city_list = array();
         ];
         echo $OUTPUT->render_from_template('format_mooin/map_manage', $templatecontext);
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-echo('<br>');echo('<br>');echo('<br>');
+echo('<br>');//echo('<br>');echo('<br>');
 
 $table->pagesize($perpage, $matchcount);
 
@@ -1037,7 +1037,7 @@ if ($perpage == SHOW_ALL_PAGE_SIZE) {
 }
 
 // Kurslich verliehene Badges
-echo('<br>');echo('<br>');echo('<br>');echo('<br>');
+echo('<br>');//echo('<br>');echo('<br>');echo('<br>');
 $out = html_writer::tag('div', get_string('awarded_badges', 'format_mooin'), array('class' => 'oc_badges_text'));
 echo html_writer::tag('h2', $out);
 // echo html_writer::tag('div', get_string('lastday', 'format_mooin'), array('class' => 'oc_badges_text'));

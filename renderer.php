@@ -567,15 +567,15 @@ class format_mooin_renderer extends format_section_renderer_base {
                         }
                         $sectiontitle .= '<br />' . get_progress_bar($ocp, 100, $sec_in_course_modules); // $displaysection
                     } else {
-
+                       
                         $completionthistile = section_progress($modinfo->sections[$displaysection], $modinfo->cms); // $sec_in_course_modules
                         // var_dump($modinfo->cms);
                         // use the completion_indicator to show the right percentage in secton
                         $section_percent = completion_indicator($completionthistile['completed'], $completionthistile['outof'], true, false);
-
                         $sectiontitle .= '<br />' . get_progress_bar($section_percent['percent'], 100, $sec_in_course_modules); // $displaysection
                     }
                 } else {
+                    
                     $completionthistile = section_empty($val[0]);
                     // use the completion_indicator to show the right percentage in secton
                     $section_percent = completion_indicator($completionthistile['completed'], $completionthistile['outof'], true, false);
