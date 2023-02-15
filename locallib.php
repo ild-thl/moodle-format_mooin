@@ -350,7 +350,7 @@ function complete_section($section, $cid, $userid) {
                     // html_writer::start_span('',['style' => 'float: left;font-size: 12px; margin-left: 12px; margin-top: 5px;font-weight: bold']) . $p . '% ' . html_writer::end_span() . // .' % bearbeitet'
                     // html_writer::tag('div', $p .'% der Lektion bearbeitet', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);left: 50%;','id' => 'mooin4ection-text-' . $sectionid)) . // margin-top: -8px;
                     html_writer::tag('div', '<b>'.$p.'% </b> der Lektion bearbeitet', array('style' => 'float: left; font-size: 12px; display: contents; margin-left: 12px; padding-left: 5px;color: #555; width: 100%', 'id' => 'mooin4ection-text-' . $sectionid)) , // text-align: center; position: absolute;
-                    array( 'style' => 'width: 75%; margin: 0 auto', 'class' => 'mooin4ection-div')); // float: left; position: absolute;
+                    array('class' => 'mooin4ection-div')); // float: left; position: absolute;
         return $result;
     }
     // End Test
@@ -1272,14 +1272,13 @@ function get_progress_bar_course($p, $width) {
             html_writer::tag('div',
                 html_writer::tag('div',
                     '',
-                    array('style' => 'width: ' . $p . '%; height: 15px; border: 0px; background: #9ADC00; text-align: center; float: left; border-radius: 12px', 'id' => 'mooinprogressbar' )
+                    array('style' => 'width: ' . $p . '%;', 'id' => 'mooinprogressbar', 'class' => 'progressbar-inner')
                 ),
-                array('style' => 'width: ' . $width . '%; height: 15px; border: 1px; background: #aaa; solid #aaa; margin: 0 auto; padding: 0;  border-radius: 12px')
+                array('class' => 'progressbar')
             ) .
             html_writer::start_span('',['style' => 'font-weight: bold']) . $p . '%' . html_writer::end_span() .
             html_writer::start_span(' d-sm-inline d-md-none ') . ' bearbeitet' . html_writer::end_span() .
-            html_writer::start_span(' d-none d-md-inline ') . ' des Kurses bearbeitet' . html_writer::end_span() , // 'style' => 'float: left;font-size: 12px; margin-left: 12px',
-            array( 'style' => 'float: left; position: relative')); // 'class' => 'oc-progress-div',
+            html_writer::start_span(' d-none d-md-inline ') . ' des Kurses bearbeitet' . html_writer::end_span()); // 'class' => 'oc-progress-div',
     return $result;
 }
 
@@ -1529,22 +1528,23 @@ function navbar($displaysection = 0) {
     $chap = '';
     $array_chap = [];
     for ($i=0;$i < $itemcount;$i++) {
-        if( $displaysection == 0) {
-            $val .= $COURSE->shortname;
-            $item = $items[$i];
-            $item->hideicon = true;
-            if ($i===0) {
-                $content = html_writer::tag('li', $OUTPUT->render($item)); // $this
-            } else
-            if($i === $itemcount - 2) {
-                $content = html_writer::tag('li', '  ');
-            }else
-            if ($i === $itemcount - 1) {
-                $content = html_writer::tag('li', '  '. ' > '.$val); // $separator.$this->render($item)
-            } else {
-                $content = '';
-            }
-        } else if ($displaysection != 0 && !is_string($displaysection)) {
+        // if( $displaysection == 0) {
+        //     $val .= $COURSE->shortname;
+        //     $item = $items[$i];
+        //     $item->hideicon = true;
+        //     if ($i===0) {
+        //         $content = html_writer::tag('li', $OUTPUT->render($item)); // $this
+        //     } else
+        //     if($i === $itemcount - 2) {
+        //         $content = html_writer::tag('li', '  ');
+        //     }else
+        //     if ($i === $itemcount - 1) {
+        //         $content = html_writer::tag('li', '  '. ' > '.$val); // $separator.$this->render($item)
+        //     } else {
+        //         $content = '';
+        //     }
+        // } else
+        if ($displaysection != 0 && !is_string($displaysection)) {
 
             $item = $items[$i];
             $item->hideicon = true;
@@ -1738,12 +1738,12 @@ function navbar_mobile($displaysection = 0) {
                         $c = get_chapter_number($OUTPUT->render($item));
 
                         $b = get_lektion_number($OUTPUT->render($item));
-                        $chapter_n = 'Kap.' .''.$c ;
+                        $chapter_n = 'Kap. ' .''.$c ;
                     }
                     for($i = 1; $i <= count($array_chap); $i++) {
 
                         if($i == $displaysection ) {
-                            $content = html_writer::tag('li', $before . ' / '. $chapter_n  . ' /  Lekt.' .$b, ['class'=>'breadcrumd_in_section ']); // $separator.$this->render($item)
+                            $content = html_writer::tag('li', $before . ' / '. $chapter_n  . ' /  Lekt. ' .$b, ['class'=>'breadcrumd_in_section ']); // $separator.$this->render($item)
 
                         }
                     }
