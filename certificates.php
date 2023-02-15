@@ -145,9 +145,14 @@ if (is_string($templatedata) != 1) {
 $out_certificat .= html_writer::end_tag('div'); // certificat_card
 
 echo $out_certificat; */
+$value = null;
 $result = show_certificat($courseid);
 
-echo $result;
+if($result){
+    $value .= $result;
+}
+
+echo $value;
 
 echo html_writer::end_div(); //close outer div
 echo $OUTPUT->footer();
