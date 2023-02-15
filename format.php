@@ -205,7 +205,7 @@ if (get_user_in_course($course->id) != null) {
         'continue_text' => $start_continue,
         'continue_text_no_lesson' => $start_continue_no_lesson,
         'news' => $news,
-        // 'progressbar' => $progressbar,
+        'progressbar' => $progressbar,
         'badges_url' => new moodle_url('/course/format/mooin/badges.php', array('id' => $course->id)),
         'certificate_url' => new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id)),
         'discussions_url' => $diskussions_url,
@@ -217,6 +217,7 @@ if (get_user_in_course($course->id) != null) {
         'progress' => $progress,
         'topics' => $renderer->print_multiple_section_page($course, null, null, null, null),
         'other_badges' => $badges_count,
+        /* 'other_certificates' => , */
         'show_unenrol_btn' => $unenrol_btn
 
     ];

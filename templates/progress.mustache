@@ -3,15 +3,8 @@
     <br>
     <h2>{{#str}} progress, format_mooin {{/str}}</h2>
     <div class="two-thirds">
-      <div class="d-flex flex-column">
-        <div class="progressbar">
-          <div class="progressbar-inner"></div>
-        </div>
-        <div>
-          <span class="fw-700">{{progress}} %</span> <span class="d-none d-md-inline-block"> des Kurses</span> bearbeitet.
-        </div>
+      {{{progressbar}}}
 
-      </div>
 
       <div>
         <a href="{{{continue_url}}}" class="mooin-btn mooin-btn-primary btn-continue">{{{continue_text_no_lesson}}}</a>
@@ -21,8 +14,3 @@
 
   </div>
 </div>
-{{#js}}
-require(['theme_mooin/progress-bar'], function(module) {
-module.updateProgressbar({{progress}});
-})
-{{/js}}
