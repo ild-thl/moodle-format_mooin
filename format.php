@@ -259,7 +259,6 @@ if (get_user_in_course($course->id) != null) {
         $templatecontext['edit_header_link'] = $edit_header_link;
         $templatecontext['edit_newsforum_link'] = $edit_newsforum_link;
         $templatecontext['manage_badges_link'] = $manage_badges_link;
-
         $templatecontext['has_capability'] = true;
     }
 
