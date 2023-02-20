@@ -173,6 +173,8 @@ class format_mooin extends format_base {
         
         $courseid = $this->get_course()->id;
 
+        $badgesnode = $node->get('badgesview', navigation_node::TYPE_SETTING);
+        $badgesnode->remove();
         $competenciesnode = $node->get('competencies', navigation_node::TYPE_SETTING);
         $competenciesnode->remove();
         $gradesnode = $node->get('grades', navigation_node::TYPE_SETTING);
