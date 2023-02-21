@@ -1158,11 +1158,16 @@ function get_last_news($courseid, $forum_type) {
                 $unread_news_number = get_unread_news_forum($courseid, 'news');
                 $new_news = false;
 
-                if ($unread_news_number >= 1) {
-                    $out .= html_writer::start_span('count-container inline-batch fw-700 mr-1') . $unread_news_number . html_writer::end_span(); //Notification Counter
-                    $out .= get_string('unread_news', 'format_mooin');
-                    $out .= html_writer::link($newsurl, get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin'), 'class' =>'primary-link'));
-                    $new_news = true;
+                if($unread_news_number == 1) {
+                    $new_news = html_writer::start_span('count-container inline-badge fw-700 mr-1') . $unread_news_number . html_writer::end_span();
+                    //$new_news .= get_string('unread_news_single', 'format_mooin');
+                    $new_news .= html_writer::link($newsurl, get_string('unread_news_single', 'format_mooin') . get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin'), 'class' =>'primary-link'));
+                }
+                else if ($unread_news_number > 1) {
+                    $new_news .= html_writer::start_span('count-container inline-batch fw-700 mr-1') . $unread_news_number . html_writer::end_span(); //Notification Counter
+                    //$new_news .= get_string('unread_news', 'format_mooin');
+                    $new_news .= html_writer::link($newsurl, get_string('unread_news', 'format_mooin') . get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin'), 'class' =>'primary-link'));
+
 
                 } else {
                     $new_news = false;
@@ -1187,7 +1192,7 @@ function get_last_news($courseid, $forum_type) {
 
             //$out .= html_writer::start_tag('div'); // align-items-center
 
-            // $forum_discussion_url = new moodle_url('/mod/forum/discuss.php', array('d' => $news_forum_post->discussion));
+            $forum_discussion_url = new moodle_url('/mod/forum/discuss.php', array('d' => $news_forum_post->discussion));
             $templatecontext = [
                 'news_url' => $newsurl,
                 'user_firstname' =>  $user->firstname,
@@ -1195,7 +1200,7 @@ function get_last_news($courseid, $forum_type) {
                 'user_picture' => $OUTPUT->user_picture($user, array('courseid' => $courseid)),
                 'news_title' => $news_forum_post->subject,
                 'news_text' => $news_forum_post->message,
-                // 'discussion_url' => $forum_discussion_url,
+                'discussion_url' => $forum_discussion_url,
                 'neue_news_number' => $unread_news_number,
                 'new_news' => $new_news
                 //'discussion_url' => $url_disc
@@ -1274,8 +1279,15 @@ function get_last_forum_discussion($courseid, $forum_type) {
                     $unread_forum_number = get_unread_news_forum($courseid, 'genral');
                     //echo $unread_forum_number;
 
-                    if ($unread_forum_number >= 1) {
-                        $new_news = true;
+                    if ($unread_forum_number == 1) {
+                        $new_news = html_writer::start_span('count-container inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
+                        //$new_news .= get_string('unread_discussions_single', 'format_mooin');
+                        $new_news .= html_writer::link($url_disc, get_string('unread_discussions_single', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
+                    }
+                    if ($unread_forum_number > 1) {
+                        $new_news = html_writer::start_span('count-container inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
+                        //$new_news .= get_string('unread_discussions', 'format_mooin');
+                        $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
                     }
                     /* if ($unread_forum_number >= 1) {
                         $out .= html_writer::start_span('count-container inline-batch fw-700 mr-1') . $unread_forum_number . html_writer::end_span(); //Notification Counter
@@ -1284,6 +1296,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
                         $out .= html_writer::link($url_disc, get_string('all_forums', 'format_mooin'), array('title' => get_string('all_forums', 'format_mooin')));
                     } */
                 } else {
+                    $new_news = false;
                     $out .= html_writer::link($url_disc, get_string('all_forums', 'format_mooin'), array('title' => get_string('all_forums', 'format_mooin'))); // newsurl
                 }
 
@@ -2322,4 +2335,21 @@ function is_section_completed($courseid, $section) {
         return true;
     }
     return false;
+}
+
+function set_new_badge($awardedtoid, $badgeissuedid) {
+    set_user_preference('format_mooin_new_badge_'.$badgeissuedid, true, $awardedtoid);
+}
+
+function unset_new_badge($viewedbyuserid, $badgehash) {
+    global $DB;
+    $sql = "select * from {badge_issued} where " . $DB->sql_compare_text('uniquehash') . " = :badgehash";
+    $params = array('badgehash' => $badgehash);
+    if ($records = $DB->get_records_sql($sql, $params)) {
+        if (count($records) == 1) {
+            if ($records[array_key_first($records)]->userid == $viewedbyuserid) {
+                unset_user_preference('format_mooin_new_badge_'.$records[array_key_first($records)]->id, $viewedbyuserid);
+            }
+        }
+    }
 }
