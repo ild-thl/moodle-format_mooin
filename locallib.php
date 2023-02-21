@@ -2355,3 +2355,23 @@ function unset_new_badge($viewedbyuserid, $badgehash) {
         }
     }
 }
+
+function count_unviewed_badges($userid, $courseid) {
+    global $DB;
+    $unviewed_badges = 0;
+    $sql = 'SELECT bi.id 
+              FROM {badge_issued} as bi, {badge} as b 
+             WHERE b.courseid = :courseid 
+               AND b.id = bi.badgeid 
+               AND bi.userid = :userid';
+    $params = array('courseid' => $courseid, 'userid' => $userid);
+    if ($records = $DB->get_records_sql($sql, $params)) {
+        foreach ($records as $record) {
+            $badgeisnew = get_user_preferences('format_mooin_new_badge_'.$record->id, 0, $userid);
+            if ($badgeisnew) {
+                $unviewed_badges++;
+            }
+        }
+    }
+    return $unviewed_badges;
+}

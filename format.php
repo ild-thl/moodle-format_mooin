@@ -197,8 +197,8 @@ if (get_user_in_course($course->id) != null) {
         $certificates_number_mobile = false;
     }
     // Get Badges numbers on mobile. To update later
-    if(count(badges_get_user_badges($USER->id, $COURSE->id, null, null, null, null))  > 0) {
-        $badges_count_mobile = count(badges_get_user_badges($USER->id, $COURSE->id, null, null, null, null));
+    if(count_unviewed_badges($USER->id, $COURSE->id)  > 0) {
+        $badges_count_mobile = count_unviewed_badges($USER->id, $COURSE->id);
     } else {
         $badges_count_mobile = false;
     }
