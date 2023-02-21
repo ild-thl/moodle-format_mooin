@@ -353,7 +353,7 @@ function complete_section($section, $cid, $userid) {
                     array('class' => 'mooin4ection-div')); // float: left; position: absolute;
         return $result;
     }
-    // End Test
+
 // Badges functions
 /**
  *
@@ -363,7 +363,7 @@ function print_badges($records, $details = false, $highlight = false, $badgename
 
 
     $lis = '';
-
+    // echo count(badges_get_user_badges($USER->id, $COURSE->id, null, null, null, null));
     foreach ($records as $key => $record) {
         if ($record->type == 2) {
             $context = context_course::instance($record->courseid);
@@ -381,15 +381,18 @@ function print_badges($records, $details = false, $highlight = false, $badgename
         // After the ajax call and save into the DB
 
         $value =  'badge'.'-'. $USER->id .'-' . $COURSE->id . '-' . $key;
-        $value_check = $DB->record_exists('user_preferences', array('value' => $value));
-
-        $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'bg-image', 'style' => 'width: 100px; height: 100px;' . $opacity));
+        $name_value = 'user_have_badge-'.$value;
+        // echo $value;
+        $value_check = $DB->record_exists('user_preferences', array('name'=>$name_value,'value' => $value));
+        
+        $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'bg-image-'.$key, 'style' => 'width: 100px; height: 100px;' . $opacity));
 
         if (isset($record->uniquehash)) {
             $url = new moodle_url('/badges/badge.php', array('hash' => $record->uniquehash));
         } else {
             $url = new moodle_url('/badges/overview.php', array('id' => $record->id));
         }
+
         $detail = '';
         if ($details) {
             $user = $DB->get_record('user', array('id' => $record->userid));
@@ -398,14 +401,17 @@ function print_badges($records, $details = false, $highlight = false, $badgename
             $detail = '<br />' . $record->name;
 
         }
+
         $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
-        if ($value_check) {
-            $lis .= html_writer::tag('li', $link, array('class' => 'all-badge-layer' , 'id'=>'badge-' . $key));
+       
+        
+        if ($value_check || strcmp($opacity, " opacity: 0.15;") == 0) {
+            $lis .= html_writer::tag('li', $link, array('class' => 'all-badge-layer cid-badge-'.$COURSE->id , 'id'=>'badge-' . $key));
         } else {
-            $lis .= html_writer::tag('li', $link, array('class' => 'new-badge-layer' , 'id'=>'badge-' . $key));
-        }
-         // new-badge-layer class for the "new badge overlay"
+            $lis .= html_writer::tag('li', $link, array('class' => 'new-badge-layer cid-badge-'.$COURSE->id , 'id'=>'badge-' . $key));
+        }        
     }
+    
     echo html_writer::tag('ul', $lis, array('class' => 'badges-list badges'));
 }
 
@@ -423,17 +429,18 @@ function badge_remove($user_id, $course_id, $badge_position) {
     // TO-DO
     $result = false;
     $value = 'badge' . '-' .$user_id . '-' . $course_id . '-' . $badge_position;
-    // Check if the value already in the DB
-    $value_check = $DB->record_exists('user_preferences', array('value' => $value));
+    $name_value = 'user_have_badge-'.$value;
+        // Check if the value already in the DB
+    $value_check = $DB->record_exists('user_preferences', array('name' => $name_value,'value' => $value));
     // Make a DB request in user_preferences
-    $preferences = $DB->get_records('user_preferences',['userid'=>$user_id], 'id', '*');
+    $preferences = $DB->get_records('user_preferences',[], 'id', '*');
 
 
     $data_preferences = new stdClass();
 
     $data_preferences->id = count($preferences) + 1;
     $data_preferences->userid = $user_id;
-    $data_preferences->name = 'user_see_in_course_' . $value;
+    $data_preferences->name = $name_value;
     $data_preferences->value = $value;
     if (!$value_check) {
         $result = true;
@@ -450,15 +457,15 @@ function display_user_and_availbale_badges($userid, $courseid) {
     $result = null;
     require_once($CFG->dirroot . '/badges/renderer.php');
 
-    // $PAGE->requires->js_call_amd('format_mooin/remove_badge');
-
     $coursebadges = get_badges($courseid, null, null, null);
     $userbadges = badges_get_user_badges($userid, $courseid, null, null, null, true);
 
     foreach ($userbadges as $ub) {
         if ($ub->status != 4) {
+            
             $coursebadges[$ub->id]->highlight = true;
             $coursebadges[$ub->id]->uniquehash = $ub->uniquehash;
+            // Save the badge direct into user_preferences table, later it'll be remove when the user click on the badge
         }
     }
     if ($coursebadges) {
@@ -469,41 +476,6 @@ function display_user_and_availbale_badges($userid, $courseid) {
     }
     return $result;
 }
-/**
- *
- */
-function get_number_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
-    global $DB, $PAGE;
-
-    $PAGE->requires->js_call_amd('format_mooin/remove_badge');
-    $params = array();
-    $sql = 'SELECT
-                b.*
-            FROM
-                {badge} b
-            WHERE b.type > 0
-			  AND b.status != 4 ';
-
-    if ($courseid == 0) {
-        $sql .= ' AND b.type = :type';
-        $params['type'] = 1;
-    }
-
-    if ($courseid != 0) {
-        $sql .= ' AND b.courseid = :courseid';
-        $params['courseid'] = $courseid;
-    }
-
-    if (!empty($search)) {
-        $sql .= ' AND (' . $DB->sql_like('b.name', ':search', false) . ') ';
-        $params['search'] = '%' . $DB->sql_like_escape($search) . '%';
-    }
-
-    $badges = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
-
-    $result = count($badges);
-    return $result;
-}
 
 /**
  *
@@ -511,7 +483,6 @@ function get_number_badges($courseid = 0, $page = 0, $perpage = 0, $search = '')
 function get_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
     global $DB, $PAGE;
 
-    $PAGE->requires->js_call_amd('format_mooin/remove_badge');
     $params = array();
     $sql = 'SELECT
                 b.*
@@ -629,8 +600,6 @@ function display_badges($userid = 0, $courseid = 0, $since = 0, $print = true) {
     global $CFG, $PAGE, $USER, $SITE;
     require_once($CFG->dirroot . '/badges/renderer.php');
 
-    // the jquery call come here
-    $PAGE->requires->js_call_amd('format_mooin/remove_badge');
     // Determine context.
     if (isloggedin()) {
         $context = context_user::instance($USER->id);
@@ -768,7 +737,64 @@ function cmp_badges_desc($a, $b) {
 }
 
 // Certificate Functions
+/**
+ * Get the number of certificate in a course for a special user
+ * @param int userid
+ * @param int courseid
+ * 
+ * @return array ( for not have and complited certificat)
+*/
+function count_certificate($userid, $courseid){
+    /* We have to found the certificate module in the DB 
+        One for ilddigitalcertificate and the other for coursecertificate
+    */
+    global $DB;
+    $completed = 0;
+    $not_completed = 0;
+    $result = [];
+    // Make the request into the module & course_module
+    $module_ilddigitalcert = $DB->get_record('modules', ['name' =>'ilddigitalcert']);
+    $module_coursecertificate = $DB->get_record('modules', ['name' =>'coursecertificate']);
 
+    if($module_ilddigitalcert == true) {
+        // Make request into course_module
+        $cm_ilddigitalcertificate = $DB->get_records('course_modules', ['module' =>$module_ilddigitalcert->id]);
+    } else {
+        $cm_ilddigitalcertificate  = [];
+    }
+    if($module_coursecertificate == true) {
+        // Make request into course_module
+        $cm_coursecertificate = $DB->get_records('course_modules', ['module' =>$module_coursecertificate->id]);
+    } else {
+        $cm_coursecertificate  = [];
+    }
+    
+    // Check if the module has been completed and save into module_completion table
+    if(isset($cm_ilddigitalcertificate)) {
+        foreach($cm_ilddigitalcertificate as $value) {
+            $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid'=>$value->id, 'userid'=>$userid]);
+            if($exist_completed_certificate) {
+                $completed++;
+            }else {
+                $not_completed++;
+            }
+        }
+    }
+    if(isset($cm_coursecertificate)) {
+        foreach($cm_coursecertificate as $value) {
+            $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid'=>$value->id, 'userid'=>$userid]);
+            if($exist_completed_certificate) {
+                $completed++;
+            }else {
+                $not_completed++;
+            }
+        }
+    }
+       
+    $result = ['completed'=>$completed, 'not_completed'=>$not_completed] ;
+
+    return $result;
+}   
 /**
  * Get certificat in a course
  * @param int courseid
@@ -813,7 +839,8 @@ function get_certificate($courseid) {
                         'courseid' => $value->courseid,
                         'certificat_id' => $value->id,
                         'user_id' => $value->userid,
-                        'component'=>'mod_ilddigitalcert'
+                        'component'=>'mod_ilddigitalcert',
+                        'name' => $value->name
 
                     ]) ;
                 }
@@ -822,13 +849,22 @@ function get_certificate($courseid) {
         if (count($templatedata) > 0) {
             for ($i=0; $i < count($templatedata); $i++) {
 
-                $templatedata[$i]->certificate_name = 'Certificate';
-                $templatedata[$i]->preview_url = (
-                    new moodle_url(
-                        '/mod/ilddigitalcert/view.php',
-                        array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->certificat_id, 'ueid'=>$templatedata[$i]->enrolmentid)
-                    )
-                )->out(false);
+                // $templatedata[$i]->certificate_name = 'Certificate';
+                if($USER->id == $templatedata[$i]->user_id) {
+                    $templatedata[$i]->preview_url = (
+                        new moodle_url(
+                            '/mod/ilddigitalcert/view.php',
+                            array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->certificat_id, 'ueid'=>$templatedata[$i]->enrolmentid)
+                        )
+                    )->out(false);
+                } else {
+                    $templatedata[$i]->preview_url = (
+                        new moodle_url(
+                            "#"
+                        )
+                    )->out(false);
+                }
+                
                 $templatedata[$i]->course_name = $course->fullname;
 
             }
@@ -872,7 +908,7 @@ function get_certificate($courseid) {
             }
             if(count($templatedata) > 0){
                 for($i= 0; $i < count($templatedata); $i++) {
-                    $templatedata[$i]->certificate_name = $templatedata[$i]->name;
+                    // $templatedata[$i]->certificate_name = $templatedata[$i]->name;
                     $templatedata[$i]->preview_url = '';
                     $templatedata[$i]->course_name = $course->fullname;
                 }
@@ -930,7 +966,7 @@ function get_certificate($courseid) {
             if(count($templatedata) > 0) {
                 $pdf = '.pdf';
                 for($i = 0; $i < count($templatedata); $i++) {
-                    $templatedata[$i]->certificate_name = $templatedata[$i]->name;
+                    // $templatedata[$i]->certificate_name = $templatedata[$i]->name;
                     if($USER->id == $templatedata[$i]->user_id){
                         $templatedata[$i]->preview_url = (
                             new moodle_url(
@@ -988,10 +1024,10 @@ function show_certificat($courseid) {
                             // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
                             if($templ[$i]->component == 'mod_coursecertificate') {
                                 $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->certificate_name); 
+                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name); 
                             } else {
                                 $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->course_name . ' ' . $templ[$i]->index); 
+                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name); // . ' ' . $templ[$i]->index 
                             }
                             
                             // $out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button;margin-top: 10px']);
@@ -1002,11 +1038,11 @@ function show_certificat($courseid) {
 
                              if($templ[$i]->component == 'mod_coursecertificate') {
                                 $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->certificate_name, ['style'=>'cursor:unset !important']); // $templ[$i]->course_name . ' ' . $templ[$i]->index
+                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); // $templ[$i]->course_name . ' ' . $templ[$i]->index
                                  
                             } else {
                                 $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->course_name . ' ' . $templ[$i]->index, ['style'=>'cursor:unset !important']); 
+                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); //  . ' ' . $templ[$i]->index
                             }
                             //$out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button; margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button

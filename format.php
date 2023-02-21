@@ -33,7 +33,6 @@ require_once('locallib.php');
 global $PAGE;
 
 // Call the js complete_section
-// $PAGE->requires->js_call_amd('format_mooin/complete_section');
 
 // require_once($CFG->dir.'./mod/lesson.php');
 
@@ -183,22 +182,23 @@ if (get_user_in_course($course->id) != null) {
     //     $out .= '';
     // }
 
-
-    // get_number_badges($course->id,null,null,null) - 3 ;
+    // $b = display_user_and_availbale_badges($USER->id,$course->id);
+    // var_dump($b);
     if(count(get_badges($course->id, null, null, null))  > 3) {
         $badges_count = count(get_badges($course->id, null, null, null)) - 3;
     } else {
         $badges_count = false;
     }
     // Get Certificat number on moblie
-    if(count(get_certificate($course->id)) > 0) {
-        $certificates_number_mobile = count(get_certificate($course->id));
+    $cert = count_certificate($USER->id, $course->id);
+    if($cert['completed'] > 0) {
+        $certificates_number_mobile = $cert['completed'];
     } else {
         $certificates_number_mobile = false;
     }
-    // Get Badges numbers on mobile
-    if(count(get_badges($course->id, null, null, null))  > 0) {
-        $badges_count_mobile = count(get_badges($course->id, null, null, null));
+    // Get Badges numbers on mobile. To update later
+    if(count(badges_get_user_badges($USER->id, $COURSE->id, null, null, null, null))  > 0) {
+        $badges_count_mobile = count(badges_get_user_badges($USER->id, $COURSE->id, null, null, null, null));
     } else {
         $badges_count_mobile = false;
     }
@@ -207,7 +207,7 @@ if (get_user_in_course($course->id) != null) {
         $unenrol_btn = html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
         //echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
     }
-
+    
     $templatecontext = [
         'course_headerimage_mobil' => get_headerimage_url($course->id, true),
         'course_headerimage_desktop' => get_headerimage_url($course->id, false),
@@ -266,14 +266,14 @@ if (get_user_in_course($course->id) != null) {
     echo $OUTPUT->render_from_template('format_mooin/mooin_mainpage', $templatecontext);
 }
 
-//*/
 if (!empty($displaysection)) {
     $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
 } else {
     $PAGE->navbar;
+
     $renderer->print_multiple_section_page($course, null, null, null, null);
 }
-//*/
+
 
 
 
