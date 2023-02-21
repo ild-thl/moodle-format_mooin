@@ -67,7 +67,7 @@ define(['jquery', 'core/notification'], function($, Notification) {
             error: function(xhr, status, error) {
                 Y.log(error);
             }
-        }).done(function () {
+        }).done(function() {
             $('#' + value, window.parent.document).css('width', percentage);
             $('#' + another_value, window.parent.document).html(percentage_text);
             $('#' + disable_btn_button, window.parent.document).css('cursor', 'unset');
