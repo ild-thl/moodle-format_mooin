@@ -389,8 +389,10 @@ function print_badges($records, $details = false, $highlight = false, $badgename
 
         if (isset($record->uniquehash)) {
             $url = new moodle_url('/badges/badge.php', array('hash' => $record->uniquehash));
+            $badgeisnew = get_user_preferences('format_mooin_new_badge_'.$record->issuedid, 0, $USER->id);
         } else {
             $url = new moodle_url('/badges/overview.php', array('id' => $record->id));
+            $badgeisnew = 0;
         }
 
         $detail = '';
@@ -403,9 +405,8 @@ function print_badges($records, $details = false, $highlight = false, $badgename
         }
 
         $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
-       
         
-        if (strcmp($opacity, " opacity: 0.15;") == 0) { // $value_check ||
+        if (strcmp($opacity, " opacity: 0.15;") == 0 || $badgeisnew == 0) { // $value_check ||
             $lis .= html_writer::tag('li', $link, array('class' => 'all-badge-layer cid-badge-'.$COURSE->id , 'id'=>'badge-' . $key));
         } else {
             $lis .= html_writer::tag('li', $link, array('class' => 'new-badge-layer cid-badge-'.$COURSE->id , 'id'=>'badge-' . $key));
@@ -465,6 +466,7 @@ function display_user_and_availbale_badges($userid, $courseid) {
             
             $coursebadges[$ub->id]->highlight = true;
             $coursebadges[$ub->id]->uniquehash = $ub->uniquehash;
+            $coursebadges[$ub->id]->issuedid = $ub->issuedid;
             // Save the badge direct into user_preferences table, later it'll be remove when the user click on the badge
         }
     }
