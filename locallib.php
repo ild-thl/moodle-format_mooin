@@ -2300,3 +2300,20 @@ function is_section_completed($courseid, $section) {
     }
     return false;
 }
+
+function set_new_badge($awardedtoid, $badgeissuedid) {
+    set_user_preference('format_mooin_new_badge_'.$badgeissuedid, true, $awardedtoid);
+}
+
+function unset_new_badge($viewedbyuserid, $badgehash) {
+    global $DB;
+    $sql = "select * from {badge_issued} where " . $DB->sql_compare_text('uniquehash') . " = :badgehash";
+    $params = array('badgehash' => $badgehash);
+    if ($records = $DB->get_records_sql($sql, $params)) {
+        if (count($records) == 1) {
+            if ($records[array_key_first($records)]->userid == $viewedbyuserid) {
+                unset_user_preference('format_mooin_new_badge_'.$records[array_key_first($records)]->id, $viewedbyuserid);
+            }
+        }
+    }
+}
