@@ -383,7 +383,7 @@ function print_badges($records, $details = false, $highlight = false, $badgename
         $value =  'badge'.'-'. $USER->id .'-' . $COURSE->id . '-' . $key;
         $name_value = 'user_have_badge-'.$value;
         // echo $value;
-        $value_check = $DB->record_exists('user_preferences', array('name'=>$name_value,'value' => $value));
+        // $value_check = $DB->record_exists('user_preferences', array('name'=>$name_value,'value' => $value));
         
         $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'bg-image-'.$key, 'style' => 'width: 100px; height: 100px;' . $opacity));
 
@@ -405,7 +405,7 @@ function print_badges($records, $details = false, $highlight = false, $badgename
         $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
        
         
-        if ($value_check || strcmp($opacity, " opacity: 0.15;") == 0) {
+        if (strcmp($opacity, " opacity: 0.15;") == 0) { // $value_check ||
             $lis .= html_writer::tag('li', $link, array('class' => 'all-badge-layer cid-badge-'.$COURSE->id , 'id'=>'badge-' . $key));
         } else {
             $lis .= html_writer::tag('li', $link, array('class' => 'new-badge-layer cid-badge-'.$COURSE->id , 'id'=>'badge-' . $key));
