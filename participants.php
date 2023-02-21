@@ -195,7 +195,7 @@ if($oc_m) {
 
 echo '<div class="userlist">';
 echo '<div mooin-md-container">';
-echo navbar('Participants');
+echo navbar('participants');
 echo '<h2>'.get_string("participant_map","format_mooin").'</h2>';
 
 if ($isseparategroups and (!$currentgroup) ) {

@@ -6,15 +6,20 @@
           <div class="even-columns">
             <div class="mooin-btn mooin-btn-special">
               <div class="icon-badge">
+                {{#badges_number}}
                 <span class="badges-icon"></span>
-                <span class="count-container count-certificate fw-700">4</span>
+                <span class="count-container count-certificate fw-700">{{badges_number}}</span>
+                {{/badges_number}}
+                
               </div>
               <a href="{{badges_url}}" class="stretched-link">{{#str}} course_badges, format_mooin {{/str}}</a>
             </div>
             <div class="mooin-btn mooin-btn-special">
               <div class="icon-badge">
+                {{#certificates_number}}
                 <span class="award-icon"></span>
-                <span class="count-container count-certificate fw-700">4</span>
+                <span class="count-container count-certificate fw-700">{{certificates_number}}</span>
+                {{/certificates_number}}
               </div>
               <a href="{{certificate_url}}" class="stretched-link">{{#str}} my_certificate, format_mooin {{/str}}</a>
             </div>

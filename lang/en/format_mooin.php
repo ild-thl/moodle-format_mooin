@@ -118,8 +118,10 @@ $string['chapter'] = 'Chapter';
 $string['lesson'] = 'Lesson';
 
 // added by Jonas
-$string['unread_news'] = ' ungelesene Beiträge im ';
-$string['unread_discussions'] = 'ungelesene Beiträge in den';
+$string['unread_news_single'] = 'ungelesener Beitrag im ';
+$string['unread_news'] = 'ungelesene Beiträge im ';
+$string['unread_discussions'] = 'ungelesene Beiträge in den ';
+$string['unread_discussions_single'] = 'ungelesener Beitrag in den ';
 $string['discussion_forum'] = 'Diskussionsforen';
 $string['all_news_mobile'] = 'Alle Beiträge';
 $string['by'] = 'von ';
