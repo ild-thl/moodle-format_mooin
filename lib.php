@@ -309,10 +309,10 @@ class format_mooin extends format_base {
                 if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
                     sort_course_chapters($course->id);
                     $section->name = $chapter->title;
-                    $titles[$number] = $chapter->chapter.' '.$renderer->section_title_without_link($section, $course);
+                    $titles[$number] = get_string('chapter', 'format_mooin').' '.$chapter->chapter.' '.$renderer->section_title_without_link($section, $course);
                 }
                 else {
-                    $titles[$number] = get_section_prefix($section).' '.$renderer->section_title($section, $course);
+                    $titles[$number] = get_string('lesson', 'format_mooin').' '.get_section_prefix($section).' '.$renderer->section_title($section, $course);
                 }
             }
         }
