@@ -802,7 +802,7 @@ function count_certificate($userid, $courseid){
  * @param int courseid
  * @return array
  */
-function get_certificate($courseid) {
+function get_certificates($courseid) {
 
     global $DB, $USER;
     $templatedata = array();
@@ -1004,9 +1004,8 @@ function get_certificate($courseid) {
 function show_certificat($courseid) {
     global $USER;
     $out_certificat = null;
-    // if ( get_certificate($courseid)) {
     // TO-DO
-    $templ = get_certificate($courseid);
+    $templ = get_certificates($courseid);
     //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
         // var_dump($templ);
         if (isset($templ)) {

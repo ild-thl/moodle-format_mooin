@@ -162,10 +162,6 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
 
     $certificates_url = new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id));
 
-    //$out .= show_certificat($course->id); // get_certificate($course->id);
-
-
-
     if (get_last_forum_discussion($course->id, 'general') != null) { //Nötig? get_last_news
         $check_diskussion = get_last_forum_discussion($course->id, 'general');
         // $check_diskussion = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $course->id));
