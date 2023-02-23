@@ -162,10 +162,6 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
 
     $certificates_url = new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id));
 
-    //$out .= show_certificat($course->id); // get_certificate($course->id);
-
-
-
     if (get_last_forum_discussion($course->id, 'general') != null) { //Nötig? get_last_news
         $check_diskussion = get_last_forum_discussion($course->id, 'general');
         // $check_diskussion = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $course->id));
@@ -197,8 +193,8 @@ if (get_user_in_course($course->id) != null) {
         $certificates_number_mobile = false;
     }
     // Get Badges numbers on mobile. To update later
-    if(count(badges_get_user_badges($USER->id, $COURSE->id, null, null, null, null))  > 0) {
-        $badges_count_mobile = count(badges_get_user_badges($USER->id, $COURSE->id, null, null, null, null));
+    if(count_unviewed_badges($USER->id, $COURSE->id)  > 0) {
+        $badges_count_mobile = count_unviewed_badges($USER->id, $COURSE->id);
     } else {
         $badges_count_mobile = false;
     }

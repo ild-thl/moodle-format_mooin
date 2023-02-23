@@ -389,8 +389,10 @@ function print_badges($records, $details = false, $highlight = false, $badgename
 
         if (isset($record->uniquehash)) {
             $url = new moodle_url('/badges/badge.php', array('hash' => $record->uniquehash));
+            $badgeisnew = get_user_preferences('format_mooin_new_badge_'.$record->issuedid, 0, $USER->id);
         } else {
             $url = new moodle_url('/badges/overview.php', array('id' => $record->id));
+            $badgeisnew = 0;
         }
 
         $detail = '';
@@ -403,9 +405,8 @@ function print_badges($records, $details = false, $highlight = false, $badgename
         }
 
         $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
-       
         
-        if (strcmp($opacity, " opacity: 0.15;") == 0) { // $value_check ||
+        if (strcmp($opacity, " opacity: 0.15;") == 0 || $badgeisnew == 0) { // $value_check ||
             $lis .= html_writer::tag('li', $link, array('class' => 'all-badge-layer cid-badge-'.$COURSE->id , 'id'=>'badge-' . $key));
         } else {
             $lis .= html_writer::tag('li', $link, array('class' => 'new-badge-layer cid-badge-'.$COURSE->id , 'id'=>'badge-' . $key));
@@ -465,6 +466,7 @@ function display_user_and_availbale_badges($userid, $courseid) {
             
             $coursebadges[$ub->id]->highlight = true;
             $coursebadges[$ub->id]->uniquehash = $ub->uniquehash;
+            $coursebadges[$ub->id]->issuedid = $ub->issuedid;
             // Save the badge direct into user_preferences table, later it'll be remove when the user click on the badge
         }
     }
@@ -800,7 +802,7 @@ function count_certificate($userid, $courseid){
  * @param int courseid
  * @return array
  */
-function get_certificate($courseid) {
+function get_certificates($courseid) {
 
     global $DB, $USER;
     $templatedata = array();
@@ -1002,9 +1004,8 @@ function get_certificate($courseid) {
 function show_certificat($courseid) {
     global $USER;
     $out_certificat = null;
-    // if ( get_certificate($courseid)) {
     // TO-DO
-    $templ = get_certificate($courseid);
+    $templ = get_certificates($courseid);
     //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
         // var_dump($templ);
         if (isset($templ)) {
@@ -2362,4 +2363,24 @@ function unset_new_badge($viewedbyuserid, $badgehash) {
             }
         }
     }
+}
+
+function count_unviewed_badges($userid, $courseid) {
+    global $DB;
+    $unviewed_badges = 0;
+    $sql = 'SELECT bi.id 
+              FROM {badge_issued} as bi, {badge} as b 
+             WHERE b.courseid = :courseid 
+               AND b.id = bi.badgeid 
+               AND bi.userid = :userid';
+    $params = array('courseid' => $courseid, 'userid' => $userid);
+    if ($records = $DB->get_records_sql($sql, $params)) {
+        foreach ($records as $record) {
+            $badgeisnew = get_user_preferences('format_mooin_new_badge_'.$record->id, 0, $userid);
+            if ($badgeisnew) {
+                $unviewed_badges++;
+            }
+        }
+    }
+    return $unviewed_badges;
 }

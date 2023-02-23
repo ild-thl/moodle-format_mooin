@@ -50,7 +50,6 @@ echo html_writer::tag('h2', html_writer::tag('div', get_string('my_certificate',
 
 echo html_writer::tag('p', get_string('certificate_overview_description', 'format_mooin'));
 echo '<br />';
-// $templatedata = get_certificate($courseid); // $course->id
 
 
 
@@ -156,54 +155,3 @@ echo $value;
 
 echo html_writer::end_div(); //close outer div
 echo $OUTPUT->footer();
-
-/**
- * Get certificat in a course
- * @param int courseid
- * @return array
- */
-/* function get_certificate($courseid) {
-    global $DB, $OUTPUT;
-
-    $he = $DB->get_record('modules', ['name' =>'ilddigitalcert']);
-
-    $te = $DB->get_records('course_modules', ['module' =>$he->id]);
-
-    $ze = $DB->get_records('course_sections', ['course' =>$courseid]);
-    $course = $DB->get_record('course', ['id' =>$courseid]);
-
-    // $cm_id = 0;
-    $templatedata = array();
-
-    $a = 1;
-    foreach ($ze as $key => $value) {
-        foreach ($te as $k => $v) {
-            if ($value->id == $v->section) {
-                // var_dump($v);
-                $cm_id = $v->id;
-                array_push($templatedata, (object)[
-                    'id'=> $v->id,
-                    'index' => $a++,
-                    'section' => $v->section
-                ]) ;
-            }
-        }
-    }
-    if (count($templatedata) > 0) {
-        for ($i=0; $i < count($templatedata); $i++) {
-
-                $templatedata[$i]->certificate_name = 'Certificate';
-                $templatedata[$i]->preview_url = (
-                new moodle_url(
-                    '/mod/ilddigitalcert/view.php',
-                    array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->section)
-                )
-                )->out(false);
-                $templatedata[$i]->course_name = $course->fullname;
-                // $templatedata[$i]->image = '../images/certificat.png';
-            }
-    }else {
-        $templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
-    }
-    return $templatedata;
-} */
