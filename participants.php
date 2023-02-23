@@ -39,7 +39,7 @@ define('MODE_BRIEF', 0);
 define('MODE_USERDETAILS', 1);
 
 $page         = optional_param('page', 0, PARAM_INT); // Which page to show.
-$perpage      = optional_param('perpage', DEFAULT_PAGE_SIZE, PARAM_INT); // How many per page.
+$perpage      = optional_param('perpage', 10, PARAM_INT); // How many per page.
 $mode         = optional_param('mode', null, PARAM_INT); // Use the MODE_ constants.
 $accesssince  = optional_param('accesssince', 0, PARAM_INT); // Filter by last access. -1 = never.
 $search       = optional_param('search', '', PARAM_RAW); // Make sure it is processed with p() or s() when sending to output!
@@ -882,6 +882,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
     $timeformat = get_string('strftimedate');
 
 	// Show a search box if all participants don't fit on a single screen.
+    
 	if ($totalcount > $perpage) {
 		echo '<form action="participants.php" class="searchform"><div><input type="hidden" name="id" value="'.$course->id.'" />';
 		//echo '<label for="search">' . get_string('search', 'search') . ' </label>';
