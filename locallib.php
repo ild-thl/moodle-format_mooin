@@ -1693,6 +1693,7 @@ function navbar($displaysection = 0) {
     $chapter_val = '';
     $chapter_n = '';
     $b = '';
+    // $c = '';
     $chapter_array = [];
     $chap = '';
     $array_chap = [];
@@ -1701,11 +1702,13 @@ function navbar($displaysection = 0) {
         if ($displaysection != 0 && !is_string($displaysection)) {
 
             $item = $items[$i];
+            
             $item->hideicon = true;
             if ($i===0) {
                 $content = html_writer::tag('li', '  ');
             } else
             if($i === $itemcount - 2) {
+                
                 $content = html_writer::tag('li', '  '. $OUTPUT->render($item));
             }else
             if ($i === $itemcount - 1) {
@@ -1723,10 +1726,16 @@ function navbar($displaysection = 0) {
                         $c = get_chapter_number($OUTPUT->render($item));
 
                         $b = get_lektion_number($OUTPUT->render($item));
-                        $chapter_n = 'Kapitel ' . ' ' . $c ;
+                        
+                        if($c == " ") {
+                            $chapter_n = str_replace("-", "",$OUTPUT->render($item));
+                        } else {
+                            $chapter_n = 'Kapitel ' . ' ' . $c ;
+                            // $chapiter leer change the output
+                        }
+                       
                     }
                     for($i = 1; $i <= count($array_chap); $i++) {
-
                         if($i == $displaysection ) {
                             $content = html_writer::tag('li', $before . ' / '. $chapter_n . $array_chap[$i-1] . $b, ['class'=>'breadcrumd_in_section']); // $separator.$this->render($item)
 
@@ -2027,6 +2036,7 @@ function get_chapter_number($value) {
     $chap = explode("-", $chapter[3]);
     $c = explode(".", $chap[0]);
 
+    // var_dump($c);
     return $c[0];
 }
 function unset_chapter($sectionid) {
