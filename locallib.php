@@ -384,7 +384,7 @@ function print_badges($records, $details = false, $highlight = false, $badgename
         $name_value = 'user_have_badge-'.$value;
         // echo $value;
         // $value_check = $DB->record_exists('user_preferences', array('name'=>$name_value,'value' => $value));
-        
+
         $image = html_writer::empty_tag('img', array('src' => $imageurl, 'class' => 'bg-image-'.$key, 'style' => 'width: 100px; height: 100px;' . $opacity));
 
         if (isset($record->uniquehash)) {
@@ -405,14 +405,14 @@ function print_badges($records, $details = false, $highlight = false, $badgename
         }
 
         $link = html_writer::link($url, $image . $detail, array('title' => $record->name));
-        
+
         if (strcmp($opacity, " opacity: 0.15;") == 0 || $badgeisnew == 0) { // $value_check ||
             $lis .= html_writer::tag('li', $link, array('class' => 'all-badge-layer cid-badge-'.$COURSE->id , 'id'=>'badge-' . $key));
         } else {
             $lis .= html_writer::tag('li', $link, array('class' => 'new-badge-layer cid-badge-'.$COURSE->id , 'id'=>'badge-' . $key));
-        }        
+        }
     }
-    
+
     echo html_writer::tag('ul', $lis, array('class' => 'badges-list badges'));
 }
 
@@ -463,7 +463,7 @@ function display_user_and_availbale_badges($userid, $courseid) {
 
     foreach ($userbadges as $ub) {
         if ($ub->status != 4) {
-            
+
             $coursebadges[$ub->id]->highlight = true;
             $coursebadges[$ub->id]->uniquehash = $ub->uniquehash;
             $coursebadges[$ub->id]->issuedid = $ub->issuedid;
@@ -743,11 +743,11 @@ function cmp_badges_desc($a, $b) {
  * Get the number of certificate in a course for a special user
  * @param int userid
  * @param int courseid
- * 
+ *
  * @return array ( for not have and complited certificat)
 */
 function count_certificate($userid, $courseid){
-    /* We have to found the certificate module in the DB 
+    /* We have to found the certificate module in the DB
         One for ilddigitalcertificate and the other for coursecertificate
     */
     global $DB;
@@ -770,7 +770,7 @@ function count_certificate($userid, $courseid){
     } else {
         $cm_coursecertificate  = [];
     }
-    
+
     // Check if the module has been completed and save into module_completion table
     if(isset($cm_ilddigitalcertificate)) {
         foreach($cm_ilddigitalcertificate as $value) {
@@ -792,11 +792,11 @@ function count_certificate($userid, $courseid){
             }
         }
     }
-       
+
     $result = ['completed'=>$completed, 'not_completed'=>$not_completed] ;
 
     return $result;
-}   
+}
 /**
  * Get certificat in a course
  * @param int courseid
@@ -842,52 +842,64 @@ function get_certificates($courseid) {
                         'certificat_id' => $value->id,
                         'user_id' => $value->userid,
                         'component'=>'mod_ilddigitalcert',
-                        'name' => $value->name
+                        'name' => $value->name,
+                        'preview_url' => '#'
 
                     ]) ;
                 }
             }
         }
+
         if (count($templatedata) > 0) {
             for ($i=0; $i < count($templatedata); $i++) {
-
-                // $templatedata[$i]->certificate_name = 'Certificate';
-                if($USER->id == $templatedata[$i]->user_id) {
-                    $templatedata[$i]->preview_url = (
-                        new moodle_url(
-                            '/mod/ilddigitalcert/view.php',
-                            array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->certificat_id, 'ueid'=>$templatedata[$i]->enrolmentid)
-                        )
-                    )->out(false);
-                } else {
-                    $templatedata[$i]->preview_url = (
-                        new moodle_url(
-                            "#"
-                        )
-                    )->out(false);
+                for($j = count($templatedata) - 1; $j >= 0 ;$j--){
+                    // $templatedata[$i]->certificate_name = 'Certificate';
+                    if( isset($templatedata[$j]->user_id) && $templatedata[$i]->user_id != $templatedata[$j]->user_id ){
+                        unset($templatedata[$i]);
+                    }
+                    if($USER->id == $templatedata[$i]->user_id) {
+                        $templatedata[$i]->preview_url = (
+                            new moodle_url(
+                                '/mod/ilddigitalcert/view.php',
+                                array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->certificat_id, 'ueid'=>$templatedata[$i]->enrolmentid)
+                            )
+                        )->out(false);
+                        $templatedata[$i]->course_name = $course->fullname;
+                    } else {
+                        if($templatedata[$i]->preview_url == '#') {
+                            $templatedata[$i]->preview_url = (
+                                new moodle_url(
+                                    "#"
+                                )
+                            )->out(false);
+                        }
+                    }
                 }
-                
-                $templatedata[$i]->course_name = $course->fullname;
-
             }
-        }else {
+        } else {
             //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
-            $templatedata = null;
+            $templatedata = [];
         }
+        /* echo(count($templatedata)); */
 
 
-    } elseif($DB->get_manager()->table_exists($table_course_certificate)){
+    }  else {
+        //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
+        $templatedata = [];
+    }
+    if($DB->get_manager()->table_exists($table_course_certificate)){
         // coursecertificate == cc
         $pe = $DB->get_records('tool_certificate_issues', ['courseid'=>$courseid], 'id', '*');
 
-            $he = $DB->get_record('modules', ['name' =>'course_secrtificate']);
+
+        $he = $DB->get_record('modules', ['name' =>'course_secrtificate']);
 
 
-            if ($he == true) {
-                $te = $DB->get_records('course_modules', ['module' =>$he->id]);
-            } else {
-                $te = [];
-            }
+        if ($he == true) {
+            $te = $DB->get_records('course_modules', ['module' =>$he->id]);
+        } else {
+            $te = [];
+        }
         $number_certificate_in_cc = $DB->get_records('coursecertificate', ['course'=>$courseid], 'id', '*');
         $number_certificate_in_tool_cert_issues = $DB->get_records('tool_certificate_issues', ['courseid'=>$courseid, 'userid'=>$USER->id], 'id', '*');
         $module_req = $DB->get_record('modules', ['name' =>'coursecertificate']);
@@ -897,7 +909,7 @@ function get_certificates($courseid) {
             $te = [];
         }
         if(!$number_certificate_in_tool_cert_issues && !$number_certificate_in_cc) {
-            $templatedata = null;
+            $templatedata = [];
         } elseif(!$number_certificate_in_tool_cert_issues && $number_certificate_in_cc) {
             $a = 1;
             foreach($number_certificate_in_cc as $val){
@@ -906,17 +918,19 @@ function get_certificates($courseid) {
                     'name'=>$val->name,
                     'template'=>$val->template,
                     'index' => $a++,
+                    'course-name' =>$course->fullname,
+                    'preview_url' => '#'
                 ]);
             }
+            // var_dump($templatedata);
             if(count($templatedata) > 0){
                 for($i= 0; $i < count($templatedata); $i++) {
                     // $templatedata[$i]->certificate_name = $templatedata[$i]->name;
-                    $templatedata[$i]->preview_url = '';
-                    $templatedata[$i]->course_name = $course->fullname;
+                    // $templatedata[$i]->preview_url = '';
+                    // $templatedata[$i]->course_name = $course->fullname;
                 }
             }
         } elseif($number_certificate_in_tool_cert_issues && $number_certificate_in_cc) {
-           
             foreach($pe as $val) {
                 foreach($te as $v) {
                     // var_dump($v);
@@ -930,13 +944,12 @@ function get_certificates($courseid) {
                             'timecreated'=>$val->timecreated,
                             'user_id'=>$val->userid,
                             'emailed'=>$val->emailed,
-                            'component'=>$val->component
-                           
+                            'component'=>$val->component,
                         ]);
                     }
                 }
             }
-            
+
             $templatedata = array_unique(($templatedata), SORT_REGULAR);
             $templatedata = array_values($templatedata);
             foreach($number_certificate_in_cc as $value){
@@ -952,13 +965,13 @@ function get_certificates($courseid) {
             for($i = 0; $i < count($templatedata) ; $i++){
                 for($j = count($templatedata) - 1; $j >= 0 ;$j--){
                     // var_dump($templatedata[$i]);
-                    if(isset($templatedata[$j]->user_id) && $templatedata[$j]->user_id == $USER->id ) {                    
+                    if(isset($templatedata[$j]->user_id) && $templatedata[$j]->user_id == $USER->id ) {
                         $tmp = $templatedata[$j];
-                    }
-                    
-                    if(isset($templatedata[$j]->user_id) && $templatedata[$i]->user_id != $templatedata[$j]->user_id ){
+                    }                    
+                    if((isset($templatedata[$j]->user_id)) && $templatedata[$i]->user_id != $templatedata[$j]->user_id ){
                         unset($templatedata[$j]);                       
                     }                    
+
                 }
             }
             $templ = [];
@@ -982,18 +995,18 @@ function get_certificates($courseid) {
                             )
                         )->out(false);
                     }
-                    
+
                     $templatedata[$i]->course_name = $course->fullname;
                 }
             }
         } else {
-            $templatedata = null;
+            $templatedata = [];
         }
 
     }else {
-        $templatedata = null;
+        $templatedata = [];
     }
-    
+
     return $templatedata;
 }
 /**
@@ -1004,46 +1017,59 @@ function get_certificates($courseid) {
 function show_certificat($courseid) {
     global $USER;
     $out_certificat = null;
+    // if ( get_certificate($courseid)) {
     // TO-DO
     $templ = get_certificates($courseid);
     //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
         // var_dump($templ);
+        $templ = array_values($templ);
         if (isset($templ)) {
             if (is_string($templ) == 1) {
                 $out_certificat = $templ;
             }
             if (is_string($templ) != 1) {
 
-                // $imageurl = 'images/certificat.png';
                 $out_certificat .= html_writer::start_tag('div',['class'=>'certificat_list', 'style'=>'display:flex;justify-content: center']); // certificat_body
-                    for ($i=0; $i < count($templ); $i++) {
+                    for ($i= 0; $i < count($templ); $i++) {
                         if ($templ[$i]->user_id == $USER->id) {
                             $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer; margin:0 10px 0 10px']); // certificat_card
-
+                            // var_dump($templ[$i]);
                             // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
 
                             // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
                             if($templ[$i]->component == 'mod_coursecertificate') {
                                 $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name); 
+                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name);
                             } else {
+
                                 $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name); // . ' ' . $templ[$i]->index 
+                                if(isset($certificat_url)) {
+                                    $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name); //  . ' ' . $templ[$i]->index
+                                } else {
+
+                                    $out_certificat .= html_writer::span('',$templ[$i]->name);
+                                }
                             }
-                            
+
                             // $out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button;margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
                             $out_certificat .= html_writer::end_tag('div'); // certificat_body
                         } else {
-                            $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:unset; opacity: 0.20']); // certificat_card
+                                $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:unset; opacity: 0.20']); // certificat_card
 
-                             if($templ[$i]->component == 'mod_coursecertificate') {
+                                if($templ[$i]->component == 'mod_coursecertificate') {
                                 $certificat_url = $templ[$i]->preview_url;
                                 $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); // $templ[$i]->course_name . ' ' . $templ[$i]->index
-                                 
-                            } else {
-                                $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); //  . ' ' . $templ[$i]->index
+
+                                } else {
+                                    $certificat_url = $templ[$i]->preview_url;
+                                    if(isset($certificat_url)) {
+                                        $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); //  . ' ' . $templ[$i]->index
+                                    } else {
+                                        $out_certificat .= html_writer::link('', '' .$templ[$i]->name, ['style'=>'cursor:unset !important']);
+                                    }
+
+
                             }
                             //$out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button; margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
@@ -1380,7 +1406,7 @@ function get_course_grades($courseid) {
         $sequence_point = 0;
         $section_point = $max_grade / $number_section;
 
-        
+
         // $number_element = count($other_mods);
         $seq = [];
         foreach ($sec as $val) {
@@ -1688,24 +1714,27 @@ function navbar($displaysection = 0) {
     $htmlblocks = array();
     // Iterate the navarray and display each node
     $separator = get_separator();
-    $before = '&nbsp';
+    $before = '';
     $val = '';
     $chapter_val = '';
     $chapter_n = '';
     $b = '';
+    // $c = '';
     $chapter_array = [];
     $chap = '';
     $array_chap = [];
     for ($i=0;$i < $itemcount;$i++) {
-        
+
         if ($displaysection != 0 && !is_string($displaysection)) {
 
             $item = $items[$i];
+
             $item->hideicon = true;
             if ($i===0) {
                 $content = html_writer::tag('li', '  ');
             } else
             if($i === $itemcount - 2) {
+
                 $content = html_writer::tag('li', '  '. $OUTPUT->render($item));
             }else
             if ($i === $itemcount - 1) {
@@ -1717,18 +1746,25 @@ function navbar($displaysection = 0) {
 
                     foreach($chapter_array as $chap_value) {
                         if($chap_value != ''){
-                            $chap = '  : ' . $chap_value .' / Lektion  '. ' ' ;
+                            $chap = '  : ' . $chap_value;
                         }
                         array_push($array_chap, $chap);
                         $c = get_chapter_number($OUTPUT->render($item));
 
                         $b = get_lektion_number($OUTPUT->render($item));
-                        $chapter_n = 'Kapitel ' . ' ' . $c ;
+
+                        if($c == " ") {
+                            $chapter_n = str_replace("-", "",$OUTPUT->render($item));
+                        } else {
+                            $chapter_n = 'Kapitel ' . ' ' . $c ;
+                            // $chapiter leer change the output
+                        }
+
                     }
                     for($i = 1; $i <= count($array_chap); $i++) {
-
                         if($i == $displaysection ) {
-                            $content = html_writer::tag('li', $before . ' / '. $chapter_n . $array_chap[$i-1] . $b, ['class'=>'breadcrumd_in_section']); // $separator.$this->render($item)
+                            $content = html_writer::tag('li', $before . ' / '. $chapter_n . $array_chap[$i-1] , ['class'=>'chap']); // $separator.$this->render($item)
+                            $content .= html_writer::tag('li', $before . ' / Lektion: ' . $b, ['class'=>'sec']); // $separator.$this->render($item)
 
                         }
                     }
@@ -1867,7 +1903,7 @@ function navbar_mobile($displaysection = 0) {
             } else {
                 $content = '';
             }
-        } else */ 
+        } else */
         if ($displaysection != 0 && !is_string($displaysection)) {
 
             $item = $items[$i];
@@ -2027,6 +2063,7 @@ function get_chapter_number($value) {
     $chap = explode("-", $chapter[3]);
     $c = explode(".", $chap[0]);
 
+    // var_dump($c);
     return $c[0];
 }
 function unset_chapter($sectionid) {
@@ -2358,10 +2395,10 @@ function unset_new_badge($viewedbyuserid, $badgehash) {
 function count_unviewed_badges($userid, $courseid) {
     global $DB;
     $unviewed_badges = 0;
-    $sql = 'SELECT bi.id 
-              FROM {badge_issued} as bi, {badge} as b 
-             WHERE b.courseid = :courseid 
-               AND b.id = bi.badgeid 
+    $sql = 'SELECT bi.id
+              FROM {badge_issued} as bi, {badge} as b
+             WHERE b.courseid = :courseid
+               AND b.id = bi.badgeid
                AND bi.userid = :userid';
     $params = array('courseid' => $courseid, 'userid' => $userid);
     if ($records = $DB->get_records_sql($sql, $params)) {

@@ -194,7 +194,7 @@ if($oc_m) {
 
 
 echo '<div class="userlist">';
-echo '<div mooin-md-container">';
+//echo '<div class="mooin-md-container">';
 echo navbar('participants');
 echo '<h2>'.get_string("participant_map","format_mooin").'</h2>';
 
@@ -561,15 +561,21 @@ $city_list = array();
         if(empty($city_list)) {
             array_push($city_list, (object)[
                 'city' =>$user->city,
+                'town' =>$user-> country,
                 'accurance' =>  1]
             );
         }else {
                 $checkvalue = array_values((array)$city_list);
                 if (!in_array($user->city, $checkvalue)) {
-                    array_push($city_list, (object)[
-                        'city' =>$user->city,
-                        'accurance' =>  1]
-                );
+                    if(!empty($user->city)){
+                        array_push($city_list, (object)[
+                            'city' =>$user->city,
+                            'town' =>$user-> country,
+                            'accurance' =>  1]
+                        );
+                    }
+                    
+                
             }
         }
     }
@@ -577,13 +583,18 @@ $city_list = array();
    $array_temp = array();
    $array_element = [];
    $val = [];
+   // var_dump($city_list);
    foreach ($city_list as $key => $element) {
-       array_push($array_element, $element->city);
+        $city = $element->city;
+        $town = $element->town;
+       array_push($array_element, "$city , $town");
        $val = array_count_values($array_element);
    }
+   
    foreach ($val as $key => $value) {
        array_push($array_temp, $key. ' | ' .$value);
    }
+   // var_dump(explode(',', ($array_temp[0])));
     $map_title = get_string('map_title', 'format_mooin');
         $map_descr = get_string('map_descr', 'format_mooin');
         $templatecontext = (object)[
@@ -1062,7 +1073,7 @@ if ($enrol = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' =
 
 	}
 }
-echo '</div>';  // md-container.
+//echo '</div>';  // md-container.
 echo '</div>';  // Userlist.
 
 echo $OUTPUT->footer();

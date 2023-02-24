@@ -179,12 +179,45 @@
           // var res = '{{.}}';
           // var result = res.split("|", 1);
           
-          // console.log('{{.}}');
-          if(results.length) {
+          
+          var val = '{{.}}';
+          var value = val.split(',');
+          
+          var v = value[1].split('|');
+          var town = v[0].replace(/\s+/g, '');
+
+          console.log(town);
+          var city = value[0].replace(/\s+/g, '');
+          if(results.length >= 1) {
             console.log(results);
+            if (( town.toLowerCase() == results[0].properties.address.country_code )) {
+                markerLists.push( L.marker( [results[0].center.lat, results[0].center.lng],{icon:myIcon}).bindPopup("{{.}}").addTo(mymap));
+                L.marker( [results[0].center.lat, results[0].center.lng],{icon:myIcon}).bindPopup('{{.}}').addTo(mymap);
+            } /* else if(town.toLowerCase() == results[1].properties.address.country_code && 
+                  (city.toLocaleLowerCase() == results[1].properties.address.city.toLocaleLowerCase() || 
+                  city.toLocaleLowerCase() == results[1].properties.address.road.toLocaleLowerCase())){
+                markerLists.push( L.marker( [results[1].center.lat, results[1].center.lng],{icon:myIcon}).bindPopup("{{.}}").addTo(mymap));
+                L.marker( [results[1].center.lat, results[1].center.lng],{icon:myIcon}).bindPopup('{{.}}').addTo(mymap);
+            } else if (town.toLowerCase() == results[2].properties.address.country_code && 
+                  (city.toLocaleLowerCase() == results[2].properties.address.city.toLocaleLowerCase() || 
+                  city.toLocaleLowerCase() == results[2].properties.address.road.toLocaleLowerCase())) {
+                markerLists.push( L.marker( [results[2].center.lat, results[2].center.lng],{icon:myIcon}).bindPopup("{{.}}").addTo(mymap));
+                L.marker( [results[2].center.lat, results[3].center.lng],{icon:myIcon}).bindPopup('{{.}}').addTo(mymap);
+            } else if (town.toLowerCase() == results[3].properties.address.country_code && 
+                  (city.toLocaleLowerCase() == results[3].properties.address.city.toLocaleLowerCase() || 
+                  city.toLocaleLowerCase() == results[3].properties.address.road.toLocaleLowerCase())){
+              markerLists.push( L.marker( [results[3].center.lat, results[3].center.lng],{icon:myIcon}).bindPopup("{{.}}").addTo(mymap));
+                L.marker( [results[3].center.lat, results[3].center.lng],{icon:myIcon}).bindPopup('{{.}}').addTo(mymap);
+            } else if (town.toLowerCase() == results[4].properties.address.country_code && 
+                  (city.toLocaleLowerCase() == results[4].properties.address.city.toLocaleLowerCase() || 
+                  city.toLocaleLowerCase() == results[4].properties.address.road.toLocaleLowerCase())){
+                markerLists.push( L.marker( [results[4].center.lat, results[4].center.lng],{icon:myIcon}).bindPopup("{{.}}").addTo(mymap));
+                L.marker( [results[4].center.lat, results[4].center.lng],{icon:myIcon}).bindPopup('{{.}}').addTo(mymap);
+            }  */else {
+              markerLists.push( L.marker( [results[1].center.lat, results[1].center.lng],{icon:myIcon}).bindPopup("{{.}}").addTo(mymap));
+              L.marker( [results[1].center.lat, results[1].center.lng],{icon:myIcon}).bindPopup('{{.}}').addTo(mymap);
+            }
             
-            markerLists.push( L.marker( [results[0].center.lat, results[0].center.lng],{icon:myIcon}).bindPopup("{{.}}").addTo(mymap));
-            L.marker( [results[0].center.lat, results[0].center.lng],{icon:myIcon}).bindPopup('{{.}}').addTo(mymap);
           }
           
         });
