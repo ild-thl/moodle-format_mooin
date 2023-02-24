@@ -71,14 +71,14 @@
       <span class="bi bi-info-circle-fill"></span>
     </button>
     {{/has_capability}}
-    <div class="forum-card">
+
       <div class="d-flex align-items-center">
         {{> format_mooin/discussions_tile}}
       </div>
 
       {{#userlist}}
-      <div class="participant-card">
-        <div class="participant-card-inner">
+
+        <div class="participant-card">
           <div class="d-flex">
             <span class="icon-wrapper participant-icon"></span>
             <div>
@@ -94,8 +94,8 @@
             <a href="{{participants_url}}">{{#str}} show_all_infos, format_mooin {{/str}}</a>
           </div>
         </div>
-      </div>
+
       {{/userlist}}
-    </div>
+
   </div>
 </div>
