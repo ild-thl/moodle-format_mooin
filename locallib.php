@@ -878,14 +878,14 @@ function get_certificates($courseid) {
             }
         } else {
             //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
-            $templatedata = null;
+            $templatedata = [];
         }
         /* echo(count($templatedata)); */
 
 
     }  else {
         //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
-        $templatedata = null;
+        $templatedata = [];
     }
     if($DB->get_manager()->table_exists($table_course_certificate)){
         // coursecertificate == cc
@@ -909,7 +909,7 @@ function get_certificates($courseid) {
             $te = [];
         }
         if(!$number_certificate_in_tool_cert_issues && !$number_certificate_in_cc) {
-            $templatedata = null;
+            $templatedata = [];
         } elseif(!$number_certificate_in_tool_cert_issues && $number_certificate_in_cc) {
             $a = 1;
             foreach($number_certificate_in_cc as $val){
@@ -931,7 +931,6 @@ function get_certificates($courseid) {
                 }
             }
         } elseif($number_certificate_in_tool_cert_issues && $number_certificate_in_cc) {
-
             foreach($pe as $val) {
                 foreach($te as $v) {
                     // var_dump($v);
@@ -945,8 +944,7 @@ function get_certificates($courseid) {
                             'timecreated'=>$val->timecreated,
                             'user_id'=>$val->userid,
                             'emailed'=>$val->emailed,
-                            'component'=>$val->component
-
+                            'component'=>$val->component,
                         ]);
                     }
                 }
@@ -969,11 +967,11 @@ function get_certificates($courseid) {
                     // var_dump($templatedata[$i]);
                     if(isset($templatedata[$j]->user_id) && $templatedata[$j]->user_id == $USER->id ) {
                         $tmp = $templatedata[$j];
-                    }
+                    }                    
+                    if((isset($templatedata[$j]->user_id)) && $templatedata[$i]->user_id != $templatedata[$j]->user_id ){
+                        unset($templatedata[$j]);                       
+                    }                    
 
-                    if(isset($templatedata[$j]->user_id) && $templatedata[$i]->user_id != $templatedata[$j]->user_id ){
-                        unset($templatedata[$j]);
-                    }
                 }
             }
             $templ = [];
@@ -1002,11 +1000,11 @@ function get_certificates($courseid) {
                 }
             }
         } else {
-            $templatedata = null;
+            $templatedata = [];
         }
 
     }else {
-        $templatedata = null;
+        $templatedata = [];
     }
 
     return $templatedata;
