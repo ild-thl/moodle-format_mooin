@@ -1,8 +1,18 @@
 
 <div class="course-title-header">
   {{{edit_header_link}}}
+  {{#course_headerimage_mobil}}
   <img src="{{course_headerimage_mobil}}" alt="" class="course-image d-block d-md-none">
+  {{/course_headerimage_mobil}}
+  {{^course_headerimage_mobil}}
+  <div class="course-image course-image-none-mobile d-block d-md-none"></div>
+  {{/course_headerimage_mobil}}
+  {{#course_headerimage_desktop}}
   <img src="{{course_headerimage_desktop}}" alt="" class="course-image d-none d-md-block">
+  {{/course_headerimage_desktop}}
+  {{^course_headerimage_desktop}}
+  <div class="course-image course-image-none-desktop d-none d-md-block"></div>
+  {{/course_headerimage_desktop}}
 
   <div class="title-overlay fade-out">
     <p>{{#str}} welcome, format_mooin {{/str}}</p>

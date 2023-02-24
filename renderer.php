@@ -570,21 +570,21 @@ class format_mooin_renderer extends format_section_renderer_base {
                             ];
                             set_user_preferences($preferences, $USER->id);
                         }
-                        $sectiontitle .= '<br />' . get_progress_bar($ocp, 100, $sec_in_course_modules); // $displaysection
+                        $sectiontitle .=  get_progress_bar($ocp, 100, $sec_in_course_modules); // $displaysection
                     } else {
 
                         $completionthistile = section_progress($modinfo->sections[$displaysection], $modinfo->cms); // $sec_in_course_modules
                         // var_dump($modinfo->cms);
                         // use the completion_indicator to show the right percentage in secton
                         $section_percent = completion_indicator($completionthistile['completed'], $completionthistile['outof'], true, false);
-                        $sectiontitle .= '<br />' . get_progress_bar($section_percent['percent'], 100, $sec_in_course_modules); // $displaysection
+                        $sectiontitle .=  get_progress_bar($section_percent['percent'], 100, $sec_in_course_modules); // $displaysection
                     }
                 } else {
 
                     $completionthistile = section_empty($val[0]);
                     // use the completion_indicator to show the right percentage in secton
                     $section_percent = completion_indicator($completionthistile['completed'], $completionthistile['outof'], true, false);
-                    $sectiontitle .= '<br />' . get_progress_bar($section_percent['percent'], 100, $val[0]->id); // $displaysection
+                    $sectiontitle .=  get_progress_bar($section_percent['percent'], 100, $val[0]->id); // $displaysection
 
                 }
           }
@@ -637,16 +637,16 @@ class format_mooin_renderer extends format_section_renderer_base {
                 if (!$this->page->user_is_editing()) {
                     if(get_user_preferences('section_progress_label-'.$user_pref) == '') {
                         // $bar .= html_writer::start_tag('form', array( 'style' => 'margin-top: 40px;')); // 'method' => 'post',
-                        $bar .= html_writer::start_tag('button', array('type' => 'button', 'class'=>'comp_btn btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'style'=>'margin-top: 30px', 'id' => 'id_bottom_complete-' .$val->id, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Seite als bearbeitet markieren', )); // , 'type' => 'submit'
+                        $bar .= html_writer::start_tag('button', array('type' => 'button', 'class'=>'comp_btn btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'style'=>'margin-top: 30px', 'id' => 'id_bottom_complete-' .$val->id, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Lektion als bearbeitet markieren', )); // , 'type' => 'submit'
 
-                        $bar .= html_writer::start_span('bottom_button-' .$val->id) . 'Seite als bearbeitet markieren' . html_writer::end_span();
+                        $bar .= html_writer::start_span('bottom_button-' .$val->id) . 'Lektion als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('button');
                         //$bar .= html_writer::end_tag('form');
                     } else {
-                        $bar .= html_writer::start_tag('div', array('type'=>'button','class'=>'comp_btn btn btn-secondary complete_section-' .$val->id, 'id' => 'id_bottom_complete-' .$val->id, 'style' => 'position: relative;margin: 0 auto; width: 38%;
+                        $bar .= html_writer::start_tag('div', array('type'=>'button','class'=>'comp_btn btn btn-secondary complete_section-' .$val->id, 'id' => 'id_bottom_complete-' .$val->id, 'style' => 'position: relative;margin: 0 auto;
                         top: 50%;color: black;font-size: 13px; cursor:unset; margin-top: 20px'));// margin-top: 40px
 
-                        $bar .= html_writer::start_span('bottom_button-' .$val->id) . 'Seite als bearbeitet markieren' . html_writer::end_span();
+                        $bar .= html_writer::start_span('bottom_button-' .$val->id) . 'Lektion als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('div');
                     }
 
@@ -684,9 +684,9 @@ class format_mooin_renderer extends format_section_renderer_base {
                     if (!$this->page->user_is_editing()) {
                         // var_dump($element);
                         // $bar .= html_writer::start_tag('form', array( 'style' => 'margin-top: 40px;')); // 'method' => 'post',
-                        $bar .= html_writer::start_tag('button', array('type' => 'button', 'class'=>'comp_btn btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Seite als bearbeitet markieren', )); // , 'type' => 'submit'
+                        $bar .= html_writer::start_tag('button', array('type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Lektion als bearbeitet markieren', )); // , 'type' => 'submit'
 
-                        $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Seite als bearbeitet markieren' . html_writer::end_span();
+                        $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Lektion als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('button');
                         //$bar .= html_writer::end_tag('form');
                     }
@@ -695,10 +695,9 @@ class format_mooin_renderer extends format_section_renderer_base {
                 } else {
 
                     if (!$this->page->user_is_editing()) {
-                        $bar .= html_writer::start_tag('div', array('type'=>'button','class'=>'comp_btn btn btn-secondary complete_section-' .$sec_in_course_modules, 'id' => 'id_bottom_complete-' .$sec_in_course_modules, 'style' => 'position: relative;margin: 0 auto; width: 38%;
-                        top: 50%;color: black;font-size: 13px; cursor:unset'));// margin-top: 40px
+                        $bar .= html_writer::start_tag('div', array('type'=>'button','class'=>'comp_btn btn-secondary complete_section-' .$sec_in_course_modules, 'id' => 'id_bottom_complete-' .$sec_in_course_modules));// margin-top: 40px
 
-                        $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Seite als bearbeitet markieren' . html_writer::end_span();
+                        $bar .= html_writer::start_span('bottom_button-' .$sec_in_course_modules) . 'Lektion als bearbeitet markieren' . html_writer::end_span();
                         $bar .= html_writer::end_tag('div');
                     }
                     echo $bar;
