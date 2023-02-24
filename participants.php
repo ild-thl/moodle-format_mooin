@@ -194,7 +194,7 @@ if($oc_m) {
 
 
 echo '<div class="userlist">';
-echo '<div mooin-md-container">';
+//echo '<div class="mooin-md-container">';
 echo navbar('participants');
 echo '<h2>'.get_string("participant_map","format_mooin").'</h2>';
 
@@ -1073,7 +1073,7 @@ if ($enrol = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' =
 
 	}
 }
-echo '</div>';  // md-container.
+//echo '</div>';  // md-container.
 echo '</div>';  // Userlist.
 
 echo $OUTPUT->footer();
