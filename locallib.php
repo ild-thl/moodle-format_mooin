@@ -842,52 +842,64 @@ function get_certificates($courseid) {
                         'certificat_id' => $value->id,
                         'user_id' => $value->userid,
                         'component'=>'mod_ilddigitalcert',
-                        'name' => $value->name
+                        'name' => $value->name,
+                        'preview_url' => '#'
 
                     ]) ;
                 }
             }
         }
+        
         if (count($templatedata) > 0) {
             for ($i=0; $i < count($templatedata); $i++) {
-
-                // $templatedata[$i]->certificate_name = 'Certificate';
-                if($USER->id == $templatedata[$i]->user_id) {
-                    $templatedata[$i]->preview_url = (
-                        new moodle_url(
-                            '/mod/ilddigitalcert/view.php',
-                            array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->certificat_id, 'ueid'=>$templatedata[$i]->enrolmentid)
-                        )
-                    )->out(false);
-                } else {
-                    $templatedata[$i]->preview_url = (
-                        new moodle_url(
-                            "#"
-                        )
-                    )->out(false);
+                for($j = count($templatedata) - 1; $j >= 0 ;$j--){
+                    // $templatedata[$i]->certificate_name = 'Certificate';
+                    if( isset($templatedata[$j]->user_id) && $templatedata[$i]->user_id != $templatedata[$j]->user_id ){
+                        unset($templatedata[$i]);                       
+                    }
+                    if($USER->id == $templatedata[$i]->user_id) {
+                        $templatedata[$i]->preview_url = (
+                            new moodle_url(
+                                '/mod/ilddigitalcert/view.php',
+                                array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->certificat_id, 'ueid'=>$templatedata[$i]->enrolmentid)
+                            )
+                        )->out(false);
+                        $templatedata[$i]->course_name = $course->fullname;
+                    } else {
+                        if($templatedata[$i]->preview_url == '#') {
+                            $templatedata[$i]->preview_url = (
+                                new moodle_url(
+                                    "#"
+                                )
+                            )->out(false);
+                        }   
+                    }                    
                 }
-                
-                $templatedata[$i]->course_name = $course->fullname;
-
             }
-        }else {
+        } else {
             //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
             $templatedata = null;
         }
+        /* echo(count($templatedata)); */
+       
 
-
-    } elseif($DB->get_manager()->table_exists($table_course_certificate)){
+    }  else {
+        //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
+        $templatedata = null;
+    }
+    if($DB->get_manager()->table_exists($table_course_certificate)){
         // coursecertificate == cc
         $pe = $DB->get_records('tool_certificate_issues', ['courseid'=>$courseid], 'id', '*');
 
-            $he = $DB->get_record('modules', ['name' =>'course_secrtificate']);
+        
+        $he = $DB->get_record('modules', ['name' =>'course_secrtificate']);
 
 
-            if ($he == true) {
-                $te = $DB->get_records('course_modules', ['module' =>$he->id]);
-            } else {
-                $te = [];
-            }
+        if ($he == true) {
+            $te = $DB->get_records('course_modules', ['module' =>$he->id]);
+        } else {
+            $te = [];
+        }
         $number_certificate_in_cc = $DB->get_records('coursecertificate', ['course'=>$courseid], 'id', '*');
         $number_certificate_in_tool_cert_issues = $DB->get_records('tool_certificate_issues', ['courseid'=>$courseid, 'userid'=>$USER->id], 'id', '*');
         $module_req = $DB->get_record('modules', ['name' =>'coursecertificate']);
@@ -906,13 +918,16 @@ function get_certificates($courseid) {
                     'name'=>$val->name,
                     'template'=>$val->template,
                     'index' => $a++,
+                    'course-name' =>$course->fullname,
+                    'preview_url' => '#'
                 ]);
             }
+            // var_dump($templatedata);
             if(count($templatedata) > 0){
                 for($i= 0; $i < count($templatedata); $i++) {
                     // $templatedata[$i]->certificate_name = $templatedata[$i]->name;
-                    $templatedata[$i]->preview_url = '';
-                    $templatedata[$i]->course_name = $course->fullname;
+                    // $templatedata[$i]->preview_url = '';
+                    // $templatedata[$i]->course_name = $course->fullname;
                 }
             }
         } elseif($number_certificate_in_tool_cert_issues && $number_certificate_in_cc) {
@@ -1004,22 +1019,23 @@ function get_certificates($courseid) {
 function show_certificat($courseid) {
     global $USER;
     $out_certificat = null;
+    // if ( get_certificate($courseid)) {
     // TO-DO
     $templ = get_certificates($courseid);
     //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
         // var_dump($templ);
+        $templ = array_values($templ);
         if (isset($templ)) {
             if (is_string($templ) == 1) {
                 $out_certificat = $templ;
             }
             if (is_string($templ) != 1) {
-
-                // $imageurl = 'images/certificat.png';
+                
                 $out_certificat .= html_writer::start_tag('div',['class'=>'certificat_list', 'style'=>'display:flex;justify-content: center']); // certificat_body
-                    for ($i=0; $i < count($templ); $i++) {
+                    for ($i= 0; $i < count($templ); $i++) {
                         if ($templ[$i]->user_id == $USER->id) {
                             $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer; margin:0 10px 0 10px']); // certificat_card
-
+                            // var_dump($templ[$i]);
                             // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
 
                             // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
@@ -1027,23 +1043,35 @@ function show_certificat($courseid) {
                                 $certificat_url = $templ[$i]->preview_url;
                                 $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name); 
                             } else {
+                                
                                 $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name); // . ' ' . $templ[$i]->index 
+                                if(isset($certificat_url)) {
+                                    $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name); //  . ' ' . $templ[$i]->index
+                                } else {
+                                    
+                                    $out_certificat .= html_writer::span('',$templ[$i]->name);
+                                }
                             }
                             
                             // $out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button;margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
                             $out_certificat .= html_writer::end_tag('div'); // certificat_body
                         } else {
-                            $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:unset; opacity: 0.20']); // certificat_card
+                                $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:unset; opacity: 0.20']); // certificat_card
 
-                             if($templ[$i]->component == 'mod_coursecertificate') {
+                                if($templ[$i]->component == 'mod_coursecertificate') {
                                 $certificat_url = $templ[$i]->preview_url;
                                 $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); // $templ[$i]->course_name . ' ' . $templ[$i]->index
                                  
-                            } else {
-                                $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); //  . ' ' . $templ[$i]->index
+                                } else {
+                                    $certificat_url = $templ[$i]->preview_url;
+                                    if(isset($certificat_url)) {
+                                        $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); //  . ' ' . $templ[$i]->index
+                                    } else {
+                                        $out_certificat .= html_writer::link('', '' .$templ[$i]->name, ['style'=>'cursor:unset !important']);
+                                    }
+                                
+                                
                             }
                             //$out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button; margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
