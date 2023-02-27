@@ -117,10 +117,10 @@ if ($cert_m) {
 /* echo '<br />';
 echo '<br />'; */
 
-
+echo html_writer::div(navbar('badges'), 'sticky-container');
 echo html_writer::start_div('mooin-md-container'); //open outer div
-echo html_writer::div(navbar('badges'));
-//echo html_writer::div(navbar('badges'), 'sticky-container');
+//echo html_writer::div(navbar('badges'));
+
 
 // echo html_writer::start_div('sticky-top'); //open outer div
 // echo navbar('badges');
@@ -128,7 +128,8 @@ echo html_writer::div(navbar('badges'));
 
 echo html_writer::tag('h2', html_writer::tag('div', get_string('course_badges', 'format_mooin'), array('class' => 'oc_badges_text')));
 
-echo html_writer::tag('p', get_string('badge_overview_description', 'format_mooin'));
+$badge_description = html_writer::tag('p', get_string('badge_overview_description', 'format_mooin'));
+echo html_writer::div($badge_description,'border-card');
 echo '<br />';
 echo '<div>' . html_writer::link(new moodle_url('/user/profile.php', array('id' => $USER->id)), get_string('profile_badges', 'format_mooin')) . '<br />';
 echo html_writer::link(new moodle_url('/badges/mybackpack.php'), get_string('badge_options', 'format_mooin')) . '</div><br />';
@@ -143,7 +144,8 @@ display_user_and_availbale_badges($USER->id, $courseid);
 $out = ob_get_contents();
 ob_end_clean();
 if ($out != '') {
-    echo $out;
+    echo html_writer::div($out,'border-card');
+    //echo $out;
 } else {
     //echo html_writer::tag('div', get_string('no_badges_available', 'format_mooin'), array('class' => 'oc-no-badges'));
     echo html_writer::tag('div', '', array('class' => 'no-badges-img'));

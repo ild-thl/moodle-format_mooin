@@ -192,10 +192,11 @@ if($oc_m) {
     }
 } */
 
-
+echo html_writer::div(navbar('participants'), 'sticky-container');
 echo '<div class="userlist">';
 //echo '<div class="mooin-md-container">';
-echo navbar('participants');
+
+//echo navbar('participants');
 echo '<h2>'.get_string("participant_map","format_mooin").'</h2>';
 
 if ($isseparategroups and (!$currentgroup) ) {
@@ -574,8 +575,8 @@ $city_list = array();
                             'accurance' =>  1]
                         );
                     }
-                    
-                
+
+
             }
         }
     }
@@ -590,7 +591,7 @@ $city_list = array();
        array_push($array_element, "$city , $town");
        $val = array_count_values($array_element);
    }
-   
+
    foreach ($val as $key => $value) {
        array_push($array_temp, $key. ' | ' .$value);
    }
@@ -893,7 +894,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
     $timeformat = get_string('strftimedate');
 
 	// Show a search box if all participants don't fit on a single screen.
-    
+
 	if ($totalcount > $perpage) {
 		echo '<form action="participants.php" class="searchform"><div><input type="hidden" name="id" value="'.$course->id.'" />';
 		//echo '<label for="search">' . get_string('search', 'search') . ' </label>';
