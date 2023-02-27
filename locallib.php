@@ -967,10 +967,10 @@ function get_certificates($courseid) {
                     // var_dump($templatedata[$i]);
                     if(isset($templatedata[$j]->user_id) && $templatedata[$j]->user_id == $USER->id ) {
                         $tmp = $templatedata[$j];
-                    }                    
+                    }
                     if((isset($templatedata[$j]->user_id)) && $templatedata[$i]->user_id != $templatedata[$j]->user_id ){
-                        unset($templatedata[$j]);                       
-                    }                    
+                        unset($templatedata[$j]);
+                    }
 
                 }
             }
@@ -1186,7 +1186,7 @@ function get_last_news($courseid, $forum_type) {
                 $new_news = false;
 
                 if($unread_news_number == 1) {
-                    $new_news = html_writer::start_span('count-container inline-badge fw-700 mr-1') . $unread_news_number . html_writer::end_span();
+                    $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_news_number . html_writer::end_span();
                     //$new_news .= get_string('unread_news_single', 'format_mooin');
                     $new_news .= html_writer::link($newsurl, get_string('unread_news_single', 'format_mooin') . get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin'), 'class' =>'primary-link'));
                 }
@@ -1307,12 +1307,12 @@ function get_last_forum_discussion($courseid, $forum_type) {
                     //echo $unread_forum_number;
 
                     if ($unread_forum_number == 1) {
-                        $new_news = html_writer::start_span('count-container inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
+                        $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
                         //$new_news .= get_string('unread_discussions_single', 'format_mooin');
                         $new_news .= html_writer::link($url_disc, get_string('unread_discussions_single', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
                     }
                     if ($unread_forum_number > 1) {
-                        $new_news = html_writer::start_span('count-container inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
+                        $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
                         //$new_news .= get_string('unread_discussions', 'format_mooin');
                         $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
                     }
