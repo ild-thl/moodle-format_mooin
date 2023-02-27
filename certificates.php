@@ -43,8 +43,10 @@ $out_certificat = null;
 $val = false;
 /* echo '<br />';
 echo '<br />'; */
+echo html_writer::div(navbar('certificates'), 'sticky-container');
+
 echo html_writer::start_div('mooin-md-container'); //open outer div
-echo navbar('certificates');
+//echo navbar('certificates');
 
 echo html_writer::tag('h2', html_writer::tag('div', get_string('my_certificate', 'format_mooin'), array('class' => 'oc_badges_text')));
 

@@ -877,9 +877,14 @@ function get_certificates($courseid) {
                 }
             }
         } else {
+            //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
             $templatedata = [];
         }
+        /* echo(count($templatedata)); */
+
+
     }  else {
+        //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
         $templatedata = [];
     }
     if($DB->get_manager()->table_exists($table_course_certificate)){
