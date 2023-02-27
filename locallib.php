@@ -877,14 +877,9 @@ function get_certificates($courseid) {
                 }
             }
         } else {
-            //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
             $templatedata = [];
         }
-        /* echo(count($templatedata)); */
-
-
     }  else {
-        //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
         $templatedata = [];
     }
     if($DB->get_manager()->table_exists($table_course_certificate)){
@@ -959,28 +954,43 @@ function get_certificates($courseid) {
                     }
                 }
             }
-            $tmp = [];
-            // var_dump($templatedata);
-            // found a way to remove all the same certificate
-            for($i = 0; $i < count($templatedata) ; $i++){
-                for($j = count($templatedata) - 1; $j >= 0 ;$j--){
-                    // var_dump($templatedata[$i]);
-                    if(isset($templatedata[$j]->user_id) && $templatedata[$j]->user_id == $USER->id ) {
-                        $tmp = $templatedata[$j];
-                    }                    
-                    if((isset($templatedata[$j]->user_id)) && $templatedata[$i]->user_id != $templatedata[$j]->user_id ){
-                        unset($templatedata[$j]);                       
-                    }                    
 
+            $u_cer = [];
+            $user_cert = [];
+            $other_user_cert = [];
+            $template_cert_id = [];
+            $ot_temp_cert = [];
+           
+            for($i = 0; $i < count($templatedata); $i++) {
+                if($templatedata[$i]->user_id == $USER->id) {
+                    array_push($u_cer, $templatedata[$i]->template);
+                    array_push($user_cert, $templatedata[$i]);
+                } else if( ($i  < count($templatedata) )) {
+                    if(( $templatedata[$i]->user_id != $USER->id && $templatedata[$i]->template != $templatedata[$i + 1]->template)) {
+                        array_push($ot_temp_cert,$templatedata[$i]->template);
+                        array_push($other_user_cert, $templatedata[$i]); 
+                    }
+                                       
                 }
             }
-            $templ = [];
-            $templatedata = array_values($templatedata);
-            $templ[0] = $tmp;
-            $templatedata = array_merge($templatedata, $templ);
+            if(count($user_cert) > 0) {
+                $templatedata = $user_cert;
+                foreach($templatedata as $td) {
+                    array_push($template_cert_id, $td->template); 
+               }
+            }
+            if(count($other_user_cert) > 0) {
+                // what should we do if the current user doesn't have any certificate
+                foreach($other_user_cert as $other_user_c) {
+                    if(!in_array($other_user_c->template,array_values($template_cert_id))) {
+                        array_push($templatedata, $other_user_c);
+                    }
+                }
+            }
             if(count($templatedata) > 0) {
                 $pdf = '.pdf';
                 for($i = 0; $i < count($templatedata); $i++) {
+                    
                     // $templatedata[$i]->certificate_name = $templatedata[$i]->name;
                     if($USER->id == $templatedata[$i]->user_id){
                         $templatedata[$i]->preview_url = (
@@ -988,7 +998,7 @@ function get_certificates($courseid) {
                                 "/pluginfile.php/{$templatedata[$i]->emailed}/tool_certificate/issues/{$templatedata[$i]->timecreated}/{$templatedata[$i]->code}". $pdf
                             )
                         )->out(false);
-                    } else {
+                    }/*  else {
                         $templatedata[$i]->preview_url = (
                             new moodle_url(
                                 "#"
@@ -996,7 +1006,7 @@ function get_certificates($courseid) {
                         )->out(false);
                     }
 
-                    $templatedata[$i]->course_name = $course->fullname;
+                    $templatedata[$i]->course_name = $course->fullname; */
                 }
             }
         } else {
@@ -1023,7 +1033,7 @@ function show_certificat($courseid) {
     //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
         // var_dump($templ);
         $templ = array_values($templ);
-        if (isset($templ)) {
+        if (isset($templ) && !empty($templ)) {
             if (is_string($templ) == 1) {
                 $out_certificat = $templ;
             }
@@ -1081,6 +1091,8 @@ function show_certificat($courseid) {
                 $out_certificat .= html_writer::end_tag('div'); // certificat_body
 
             }
+        } else {
+            $out_certificat = null;
         }
 
     return  $out_certificat;
