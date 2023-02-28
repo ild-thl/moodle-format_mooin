@@ -883,12 +883,12 @@ function get_certificates($courseid) {
 
         
         if( count($user_dont_cert) > 0 && count($user_cert) == 0) {
-            $templatedata1 =$user_dont_cert;
+            $templatedata1 = $user_dont_cert;
             foreach($templatedata1 as $td) {
                 array_push($template_cert_id, $td->section); 
            }
         }
-        if(count($user_dont_cert) > 0) {
+        if(count($user_dont_cert) > 0 && count($user_cert) > 0) {
             // what should we do if the current user doesn't have any certificate
             foreach($user_dont_cert as $other_user_c) {
                 if(!in_array($other_user_c->section,array_values($template_cert_id))) {
@@ -1214,7 +1214,8 @@ function news_forum_url($courseid, $forum_type){
  */
 function get_last_news($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
-
+    
+    $current_time = time();
     // Get all the forum (news)  in the course
     $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
     $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
@@ -1235,6 +1236,19 @@ function get_last_news($courseid, $forum_type) {
         $cond_in_forum_posts = 'SELECT * FROM mdl_forum_posts WHERE discussion = :id_for_disc ORDER BY CREATED DESC LIMIT 1';
         $param =  array('id_for_disc' => $discussions_in_new->id );
         $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
+        
+        echo gettype(time() - $news_forum_post->created);
+        if($news_forum_post->mailnow == '0' && (time() - $news_forum_post->created) < 1800) {
+            $param =  array('id_for_disc' => $discussions_in_new->id - 1);
+            $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
+        } else {
+            // Take the previous news forum that was showing
+            
+            $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
+        }
+
+        // var_dump($news_forum_post);
+        echo time() - $news_forum_post->created;
         $user = $DB->get_record('user', ['id' => $news_forum_post->userid], '*');
 
         // Get the right date for new creation
@@ -1322,6 +1336,7 @@ function get_last_news($courseid, $forum_type) {
 function get_last_forum_discussion($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
 
+
     $sql_second = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
     $param_second = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
     $news_course = $DB->get_record_sql($sql_second, $param_second);
@@ -1337,7 +1352,10 @@ function get_last_forum_discussion($courseid, $forum_type) {
         ORDER BY fd.id DESC LIMIT 1';
 
     $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
-
+    
+    /* if((time() - $new_in_course->created) < 1800) {
+        $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
+    }  */
     // Some test to fetch the forum with discussion within it
     // get the news annoucement & forum discussion for a specific news or forum
     // var_dump($new_in_course);
