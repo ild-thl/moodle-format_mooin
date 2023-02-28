@@ -140,7 +140,7 @@ $oc_counter = 0;
                     $forum_element =  html_writer::div($value++  . ' ' .$oc_link, 'forum_title');
                     if ($forum->unreadpostscount >= 1) {
                         $forum_index = html_writer::div($key, 'forum_index');
-                        $forum_unread = html_writer::div($forum->unreadpostscount, 'count-container inline-badge fw-700 mr-1');
+                        $forum_unread = html_writer::div($forum->unreadpostscount, 'count-container d-inline-flex inline-badge fw-700 mr-1');
                         echo html_writer::start_span('forum_elemts_in_list') . $forum_element . ' ' . $forum_unread. html_writer::end_span();
                     } else {
                         echo html_writer::start_span('forum_elemts_in_list') . $forum_element . html_writer::end_span();
