@@ -806,6 +806,8 @@ function get_certificates($courseid) {
 
     global $DB, $USER;
     $templatedata = array();
+    $templatedata1 = array();
+    $templatedata2 = array();
     $anothertemplatedata = [];
     // $tables = $DB->get_tables_from_schema();
     $table = new xmldb_table('ilddigitalcert_issued');
@@ -832,7 +834,7 @@ function get_certificates($courseid) {
                 if ($value->cmid == $v->id) {
                     // var_dump($v);
                     // $cm_id = $v->id;
-                    array_push($templatedata, (object)[
+                    array_push($templatedata1, (object)[
                         'id'=> $v->id,
                         'index' => $a++,
                         'module' => $value->module,
@@ -849,49 +851,90 @@ function get_certificates($courseid) {
                 }
             }
         }
+        // var_dump($templatedata);
+        // Build two array of certificat the receive one and the not
+        $user_cert = [];
+        $template_cert_id = [];
+        $u_cer = [];
+        $user_dont_cert = [];
+        $ot_temp_cert = [];
 
-        if (count($templatedata) > 0) {
-            for ($i=0; $i < count($templatedata); $i++) {
-                for($j = count($templatedata) - 1; $j >= 0 ;$j--){
+        for($i = 0; $i < count($templatedata1); $i++) {
+            if($templatedata1[$i]->user_id == $USER->id) {
+                array_push($u_cer, $templatedata1[$i]->section);
+                array_push($user_cert, $templatedata1[$i]);
+            } else if( ($i  < count($templatedata1) && $templatedata1[$i]->section != $templatedata1[$i + 1]->section)) {
+                // 
+                if(( $templatedata1[$i]->user_id != $USER->id)) {
+                    array_push($ot_temp_cert,$templatedata1[$i]->section);
+                    array_push($user_dont_cert, $templatedata1[$i]); 
+                }
+                                   
+            }
+        }
+        
+
+        if(count($user_cert) > 0) {
+            $templatedata1 = $user_cert;
+            foreach($templatedata1 as $td) {
+                array_push($template_cert_id, $td->section); 
+           }
+        }
+        
+        if(count($user_dont_cert) > 0) {
+            // what should we do if the current user doesn't have any certificate
+            foreach($user_dont_cert as $other_user_c) {
+                if(!in_array($other_user_c->section,array_values($template_cert_id))) {
+                    array_push($templatedata1, $other_user_c);
+                }
+            }
+        }
+        
+        if (count($templatedata1) > 0) {
+            for ($i=0; $i < count($templatedata1); $i++) {
+                for($j = count($templatedata1) - 1; $j >= 0 ;$j--){
                     // $templatedata[$i]->certificate_name = 'Certificate';
-                    if( isset($templatedata[$j]->user_id) && $templatedata[$i]->user_id != $templatedata[$j]->user_id ){
-                        unset($templatedata[$i]);
-                    }
-                    if($USER->id == $templatedata[$i]->user_id) {
-                        $templatedata[$i]->preview_url = (
+
+                    /* if( isset($templatedata1[$j]->user_id) && $templatedata1[$i]->user_id != $templatedata1[$j]->user_id ){
+                        unset($templatedata1[$i]);                       
+                    } */
+                    /* if(isset($templatedata1[$i]->user_id) && $templatedata1[$i]->user_id != $templatedata1[$j]->user_id ){
+                        unset($templatedata1[$j]);                       
+                    } */
+
+                    if($USER->id == $templatedata1[$i]->user_id) {
+                        $templatedata1[$i]->preview_url = (
                             new moodle_url(
                                 '/mod/ilddigitalcert/view.php',
-                                array("id" => $templatedata[$i]->id, 'issuedid' => $templatedata[$i]->certificat_id, 'ueid'=>$templatedata[$i]->enrolmentid)
+                                array("id" => $templatedata1[$i]->id, 'issuedid' => $templatedata1[$i]->certificat_id, 'ueid'=>$templatedata1[$i]->enrolmentid)
                             )
                         )->out(false);
-                        $templatedata[$i]->course_name = $course->fullname;
+                        $templatedata1[$i]->course_name = $course->fullname;
                     } else {
-                        if($templatedata[$i]->preview_url == '#') {
-                            $templatedata[$i]->preview_url = (
+                        /* if($templatedata1[$i]->preview_url == '#') {
+                            $templatedata1[$i]->preview_url = (
                                 new moodle_url(
                                     "#"
                                 )
                             )->out(false);
-                        }
-                    }
+                        }  */  
+                    }                    
                 }
             }
         } else {
-            //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
-            $templatedata = [];
+            $templatedata1 = [];
         }
-        /* echo(count($templatedata)); */
-
+       
 
     }  else {
         //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
-        $templatedata = [];
+        $templatedata1 = [];
     }
     if($DB->get_manager()->table_exists($table_course_certificate)){
         // coursecertificate == cc
         $pe = $DB->get_records('tool_certificate_issues', ['courseid'=>$courseid], 'id', '*');
 
-
+        
         $he = $DB->get_record('modules', ['name' =>'course_secrtificate']);
 
 
@@ -909,11 +952,11 @@ function get_certificates($courseid) {
             $te = [];
         }
         if(!$number_certificate_in_tool_cert_issues && !$number_certificate_in_cc) {
-            $templatedata = [];
+            $templatedata2 = [];
         } elseif(!$number_certificate_in_tool_cert_issues && $number_certificate_in_cc) {
             $a = 1;
             foreach($number_certificate_in_cc as $val){
-                array_push($templatedata, (object)[
+                array_push($templatedata2, (object)[
                     'id'=>$val->id,
                     'name'=>$val->name,
                     'template'=>$val->template,
@@ -922,9 +965,9 @@ function get_certificates($courseid) {
                     'preview_url' => '#'
                 ]);
             }
-            // var_dump($templatedata);
-            if(count($templatedata) > 0){
-                for($i= 0; $i < count($templatedata); $i++) {
+            
+            if(count($templatedata2) > 0){
+                for($i= 0; $i < count($templatedata2); $i++) {
                     // $templatedata[$i]->certificate_name = $templatedata[$i]->name;
                     // $templatedata[$i]->preview_url = '';
                     // $templatedata[$i]->course_name = $course->fullname;
@@ -935,7 +978,7 @@ function get_certificates($courseid) {
                 foreach($te as $v) {
                     // var_dump($v);
                    if( $v->course == $val->courseid) { // && $USER->id == $v->userid
-                        array_push($templatedata, (object) [
+                        array_push($templatedata2, (object) [
                             'id'=>$val->id,
                             // 'name'=> $val->name,
                             'template'=>$val->templateid,
@@ -950,12 +993,12 @@ function get_certificates($courseid) {
                 }
             }
 
-            $templatedata = array_unique(($templatedata), SORT_REGULAR);
-            $templatedata = array_values($templatedata);
+            $templatedata2 = array_unique(($templatedata2), SORT_REGULAR);
+            $templatedata2 = array_values($templatedata2);
             foreach($number_certificate_in_cc as $value){
-                for($i = 0; $i < count($templatedata); $i++){
-                    if($value->template == $templatedata[$i]->template && $templatedata[$i]->courseid == $value->course) {
-                        $templatedata[$i]->name = $value->name;
+                for($i = 0; $i < count($templatedata2); $i++){
+                    if($value->template == $templatedata2[$i]->template && $templatedata2[$i]->courseid == $value->course) {
+                        $templatedata2[$i]->name = $value->name;
                     }
                 }
             }
@@ -966,21 +1009,21 @@ function get_certificates($courseid) {
             $template_cert_id = [];
             $ot_temp_cert = [];
            
-            for($i = 0; $i < count($templatedata); $i++) {
-                if($templatedata[$i]->user_id == $USER->id) {
-                    array_push($u_cer, $templatedata[$i]->template);
-                    array_push($user_cert, $templatedata[$i]);
-                } else if( ($i  < count($templatedata) )) {
-                    if(( $templatedata[$i]->user_id != $USER->id && $templatedata[$i]->template != $templatedata[$i + 1]->template)) {
-                        array_push($ot_temp_cert,$templatedata[$i]->template);
-                        array_push($other_user_cert, $templatedata[$i]); 
+            for($i = 0; $i < count($templatedata2); $i++) {
+                if($templatedata2[$i]->user_id == $USER->id) {
+                    array_push($u_cer, $templatedata2[$i]->template);
+                    array_push($user_cert, $templatedata2[$i]);
+                } else if( ($i  < count($templatedata2) )) {
+                    if(( $templatedata2[$i]->user_id != $USER->id && $templatedata2[$i]->template != $templatedata2[$i + 1]->template)) {
+                        array_push($ot_temp_cert,$templatedata2[$i]->template);
+                        array_push($other_user_cert, $templatedata2[$i]); 
                     }
                                        
                 }
             }
             if(count($user_cert) > 0) {
-                $templatedata = $user_cert;
-                foreach($templatedata as $td) {
+                $templatedata2 = $user_cert;
+                foreach($templatedata2 as $td) {
                     array_push($template_cert_id, $td->template); 
                }
             }
@@ -988,19 +1031,20 @@ function get_certificates($courseid) {
                 // what should we do if the current user doesn't have any certificate
                 foreach($other_user_cert as $other_user_c) {
                     if(!in_array($other_user_c->template,array_values($template_cert_id))) {
-                        array_push($templatedata, $other_user_c);
+                        array_push($templatedata2, $other_user_c);
                     }
                 }
             }
-            if(count($templatedata) > 0) {
+            
+            if(count($templatedata2) > 0) {
                 $pdf = '.pdf';
-                for($i = 0; $i < count($templatedata); $i++) {
+                for($i = 0; $i < count($templatedata2); $i++) {
                     
                     // $templatedata[$i]->certificate_name = $templatedata[$i]->name;
-                    if($USER->id == $templatedata[$i]->user_id){
-                        $templatedata[$i]->preview_url = (
+                    if($USER->id == $templatedata2[$i]->user_id){
+                        $templatedata2[$i]->preview_url = (
                             new moodle_url(
-                                "/pluginfile.php/{$templatedata[$i]->emailed}/tool_certificate/issues/{$templatedata[$i]->timecreated}/{$templatedata[$i]->code}". $pdf
+                                "/pluginfile.php/{$templatedata2[$i]->emailed}/tool_certificate/issues/{$templatedata2[$i]->timecreated}/{$templatedata2[$i]->code}". $pdf
                             )
                         )->out(false);
                     }/*  else {
@@ -1015,15 +1059,18 @@ function get_certificates($courseid) {
                 }
             }
         } else {
-            $templatedata = [];
+            $templatedata2 = [];
         }
 
     }else {
-        $templatedata = [];
+        $templatedata2 = [];
     }
-
+    // merge the two differents arrays here
+    $templatedata = array_merge($templatedata1, $templatedata2);
+    
     return $templatedata;
 }
+
 /**
  * show the  certificat on the welcome page
  * @param int courseid
