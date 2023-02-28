@@ -864,23 +864,23 @@ function get_certificates($courseid) {
                 array_push($u_cer, $templatedata1[$i]->section);
                 array_push($user_cert, $templatedata1[$i]);
             } else if( ($i  < count($templatedata1) && $templatedata1[$i]->section != $templatedata1[$i + 1]->section)) {
-                // 
+                //
                 if(( $templatedata1[$i]->user_id != $USER->id)) {
                     array_push($ot_temp_cert,$templatedata1[$i]->section);
-                    array_push($user_dont_cert, $templatedata1[$i]); 
+                    array_push($user_dont_cert, $templatedata1[$i]);
                 }
-                                   
+
             }
         }
-        
+
 
         if(count($user_cert) > 0) {
             $templatedata1 = $user_cert;
             foreach($templatedata1 as $td) {
-                array_push($template_cert_id, $td->section); 
+                array_push($template_cert_id, $td->section);
            }
         }
-        
+
         if(count($user_dont_cert) > 0) {
             // what should we do if the current user doesn't have any certificate
             foreach($user_dont_cert as $other_user_c) {
@@ -889,17 +889,17 @@ function get_certificates($courseid) {
                 }
             }
         }
-        
+
         if (count($templatedata1) > 0) {
             for ($i=0; $i < count($templatedata1); $i++) {
                 for($j = count($templatedata1) - 1; $j >= 0 ;$j--){
                     // $templatedata[$i]->certificate_name = 'Certificate';
 
                     /* if( isset($templatedata1[$j]->user_id) && $templatedata1[$i]->user_id != $templatedata1[$j]->user_id ){
-                        unset($templatedata1[$i]);                       
+                        unset($templatedata1[$i]);
                     } */
                     /* if(isset($templatedata1[$i]->user_id) && $templatedata1[$i]->user_id != $templatedata1[$j]->user_id ){
-                        unset($templatedata1[$j]);                       
+                        unset($templatedata1[$j]);
                     } */
 
                     if($USER->id == $templatedata1[$i]->user_id) {
@@ -917,14 +917,14 @@ function get_certificates($courseid) {
                                     "#"
                                 )
                             )->out(false);
-                        }  */  
-                    }                    
+                        }  */
+                    }
                 }
             }
         } else {
             $templatedata1 = [];
         }
-       
+
 
     }  else {
         //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
@@ -934,7 +934,7 @@ function get_certificates($courseid) {
         // coursecertificate == cc
         $pe = $DB->get_records('tool_certificate_issues', ['courseid'=>$courseid], 'id', '*');
 
-        
+
         $he = $DB->get_record('modules', ['name' =>'course_secrtificate']);
 
 
@@ -965,7 +965,7 @@ function get_certificates($courseid) {
                     'preview_url' => '#'
                 ]);
             }
-            
+
             if(count($templatedata2) > 0){
                 for($i= 0; $i < count($templatedata2); $i++) {
                     // $templatedata[$i]->certificate_name = $templatedata[$i]->name;
@@ -1008,7 +1008,7 @@ function get_certificates($courseid) {
             $other_user_cert = [];
             $template_cert_id = [];
             $ot_temp_cert = [];
-           
+
             for($i = 0; $i < count($templatedata2); $i++) {
                 if($templatedata2[$i]->user_id == $USER->id) {
                     array_push($u_cer, $templatedata2[$i]->template);
@@ -1016,15 +1016,15 @@ function get_certificates($courseid) {
                 } else if( ($i  < count($templatedata2) )) {
                     if(( $templatedata2[$i]->user_id != $USER->id && $templatedata2[$i]->template != $templatedata2[$i + 1]->template)) {
                         array_push($ot_temp_cert,$templatedata2[$i]->template);
-                        array_push($other_user_cert, $templatedata2[$i]); 
+                        array_push($other_user_cert, $templatedata2[$i]);
                     }
-                                       
+
                 }
             }
             if(count($user_cert) > 0) {
                 $templatedata2 = $user_cert;
                 foreach($templatedata2 as $td) {
-                    array_push($template_cert_id, $td->template); 
+                    array_push($template_cert_id, $td->template);
                }
             }
             if(count($other_user_cert) > 0) {
@@ -1035,11 +1035,11 @@ function get_certificates($courseid) {
                     }
                 }
             }
-            
+
             if(count($templatedata2) > 0) {
                 $pdf = '.pdf';
                 for($i = 0; $i < count($templatedata2); $i++) {
-                    
+
                     // $templatedata[$i]->certificate_name = $templatedata[$i]->name;
                     if($USER->id == $templatedata2[$i]->user_id){
                         $templatedata2[$i]->preview_url = (
@@ -1067,7 +1067,7 @@ function get_certificates($courseid) {
     }
     // merge the two differents arrays here
     $templatedata = array_merge($templatedata1, $templatedata2);
-    
+
     return $templatedata;
 }
 
@@ -1250,7 +1250,7 @@ function get_last_news($courseid, $forum_type) {
                 $new_news = false;
 
                 if($unread_news_number == 1) {
-                    $new_news = html_writer::start_span('count-container inline-badge fw-700 mr-1') . $unread_news_number . html_writer::end_span();
+                    $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_news_number . html_writer::end_span();
                     //$new_news .= get_string('unread_news_single', 'format_mooin');
                     $new_news .= html_writer::link($newsurl, get_string('unread_news_single', 'format_mooin') . get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin'), 'class' =>'primary-link'));
                 }
@@ -1371,12 +1371,12 @@ function get_last_forum_discussion($courseid, $forum_type) {
                     //echo $unread_forum_number;
 
                     if ($unread_forum_number == 1) {
-                        $new_news = html_writer::start_span('count-container inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
+                        $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
                         //$new_news .= get_string('unread_discussions_single', 'format_mooin');
                         $new_news .= html_writer::link($url_disc, get_string('unread_discussions_single', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
                     }
                     if ($unread_forum_number > 1) {
-                        $new_news = html_writer::start_span('count-container inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
+                        $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
                         //$new_news .= get_string('unread_discussions', 'format_mooin');
                         $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
                     }
