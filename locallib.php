@@ -880,7 +880,14 @@ function get_certificates($courseid) {
                 array_push($template_cert_id, $td->section); 
            }
         }
+
         
+        if( count($user_dont_cert) > 0 && count($user_cert) == 0) {
+            $templatedata1 =$user_dont_cert;
+            foreach($templatedata1 as $td) {
+                array_push($template_cert_id, $td->section); 
+           }
+        }
         if(count($user_dont_cert) > 0) {
             // what should we do if the current user doesn't have any certificate
             foreach($user_dont_cert as $other_user_c) {
@@ -965,7 +972,7 @@ function get_certificates($courseid) {
                     'preview_url' => '#'
                 ]);
             }
-            
+            // var_dump($templatedata);
             if(count($templatedata2) > 0){
                 for($i= 0; $i < count($templatedata2); $i++) {
                     // $templatedata[$i]->certificate_name = $templatedata[$i]->name;
@@ -1035,7 +1042,7 @@ function get_certificates($courseid) {
                     }
                 }
             }
-            
+           
             if(count($templatedata2) > 0) {
                 $pdf = '.pdf';
                 for($i = 0; $i < count($templatedata2); $i++) {
