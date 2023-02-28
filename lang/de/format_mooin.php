@@ -112,6 +112,8 @@ $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['all_news'] = 'Newsforum';
 $string['topicoutline'] = 'Kursinhalt';
 $string['participant_map'] = 'Karte der Teilnehmenden';
+$string['no_badges_image_text'] = 'Keine Badges verfügbar';
+
 
 
 // Chapter in course

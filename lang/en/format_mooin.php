@@ -133,6 +133,7 @@ $string['next_chapter'] = 'Nächstes Kapitel';
 $string['previous_chapter'] = 'Vorheriges Kapitel';
 $string['topicoutline'] = 'Course content';
 $string['participant_map'] = 'Map of participants';
+$string['no_badges_image_text'] = 'No badges available';
 
 
 
