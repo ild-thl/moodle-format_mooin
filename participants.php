@@ -1061,8 +1061,11 @@ display_badges(0, $courseid, 12 * 31 * 7 * 24 * 60 * 60);
 $out = ob_get_contents();
 ob_end_clean();
 if ($out != '') {
-    echo $out;
+    echo html_writer::div($out,'border-card');
+    //echo $out;
 } else {
+    //echo html_writer::div($out,'border-card');
+    //echo html_writer::div('', 'no-badges-img');
     echo html_writer::tag('div', get_string('no_badges_awarded', 'format_mooin'), array('class' => 'oc-no-badges'));
 }
 // Link zum Abmelden aus dem Kurs anzeigen,

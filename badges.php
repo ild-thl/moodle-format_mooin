@@ -148,7 +148,10 @@ if ($out != '') {
     //echo $out;
 } else {
     //echo html_writer::tag('div', get_string('no_badges_available', 'format_mooin'), array('class' => 'oc-no-badges'));
-    echo html_writer::tag('div', '', array('class' => 'no-badges-img'));
+    $out = html_writer::div('', 'no-badges-img');
+    $out .= html_writer::span(get_string('no_badges_image_text', 'format_mooin'), 'no-badge-text');
+    echo html_writer::div($out, 'no-badge-container');
+    //echo html_writer::tag('div', '', array('class' => 'no-badges-img'));
 
 }
 
