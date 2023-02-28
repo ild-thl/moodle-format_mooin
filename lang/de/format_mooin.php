@@ -104,7 +104,7 @@ $string['chapter'] = 'Kapitel';
 $string['lesson'] = 'Lektion';
 
 // added by Jonas
-$string['unread_news'] = ' ungelesene Beiträge im ';
+$string['unread_news'] = 'ungelesene Beiträge im ';
 $string['all_news_mobile'] = 'Alle Beiträge';
 $string['by'] = 'von ';
 $string['latest_contribution_mobile'] = 'Neuster Beitrag:';

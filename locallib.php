@@ -1262,7 +1262,7 @@ function get_last_news($courseid, $forum_type) {
                     $new_news .= html_writer::link($newsurl, get_string('unread_news_single', 'format_mooin') . get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin'), 'class' =>'primary-link'));
                 }
                 else if ($unread_news_number > 1) {
-                    $new_news .= html_writer::start_span('count-container inline-batch fw-700 mr-1') . $unread_news_number . html_writer::end_span(); //Notification Counter
+                    $new_news .= html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_news_number . html_writer::end_span(); //Notification Counter
                     //$new_news .= get_string('unread_news', 'format_mooin');
                     $new_news .= html_writer::link($newsurl, get_string('unread_news', 'format_mooin') . get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin'), 'class' =>'primary-link'));
 
