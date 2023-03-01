@@ -90,7 +90,9 @@ function completion_indicator($numcomplete, $numoutof, $aspercent, $isoverall) {
 function complete_section($section, $cid, $userid) {
     global $DB;
 
+    set_user_preference('format_mooin_section_completed_'.$section, 1, $userid);
 
+/*
     $res = false;
 
         $label_complete = $userid . '-' . $cid . '-' . $section;
@@ -113,7 +115,7 @@ function complete_section($section, $cid, $userid) {
             // }
         }
     // Check the DB in Table course_sections, to see how many label was inside the section and update the completion value for each lignes
-    /* $sequences_in_sections = $DB->get_record('course_sections', ['course'=> $cid, 'section'=>$section], 'sequence', IGNORE_MISSING);
+     $sequences_in_sections = $DB->get_record('course_sections', ['course'=> $cid, 'section'=>$section], 'sequence', IGNORE_MISSING);
     var_dump($sequences_in_sections->sequence);
     // transform the result to and array, so that we can loop throught and make some resquest in table course_modules for updating the completion value for each ligne
 
