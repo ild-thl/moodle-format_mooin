@@ -1867,12 +1867,12 @@ function navbar($displaysection = 0) {
                 $item = $items[$i];
                 $item->hideicon = true;
                 if ($i === $itemcount - 5) {
-                    $content = html_writer::tag('li', $before . '');
+                    $content = html_writer::tag('li', '');
                 } elseif ($i === $itemcount - 4) {
-                    $content = html_writer::tag('li', $before . '' );
+                    $content = html_writer::tag('li', '' );
                 }
                 else if ($i === $itemcount - 3) {
-                    $content = html_writer::tag('li', $before . ''.  $OUTPUT->render($item));
+                    $content = html_writer::tag('li', $OUTPUT->render($item));
                 } else if ($i === $itemcount - 2) {
                     // var_dump($item);
                     $content_link = html_writer::link(new moodle_url('/course/format/mooin/alle_forums.php', ['id'=> $COURSE->id]), get_string('all_forums', 'format_mooin'));
@@ -1890,14 +1890,14 @@ function navbar($displaysection = 0) {
                 $item = $items[$i];
                 $item->hideicon = true;
                 if ($i === 0) {
-                    $content = html_writer::tag('li', $before . ' ');
+                    $content = html_writer::tag('li', '');
                 } elseif ($i === $itemcount - 4) {
-                    $content = html_writer::tag('li', $before . $OUTPUT->render($item));
+                    $content = html_writer::tag('li',   $OUTPUT->render($item));
                 }
                 else if ($i === $itemcount - 3) {
-                    $content = html_writer::tag('li', $before . ' ');
+                    $content = html_writer::tag('li',' ');
                 } else if ($i === $itemcount - 2) {
-                    $content = html_writer::tag('li', $before . $OUTPUT->render($item)); // , ['class'=>'breadcrumb-item']
+                    $content = html_writer::tag('li', $OUTPUT->render($item)); // , ['class'=>'breadcrumb-item']
                 } else if($i === $itemcount - 1) {
                     $content = html_writer::tag('li', $before . ' / '. $item->text); // $OUTPUT->render($item)
                 } else {
@@ -1911,7 +1911,7 @@ function navbar($displaysection = 0) {
 
                 if ($i == 0) {
 
-                    $content = html_writer::tag('li', $before . ''); // $OUTPUT->render($item)
+                    $content = html_writer::tag('li',  ''); // $OUTPUT->render($item)
                 }
                 else if ($i === $itemcount - 3) {
                     $content = html_writer::tag('li', $before . ' / '. $OUTPUT->render($item));
