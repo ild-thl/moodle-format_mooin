@@ -607,6 +607,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         echo $this->courserenderer->course_section_add_cm_control($course, $displaysection, $displaysection);
 
         // TODO remove all the following lines until new complete section button
+        /*
         if($this->courserenderer->course_section_cm_list($course, $thissection, $displaysection)) {
 
         }
@@ -711,14 +712,29 @@ class format_mooin_renderer extends format_section_renderer_base {
             }
 
         }
+        //*/
 //*
         // new complete section button
         // no activities in this section?
-        if (!$coursemodules = $DB->get_records('course_modules', array('course' => $courseid,
+        if (!$coursemodules = $DB->get_records('course_modules', array('course' => $course->id,
                                                                     'deletioninprogress' => 0,
-                                                                    'section' => $sectionid,
+                                                                    'section' => $thissection->id,
                                                                     'completion' => 2))) {
-            //echo '<p>button</p>';
+
+            $complete_button = '';
+            if (get_user_preferences('format_mooin_section_completed_'.$thissection->id, 0, $USER->id) == 0) {
+                $complete_button .= html_writer::start_tag('button', array('type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$thissection->id, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Lektion als bearbeitet markieren'));
+
+                $complete_button .= html_writer::start_span('bottom_button-' .$thissection->id) . 'Lektion als bearbeitet markieren' . html_writer::end_span();
+                $complete_button .= html_writer::end_tag('button');
+            }
+            else {
+                $complete_button .= html_writer::start_tag('div', array('type'=>'button','class'=>'comp_btn btn-secondary complete_section-' .$thissection->id, 'id' => 'id_bottom_complete-' .$thissection->id));
+
+                $complete_button .= html_writer::start_span('bottom_button-' .$thissection->id) . 'Lektion als bearbeitet markieren' . html_writer::end_span();
+                $complete_button .= html_writer::end_tag('div');
+            }
+            echo $complete_button;
         }
 //*/
 
