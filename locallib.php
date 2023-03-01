@@ -2537,7 +2537,9 @@ function get_section_progress($courseid, $sectionid, $userid) {
                 $grading_info = grade_get_grades($courseid, 'mod', 'hvp', $coursemodule->instance, $userid);
                 $grade = $grading_info->items[0]->grades[$userid]->grade;
                 $grademax = $grading_info->items[0]->grademax;
-                $percentage += 100 / ($grademax / $grade);
+                if (isset($grade) && $grade != 0) {
+                    $percentage += 100 / ($grademax / $grade);
+                }
             }
             else {
                 // if completed, add to percentage

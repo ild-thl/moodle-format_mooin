@@ -606,6 +606,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         echo $this->courserenderer->course_section_cm_list($course, $thissection, $displaysection);
         echo $this->courserenderer->course_section_add_cm_control($course, $displaysection, $displaysection);
 
+        // TODO remove all the following lines until new complete section button
         if($this->courserenderer->course_section_cm_list($course, $thissection, $displaysection)) {
 
         }
@@ -710,6 +711,15 @@ class format_mooin_renderer extends format_section_renderer_base {
             }
 
         }
+/*
+        // new complete section button
+        $completionenabled = false;
+        // no activities in this section?
+        if (!$coursemodules = $DB->get_records('course_modules', array('course' => $courseid,
+                                                                    'deletioninprogress' => 0,
+                                                                    'section' => $sectionid))) {
+        }
+*/
 
         echo $this->section_footer();
         echo $this->end_section_list();
