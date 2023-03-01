@@ -2511,7 +2511,6 @@ function get_section_progress($courseid, $sectionid, $userid) {
     require_once($CFG->libdir . '/gradelib.php');
 
     $percentage = 0;
-    $completionenabled = false;
 
     // no activities in this section?
     if (!$coursemodules = $DB->get_records('course_modules', array('course' => $courseid,
@@ -2520,12 +2519,12 @@ function get_section_progress($courseid, $sectionid, $userid) {
         return 0;
     }
 
-    $activities = count($coursemodules);
+    $activities = 0;
 
     foreach ($coursemodules as $coursemodule) {
         // cm has completion activated?
-        if ($coursemodule->completion != 0) {
-            $completionenabled = true;
+        if ($coursemodule->completion == 2) {
+            $activities++;
 
             $modulename = '';
             if ($module = $DB->get_record('modules', array('id' => $coursemodule->module))) {
@@ -2558,7 +2557,7 @@ function get_section_progress($courseid, $sectionid, $userid) {
     }
     
     // no activities with completion activated?
-    if ($completionenabled == false) {
+    if ($activities == 0) {
         if (get_user_preferences('format_mooin_section_completed_'.$sectionid, 0, $userid) == 1) {
             return 100;
         }

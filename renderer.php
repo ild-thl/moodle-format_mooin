@@ -711,15 +711,16 @@ class format_mooin_renderer extends format_section_renderer_base {
             }
 
         }
-/*
+//*
         // new complete section button
-        $completionenabled = false;
         // no activities in this section?
         if (!$coursemodules = $DB->get_records('course_modules', array('course' => $courseid,
                                                                     'deletioninprogress' => 0,
-                                                                    'section' => $sectionid))) {
+                                                                    'section' => $sectionid,
+                                                                    'completion' => 2))) {
+            //echo '<p>button</p>';
         }
-*/
+//*/
 
         echo $this->section_footer();
         echo $this->end_section_list();
