@@ -883,11 +883,11 @@ function get_certificates($courseid) {
            }
         }
 
-        
+
         if( count($user_dont_cert) > 0 && count($user_cert) == 0) {
             $templatedata1 = $user_dont_cert;
             foreach($templatedata1 as $td) {
-                array_push($template_cert_id, $td->section); 
+                array_push($template_cert_id, $td->section);
            }
         }
         if(count($user_dont_cert) > 0 && count($user_cert) > 0) {
@@ -1215,7 +1215,7 @@ function news_forum_url($courseid, $forum_type){
  */
 function get_last_news($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
-    
+
     $current_time = time();
     // Get all the forum (news)  in the course
     $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
@@ -1237,14 +1237,14 @@ function get_last_news($courseid, $forum_type) {
         $cond_in_forum_posts = 'SELECT * FROM mdl_forum_posts WHERE discussion = :id_for_disc ORDER BY CREATED DESC LIMIT 1';
         $param =  array('id_for_disc' => $discussions_in_new->id );
         $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
-        
+
         echo gettype(time() - $news_forum_post->created);
         if($news_forum_post->mailnow == '0' && (time() - $news_forum_post->created) < 1800) {
             $param =  array('id_for_disc' => $discussions_in_new->id - 1);
             $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         } else {
             // Take the previous news forum that was showing
-            
+
             $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         }
 
@@ -1353,7 +1353,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
         ORDER BY fd.id DESC LIMIT 1';
 
     $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
-    
+
     /* if((time() - $new_in_course->created) < 1800) {
         $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
     }  */
@@ -1804,7 +1804,7 @@ function navbar($displaysection = 0) {
     $htmlblocks = array();
     // Iterate the navarray and display each node
     $separator = get_separator();
-    $before = '';
+    $before = '&nbsp';
     $val = '';
     $chapter_val = '';
     $chapter_n = '';
@@ -2544,10 +2544,10 @@ function get_section_progress($courseid, $sectionid, $userid) {
             }
             else {
                 // if completed, add to percentage
-                $sql = 'SELECT * 
-                          FROM {course_modules_completion} 
-                         WHERE coursemoduleid = :coursemoduleid 
-                           AND userid = :userid 
+                $sql = 'SELECT *
+                          FROM {course_modules_completion}
+                         WHERE coursemoduleid = :coursemoduleid
+                           AND userid = :userid
                            AND completionstate != 0 ';
                 $params = array('coursemoduleid' => $coursemodule->id,
                                 'userid' => $userid);
@@ -2557,7 +2557,7 @@ function get_section_progress($courseid, $sectionid, $userid) {
             }
         }
     }
-    
+
     // no activities with completion activated?
     if ($activities == 0) {
         if (get_user_preferences('format_mooin_section_completed_'.$sectionid, 0, $userid) == 1) {
@@ -2567,6 +2567,6 @@ function get_section_progress($courseid, $sectionid, $userid) {
             return 0;
         }
     }
-    
+
     return $percentage / $activities;
 }
