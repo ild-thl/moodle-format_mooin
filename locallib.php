@@ -2570,3 +2570,25 @@ function get_section_progress($courseid, $sectionid, $userid) {
 
     return $percentage / $activities;
 }
+
+function get_course_progress($courseid, $userid) {
+    global $DB;
+
+    $percentage = 0;
+    $i = 0;
+    if ($sections = $DB->get_records('course_sections', array('course' => $courseid))) {
+        foreach ($sections as $section) {
+            if (!$DB->get_record('format_mooin_chapter', array('sectionid' => $section->id)) && 
+                    $section->section != 0) {
+                $i++;
+                $percentage += get_section_progress($courseid, $section->id, $userid);
+            }
+        }
+    }
+    
+    if ($percentage > 0) {
+        $percentage = $percentage / $i;
+    }
+
+    return round($percentage);
+}
