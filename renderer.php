@@ -533,14 +533,14 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         $sectiontitle .= html_writer::end_tag('div');
 
-          // Progress bar anzeige
-          $check_sequence = $DB->get_records('course_sections', ['course' => $course->id, 'section' => $displaysection], '', '*');
-          $val = array_values($check_sequence);
+        // Progress bar anzeige
+          //$check_sequence = $DB->get_records('course_sections', ['course' => $course->id, 'section' => $displaysection], '', '*');
+          //$val = array_values($check_sequence);
           //var_dump($val[0]);
-          if (!$this->page->user_is_editing() ) { // &&  !empty($val[0]->sequence)
+        if (!$this->page->user_is_editing() ) { // &&  !empty($val[0]->sequence)
                 // Get the right section from DB to the use in the get_progress
                 // Check if the sequence in course_sections is a list or a single element
-
+/*
                 $element = $DB->get_record('course_modules', ['id'=> $val[0]->sequence], 'section', IGNORE_MISSING);
                 //echo "Element";
                 // var_dump($element);
@@ -587,7 +587,11 @@ class format_mooin_renderer extends format_section_renderer_base {
                     $sectiontitle .=  get_progress_bar($section_percent['percent'], 100, $val[0]->id); // $displaysection
 
                 }
-          }
+                */
+                
+            $section_progress = get_section_progress($course->id, $thissection->id, $USER->id);
+            $sectiontitle .=  get_progress_bar($section_progress, 100, $thissection->id); // $displaysection
+        }
 
 
         $sectiontitle .= html_writer::end_tag('div');

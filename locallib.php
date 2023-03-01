@@ -2499,3 +2499,66 @@ function count_unviewed_badges($userid, $courseid) {
     }
     return $unviewed_badges;
 }
+
+function get_section_progress($courseid, $sectionid, $userid) {
+    global $DB, $CFG;
+
+    require_once($CFG->libdir . '/gradelib.php');
+
+    $percentage = 0;
+    $completionenabled = false;
+
+    // no activities in this section?
+    if (!$coursemodules = $DB->get_records('course_modules', array('course' => $courseid,
+                                                                   'deletioninprogress' => 0,
+                                                                   'section' => $sectionid))) {
+        return 0;
+    }
+
+    $activities = count($coursemodules);
+
+    foreach ($coursemodules as $coursemodule) {
+        // cm has completion activated?
+        if ($coursemodule->completion != 0) {
+            $completionenabled = true;
+
+            $modulename = '';
+            if ($module = $DB->get_record('modules', array('id' => $coursemodule->module))) {
+                $modulename = $module->name;
+            }
+
+            // activity is hvp, we use the grades to get the individual progress
+            if ($modulename == 'hvp') {
+                $grading_info = grade_get_grades($courseid, 'mod', 'hvp', $coursemodule->instance, $userid);
+                $grade = $grading_info->items[0]->grades[$userid]->grade;
+                $grademax = $grading_info->items[0]->grademax;
+                $percentage += 100 / ($grademax / $grade);
+            }
+            else {
+                // if completed, add to percentage
+                $sql = 'SELECT * 
+                          FROM {course_modules_completion} 
+                         WHERE coursemoduleid = :coursemoduleid 
+                           AND userid = :userid 
+                           AND completionstate != 0 ';
+                $params = array('coursemoduleid' => $coursemodule->id,
+                                'userid' => $userid);
+                if ($DB->get_record_sql($sql, $params)) {
+                    $percentage += 100;
+                }
+            }
+        }
+    }
+    
+    // no activities with completion activated?
+    if ($completionenabled == false) {
+        if (get_user_preferences('format_mooin_section_completed_'.$sectionid, 0, $userid) == 1) {
+            return 100;
+        }
+        else {
+            return 0;
+        }
+    }
+    
+    return $percentage / $activities;
+}
