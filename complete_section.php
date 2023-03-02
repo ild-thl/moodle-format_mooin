@@ -53,4 +53,5 @@ $course_new = $courseformat->get_course();
 // Get the POST Data from complete_section.js
 $section = intval($_POST['section']);
 $sec = intval($_POST['section_inside_course']);
-complete_section($section, $course->id, $USER->id); // $sec
+complete_section($section, $USER->id); // $sec
+// get_section_progress($course->id, $section, $USER->id);

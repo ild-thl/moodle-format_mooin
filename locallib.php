@@ -80,7 +80,20 @@ function completion_indicator($numcomplete, $numoutof, $aspercent, $isoverall) {
     $progressdata['isSingleDigit'] = $percentcomplete < 10 ? true : false; // Position single digit in centre of circle.
     return $progressdata;
 }
+/**
+ * Set a section Label activity as done
+ *
+ * @param array $section (argument not used)
+ * @param int $userid (argument not used)
+ * @param int $cid (argument not used)
+ */
+function complete_section($section, $userid) {
+    // global $DB;
 
+    set_user_preference('format_mooin_section_completed_'.$section, 1, $userid);
+
+    // $sequences_in_sections = $DB->get_record('course_sections', ['course'=> $cid, 'section'=>$section], 'sequence', IGNORE_MISSING);
+}
     /**
      * get the section grade function
     */
