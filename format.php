@@ -164,8 +164,8 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
 
     $certificates_url = new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id));
 
-    if (get_last_forum_discussion($course->id, 'general') != null) { //Nötig? get_last_news
-        $check_diskussion = get_last_forum_discussion($course->id, 'general');
+    if (get_last_forum_discussion($course->id, 'news') != null) { //Nötig? get_last_news
+        $check_diskussion = get_last_forum_discussion($course->id, 'news');
         // $check_diskussion = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $course->id));
     }
 
@@ -206,6 +206,7 @@ if (get_user_in_course($course->id) != null) {
         //echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
     }
     
+
     $templatecontext = [
         'course_headerimage_mobil' => get_headerimage_url($course->id, true),
         'course_headerimage_desktop' => get_headerimage_url($course->id, false),

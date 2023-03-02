@@ -80,102 +80,7 @@ function completion_indicator($numcomplete, $numoutof, $aspercent, $isoverall) {
     $progressdata['isSingleDigit'] = $percentcomplete < 10 ? true : false; // Position single digit in centre of circle.
     return $progressdata;
 }
-/**
- * Set a section Label activity as done
- *
- * @param array $section (argument not used)
- * @param int $userid (argument not used)
- * @param int $cid (argument not used)
- */
-function complete_section($section, $cid, $userid) {
-    global $DB;
 
-    set_user_preference('format_mooin_section_completed_'.$section, 1, $userid);
-
-/*
-    $res = false;
-
-        $label_complete = $userid . '-' . $cid . '-' . $section;
-
-        $value_check = $DB->record_exists('user_preferences', array('value' => $label_complete));
-        $id = $DB->count_records('user_preferences', array('userid'=> $userid));
-
-
-        if (!$value_check ) { // isset($_POST["id_bottom_complete-".$section]) ||  array_key_exists('btnComplete-'.$section, $_POST)
-
-            $res = true;
-            $values = new stdClass();
-            $values->id = $id + 1;
-            $values->userid = $userid;
-            $values->name = 'section_progress_label-' . $label_complete;
-            $values->value = $label_complete;
-
-            // if (!$value_check) {
-                $DB->insert_record('user_preferences',$values, true, false );
-            // }
-        }
-    // Check the DB in Table course_sections, to see how many label was inside the section and update the completion value for each lignes
-     $sequences_in_sections = $DB->get_record('course_sections', ['course'=> $cid, 'section'=>$section], 'sequence', IGNORE_MISSING);
-    var_dump($sequences_in_sections->sequence);
-    // transform the result to and array, so that we can loop throught and make some resquest in table course_modules for updating the completion value for each ligne
-
-    $result_to_array = explode(",", $sequences_in_sections->sequence);
-    if (count($result_to_array) > 1) {
-        $update_completion_in_module = new stdClass();
-        foreach ($result_to_array as $key => $value) {
-            $update_completion_in_module = $DB->get_record('course_modules', ['id'=>$value], '*', IGNORE_MISSING);
-            if ($update_completion_in_module == '13') {
-                // Update the DB course_modules_completion, by addind a new row
-                $sql = 'SELECT *
-                        FROM {course_modules_completion} cmc
-                        ORDER BY cmc.id  LIMIT 1';
-
-                $params_array = [];
-                $last_value = $DB->get_record_sql($sql, $params_array);
-                $res = true;
-                // insert a new value under table course_modules_completion to save the new entry
-                $insert_data = new stdClass();
-                $insert_data->id = $last_value->id + 1;
-                $insert_data->coursemoduleid = $update_completion_in_module->section;
-                $insert_data->userid = $userid;
-                $insert_data->completionstate = 1;
-                $insert_data->viewed = 0;
-                $insert_data->overrideby = NULL;
-                $insert_data->timemodified = time();
-
-                $DB->insert_record('course_modules_completion', $insert_data, true, false);
-
-            }
-        }
-    } else {
-        $update_completion_in_module = $DB->get_record('course_modules', ['id'=>$sequences_in_sections->sequence], '*', IGNORE_MISSING);
-        if ($update_completion_in_module) {
-            // Update the DB course_modules_completion, by addind a new row
-            $sql = 'SELECT *
-                    FROM {course_modules_completion} cmc
-                    ORDER BY cmc.id  LIMIT 1';
-
-            $params_array = [];
-            $last_value = $DB->get_record_sql($sql, $params_array);
-            $res = true;
-            // insert a new value under table course_modules_completion to save the new entry
-            $insert_data = new stdClass();
-            $insert_data->id = $last_value->id + 1;
-            $insert_data->coursemoduleid = $update_completion_in_module->section;
-            $insert_data->userid = $userid;
-            $insert_data->completionstate = 1;
-            $insert_data->viewed = 0;
-            $insert_data->overrideby = NULL;
-            $insert_data->timemodified = time();
-
-            $DB->insert_record('course_modules_completion', $insert_data, true, false);
-
-        }
-    } */
-
-
-    return $res;
-}
     /**
      * get the section grade function
     */
@@ -885,7 +790,7 @@ function get_certificates($courseid) {
 
 
         if( count($user_dont_cert) > 0 && count($user_cert) == 0) {
-            $templatedata1 = $user_dont_cert;
+            // $templatedata1 = $user_dont_cert;
             foreach($templatedata1 as $td) {
                 array_push($template_cert_id, $td->section);
            }
@@ -1215,8 +1120,7 @@ function news_forum_url($courseid, $forum_type){
  */
 function get_last_news($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
-
-    $current_time = time();
+    
     // Get all the forum (news)  in the course
     $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
     $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
@@ -1225,31 +1129,37 @@ function get_last_news($courseid, $forum_type) {
     // Some test to fetch the forum with discussion within it
 
     // get the news annoucement & forum discussion for a specific news or forum
+    
     if ($new_in_course == true) {
         $out = null;
-        $cond = 'SELECT * FROM mdl_forum_discussions WHERE forum = :id  ORDER BY ID DESC LIMIT 1';
+        // Get the number of discussion inmy course
+        $cond = 'SELECT * FROM {forum_discussions} WHERE forum = :id  ORDER BY ID DESC LIMIT 1';
         $param =  array('id' => $new_in_course->id);
 
         $discussions_in_new = $DB->get_record_sql($cond, $param, IGNORE_MISSING);
         if ($discussions_in_new != false) {
-
+            
         // Get the data in forum_posts (userid, subject, message, created)
-        $cond_in_forum_posts = 'SELECT * FROM mdl_forum_posts WHERE discussion = :id_for_disc ORDER BY CREATED DESC LIMIT 1';
-        $param =  array('id_for_disc' => $discussions_in_new->id );
-        $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
-
-        echo gettype(time() - $news_forum_post->created);
+        $cond_in_forum_posts = 'SELECT * 
+                                FROM {forum_posts} fp
+                                LEFT JOIN {forum_discussions} fd ON fp.discussion = fd.id
+                                ORDER BY CREATED DESC LIMIT 1';
+        $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, []);
+        // save the id for the current news forum
+        $id_news = $news_forum_post->id;
         if($news_forum_post->mailnow == '0' && (time() - $news_forum_post->created) < 1800) {
-            $param =  array('id_for_disc' => $discussions_in_new->id - 1);
+            $cond_in_forum_posts = 'SELECT fp.* 
+                                    FROM {forum_posts} fp
+                                    LEFT JOIN {forum_discussions} fd ON fp.discussion = fd.id
+                                    WHERE  fp.discussion < :id_for_disc AND fd.forum = :forum_id
+                                    ORDER BY CREATED DESC LIMIT 1';
+            $param =  array('id_for_disc' => $id_news, 'forum_id' =>$new_in_course->id);
             $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         } else {
             // Take the previous news forum that was showing
-
             $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         }
 
-        // var_dump($news_forum_post);
-        echo time() - $news_forum_post->created;
         $user = $DB->get_record('user', ['id' => $news_forum_post->userid], '*');
 
         // Get the right date for new creation
@@ -1338,31 +1248,52 @@ function get_last_forum_discussion($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
 
 
-    $sql_second = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
+    $sql_second = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type != :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
     $param_second = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
     $news_course = $DB->get_record_sql($sql_second, $param_second);
 
+    
     //  Get the last discussion in course from the DB
     //  If the last forum in DB has no discussion, we check in the previous
     $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
 
-    $sql = 'SELECT * FROM mdl_forum f
-        JOIN mdl_forum_discussions fd ON fd.forum = f.id
-        JOIN mdl_forum_posts fp ON fp.discussion = fd.id
-        WHERE f.course = :id_course AND f.type = :type_forum
-        ORDER BY fd.id DESC LIMIT 1';
+    $sql = 'SELECT f.*, fd.id as forum_id, fp.*
+            FROM mdl_forum f
+            LEFT JOIN mdl_forum_discussions fd ON fd.forum = f.id
+            LEFT JOIN mdl_forum_posts fp ON fp.discussion = fd.id
+            WHERE f.course = :id_course AND f.type != :type_forum
+            ORDER BY fd.id DESC LIMIT 1';
 
     $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
+    
+    
+    
+    $new_in_course = array_values($new_in_course);
+    
+    $previous_forum_id = $new_in_course[0]->forum_id;
+    // var_dump($previous_forum_id);
+    if((time() - $new_in_course[0]->created) < 1800) {
 
-    /* if((time() - $new_in_course->created) < 1800) {
+        $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type, 'previous_for_id' => $previous_forum_id);
+
+        $sql = 'SELECT f.*, fd.id as forum_id, fp.*
+                FROM mdl_forum f
+                LEFT JOIN mdl_forum_discussions fd ON fd.forum = f.id
+                LEFT JOIN mdl_forum_posts fp ON fp.discussion = fd.id
+                WHERE f.course = :id_course AND f.type != :type_forum AND fd.id < :previous_for_id
+                ORDER BY fd.id DESC LIMIT 1';
+
         $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
-    }  */
+    } else {
+        $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
+    }
     // Some test to fetch the forum with discussion within it
     // get the news annoucement & forum discussion for a specific news or forum
     // var_dump($new_in_course);
     if (count($new_in_course) > 0) {
         $out = null;
         foreach ($new_in_course as $key => $value) {
+            // var_dump($value);
             $user = $DB->get_record('user', ['id' => $value->userid], '*');
 
             // Get the right date for new creation
