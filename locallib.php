@@ -749,12 +749,13 @@ function get_certificates($courseid) {
         // $ze = $DB->get_records('course_sections', ['course' =>$courseid]);
 
         $a = 1;
+        $templatedata01 = [];
         foreach ($pe as $key => $value) {
             foreach ($te as $k => $v) {
                 if ($value->cmid == $v->id) {
                     // var_dump($v);
                     // $cm_id = $v->id;
-                    array_push($templatedata1, (object)[
+                    array_push($templatedata01, (object)[
                         'id'=> $v->id,
                         'index' => $a++,
                         'module' => $value->module,
@@ -779,15 +780,15 @@ function get_certificates($courseid) {
         $user_dont_cert = [];
         $ot_temp_cert = [];
 
-        for($i = 0; $i < count($templatedata1); $i++) {
-            if($templatedata1[$i]->user_id == $USER->id) {
-                array_push($u_cer, $templatedata1[$i]->section);
-                array_push($user_cert, $templatedata1[$i]);
-            } else if( ($i  < count($templatedata1) && $templatedata1[$i]->section != $templatedata1[$i + 1]->section)) {
+        for($i = 0; $i < count($templatedata01); $i++) {
+            if($templatedata01[$i]->user_id == $USER->id) {
+                array_push($u_cer, $templatedata01[$i]->section);
+                array_push($user_cert, $templatedata01[$i]);
+            } else if( ($i  < count($templatedata01) && $templatedata01[$i]->section != $templatedata01[$i + 1]->section)) {
                 //
-                if(( $templatedata1[$i]->user_id != $USER->id)) {
-                    array_push($ot_temp_cert,$templatedata1[$i]->section);
-                    array_push($user_dont_cert, $templatedata1[$i]);
+                if(( $templatedata01[$i]->user_id != $USER->id)) {
+                    array_push($ot_temp_cert,$templatedata01[$i]->section);
+                    array_push($user_dont_cert, $templatedata01[$i]);
                 }
 
             }
@@ -796,7 +797,7 @@ function get_certificates($courseid) {
 
         if(count($user_cert) > 0) {
             $templatedata1 = $user_cert;
-            foreach($templatedata1 as $td) {
+            foreach($templatedata01 as $td) {
                 array_push($template_cert_id, $td->section);
            }
         }
@@ -804,11 +805,11 @@ function get_certificates($courseid) {
 
         if( count($user_dont_cert) > 0 && count($user_cert) == 0) {
             // $templatedata1 = $user_dont_cert;
-            foreach($templatedata1 as $td) {
+            foreach($templatedata01 as $td) {
                 array_push($template_cert_id, $td->section);
            }
         }
-        if(count($user_dont_cert) > 0 && count($user_cert) > 0) {
+        if(count($user_dont_cert) > 0) { //  && count($user_cert) > 0
             // what should we do if the current user doesn't have any certificate
             foreach($user_dont_cert as $other_user_c) {
                 if(!in_array($other_user_c->section,array_values($template_cert_id))) {
@@ -1311,7 +1312,6 @@ function get_last_forum_discussion($courseid, $forum_type) {
     if (count($new_in_course) > 0) {
         $out = null;
         foreach ($new_in_course as $key => $value) {
-            // var_dump($value);
             $user = $DB->get_record('user', ['id' => $value->userid], '*');
 
             // Get the right date for new creation
