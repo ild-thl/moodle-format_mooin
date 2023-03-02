@@ -155,9 +155,12 @@ $oc_counter = 0;
             exit;
         }
     } else {
-        echo html_writer::start_div('no-forum'); //open outer div
-        echo html_writer::end_div();
-
+        // $out = html_writer::div('', 'no-forum');
+        // $out .= html_writer::span(get_string('no_forums_available', 'format_mooin'), 'no-forums-text mt-3 d-inline-block');
+        // echo html_writer::div($out, 'text-center');
+        $out = html_writer::div('', 'no-forum-img');
+        $out .= html_writer::span(get_string('no_forums_available', 'format_mooin'), 'no-forums-text');
+        echo html_writer::div($out, 'no-forums-container');
     }
     echo html_writer::end_div(); //close border-card div
     echo html_writer::end_div(); //close outer div
