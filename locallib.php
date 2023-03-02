@@ -804,12 +804,12 @@ function get_certificates($courseid) {
 
 
         if( count($user_dont_cert) > 0 && count($user_cert) == 0) {
-            // $templatedata1 = $user_dont_cert;
+            $templatedata1 = $user_dont_cert;
             foreach($templatedata01 as $td) {
                 array_push($template_cert_id, $td->section);
            }
         }
-        if(count($user_dont_cert) > 0) { //  && count($user_cert) > 0
+        if(count($user_dont_cert) > 0 && count($user_cert) > 0) { //  
             // what should we do if the current user doesn't have any certificate
             foreach($user_dont_cert as $other_user_c) {
                 if(!in_array($other_user_c->section,array_values($template_cert_id))) {
