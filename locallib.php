@@ -1164,8 +1164,7 @@ function get_last_news($courseid, $forum_type) {
         $id_news = $news_forum_post->discussion - 1;
         
         if($news_forum_post->mailnow == '0' && (time() - $news_forum_post->created) < 1800) {
-            echo (time() - $news_forum_post->created);
-            var_dump($id_news);
+            
             $cond_in_forum_posts = 'SELECT f.*, fp.*
                                     FROM {forum} f
                                     LEFT JOIN mdl_forum_discussions fd ON fd.forum = f.id
