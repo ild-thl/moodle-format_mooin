@@ -1120,7 +1120,7 @@ function news_forum_url($courseid, $forum_type){
  */
 function get_last_news($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
-    
+
     // Get all the forum (news)  in the course
     $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
     $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
@@ -1129,7 +1129,7 @@ function get_last_news($courseid, $forum_type) {
     // Some test to fetch the forum with discussion within it
 
     // get the news annoucement & forum discussion for a specific news or forum
-    
+
     if ($new_in_course == true) {
         $out = null;
         // Get the number of discussion inmy course
@@ -1138,9 +1138,9 @@ function get_last_news($courseid, $forum_type) {
 
         $discussions_in_new = $DB->get_record_sql($cond, $param, IGNORE_MISSING);
         if ($discussions_in_new != false) {
-            
+
         // Get the data in forum_posts (userid, subject, message, created)
-        $cond_in_forum_posts = 'SELECT * 
+        $cond_in_forum_posts = 'SELECT *
                                 FROM {forum_posts} fp
                                 LEFT JOIN {forum_discussions} fd ON fp.discussion = fd.id
                                 ORDER BY CREATED DESC LIMIT 1';
@@ -1148,7 +1148,7 @@ function get_last_news($courseid, $forum_type) {
         // save the id for the current news forum
         $id_news = $news_forum_post->id;
         if($news_forum_post->mailnow == '0' && (time() - $news_forum_post->created) < 1800) {
-            $cond_in_forum_posts = 'SELECT fp.* 
+            $cond_in_forum_posts = 'SELECT fp.*
                                     FROM {forum_posts} fp
                                     LEFT JOIN {forum_discussions} fd ON fp.discussion = fd.id
                                     WHERE  fp.discussion < :id_for_disc AND fd.forum = :forum_id
@@ -1252,7 +1252,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
     $param_second = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
     $news_course = $DB->get_record_sql($sql_second, $param_second);
 
-    
+
     //  Get the last discussion in course from the DB
     //  If the last forum in DB has no discussion, we check in the previous
     $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
@@ -1265,11 +1265,11 @@ function get_last_forum_discussion($courseid, $forum_type) {
             ORDER BY fd.id DESC LIMIT 1';
 
     $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
-    
-    
-    
+
+
+
     $new_in_course = array_values($new_in_course);
-    
+
     $previous_forum_id = $new_in_course[0]->forum_id;
     // var_dump($previous_forum_id);
     if((time() - $new_in_course[0]->created) < 1800) {
@@ -1767,7 +1767,7 @@ function navbar($displaysection = 0) {
 
                     foreach($chapter_array as $chap_value) {
                         if($chap_value != ''){
-                            $chap = '  : ' . $chap_value;
+                            $chap = ': ' . $chap_value;
                         }
                         array_push($array_chap, $chap);
                         $c = get_chapter_number($OUTPUT->render($item));
@@ -2509,14 +2509,14 @@ function get_course_progress($courseid, $userid) {
     $i = 0;
     if ($sections = $DB->get_records('course_sections', array('course' => $courseid))) {
         foreach ($sections as $section) {
-            if (!$DB->get_record('format_mooin_chapter', array('sectionid' => $section->id)) && 
+            if (!$DB->get_record('format_mooin_chapter', array('sectionid' => $section->id)) &&
                     $section->section != 0) {
                 $i++;
                 $percentage += get_section_progress($courseid, $section->id, $userid);
             }
         }
     }
-    
+
     if ($percentage > 0) {
         $percentage = $percentage / $i;
     }
