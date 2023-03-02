@@ -107,6 +107,8 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $grade_in_course = get_course_grades($course->id);
 
     $course_grade = round($grade_in_course);
+
+    $course_grade = get_course_progress($course->id, $USER->id);
     
     $progressbar  = null;
     if($course_grade == 0){

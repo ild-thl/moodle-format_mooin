@@ -425,11 +425,13 @@ class format_mooin_renderer extends format_section_renderer_base {
 
             $out .= $this->end_section_list();
 
-            $out .= $this->change_number_sections($course, 0);
+            $changenumsection = $this->change_number_sections($course, 0);
+            //$out .= $this->change_number_sections($course, 0);
         } else {
             $out .= $this->end_section_list();
         }
-        $templatecontext = ['topics' => $out];
+        $templatecontext = ['topics' => $out,
+                            'changenumsection' => $changenumsection];
        return $templatecontext;
     }
 
@@ -533,14 +535,14 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         $sectiontitle .= html_writer::end_tag('div');
 
-          // Progress bar anzeige
-          $check_sequence = $DB->get_records('course_sections', ['course' => $course->id, 'section' => $displaysection], '', '*');
-          $val = array_values($check_sequence);
+        // Progress bar anzeige
+          //$check_sequence = $DB->get_records('course_sections', ['course' => $course->id, 'section' => $displaysection], '', '*');
+          //$val = array_values($check_sequence);
           //var_dump($val[0]);
-          if (!$this->page->user_is_editing() ) { // &&  !empty($val[0]->sequence)
+        if (!$this->page->user_is_editing() ) { // &&  !empty($val[0]->sequence)
                 // Get the right section from DB to the use in the get_progress
                 // Check if the sequence in course_sections is a list or a single element
-
+/*
                 $element = $DB->get_record('course_modules', ['id'=> $val[0]->sequence], 'section', IGNORE_MISSING);
                 //echo "Element";
                 // var_dump($element);
@@ -587,7 +589,11 @@ class format_mooin_renderer extends format_section_renderer_base {
                     $sectiontitle .=  get_progress_bar($section_percent['percent'], 100, $val[0]->id); // $displaysection
 
                 }
-          }
+                */
+
+            $section_progress = get_section_progress($course->id, $thissection->id, $USER->id);
+            $sectiontitle .=  get_progress_bar($section_progress, 100, $thissection->id); // $displaysection
+        }
 
 
         $sectiontitle .= html_writer::end_tag('div');
@@ -602,6 +608,8 @@ class format_mooin_renderer extends format_section_renderer_base {
         echo $this->courserenderer->course_section_cm_list($course, $thissection, $displaysection);
         echo $this->courserenderer->course_section_add_cm_control($course, $displaysection, $displaysection);
 
+        // TODO remove all the following lines until new complete section button
+        /*
         if($this->courserenderer->course_section_cm_list($course, $thissection, $displaysection)) {
 
         }
@@ -706,6 +714,31 @@ class format_mooin_renderer extends format_section_renderer_base {
             }
 
         }
+        //*/
+//*
+        // new complete section button
+        // no activities in this section?
+        if (!$coursemodules = $DB->get_records('course_modules', array('course' => $course->id,
+                                                                    'deletioninprogress' => 0,
+                                                                    'section' => $thissection->id,
+                                                                    'completion' => 2))) {
+
+            $complete_button = '';
+            if (get_user_preferences('format_mooin_section_completed_'.$thissection->id, 0, $USER->id) == 0) {
+                $complete_button .= html_writer::start_tag('button', array('type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$thissection->id, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Lektion als bearbeitet markieren'));
+
+                $complete_button .= html_writer::start_span('bottom_button-' .$thissection->id) . 'Lektion als bearbeitet markieren' . html_writer::end_span();
+                $complete_button .= html_writer::end_tag('button');
+            }
+            else {
+                $complete_button .= html_writer::start_tag('div', array('type'=>'button','class'=>'comp_btn btn-secondary complete_section-' .$thissection->id, 'id' => 'id_bottom_complete-' .$thissection->id));
+
+                $complete_button .= html_writer::start_span('bottom_button-' .$thissection->id) . 'Lektion als bearbeitet markieren' . html_writer::end_span();
+                $complete_button .= html_writer::end_tag('div');
+            }
+            echo $complete_button;
+        }
+//*/
 
         echo $this->section_footer();
         echo $this->end_section_list();
@@ -899,6 +932,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
                 // mark as completed
                 $completed = '';
+                /*
                 $user_complete_label = $USER->id . '-' . $COURSE->id . '-' . $section->id;  // $section->section
                 $label_complete = $DB->record_exists('user_preferences', array('value' => $user_complete_label));
                 if (is_array(get_progress($course->id, $section->id))) {
@@ -912,6 +946,12 @@ class format_mooin_renderer extends format_section_renderer_base {
                         $completed .= ' completed';
                     }
                 }
+                */
+                $progress_result = get_section_progress($course->id, $section->id, $USER->id);
+                if ($progress_result == 100) {
+                    $completed .= ' completed';
+                }
+
                 // mark as locked/invisible
                 $locked = '';
                 if (!$section->uservisible) {
@@ -967,6 +1007,86 @@ class format_mooin_renderer extends format_section_renderer_base {
 
 
         return $o;
+    }
+
+     /**
+     * Returns controls in the bottom of the page to increase/decrease number of sections
+     *
+     * @param stdClass $course
+     * @param int|null $sectionreturn
+     * @return string
+     */
+    protected function change_number_sections($course, $sectionreturn = null) {
+        $coursecontext = context_course::instance($course->id);
+        if (!has_capability('moodle/course:update', $coursecontext)) {
+            return '';
+        }
+
+        $format = course_get_format($course);
+        $options = $format->get_format_options();
+        $maxsections = $format->get_max_sections();
+        $lastsection = $format->get_last_section_number();
+        $supportsnumsections = array_key_exists('numsections', $options);
+        $out = '';
+
+        if ($supportsnumsections) {
+            // Current course format has 'numsections' option, which is very confusing and we suggest course format
+            // developers to get rid of it (see MDL-57769 on how to do it).
+            // Display "Increase section" / "Decrease section" links.
+
+            $out .= html_writer::start_tag('div', array('id' => 'changenumsections', 'class' => 'mdl-right'));
+
+            // Increase number of sections.
+            if ($lastsection < $maxsections) {
+                $straddsection = get_string('increasesections', 'moodle');
+                $url = new moodle_url('/course/changenumsections.php',
+                    array('courseid' => $course->id,
+                          'increase' => true,
+                          'sesskey' => sesskey()));
+                $icon = $this->output->pix_icon('t/switch_plus', $straddsection);
+                $out .= html_writer::link($url, $icon.get_accesshide($straddsection), array('class' => 'increase-sections'));
+            }
+
+            if ($course->numsections > 0) {
+                // Reduce number of sections sections.
+                $strremovesection = get_string('reducesections', 'moodle');
+                $url = new moodle_url('/course/changenumsections.php',
+                    array('courseid' => $course->id,
+                          'increase' => false,
+                          'sesskey' => sesskey()));
+                $icon = $this->output->pix_icon('t/switch_minus', $strremovesection);
+                $out .= html_writer::link($url, $icon.get_accesshide($strremovesection), array('class' => 'reduce-sections'));
+            }
+
+            $out .= html_writer::end_tag('div');
+
+        } else if (course_get_format($course)->uses_sections()) {
+            if ($lastsection >= $maxsections) {
+                // Don't allow more sections if we already hit the limit.
+                return;
+            }
+            // Current course format does not have 'numsections' option but it has multiple sections suppport.
+            // Display the "Add section" link that will insert a section in the end.
+            // Note to course format developers: inserting sections in the other positions should check both
+            // capabilities 'moodle/course:update' and 'moodle/course:movesections'.
+            $out .= html_writer::start_tag('div', array('id' => 'changenumsections', 'class' => 'mdl-right'));
+            if (get_string_manager()->string_exists('addsections', 'format_'.$course->format)) {
+                $straddsections = get_string('addsections', 'format_'.$course->format);
+            } else {
+                $straddsections = get_string('addsections');
+            }
+            $url = new moodle_url('/course/changenumsections.php',
+                ['courseid' => $course->id, 'insertsection' => 0, 'sesskey' => sesskey()]);
+            if ($sectionreturn !== null) {
+                $url->param('sectionreturn', $sectionreturn);
+            }
+            $icon = $this->output->pix_icon('t/add', '');
+            $newsections = $maxsections - $lastsection;
+            $out .= html_writer::link($url, $icon . $straddsections,
+                array('class' => 'add-sections', 'data-add-sections' => $straddsections, 'data-new-sections' => $newsections));
+                $out .= html_writer::end_tag('div');
+        }
+        return $out;
     }
 
 }
