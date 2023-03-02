@@ -1147,26 +1147,32 @@ function get_last_news($courseid, $forum_type) {
         $out = null;
         // Get the number of discussion inmy course
         $cond = 'SELECT * FROM {forum_discussions} WHERE forum = :id  ORDER BY ID DESC LIMIT 1';
-        $param =  array('id' => $new_in_course->id);
+        $param =  array('id' => $new_in_course->id, 'forum_type'=>$forum_type);
 
         $discussions_in_new = $DB->get_record_sql($cond, $param, IGNORE_MISSING);
         if ($discussions_in_new != false) {
 
         // Get the data in forum_posts (userid, subject, message, created)
-        $cond_in_forum_posts = 'SELECT *
-                                FROM {forum_posts} fp
-                                LEFT JOIN {forum_discussions} fd ON fp.discussion = fd.id
+        $cond_in_forum_posts = 'SELECT f.*, fp.*
+                                FROM {forum} f
+                                LEFT JOIN mdl_forum_discussions fd ON fd.forum = f.id
+                                LEFT JOIN {forum_posts} fp ON fp.discussion = fd.id
+                                WHERE f.type = :forum_type
                                 ORDER BY CREATED DESC LIMIT 1';
-        $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, []);
+        $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         // save the id for the current news forum
-        $id_news = $news_forum_post->id;
+        $id_news = $news_forum_post->discussion - 1;
+        
         if($news_forum_post->mailnow == '0' && (time() - $news_forum_post->created) < 1800) {
-            $cond_in_forum_posts = 'SELECT fp.*
-                                    FROM {forum_posts} fp
-                                    LEFT JOIN {forum_discussions} fd ON fp.discussion = fd.id
-                                    WHERE  fp.discussion < :id_for_disc AND fd.forum = :forum_id
+            echo (time() - $news_forum_post->created);
+            var_dump($id_news);
+            $cond_in_forum_posts = 'SELECT f.*, fp.*
+                                    FROM {forum} f
+                                    LEFT JOIN mdl_forum_discussions fd ON fd.forum = f.id
+                                    LEFT JOIN {forum_posts} fp ON fp.discussion = fd.id
+                                    WHERE  fp.discussion < :id_for_disc AND fd.forum = :forum_id AND f.type = :forum_type
                                     ORDER BY CREATED DESC LIMIT 1';
-            $param =  array('id_for_disc' => $id_news, 'forum_id' =>$new_in_course->id);
+            $param =  array('id_for_disc' => $id_news, 'forum_id' =>$new_in_course->id, 'forum_type'=>$forum_type);
             $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         } else {
             // Take the previous news forum that was showing
