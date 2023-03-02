@@ -883,7 +883,7 @@ function get_certificates($courseid) {
 
         
         if( count($user_dont_cert) > 0 && count($user_cert) == 0) {
-            $templatedata1 = $user_dont_cert;
+            // $templatedata1 = $user_dont_cert;
             foreach($templatedata1 as $td) {
                 array_push($template_cert_id, $td->section); 
            }
@@ -1214,7 +1214,6 @@ function news_forum_url($courseid, $forum_type){
 function get_last_news($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
     
-    $current_time = time();
     // Get all the forum (news)  in the course
     $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
     $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
@@ -1223,31 +1222,37 @@ function get_last_news($courseid, $forum_type) {
     // Some test to fetch the forum with discussion within it
 
     // get the news annoucement & forum discussion for a specific news or forum
+    
     if ($new_in_course == true) {
         $out = null;
-        $cond = 'SELECT * FROM mdl_forum_discussions WHERE forum = :id  ORDER BY ID DESC LIMIT 1';
+        // Get the number of discussion inmy course
+        $cond = 'SELECT * FROM {forum_discussions} WHERE forum = :id  ORDER BY ID DESC LIMIT 1';
         $param =  array('id' => $new_in_course->id);
 
         $discussions_in_new = $DB->get_record_sql($cond, $param, IGNORE_MISSING);
         if ($discussions_in_new != false) {
-
+            
         // Get the data in forum_posts (userid, subject, message, created)
-        $cond_in_forum_posts = 'SELECT * FROM mdl_forum_posts WHERE discussion = :id_for_disc ORDER BY CREATED DESC LIMIT 1';
-        $param =  array('id_for_disc' => $discussions_in_new->id );
-        $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
-        
-        echo gettype(time() - $news_forum_post->created);
+        $cond_in_forum_posts = 'SELECT * 
+                                FROM {forum_posts} fp
+                                LEFT JOIN {forum_discussions} fd ON fp.discussion = fd.id
+                                ORDER BY CREATED DESC LIMIT 1';
+        $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, []);
+        // save the id for the current news forum
+        $id_news = $news_forum_post->id;
         if($news_forum_post->mailnow == '0' && (time() - $news_forum_post->created) < 1800) {
-            $param =  array('id_for_disc' => $discussions_in_new->id - 1);
+            $cond_in_forum_posts = 'SELECT fp.* 
+                                    FROM {forum_posts} fp
+                                    LEFT JOIN {forum_discussions} fd ON fp.discussion = fd.id
+                                    WHERE  fp.discussion < :id_for_disc AND fd.forum = :forum_id
+                                    ORDER BY CREATED DESC LIMIT 1';
+            $param =  array('id_for_disc' => $id_news, 'forum_id' =>$new_in_course->id);
             $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         } else {
             // Take the previous news forum that was showing
-            
             $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         }
 
-        // var_dump($news_forum_post);
-        echo time() - $news_forum_post->created;
         $user = $DB->get_record('user', ['id' => $news_forum_post->userid], '*');
 
         // Get the right date for new creation
@@ -1336,31 +1341,52 @@ function get_last_forum_discussion($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
 
 
-    $sql_second = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
+    $sql_second = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type != :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
     $param_second = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
     $news_course = $DB->get_record_sql($sql_second, $param_second);
 
+    
     //  Get the last discussion in course from the DB
     //  If the last forum in DB has no discussion, we check in the previous
     $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
 
-    $sql = 'SELECT * FROM mdl_forum f
-        JOIN mdl_forum_discussions fd ON fd.forum = f.id
-        JOIN mdl_forum_posts fp ON fp.discussion = fd.id
-        WHERE f.course = :id_course AND f.type = :type_forum
-        ORDER BY fd.id DESC LIMIT 1';
+    $sql = 'SELECT f.*, fd.id as forum_id, fp.*
+            FROM mdl_forum f
+            LEFT JOIN mdl_forum_discussions fd ON fd.forum = f.id
+            LEFT JOIN mdl_forum_posts fp ON fp.discussion = fd.id
+            WHERE f.course = :id_course AND f.type != :type_forum
+            ORDER BY fd.id DESC LIMIT 1';
 
     $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
     
-    /* if((time() - $new_in_course->created) < 1800) {
+    
+    
+    $new_in_course = array_values($new_in_course);
+    
+    $previous_forum_id = $new_in_course[0]->forum_id;
+    // var_dump($previous_forum_id);
+    if((time() - $new_in_course[0]->created) < 1800) {
+
+        $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type, 'previous_for_id' => $previous_forum_id);
+
+        $sql = 'SELECT f.*, fd.id as forum_id, fp.*
+                FROM mdl_forum f
+                LEFT JOIN mdl_forum_discussions fd ON fd.forum = f.id
+                LEFT JOIN mdl_forum_posts fp ON fp.discussion = fd.id
+                WHERE f.course = :id_course AND f.type != :type_forum AND fd.id < :previous_for_id
+                ORDER BY fd.id DESC LIMIT 1';
+
         $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
-    }  */
+    } else {
+        $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
+    }
     // Some test to fetch the forum with discussion within it
     // get the news annoucement & forum discussion for a specific news or forum
     // var_dump($new_in_course);
     if (count($new_in_course) > 0) {
         $out = null;
         foreach ($new_in_course as $key => $value) {
+            // var_dump($value);
             $user = $DB->get_record('user', ['id' => $value->userid], '*');
 
             // Get the right date for new creation
