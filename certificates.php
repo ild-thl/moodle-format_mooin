@@ -1,7 +1,7 @@
 <?php
 require_once('../../../config.php');
-require_once($CFG->libdir.'/filelib.php');
-require_once($CFG->libdir.'/completionlib.php');
+require_once($CFG->libdir . '/filelib.php');
+require_once($CFG->libdir . '/completionlib.php');
 require_once('locallib.php');
 // require_once('../../../mod/ilddigitalcert/overview.php');
 
@@ -50,8 +50,7 @@ echo html_writer::start_div('mooin-md-container'); //open outer div
 
 echo html_writer::tag('h2', html_writer::tag('div', get_string('my_certificate', 'format_mooin'), array('class' => 'oc_badges_text')));
 
-echo html_writer::tag('p', get_string('certificate_overview_description', 'format_mooin'));
-echo '<br />';
+
 
 
 
@@ -149,8 +148,14 @@ echo $out_certificat; */
 $value = null;
 $result = show_certificat($courseid);
 
-if($result){
+if ($result) {
+    echo html_writer::tag('p', get_string('certificate_overview_description', 'format_mooin'));
+    echo '<br />';
     $value .= $result;
+} else {
+    $out = html_writer::div('', 'no-certificates-img');
+    $out .= html_writer::span(get_string('no_certificates_image_text', 'format_mooin'), 'no-certificates-text');
+    echo html_writer::div($out, 'no-certificates-container');
 }
 
 echo $value;

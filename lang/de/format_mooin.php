@@ -113,6 +113,10 @@ $string['all_news'] = 'Newsforum';
 $string['topicoutline'] = 'Kursinhalt';
 $string['participant_map'] = 'Karte der Teilnehmenden';
 $string['no_badges_image_text'] = 'Keine Badges verfügbar';
+$string['no_certificates_image_text'] = 'Keine Zertifikate verfügbar';
+$string['no_forums_available'] = 'Keine Foren verfügbar';
+
+
 
 
 

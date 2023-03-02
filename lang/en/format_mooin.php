@@ -134,6 +134,8 @@ $string['previous_chapter'] = 'Vorheriges Kapitel';
 $string['topicoutline'] = 'Course content';
 $string['participant_map'] = 'Map of participants';
 $string['no_badges_image_text'] = 'No badges available';
+$string['no_certificates_image_text'] = 'No certificates available';
+$string['no_forums_available'] = 'no forums available';
 
 
 
