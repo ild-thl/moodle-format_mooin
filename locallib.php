@@ -1383,7 +1383,6 @@ function get_last_forum_discussion($courseid, $forum_type) {
             $out .= html_writer::nonempty_tag('span',$OUTPUT->user_picture($user_news, array('courseid'=>$courseid)),array('class' => 'new_user_picture d-none d-md-block')); // $user
 
             $forum_discussion_url = new moodle_url('/mod/forum/discuss.php', array('d' => $value->discussion));
-            var_dump($user);
             $templatecontext = [
                 'disc_url' => $url_disc,
                 'user_firstname' =>  $user->firstname,
