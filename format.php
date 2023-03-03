@@ -104,9 +104,9 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         $news = false;
     }
 
-    $grade_in_course = get_course_grades($course->id);
+    //$grade_in_course = get_course_grades($course->id);
 
-    $course_grade = round($grade_in_course);
+    //$course_grade = round($grade_in_course);
 
     $course_grade = get_course_progress($course->id, $USER->id);
     

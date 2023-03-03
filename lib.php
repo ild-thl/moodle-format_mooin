@@ -665,8 +665,12 @@ class format_mooin extends format_base {
      */
     public function update_course_format_options($data, $oldcourse = null) {
         global $DB;
-        $oldcourse->showcompletionconditions = 0;
-        $DB->update_record('course', $oldcourse);
+
+        if ($course = $DB->get_record('course', array('id' => $this->courseid))) {
+            $course->showcompletionconditions = 0;
+            $DB->update_record('course', $course);
+        }
+
         return $this->update_format_options($data);
     }
 }
