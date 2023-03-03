@@ -1310,6 +1310,8 @@ function get_last_forum_discussion($courseid, $forum_type) {
     if (count($new_in_course) > 0) {
         $out = null;
         foreach ($new_in_course as $key => $value) {
+            if(!empty($value->userid)) {
+
             $user = $DB->get_record('user', ['id' => $value->userid], '*');
 
             // Get the right date for new creation
@@ -1381,6 +1383,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
             $out .= html_writer::nonempty_tag('span',$OUTPUT->user_picture($user_news, array('courseid'=>$courseid)),array('class' => 'new_user_picture d-none d-md-block')); // $user
 
             $forum_discussion_url = new moodle_url('/mod/forum/discuss.php', array('d' => $value->discussion));
+            var_dump($user);
             $templatecontext = [
                 'disc_url' => $url_disc,
                 'user_firstname' =>  $user->firstname,
@@ -1393,6 +1396,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
                 'new_news' => $new_news
                 //'discussion_url' => $url_disc
             ];
+        }
         }
     } else {
         // $out = null;
