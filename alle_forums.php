@@ -70,7 +70,7 @@ $systemcontext = context_system::instance();
 
 // $PAGE->set_pagelayout('incourse');
 $PAGE->set_course($course);
-$PAGE->set_pagelayout('incourse');
+$PAGE->set_pagelayout('course');
 $PAGE->set_context(\context_course::instance($course->id));
 // $PAGE->set_title("$course->shortname: " . get_string('my_badges', 'format_mooin'));
 // $PAGE->set_heading($course->fullname);
