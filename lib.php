@@ -652,6 +652,23 @@ class format_mooin extends format_base {
 
         return true;
     }
+
+    /**
+     * Updates format options for a course
+     *
+     * If $data does not contain property with the option name, the option will not be updated
+     *
+     * @param stdClass|array $data return value from {@link moodleform::get_data()} or array with data
+     * @param stdClass $oldcourse if this function is called from {@link update_course()}
+     *     this object contains information about the course before update
+     * @return bool whether there were any changes to the options values
+     */
+    public function update_course_format_options($data, $oldcourse = null) {
+        global $DB;
+        $oldcourse->showcompletionconditions = 0;
+        $DB->update_record('course', $oldcourse);
+        return $this->update_format_options($data);
+    }
 }
 
 /**
