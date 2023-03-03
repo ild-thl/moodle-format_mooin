@@ -268,7 +268,28 @@ class format_mooin extends format_base {
                         $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section));
                         $icon = new pix_icon('i/navigationitem', '');
                     }
-                    $sectionnode->text = $title;
+
+                    // mark as completed
+                    $completed = '';
+                    $progress_result = get_section_progress($courseid, $section->id, $USER->id);
+                    if ($progress_result == 100) {
+                        $completed .= ' completed';
+                    }
+
+                    /*
+                    // mark as locked/invisible
+                    $locked = '';
+                    if ($section->uservisible) {
+                        $locked = ' locked';
+                    }
+                    */
+
+                    // highlight as last visited section
+                    $lastvisitedsection = '';
+                    if (get_user_preferences('format_mooin_last_section_in_course_'.$courseid, 0, $USER->id) == $section->section) {
+                        $lastvisitedsection = ' active';
+                    }
+                    $sectionnode->text = '<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>';
                     $sectionnode->shorttext = $pre;
                     $sectionnode->action = $url;
                     if (isset($icon)) {
