@@ -249,6 +249,9 @@ class format_mooin extends format_base {
                     $title = 'NULL';
                     $url = '';
                     $pre = $section->name;
+                    $completed = '';
+                    $lastvisitedsection = '';
+
                     if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
                         $pre = $chapter->chapter.' - ';
                         $title = '<b>'.$pre.$chapter->title.'</b>';
@@ -256,6 +259,11 @@ class format_mooin extends format_base {
                             $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
                         }
                         $icon = new pix_icon('i/folder', '');
+
+                        $chapterinfo = get_chapter_info($chapter);
+                        if ($chapterinfo['completed'] == true) {
+                            $completed .= ' completed';
+                        }
                     }
                     else {
                         $pre = get_section_prefix($section).' - ';
@@ -267,28 +275,19 @@ class format_mooin extends format_base {
                         }
                         $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section));
                         $icon = new pix_icon('i/navigationitem', '');
+
+                        // mark as completed
+                        $progress_result = get_section_progress($courseid, $section->id, $USER->id);
+                        if ($progress_result == 100) {
+                            $completed .= ' completed';
+                        }
+
+                        // highlight as last visited section
+                        if (get_user_preferences('format_mooin_last_section_in_course_'.$courseid, 0, $USER->id) == $section->section) {
+                            $lastvisitedsection = ' active';
+                        }
                     }
 
-                    // mark as completed
-                    $completed = '';
-                    $progress_result = get_section_progress($courseid, $section->id, $USER->id);
-                    if ($progress_result == 100) {
-                        $completed .= ' completed';
-                    }
-
-                    /*
-                    // mark as locked/invisible
-                    $locked = '';
-                    if ($section->uservisible) {
-                        $locked = ' locked';
-                    }
-                    */
-
-                    // highlight as last visited section
-                    $lastvisitedsection = '';
-                    if (get_user_preferences('format_mooin_last_section_in_course_'.$courseid, 0, $USER->id) == $section->section) {
-                        $lastvisitedsection = ' active';
-                    }
                     $sectionnode->text = '<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>';
                     $sectionnode->shorttext = $pre;
                     $sectionnode->action = $url;
