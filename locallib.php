@@ -794,21 +794,19 @@ function get_certificates($courseid) {
             }
         }
 
-
         if(count($user_cert) > 0) {
             $templatedata1 = $user_cert;
             foreach($templatedata01 as $td) {
                 array_push($template_cert_id, $td->section);
            }
         }
-
-
         if( count($user_dont_cert) > 0 && count($user_cert) == 0) {
             $templatedata1 = $user_dont_cert;
             foreach($templatedata01 as $td) {
                 array_push($template_cert_id, $td->section);
            }
         }
+        
         if(count($user_dont_cert) > 0 && count($user_cert) > 0) { //  
             // what should we do if the current user doesn't have any certificate
             foreach($user_dont_cert as $other_user_c) {
@@ -817,7 +815,7 @@ function get_certificates($courseid) {
                 }
             }
         }
-
+        
         if (count($templatedata1) > 0) {
             for ($i=0; $i < count($templatedata1); $i++) {
                 for($j = count($templatedata1) - 1; $j >= 0 ;$j--){
