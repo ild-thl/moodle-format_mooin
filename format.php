@@ -57,9 +57,13 @@ if (($marker >= 0) && has_capability('moodle/course:setcurrentsection', $context
 // Make sure section 0 is created.
 course_create_sections_if_missing($course, 0);
 
-// mooin: TODO get section and set last visited in userpref
+// set forum_trackreadposts temporary as default for this course
+//set_config('forum_trackreadposts', 1);
+$CFG->forum_trackreadposts = 1;
+//print_object($CFG->forum_trackreadposts);
+
+// mooin: get section and set last visited in userpref
 $sectionnumber = optional_param('section', 0, PARAM_INT);
-// mooin: TODO get section and set last visited in userpref
 if ($sectionnumber > 0) {
     set_user_preference('format_mooin_last_section_in_course_'.$course->id, $sectionnumber, $USER->id);
 }
@@ -104,9 +108,9 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         $news = false;
     }
 
-    $grade_in_course = get_course_grades($course->id);
+    //$grade_in_course = get_course_grades($course->id);
 
-    $course_grade = round($grade_in_course);
+    //$course_grade = round($grade_in_course);
 
     $course_grade = get_course_progress($course->id, $USER->id);
     
@@ -170,9 +174,9 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     }
 
     // Participants
-if (get_user_in_course($course->id) != null) {
-    $user_card_list = get_user_in_course($course->id);
-}
+    if (get_user_in_course($course->id) != null) {
+        $user_card_list = get_user_in_course($course->id);
+    }
     // $user_card_list = get_user_in_course($course->id);
     // if ($user_card_list != null) {
     //     $out .= $user_card_list;
