@@ -2517,7 +2517,7 @@ function get_section_progress($courseid, $sectionid, $userid) {
         }
     }
 
-    return $percentage / $activities;
+    return round($percentage / $activities);
 }
 
 function get_course_progress($courseid, $userid) {
