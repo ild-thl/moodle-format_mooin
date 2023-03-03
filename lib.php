@@ -181,14 +181,16 @@ class format_mooin extends format_base {
         $gradesnode = $node->get('grades', navigation_node::TYPE_SETTING);
         $gradesnode->remove();
 
-        $node->add(
-            get_string('news', 'format_mooin'),
-            new moodle_url('/course/format/mooin/forums.php', array('f' => $courseid)),
-            navigation_node::TYPE_CUSTOM,
-            null,
-            'format_mooin_item',
-            new pix_icon('i/news', '')
-        );
+        if ($forum = $DB->get_record('forum', array('course' => $courseid, 'type' => 'news'))) {
+            $node->add(
+                get_string('news', 'format_mooin'),
+                new moodle_url('/course/format/mooin/forums.php', array('f' => $forum->id)),
+                navigation_node::TYPE_CUSTOM,
+                null,
+                'format_mooin_item',
+                new pix_icon('i/news', '')
+            );
+        }
 
         $node->add(
             get_string('badges', 'format_mooin'),
