@@ -667,6 +667,7 @@ class format_mooin extends format_base {
         global $DB;
 
         if ($course = $DB->get_record('course', array('id' => $this->courseid))) {
+            $course->enablecompletion = 1;
             $course->showcompletionconditions = 0;
             $DB->update_record('course', $course);
         }
