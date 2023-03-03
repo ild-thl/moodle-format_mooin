@@ -821,9 +821,9 @@ function get_certificates($courseid) {
                 for($j = count($templatedata1) - 1; $j >= 0 ;$j--){
                     // $templatedata[$i]->certificate_name = 'Certificate';
 
-                    /* if( isset($templatedata1[$j]->user_id) && $templatedata1[$i]->user_id != $templatedata1[$j]->user_id ){
+                    if( isset($templatedata1[$j]->user_id) && $templatedata1[$i]->user_id != $templatedata1[$j]->user_id ){
                         unset($templatedata1[$i]);
-                    } */
+                    }
                     /* if(isset($templatedata1[$i]->user_id) && $templatedata1[$i]->user_id != $templatedata1[$j]->user_id ){
                         unset($templatedata1[$j]);
                     } */
