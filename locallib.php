@@ -2466,11 +2466,9 @@ function get_section_progress($courseid, $sectionid, $userid) {
     $percentage = 0;
 
     // no activities in this section?
-    if (!$coursemodules = $DB->get_records('course_modules', array('course' => $courseid,
+    $coursemodules = $DB->get_records('course_modules', array('course' => $courseid,
                                                                    'deletioninprogress' => 0,
-                                                                   'section' => $sectionid))) {
-        return 0;
-    }
+                                                                   'section' => $sectionid));
 
     $activities = 0;
 
