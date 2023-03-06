@@ -20,7 +20,7 @@
  * @module     format_mooin/complete_section
  * @copyright  2022 Perial Dupont Nguefack Kuaguim
  */
-define(['jquery', 'core/notification'], function($, Notification) {
+define(['jquery'], function($) {
     Y.log('Test in complete_section');
     // Y.log($('.bottom_complete'));
     var section_number = [];
@@ -58,10 +58,10 @@ define(['jquery', 'core/notification'], function($, Notification) {
             data: dataSend,
             success: (dataSend) => {
                 Y.log(dataSend);
-                Notification.addNotification({
+                /* Notification.addNotification({
                     message: ' You have successfully complete this section',
                     type: 'success'
-                });
+                }); */
                 // Window.location.reload();
             },
             error: function(xhr, status, error) {
