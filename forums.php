@@ -138,7 +138,7 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 // echo $output->heading($pagetitle);
 
-echo navbar('Alle Forums');
+//echo navbar('Alle Forums');
 // echo navbar_mobile(get_string('all_forums', 'format_mooin'));
 // Some capability checks.
 

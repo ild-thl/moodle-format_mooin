@@ -89,7 +89,7 @@ if ($isfrontpage) {
     $PAGE->set_pagelayout('admin');
     require_capability('moodle/site:viewparticipants', $systemcontext);
 } else {
-    $PAGE->set_pagelayout('incourse');
+    $PAGE->set_pagelayout('course');
     require_capability('moodle/course:viewparticipants', $context);
 }
 

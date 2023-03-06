@@ -158,7 +158,7 @@ class format_mooin extends format_base {
      * @return void
      */
     public function extend_course_navigation($navigation, navigation_node $node) {
-        global $PAGE, $DB, $CFG;
+        global $PAGE, $DB, $CFG, $USER;
         // If section is specified in course/view.php, make sure it is expanded in navigation.
         if ($navigation->includesectionnum === false) {
             $selectedsection = optional_param('section', null, PARAM_INT);
@@ -282,9 +282,12 @@ class format_mooin extends format_base {
                             $completed .= ' completed';
                         }
 
-                        // highlight as last visited section
-                        if (get_user_preferences('format_mooin_last_section_in_course_'.$courseid, 0, $USER->id) == $section->section) {
-                            $lastvisitedsection = ' active';
+                        // highlight as last visited section only if we are not in a section
+                        $urlparams = $PAGE->url->params();
+                        if (!isset($urlparams['section'])) {
+                            if (get_user_preferences('format_mooin_last_section_in_course_'.$courseid, 0, $USER->id) == $section->section) {
+                                $lastvisitedsection = ' active';
+                            }
                         }
                     }
 
