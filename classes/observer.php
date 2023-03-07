@@ -48,4 +48,13 @@ class format_mooin_observer
         $badgehash = $event->other['badgehash'];
         unset_new_badge($viewedbyuserid, $badgehash);
     }
+
+    public static function discussion_viewed(\mod_forum\event\discussion_viewed $event) {
+        global $CFG;
+        require_once($CFG->dirroot. '/course/format/mooin/locallib.php');
+        $forumid = $event->contextinstanceid;
+        $userid = $event->userid;
+        $discussionid = $event->objectid;
+        set_discussion_viewed($userid, $forumid, $discussionid);
+    }
 }

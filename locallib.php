@@ -2540,3 +2540,49 @@ function get_course_progress($courseid, $userid) {
 
     return round($percentage);
 }
+
+function set_discussion_viewed($userid, $forumid, $discussionid) {
+    global $DB;
+
+    $posts = $DB->get_records('forum_posts', array('discussion' => $discussionid));
+    foreach ($posts as $post) {
+        if (!$read = $DB->get_record('forum_read', array('userid' => $userid,
+                                                         'forumid' => $forumid,
+                                                         'discussionid' => $discussionid,
+                                                         'postid' => $post->id))) {
+            $read = new stdClass();
+            $read->userid = $userid;
+            $read->forumid = $forumid;
+            $read->discussionid = $discussionid;
+            $read->postid = $post->id;
+            $read->firstread = time();
+            $read->lastread = $read->firstread;
+            $DB->insert_record('forum_read', $read);
+        }
+    }    
+}
+
+function count_unread_posts($userid, $courseid, $news = false) {
+    global $DB;
+
+    $sql = 'SELECT fp.* 
+              FROM {forum_posts} as fp, 
+                   {forum_discussions} as fd, 
+                   {forum} as f 
+             WHERE fp.discussion = fd.id 
+               AND fd.forum = f.id
+               AND f.course = :courseid ';
+    if ($news) {
+        $sql .= 'AND f.type = :news ';
+    }
+    $sql .= '  AND fp.id not in (SELECT postid 
+                                  FROM {forum_read} 
+                                 WHERE userid = :userid) ';
+
+    $params = array('courseid' => $courseid,
+                    'news' => 'news',
+                    'userid' => $userid);
+
+    $unreadposts = $DB->get_records_sql($sql, $params);
+    return count($unreadposts);
+}

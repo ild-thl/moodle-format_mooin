@@ -34,5 +34,9 @@ $observers = array(
     array(
         'eventname' => '\core\event\badge_viewed',
         'callback' => 'format_mooin_observer::badge_viewed',
+    ),
+    array(
+        'eventname' => '\mod_forum\event\discussion_viewed',
+        'callback' => 'format_mooin_observer::discussion_viewed'
     )
 );
