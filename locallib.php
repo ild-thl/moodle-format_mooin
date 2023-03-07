@@ -2564,7 +2564,7 @@ function set_discussion_viewed($userid, $forumid, $discussionid) {
     }    
 }
 
-function count_unread_posts($userid, $courseid, $news = false) {
+function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
     global $DB;
 
     $sql = 'SELECT fp.* 
@@ -2577,13 +2577,20 @@ function count_unread_posts($userid, $courseid, $news = false) {
     if ($news) {
         $sql .= 'AND f.type = :news ';
     }
+    else {
+        $sql .= 'AND f.type != :news ';
+    }
+    if ($forumid > 0) {
+        $sql .= 'AND f.id = :forumid ';
+    }
     $sql .= '  AND fp.id not in (SELECT postid 
                                   FROM {forum_read} 
                                  WHERE userid = :userid) ';
 
     $params = array('courseid' => $courseid,
                     'news' => 'news',
-                    'userid' => $userid);
+                    'userid' => $userid,
+                    'forumid' => $forumid);
 
     $unreadposts = $DB->get_records_sql($sql, $params);
     return count($unreadposts);
