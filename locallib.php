@@ -1195,7 +1195,8 @@ function get_last_news($courseid, $forum_type) {
             // new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
             if ($forum_type == 'news') {
                 // Falls es neue Nachrichten gibt
-                $unread_news_number = get_unread_news_forum($courseid, 'news');
+                //$unread_news_number = get_unread_news_forum($courseid, 'news');
+                $unread_news_number = count_unread_posts($USER->id, $courseid, true);
                 $new_news = false;
 
                 if($unread_news_number == 1) {
@@ -1342,7 +1343,8 @@ function get_last_forum_discussion($courseid, $forum_type) {
                 $new_news = false;
 
                 if (count($ar_for) > 1 || count((array)$oc_f) != 0) {
-                    $unread_forum_number = get_unread_news_forum($courseid, 'genral');
+                    //$unread_forum_number = get_unread_news_forum($courseid, 'genral');
+                    $unread_forum_number = count_unread_posts($USER->id, $courseid, false);
                     //echo $unread_forum_number;
 
                     if ($unread_forum_number == 1) {
