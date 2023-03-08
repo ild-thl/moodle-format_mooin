@@ -1006,7 +1006,8 @@ function show_certificat($courseid) {
     $out_certificat = null;
     // if ( get_certificate($courseid)) {
     // TO-DO
-    $templ = get_certificates($courseid);
+    //$templ = get_certificates($courseid);
+    $templ = get_course_certificates($courseid, $USER->id);
     //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
         // var_dump($templ);
         $templ = array_values($templ);
@@ -1018,15 +1019,17 @@ function show_certificat($courseid) {
 
                 $out_certificat .= html_writer::start_tag('div',['class'=>'certificat_list', 'style'=>'display:flex;justify-content: center']); // certificat_body
                     for ($i= 0; $i < count($templ); $i++) {
-                        if ($templ[$i]->user_id == $USER->id) {
+                        //if ($templ[$i]->user_id == $USER->id) {
+                        if ($templ[$i]->url != '#') { // if certificate is issued to user
                             $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer; margin:0 10px 0 10px']); // certificat_card
                             // var_dump($templ[$i]);
                             // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
 
                             // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
-                            if($templ[$i]->component == 'mod_coursecertificate') {
-                                $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name);
+                            //if($templ[$i]->component == 'mod_coursecertificate') {
+                                //$certificat_url = $templ[$i]->preview_url;
+                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name);
+                                /*
                             } else {
 
                                 $certificat_url = $templ[$i]->preview_url;
@@ -1036,7 +1039,7 @@ function show_certificat($courseid) {
 
                                     $out_certificat .= html_writer::span('',$templ[$i]->name);
                                 }
-                            }
+                            }*/
 
                             // $out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button;margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
@@ -1044,10 +1047,10 @@ function show_certificat($courseid) {
                         } else {
                                 $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:unset; opacity: 0.20']); // certificat_card
 
-                                if($templ[$i]->component == 'mod_coursecertificate') {
-                                $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); // $templ[$i]->course_name . ' ' . $templ[$i]->index
-
+                                //if($templ[$i]->component == 'mod_coursecertificate') {
+                                //$certificat_url = $templ[$i]->preview_url;
+                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); // $templ[$i]->course_name . ' ' . $templ[$i]->index
+/*
                                 } else {
                                     $certificat_url = $templ[$i]->preview_url;
                                     if(isset($certificat_url)) {
@@ -1058,6 +1061,7 @@ function show_certificat($courseid) {
 
 
                             }
+                            */
                             //$out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button; margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
                             $out_certificat .= html_writer::end_tag('div'); // certificat_body
@@ -2622,4 +2626,88 @@ function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
 
     $unreadposts = $DB->get_records_sql($sql, $params);
     return count($unreadposts);
+}
+
+function get_course_certificates($courseid, $userid) {
+    global $DB, $CFG;
+
+    $certificates = array();
+    $dbman = $DB->get_manager();
+
+    // ilddigitalcert
+    $table = new xmldb_table('ilddigitalcert');
+    if ($dbman->table_exists($table) && $ilddigitalcerts = $DB->get_records('ilddigitalcert', array('course' => $courseid))) {
+        // get user enrolment id
+        $ueid = 0;
+        $sql = 'SELECT ue.* 
+                  FROM {enrol} as e, 
+                       {user_enrolments} as ue 
+                 WHERE e.courseid = :courseid 
+                   AND e.id = ue.enrolid 
+                   AND ue.userid = :userid 
+                   AND ue.status = 0 ';
+        $params = array('courseid' => $courseid, 'userid' => $userid);
+        if ($ue = $DB->get_record_sql($sql, $params)) {
+            $ueid = $ue->id;
+        }
+
+        // get all certificates in course
+        foreach ($ilddigitalcerts as $ilddigitalcert) {
+            $certificate = new stdClass();
+            $certificate->userid = 0;
+            $certificate->url = '#';
+            $certificate->name = $ilddigitalcert->name;
+
+            // is certificate issued to user?
+            $sql = 'SELECT di.* 
+                      FROM {ilddigitalcert_issued} as di, 
+                           {course_modules} as cm 
+                     WHERE cm.instance = :ilddigitalcertid 
+                       AND di.cmid = cm.id 
+                       AND di.userid = :userid 
+                       AND di.enrolmentid = :ueid
+                     LIMIT 1 ';
+            $params = array('ilddigitalcertid' => $ilddigitalcert->id,
+                            'userid' => $userid,
+                            'ueid' => $ueid);
+            if ($issued = $DB->get_record_sql($sql, $params)) {
+                $certificate->userid = $userid;
+                $certificate->url = $CFG->wwwroot.'/mod/ilddigitalcert/view.php?id='.$issued->cmid.'&issuedid='.$issued->id.'&ueid='.$ueid;
+                
+            }
+            $certificates[] = $certificate;
+        }
+    }
+
+    // coursecertificate
+    $table = new xmldb_table('coursecertificate');
+    if ($dbman->table_exists($table) && $coursecertificates = $DB->get_records('coursecertificate', array('course' => $courseid))) {
+        // get all certificates in course
+        foreach ($coursecertificates as $coursecertificate) {
+            $certificate = new stdClass();
+            $certificate->userid = 0;
+            $certificate->url = '#';
+            $certificate->name = $coursecertificate->name;
+
+            // is certificate issued to user?
+            if ($issued = $DB->get_record('tool_certificate_issues', array('userid' => $userid, 'courseid' => $courseid))) {
+                $url = '#';
+                $sql = 'SELECT * 
+                          FROM {modules} as m , {course_modules} as cm 
+                         WHERE m.name = :coursecertificate 
+                           AND cm.module = m.id 
+                           AND cm.instance = :coursecertificateid ';
+                $params = array('coursecertificate' => 'coursecertificate',
+                                'coursecertificateid' => $coursecertificate->id);
+                if ($cm = $DB->get_record_sql($sql, $params)) {
+                    $url = $CFG->wwwroot.'/mod/coursecertificate/view.php?id='.$cm->id;
+                }
+                
+                $certificate->userid = $userid;
+                $certificate->url = $url;
+            }
+            $certificates[] = $certificate;
+        }
+    }
+    return $certificates;
 }
