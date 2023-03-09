@@ -1006,7 +1006,8 @@ function show_certificat($courseid) {
     $out_certificat = null;
     // if ( get_certificate($courseid)) {
     // TO-DO
-    $templ = get_certificates($courseid);
+    //$templ = get_certificates($courseid);
+    $templ = get_course_certificates($courseid, $USER->id);
     //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificat_card', 'style'=>'display:flex']); // certificat_card
         // var_dump($templ);
         $templ = array_values($templ);
@@ -1018,15 +1019,17 @@ function show_certificat($courseid) {
 
                 $out_certificat .= html_writer::start_tag('div',['class'=>'certificat_list', 'style'=>'display:flex;justify-content: center']); // certificat_body
                     for ($i= 0; $i < count($templ); $i++) {
-                        if ($templ[$i]->user_id == $USER->id) {
+                        //if ($templ[$i]->user_id == $USER->id) {
+                        if ($templ[$i]->url != '#') { // if certificate is issued to user
                             $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer; margin:0 10px 0 10px']); // certificat_card
                             // var_dump($templ[$i]);
                             // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
 
                             // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
-                            if($templ[$i]->component == 'mod_coursecertificate') {
-                                $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name);
+                            //if($templ[$i]->component == 'mod_coursecertificate') {
+                                //$certificat_url = $templ[$i]->preview_url;
+                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name);
+                                /*
                             } else {
 
                                 $certificat_url = $templ[$i]->preview_url;
@@ -1036,7 +1039,7 @@ function show_certificat($courseid) {
 
                                     $out_certificat .= html_writer::span('',$templ[$i]->name);
                                 }
-                            }
+                            }*/
 
                             // $out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button;margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
@@ -1044,10 +1047,10 @@ function show_certificat($courseid) {
                         } else {
                                 $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:unset; opacity: 0.20']); // certificat_card
 
-                                if($templ[$i]->component == 'mod_coursecertificate') {
-                                $certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($certificat_url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); // $templ[$i]->course_name . ' ' . $templ[$i]->index
-
+                                //if($templ[$i]->component == 'mod_coursecertificate') {
+                                //$certificat_url = $templ[$i]->preview_url;
+                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); // $templ[$i]->course_name . ' ' . $templ[$i]->index
+/*
                                 } else {
                                     $certificat_url = $templ[$i]->preview_url;
                                     if(isset($certificat_url)) {
@@ -1058,6 +1061,7 @@ function show_certificat($courseid) {
 
 
                             }
+                            */
                             //$out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button; margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
                             $out_certificat .= html_writer::end_tag('div'); // certificat_body
@@ -1132,7 +1136,7 @@ function news_forum_url($courseid, $forum_type){
  */
 function get_last_news($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
-
+/*
     // Get all the forum (news)  in the course
     $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
     $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
@@ -1176,6 +1180,34 @@ function get_last_news($courseid, $forum_type) {
             // Take the previous news forum that was showing
             $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         }
+//*/
+
+
+
+    $sql = 'SELECT fp.*, f.id as forumid 
+                FROM {forum_posts} as fp, 
+                    {forum_discussions} as fd, 
+                    {forum} as f 
+                WHERE fp.discussion = fd.id 
+                AND fd.forum = f.id
+                AND f.course = :courseid 
+                AND (fp.mailnow = 1 OR fp.created < :wait) ';
+    if ($forum_type == 'news') {
+        $sql .= 'AND f.type = :news ';
+    }
+    else {
+        $sql .= 'AND f.type != :news ';
+    }
+    $sql .= 'ORDER BY fp.created DESC LIMIT 1 ';
+
+    $params = array('courseid' => $courseid,
+                    'news' => 'news',
+                    'wait' => time() - 1800);
+
+    if ($latestpost = $DB->get_record_sql($sql, $params)) {
+        $news_forum_post = $latestpost;
+
+
 
         $user = $DB->get_record('user', ['id' => $news_forum_post->userid], '*');
 
@@ -1189,13 +1221,14 @@ function get_last_news($courseid, $forum_type) {
 
             $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-inline-block align-items-center mb-3']); //right_part_new
 
-            $news_forum_id = $new_in_course->id;
+            $news_forum_id = $news_forum_post->forumid; //$new_in_course->id;
             $newsurl = new moodle_url('/course/format/mooin/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
             $url_disc = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid));
             // new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
             if ($forum_type == 'news') {
                 // Falls es neue Nachrichten gibt
-                $unread_news_number = get_unread_news_forum($courseid, 'news');
+                //$unread_news_number = get_unread_news_forum($courseid, 'news');
+                $unread_news_number = count_unread_posts($USER->id, $courseid, true);
                 $new_news = false;
 
                 if($unread_news_number == 1) {
@@ -1245,7 +1278,7 @@ function get_last_news($courseid, $forum_type) {
                 'new_news' => $new_news
                 //'discussion_url' => $url_disc
             ];
-        }
+        //}
     } else {
         //$out = null;
         $templatecontext = [];
@@ -1342,7 +1375,8 @@ function get_last_forum_discussion($courseid, $forum_type) {
                 $new_news = false;
 
                 if (count($ar_for) > 1 || count((array)$oc_f) != 0) {
-                    $unread_forum_number = get_unread_news_forum($courseid, 'genral');
+                    //$unread_forum_number = get_unread_news_forum($courseid, 'genral');
+                    $unread_forum_number = count_unread_posts($USER->id, $courseid, false);
                     //echo $unread_forum_number;
 
                     if ($unread_forum_number == 1) {
@@ -2539,4 +2573,141 @@ function get_course_progress($courseid, $userid) {
     }
 
     return round($percentage);
+}
+
+function set_discussion_viewed($userid, $forumid, $discussionid) {
+    global $DB;
+
+    $posts = $DB->get_records('forum_posts', array('discussion' => $discussionid));
+    foreach ($posts as $post) {
+        if (!$read = $DB->get_record('forum_read', array('userid' => $userid,
+                                                         'forumid' => $forumid,
+                                                         'discussionid' => $discussionid,
+                                                         'postid' => $post->id))) {
+            $read = new stdClass();
+            $read->userid = $userid;
+            $read->forumid = $forumid;
+            $read->discussionid = $discussionid;
+            $read->postid = $post->id;
+            $read->firstread = time();
+            $read->lastread = $read->firstread;
+            $DB->insert_record('forum_read', $read);
+        }
+    }    
+}
+
+function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
+    global $DB;
+
+    $sql = 'SELECT fp.* 
+              FROM {forum_posts} as fp, 
+                   {forum_discussions} as fd, 
+                   {forum} as f 
+             WHERE fp.discussion = fd.id 
+               AND fd.forum = f.id
+               AND f.course = :courseid ';
+    if ($news) {
+        $sql .= 'AND f.type = :news ';
+    }
+    else {
+        $sql .= 'AND f.type != :news ';
+    }
+    if ($forumid > 0) {
+        $sql .= 'AND f.id = :forumid ';
+    }
+    $sql .= '  AND fp.id not in (SELECT postid 
+                                  FROM {forum_read} 
+                                 WHERE userid = :userid) ';
+
+    $params = array('courseid' => $courseid,
+                    'news' => 'news',
+                    'userid' => $userid,
+                    'forumid' => $forumid);
+
+    $unreadposts = $DB->get_records_sql($sql, $params);
+    return count($unreadposts);
+}
+
+function get_course_certificates($courseid, $userid) {
+    global $DB, $CFG;
+
+    $certificates = array();
+    $dbman = $DB->get_manager();
+
+    // ilddigitalcert
+    $table = new xmldb_table('ilddigitalcert');
+    if ($dbman->table_exists($table) && $ilddigitalcerts = $DB->get_records('ilddigitalcert', array('course' => $courseid))) {
+        // get user enrolment id
+        $ueid = 0;
+        $sql = 'SELECT ue.* 
+                  FROM {enrol} as e, 
+                       {user_enrolments} as ue 
+                 WHERE e.courseid = :courseid 
+                   AND e.id = ue.enrolid 
+                   AND ue.userid = :userid 
+                   AND ue.status = 0 ';
+        $params = array('courseid' => $courseid, 'userid' => $userid);
+        if ($ue = $DB->get_record_sql($sql, $params)) {
+            $ueid = $ue->id;
+        }
+
+        // get all certificates in course
+        foreach ($ilddigitalcerts as $ilddigitalcert) {
+            $certificate = new stdClass();
+            $certificate->userid = 0;
+            $certificate->url = '#';
+            $certificate->name = $ilddigitalcert->name;
+
+            // is certificate issued to user?
+            $sql = 'SELECT di.* 
+                      FROM {ilddigitalcert_issued} as di, 
+                           {course_modules} as cm 
+                     WHERE cm.instance = :ilddigitalcertid 
+                       AND di.cmid = cm.id 
+                       AND di.userid = :userid 
+                       AND di.enrolmentid = :ueid
+                     LIMIT 1 ';
+            $params = array('ilddigitalcertid' => $ilddigitalcert->id,
+                            'userid' => $userid,
+                            'ueid' => $ueid);
+            if ($issued = $DB->get_record_sql($sql, $params)) {
+                $certificate->userid = $userid;
+                $certificate->url = $CFG->wwwroot.'/mod/ilddigitalcert/view.php?id='.$issued->cmid.'&issuedid='.$issued->id.'&ueid='.$ueid;
+                
+            }
+            $certificates[] = $certificate;
+        }
+    }
+
+    // coursecertificate
+    $table = new xmldb_table('coursecertificate');
+    if ($dbman->table_exists($table) && $coursecertificates = $DB->get_records('coursecertificate', array('course' => $courseid))) {
+        // get all certificates in course
+        foreach ($coursecertificates as $coursecertificate) {
+            $certificate = new stdClass();
+            $certificate->userid = 0;
+            $certificate->url = '#';
+            $certificate->name = $coursecertificate->name;
+
+            // is certificate issued to user?
+            if ($issued = $DB->get_record('tool_certificate_issues', array('userid' => $userid, 'courseid' => $courseid))) {
+                $url = '#';
+                $sql = 'SELECT * 
+                          FROM {modules} as m , {course_modules} as cm 
+                         WHERE m.name = :coursecertificate 
+                           AND cm.module = m.id 
+                           AND cm.instance = :coursecertificateid ';
+                $params = array('coursecertificate' => 'coursecertificate',
+                                'coursecertificateid' => $coursecertificate->id);
+                if ($cm = $DB->get_record_sql($sql, $params)) {
+                    $url = $CFG->wwwroot.'/mod/coursecertificate/view.php?id='.$cm->id;
+                }
+                
+                $certificate->userid = $userid;
+                $certificate->url = $url;
+            }
+            $certificates[] = $certificate;
+        }
+    }
+    return $certificates;
 }

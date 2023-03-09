@@ -57,11 +57,6 @@ if (($marker >= 0) && has_capability('moodle/course:setcurrentsection', $context
 // Make sure section 0 is created.
 course_create_sections_if_missing($course, 0);
 
-// set forum_trackreadposts temporary as default for this course
-//set_config('forum_trackreadposts', 1);
-$CFG->forum_trackreadposts = 1;
-//print_object($CFG->forum_trackreadposts);
-
 // mooin: get section and set last visited in userpref
 $sectionnumber = optional_param('section', 0, PARAM_INT);
 if ($sectionnumber > 0) {

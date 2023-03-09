@@ -35,30 +35,6 @@ $search = optional_param('search', '', PARAM_CLEAN);// search string
 
 global $USER, $DB, $COURSE;
 
-/* if ($id) {
-    if (!$cm = get_coursemodule_from_id('forum', 9)) {
-        echo 'Cm';
-        print_error('invalidcoursemodule');
-    }
-    if (!$course = $DB->get_record("course", array("id" => $id))) { // $cm->course
-        echo 'Course';
-        print_error('coursemisconf');
-    }
-    if (!$forum = $DB->get_record("forum", array("id" => $cm->instance))) {
-        echo 'Forum';
-        print_error('invalidforumid', 'forum');
-    }
-    if ($forum->type == 'single') {
-        $PAGE->set_pagetype('mod-forum-discuss');
-    }
-
-    // move require_course_login here to use forced language for course
-    // fix for MDL-6926
-    require_course_login($course, true, $cm);
-    $strforums = get_string("modulenameplural", "forum");
-    $strforum = get_string("modulename", "forum");
-} */
-
 $courseid = optional_param('id', 0, PARAM_INT);
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
@@ -82,16 +58,6 @@ $PAGE->set_url('/course/format/mooin/alle_forums.php', array('id' => $course->id
 
 echo $OUTPUT->header();
 
-
-
-/* if (empty($cm->visible) and !has_capability('moodle/course:viewhiddenactivities', $context)) {
-    notice(get_string("activityiscurrentlyhidden"));
-}
-
-if (!has_capability('mod/forum:viewdiscussion', $context)) {
-    notice(get_string('noviewdiscussionspermission', 'forum'));
-} */
-
 $oc_m = $DB->get_record('modules', array('name' => 'forum'));
 
 // $sql = 'SELECT * FROM mdl_forum WHERE course = :courseid AND type = :';
@@ -104,7 +70,7 @@ $oc_f= $DB->get_records_sql($s,$p);
 // var_dump($oc_f);
 
 $oc_showall = optional_param('showall', '', PARAM_RAW);
-$oc_counter = 0;
+//$oc_counter = 0;
 
     // echo navbar('All Forums');
     echo html_writer::div(navbar('all_forums'), 'sticky-container');
@@ -133,14 +99,16 @@ $oc_counter = 0;
                     $forum->unreadpostscount = forum_tp_count_forum_unread_posts($cm, $course);
                 }
 
+                $unreadposts = count_unread_posts($USER->id, $course->id, false, $oc_forum->id);
+
                 $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $course->id, 'module' => $oc_m->id), '*', $strictness=IGNORE_MISSING);
 
                 $oc_link = html_writer::link(new moodle_url('/course/format/mooin/forums.php?f=' . $oc_forum->id .'&tab='.'1'), $oc_forum->name);
                 if (intval($oc_cm->visible) === 1) {
                     $forum_element =  html_writer::div($value++  . ' ' .$oc_link, 'forum_title');
-                    if ($forum->unreadpostscount >= 1) {
-                        $forum_index = html_writer::div($key, 'forum_index');
-                        $forum_unread = html_writer::div($forum->unreadpostscount, 'count-container d-inline-flex inline-badge fw-700 mr-1');
+                    if ($unreadposts >= 1) {
+                        //$forum_index = html_writer::div($key, 'forum_index');
+                        $forum_unread = html_writer::div($unreadposts, 'count-container d-inline-flex inline-badge fw-700 mr-1');
                         echo html_writer::start_span('forum_elemts_in_list') . $forum_element . ' ' . $forum_unread. html_writer::end_span();
                     } else {
                         echo html_writer::start_span('forum_elemts_in_list') . $forum_element . html_writer::end_span();
@@ -149,11 +117,13 @@ $oc_counter = 0;
             }
 
         }
+        /*
         if ($oc_counter > 1) {
             ob_end_flush();
             echo $OUTPUT->footer($course);
             exit;
         }
+        */
     } else {
         // $out = html_writer::div('', 'no-forum');
         // $out .= html_writer::span(get_string('no_forums_available', 'format_mooin'), 'no-forums-text mt-3 d-inline-block');
