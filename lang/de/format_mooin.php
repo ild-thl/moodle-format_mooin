@@ -102,6 +102,10 @@ $string['start'] = 'Beginnen';
 $string['startlesson'] = 'In Lektion 1.1 beginnen';
 $string['chapter'] = 'Kapitel';
 $string['lesson'] = 'Lektion';
+$string['configlabel_forcetrackforums'] = 'Ungelesene Beiträge markieren erzwingen';
+$string['configdesc_forcetrackforums'] = 'Aktiviert automatisch immer die globale Moodle Einstellung: <a href="{$a}/admin/search.php?query=trackreadposts">{$a}/admin/search.php?query=trackreadposts</a><br>
+										  Das ist nötig, damit Nutzer/innen sehen können, welche Forenbeiträge noch nicht gelesene wurden und damit sie alle mit einem Klick als gelesen markiert werden können.
+										  Das ist sinnvoll, wenn sich Nutzer/innen zu einem Zeitpunkt in den Kurs einschreiben, an dem bereits sehr viele Beiträge verfasst wurden.';
 
 // added by Jonas
 $string['unread_news'] = 'ungelesene Beiträge im ';
