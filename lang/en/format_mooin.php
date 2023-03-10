@@ -121,6 +121,7 @@ $string['configdesc_forcetrackforums'] = 'Automaticly activates the global setti
 										  This is necessary for users to see, wich forum posts are unread and to mark them as read with one click.
 										  This is helpfull if users enrol at a time, when already a huge number of posts are written.';
 $string['update_config'] = 'Update global moodle settings';
+$string['hint_track_forums'] = 'Please update your forum settings to track forum posts <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">here</a>.';
 
 // added by Jonas
 $string['unread_news_single'] = 'ungelesener Beitrag im ';

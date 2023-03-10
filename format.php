@@ -267,7 +267,9 @@ if (!empty($displaysection)) {
     $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
 } else {
     $PAGE->navbar;
-
+    if(!$USER->trackforums) {
+        \core\notification::warning(get_string('hint_track_forums', 'format_mooin', array('wwwroot' => $CFG->wwwroot, 'userid' => $USER->id)));
+    }
     $renderer->print_multiple_section_page($course, null, null, null, null);
 }
 

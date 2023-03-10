@@ -107,6 +107,7 @@ $string['configdesc_forcetrackforums'] = 'Aktiviert automatisch immer die global
 										  Das ist nötig, damit Nutzer/innen sehen können, welche Forenbeiträge noch nicht gelesen wurden und damit sie alle mit einem Klick als gelesen markiert werden können.
 										  Das ist sinnvoll, wenn sich Nutzer/innen zu einem Zeitpunkt in den Kurs einschreiben, an dem bereits sehr viele Beiträge verfasst wurden.';
 $string['update_config'] = 'Globale Moodle Settings aktualisieren';
+$string['hint_track_forums'] = 'Bitte aktualisiere deine Forum-Einstellungen damit neue Beiträge markiert werden <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">hier</a>.';
 
 // added by Jonas
 $string['unread_news'] = 'ungelesene Beiträge im ';
