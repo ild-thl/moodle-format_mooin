@@ -1183,7 +1183,7 @@ function get_last_news($courseid, $forum_type) {
 //*/
 
 
-
+    $out = null;
     $sql = 'SELECT fp.*, f.id as forumid 
                 FROM {forum_posts} as fp, 
                     {forum_discussions} as fd, 
@@ -2690,7 +2690,7 @@ function get_course_certificates($courseid, $userid) {
             $certificate->name = $coursecertificate->name;
 
             // is certificate issued to user?
-            if ($issued = $DB->get_record('tool_certificate_issues', array('userid' => $userid, 'courseid' => $courseid))) {
+            if ($issued = $DB->get_record('tool_certificate_issues' ,array('userid' => $userid, 'courseid' => $courseid))) {
                 $url = '#';
                 $sql = 'SELECT * 
                           FROM {modules} as m , {course_modules} as cm 

@@ -91,7 +91,8 @@ $out = null;
 $out_first_part = null;
 
 // $lesson = new lesson($lessonrecord);
-
+// Set the user not complete course in user_preferences
+// set_user_preference('format_mooin_course_completed_'.$USER->id . '_'. $course->id, 0, $course->id);
 if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // newsforum
 

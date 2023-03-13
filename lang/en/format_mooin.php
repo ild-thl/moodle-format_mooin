@@ -144,3 +144,6 @@ $string['new_chapter'] = 'New Chapter';
 $string['setchapter'] = 'Set Chapter';
 $string['unsetchapter'] = 'Unset Chapter';
 $string['completed'] = 'Done';
+$string['headerimagedesktop'] = 'Header-Bild Desktop (800 x 280px)';
+$string['headerimagemobile'] = 'Header-Bild Mobile (768 x768px)';
+$string['edit_course_header'] = 'Header-Bild Bearbeiten';

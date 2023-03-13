@@ -601,6 +601,13 @@ class format_mooin_renderer extends format_section_renderer_base {
         echo $sectiontitle;
         // Now the list of sections..
 
+        // find a way to show the popup in a section after completion
+        $course_progress = get_course_progress($course->id, $USER->id);
+        if (!$this->page->user_is_editing() && $course_progress == 100) {
+            // echo 'Perial' .'<br>';
+            // echo gettype($course_progress);
+        }
+        // end
         echo $this->start_section_list();
 
         echo $this->section_header($thissection, $course, true, $displaysection);
