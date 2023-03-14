@@ -448,7 +448,7 @@ class format_mooin extends format_base {
 
         // unenrol from course
         if ($unenrolurl = get_unenrol_url($courseid)) {
-            $node->add(
+            $unenrol_node = $node->add(
                 get_string('unenrol', 'format_mooin'),
                 $unenrolurl,
                 navigation_node::TYPE_CUSTOM,
@@ -456,6 +456,7 @@ class format_mooin extends format_base {
                 'format_mooin_unenrol',
                 new pix_icon('i/user', '')
             );
+            $unenrol_node->add_class("unenrol-btn");
         }
     }
 

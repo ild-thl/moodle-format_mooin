@@ -108,7 +108,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     //$course_grade = round($grade_in_course);
 
     $course_grade = get_course_progress($course->id, $USER->id);
-    
+
     $progressbar  = null;
     if($course_grade == 0){
         $progressbar .= get_progress_bar_course(0, 100);
@@ -163,7 +163,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
 
     $certificates_url = new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id));
 
-    if (get_last_forum_discussion($course->id, 'news') != null) { //Nötig? get_last_news
+    if (get_last_forum_discussion($course->id, 'news') != null) {
         $check_diskussion = get_last_forum_discussion($course->id, 'news');
         // $check_diskussion = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $course->id));
     }
@@ -201,10 +201,10 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     }
     // unenrol from course
     if ($unenrolurl = get_unenrol_url($course->id)) {
-        $unenrol_btn = html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
+        $unenrol_btn = html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-link'));
         //echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
     }
-    
+
 
     $templatecontext = [
         'course_headerimage_mobil' => get_headerimage_url($course->id, true),

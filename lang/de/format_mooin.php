@@ -97,7 +97,7 @@ $string['news'] = 'News';
 $string['social_media'] = 'Social Media';
 $string['discuss'] = 'Allgemeines Diskussionsforum'; */
 
-$string['unenrol'] = 'Aus diesem Kurs abmelden';
+$string['unenrol'] = 'Aus Kurs ausschreiben';
 $string['start'] = 'Beginnen';
 $string['startlesson'] = 'In Lektion 1.1 beginnen';
 $string['chapter'] = 'Kapitel';
