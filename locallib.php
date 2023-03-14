@@ -1389,6 +1389,12 @@ function get_last_forum_discussion($courseid, $forum_type) {
                         //$new_news .= get_string('unread_discussions', 'format_mooin');
                         $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
                     }
+                    if ($unread_forum_number >= 99) {
+                        $new_news = html_writer::start_span('count-container count-container-small d-inline-flex inline-badge fw-700 mr-1') . "99+" . html_writer::end_span();
+                        //$new_news .= get_string('unread_discussions', 'format_mooin');
+                        $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
+                    }
+
                     /* if ($unread_forum_number >= 1) {
                         $out .= html_writer::start_span('count-container inline-batch fw-700 mr-1') . $unread_forum_number . html_writer::end_span(); //Notification Counter
                         $out .= html_writer::link($url_disc, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin'), 'class' =>'primary-link'));
