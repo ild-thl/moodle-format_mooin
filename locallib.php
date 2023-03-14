@@ -2606,15 +2606,16 @@ function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
              WHERE fp.discussion = fd.id
                AND fd.forum = f.id
                AND f.course = :courseid ';
-    if ($news) {
+    if ($forumid > 0) {
+        $sql .= 'AND f.id = :forumid ';
+    }
+    else if ($news) {
         $sql .= 'AND f.type = :news ';
     }
     else {
         $sql .= 'AND f.type != :news ';
     }
-    if ($forumid > 0) {
-        $sql .= 'AND f.id = :forumid ';
-    }
+    
     $sql .= '  AND fp.id not in (SELECT postid
                                   FROM {forum_read}
                                  WHERE userid = :userid) ';
