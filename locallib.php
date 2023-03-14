@@ -1373,6 +1373,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
                 // var_dump((array)$oc_f);
                 $ar_for = (array)$oc_foren;
                 $new_news = false;
+                $small_countcontainer = false;
 
                 if (count($ar_for) > 1 || count((array)$oc_f) != 0) {
                     //$unread_forum_number = get_unread_news_forum($courseid, 'genral');
@@ -1390,6 +1391,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
                         $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
                     }
                     if ($unread_forum_number >= 99) {
+                        $small_countcontainer = true;
                         $new_news = html_writer::start_span('count-container count-container-small d-inline-flex inline-badge fw-700 mr-1') . "99+" . html_writer::end_span();
                         //$new_news .= get_string('unread_discussions', 'format_mooin');
                         $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
@@ -1432,7 +1434,8 @@ function get_last_forum_discussion($courseid, $forum_type) {
                 'news_text' => $value->message,
                 'discussion_url' => $forum_discussion_url,
                 'neue_forum_number' => $unread_forum_number,
-                'new_news' => $new_news
+                'new_news' => $new_news,
+                'small_countcontainer' => $small_countcontainer
                 //'discussion_url' => $url_disc
             ];
         }
@@ -2621,7 +2624,7 @@ function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
     else {
         $sql .= 'AND f.type != :news ';
     }
-    
+
     $sql .= '  AND fp.id not in (SELECT postid
                                   FROM {forum_read}
                                  WHERE userid = :userid) ';

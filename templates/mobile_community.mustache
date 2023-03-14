@@ -9,7 +9,12 @@
           <span class="chat-icon"></span>
 
           {{#new_news}}
+          {{^small_countcontainer}}
           <div class="count-container count-discussion fw-700">{{neue_forum_number}}</div>
+          {{/small_countcontainer}}
+          {{#small_countcontainer}}
+          <div class="count-container count-container-small count-discussion fw-700">99+</div>
+          {{/small_countcontainer}}
           {{/new_news}}
 
         </div>
