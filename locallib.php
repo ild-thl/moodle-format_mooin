@@ -2611,10 +2611,13 @@ function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
     $sql = 'SELECT fp.*
               FROM {forum_posts} as fp,
                    {forum_discussions} as fd,
-                   {forum} as f
+                   {forum} as f,
+                   {course_modules} as cm
              WHERE fp.discussion = fd.id
                AND fd.forum = f.id
-               AND f.course = :courseid ';
+               AND f.course = :courseid 
+               AND cm.instance = f.id 
+               AND cm.visible = 1 ';
     if ($forumid > 0) {
         $sql .= 'AND f.id = :forumid ';
     }
