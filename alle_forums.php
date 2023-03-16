@@ -108,8 +108,10 @@ $oc_showall = optional_param('showall', '', PARAM_RAW);
                     $forum_element =  html_writer::div($value++  . ' ' .$oc_link, 'forum_title');
                     if ($unreadposts >= 1) {
                         //$forum_index = html_writer::div($key, 'forum_index');
+                        $markasunreadlink = html_writer::link(new moodle_url('/course/format/mooin/forums.php?f='.$oc_forum->id.'&markasread=1&redirect=1'), get_string('mark_all_as_read', 'format_mooin'));
+                        $markasunreadlink = html_writer::div($markasunreadlink, 'markasunreadlink');
                         $forum_unread = html_writer::div($unreadposts, 'count-container d-inline-flex inline-badge fw-700 mr-1');
-                        echo html_writer::start_span('forum_elemts_in_list') . $forum_element . ' ' . $forum_unread. html_writer::end_span();
+                        echo html_writer::start_span('forum_elemts_in_list') . $forum_element . ' ' . $forum_unread.' '.$markasunreadlink.html_writer::end_span();
                     } else {
                         echo html_writer::start_span('forum_elemts_in_list') . $forum_element . html_writer::end_span();
                     }

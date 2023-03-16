@@ -339,8 +339,10 @@ class format_mooin_renderer extends format_section_renderer_base {
                 }
                 if(isset($sections[$forward]->ischapter)) {
                     $nextlink = get_string('next_lesson','format_mooin');
+
                 } else {
                     $nextlink = get_string('next_chapter','format_mooin');
+                    $params = array('class' => 'next_chapter');
                 }
 
                 $nextlink .= html_writer::tag('span', $this->output->rarrow(), array('class' => 'rarrow'));
@@ -634,6 +636,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         }
 //*/
 
+
         echo $this->section_footer();
         echo $this->end_section_list();
 
@@ -740,6 +743,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         // Close single-section div.
         echo html_writer::end_tag('div');
+        //$PAGE->requires->js_call_amd('format_mooin/test', 'init');
     }
 
     /**

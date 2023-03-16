@@ -33,7 +33,7 @@ $string['all_discussions'] = 'Ungelesene Beiträge in den Diskussionsforen';
 $string['old_discussion'] = 'Altere Discussions';
 $string['old_news'] = 'Altere News';
 $string['all_news'] = 'Newsforum';
-$string['letze_beitrag'] = 'Neuster Beitrag ';
+$string['letze_beitrag'] = 'Neuester Beitrag ';
 $string['discussion_news'] = 'Zur Nachricht';
 $string['newsectionname'] = 'New name for topic {$a}';
 $string['sectionname'] = 'Topic';
@@ -122,6 +122,7 @@ $string['configdesc_forcetrackforums'] = 'Automaticly activates the global setti
 										  This is helpfull if users enrol at a time, when already a huge number of posts are written.';
 $string['update_config'] = 'Update global moodle settings';
 $string['hint_track_forums'] = 'Please update your forum settings to track forum posts <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">here</a>.';
+$string['mark_all_as_read'] = 'Mark all as read';
 
 // added by Jonas
 $string['unread_news_single'] = 'ungelesener Beitrag im ';

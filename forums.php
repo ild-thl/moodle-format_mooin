@@ -33,6 +33,8 @@ $showall = optional_param('showall', '', PARAM_INT); // show all discussions on 
 $changegroup = optional_param('group', -1, PARAM_INT);   // choose the current group
 $page = optional_param('page', 0, PARAM_INT);     // which page to show
 $search = optional_param('search', '', PARAM_CLEAN);// search string
+$markasread = optional_param('markasread', 0, PARAM_INT);
+$redirect = optional_param('redirect', 0, PARAM_INT);
 // $PAGE->navbar->add(get_string('my_forum', 'format_mooin'));
 // mooin
 $page = -1;
@@ -165,6 +167,23 @@ $advancedsearch_url = new moodle_url('/mod/forum/search.php', array('id' => $cou
 $strsearch = get_string('search');
 $strgo = get_string('go');
 
+// mark all posts of this forum as read
+if ($markasread) {
+    if ($discussions = $DB->get_records('forum_discussions', array('forum' => $forum->id))) {
+        foreach ($discussions as $discussion) {
+            set_discussion_viewed($USER->id, $forum->id, $discussion->id);
+        }
+    }
+    if ($redirect) {
+        redirect($CFG->wwwroot.'/course/format/mooin/alle_forums.php?id='.$course->id);
+    }
+}
+// Show Link/Button to mark all as unread
+if (count_unread_posts($USER->id, $course->id, false, $forum->id) > 0) {
+    echo '<p>';
+    echo html_writer::link(new moodle_url('/course/format/mooin/forums.php?f='.$forum->id.'&markasread=1'), get_string('mark_all_as_read', 'format_mooin'));
+    echo '</P>';
+}
 
 // Forum abonnieren Link
 //$forum->forcesubscribe

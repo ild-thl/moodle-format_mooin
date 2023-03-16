@@ -176,10 +176,16 @@ class format_mooin extends format_base {
         if ($badgesnode = $node->get('badgesview', navigation_node::TYPE_SETTING)) {
             $badgesnode->remove();
         }
-        $competenciesnode = $node->get('competencies', navigation_node::TYPE_SETTING);
-        $competenciesnode->remove();
-        $gradesnode = $node->get('grades', navigation_node::TYPE_SETTING);
-        $gradesnode->remove();
+
+        if($competenciesnode = $node->get('competencies', navigation_node::TYPE_SETTING)) {
+            $competenciesnode->remove();
+        }
+
+        if($gradesnode = $node->get('grades', navigation_node::TYPE_SETTING)) {
+            $gradesnode->remove();
+        }
+
+
 
         if ($forum = $DB->get_record('forum', array('course' => $courseid, 'type' => 'news'))) {
             $node->add(
@@ -448,7 +454,7 @@ class format_mooin extends format_base {
 
         // unenrol from course
         if ($unenrolurl = get_unenrol_url($courseid)) {
-            $node->add(
+            $unenrol_node = $node->add(
                 get_string('unenrol', 'format_mooin'),
                 $unenrolurl,
                 navigation_node::TYPE_CUSTOM,
@@ -456,6 +462,7 @@ class format_mooin extends format_base {
                 'format_mooin_unenrol',
                 new pix_icon('i/user', '')
             );
+            $unenrol_node->add_class("unenrol-btn");
         }
     }
 

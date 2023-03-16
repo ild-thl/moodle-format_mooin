@@ -97,7 +97,7 @@ $string['news'] = 'News';
 $string['social_media'] = 'Social Media';
 $string['discuss'] = 'Allgemeines Diskussionsforum'; */
 
-$string['unenrol'] = 'Aus diesem Kurs abmelden';
+$string['unenrol'] = 'Aus Kurs ausschreiben';
 $string['start'] = 'Beginnen';
 $string['startlesson'] = 'In Lektion 1.1 beginnen';
 $string['chapter'] = 'Kapitel';
@@ -108,6 +108,7 @@ $string['configdesc_forcetrackforums'] = 'Aktiviert automatisch immer die global
 										  Das ist sinnvoll, wenn sich Nutzer/innen zu einem Zeitpunkt in den Kurs einschreiben, an dem bereits sehr viele Beiträge verfasst wurden.';
 $string['update_config'] = 'Globale Moodle Settings aktualisieren';
 $string['hint_track_forums'] = 'Bitte aktualisiere deine Forum-Einstellungen damit neue Beiträge markiert werden <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">hier</a>.';
+$string['mark_all_as_read'] = 'Alle als gelesen markieren';
 
 // added by Jonas
 $string['unread_news'] = 'ungelesene Beiträge im ';
