@@ -261,7 +261,7 @@ function complete_section($section, $userid) {
                     html_writer::tag('div',
                         html_writer::tag('div',
                             '',
-                            array('style' => 'width: ' . $p . '%;', 'id' => 'mooinprogressbar', 'class' => 'progressbar-inner')
+                            array('style' => 'width: ' . $p . '%;', 'id' => 'mooin4ection' . $sectionid, 'class' => 'progressbar-inner')
                         ),
                         array('class' => 'progressbar')
                     ) .
