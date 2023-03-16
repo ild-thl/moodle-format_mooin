@@ -2643,7 +2643,8 @@ function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
                AND fd.forum = f.id
                AND f.course = :courseid
                AND cm.instance = f.id
-               AND cm.visible = 1 ';
+               AND cm.visible = 1 
+               AND (fp.mailnow = 1 OR fp.created < :wait) ';
     if ($forumid > 0) {
         $sql .= 'AND f.id = :forumid ';
     }
@@ -2661,7 +2662,8 @@ function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
     $params = array('courseid' => $courseid,
                     'news' => 'news',
                     'userid' => $userid,
-                    'forumid' => $forumid);
+                    'forumid' => $forumid,
+                    'wait' => time() - 1800);
 
     $unreadposts = $DB->get_records_sql($sql, $params);
     return count($unreadposts);
