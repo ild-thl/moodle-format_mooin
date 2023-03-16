@@ -1297,7 +1297,7 @@ function get_last_news($courseid, $forum_type) {
 function get_last_forum_discussion($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
 
-
+/*
     $sql_second = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type != :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
     $param_second = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
     $news_course = $DB->get_record_sql($sql_second, $param_second);
@@ -1337,6 +1337,27 @@ function get_last_forum_discussion($courseid, $forum_type) {
     } else {
         $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
     }
+//*/
+//*
+    $sql = 'SELECT fp.*, f.id as forumid
+                FROM {forum_posts} as fp,
+                    {forum_discussions} as fd,
+                    {forum} as f
+                WHERE fp.discussion = fd.id
+                AND fd.forum = f.id
+                AND f.course = :courseid
+                AND (fp.mailnow = 1 OR fp.created < :wait) 
+                AND f.type != :news ';
+    $sql .= 'ORDER BY fp.created DESC LIMIT 1 ';
+
+    $params = array('courseid' => $courseid,
+                    'news' => 'news',
+                    'wait' => time() - 1800);
+
+    if ($latestpost = $DB->get_records_sql($sql, $params)) {
+        $new_in_course = $latestpost;
+    }
+//*/
     // Some test to fetch the forum with discussion within it
     // get the news annoucement & forum discussion for a specific news or forum
     // var_dump($new_in_course);
@@ -1358,7 +1379,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
 
             $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-inline-block align-items-center mb-3']); //right_part_new
 
-            $news_forum_id = $news_course->id;
+            //$news_forum_id = $news_course->id;
             // $newsurl = new moodle_url('/course/format/mooin/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
             $url_disc = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid));
             // new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
