@@ -448,7 +448,7 @@ class format_mooin_renderer extends format_section_renderer_base {
      * @param int $displaysection The section number in the course which is being displayed
      */
     public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection) {
-        global $PAGE, $DB, $USER;
+        global $PAGE, $DB, $USER, $OUTPUT;
         $PAGE->requires->js_call_amd('theme_mooin/navigation-header', 'scrollHeader');
 
 
@@ -500,6 +500,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 complete_section($USER->id, $course->id, $i);
             }
        } */
+
         // Title with section navigation links.
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
         $sectiontitle = '';
@@ -639,6 +640,94 @@ class format_mooin_renderer extends format_section_renderer_base {
         echo $this->section_footer();
         echo $this->end_section_list();
 
+                                // find a way to show the popup in a section after completion
+                                $course_progress = get_course_progress($course->id, $USER->id);
+                                $value = 'format_mooin_course_completed_'.$USER->id. '_'.$course->id;
+
+                                $sql = 'SELECT up.*
+                                        FROM {user_preferences} up
+                                        WHERE up.name = :name AND up.userid = :user_id';
+                                $param = ['name'=> $value, 'user_id'=>$USER->id];
+
+                                $value_exist = $DB->record_exists_sql($sql, $param);
+
+                                $modal_out = null;
+                                    $modal_out .= html_writer::start_tag('div', ['id'=>'myModal', 'class'=>'modal_style']);
+                                    $modal_out .= html_writer::start_tag('div', ['class'=>'modal_content_style']);
+                                    $modal_out .= html_writer::start_span('close_style') . 'X' . html_writer::end_span();
+                                    $modal_out .= html_writer::nonempty_tag('h3', 'Du hast alle Lektionen in diesem Kurs bearbeiten!', null);
+
+                                    $modal_out .= html_writer::nonempty_tag('p', get_progress_bar_course($course_progress, 100), null);
+                                    $modal_out .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
+                                    $modal_out .= html_writer::start_span('text_close') . 'SCHLIESSEN' . html_writer::end_span();
+                                    $modal_out .= html_writer::end_tag('button');
+                                    $modal_out .= html_writer::end_tag('div');
+                                    $modal_out .= html_writer::end_tag('div');
+                                if (!$this->page->user_is_editing() && intval($course_progress) == intval(100) && !$value_exist) { // && !$value_exist
+                                    //  && $v->value == 1
+
+                                    // $modal_out .= html_writer::start_tag('div', ['class'=>]);
+                                    $PAGE->requires->js_call_amd('format_mooin/show_popup');
+                                    echo $modal_out;
+                                    set_user_preference('format_mooin_course_completed_'.$USER->id . '_'. $course->id, 1, $USER->id);
+                                    //$PAGE->requires->js('format_mooin/show_popup');
+
+                                }
+                                // end
+        // Second Modal display
+        $modal_last_section = null;
+        $modal_last_section .= html_writer::start_tag('div', ['id'=>'myModal', 'class'=>'modal_style']);
+        $modal_last_section .= html_writer::start_tag('div', ['class'=>'modal_content_style']);
+        $modal_last_section .= html_writer::start_span('close_style') . 'X' . html_writer::end_span();
+        $modal_last_section .= html_writer::nonempty_tag('h3', 'Du bist in der Letzten Lektion dieses Kapitels angekommen!', null);
+
+        // $modal_last_section .= html_writer::nonempty_tag('p', get_progress_bar_course($course_progress, 100), null);
+        $modal_last_section .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
+        $modal_last_section .= html_writer::start_span('text_close') . 'SCHLIESSEN' . html_writer::end_span();
+        $modal_last_section .= html_writer::end_tag('button');
+        $modal_last_section .= html_writer::end_tag('div');
+        $modal_last_section .= html_writer::end_tag('div');
+
+        // Get chapter
+
+        $chapter_position_in_course = get_chapter_for_section($thissection->id);
+        $chapter_info = $DB->get_record('format_mooin_chapter', ['courseid'=>$course->id, 'chapter'=>$chapter_position_in_course]);
+        // End Modal
+
+        $check_completed_chapter = get_chapter_info($chapter_info);
+
+        // Last Modal complete Kapitel in course
+        $modal_kapitel_completed = null;
+        $modal_kapitel_completed .= html_writer::start_tag('div', ['id'=>'myModal', 'class'=>'modal_style']);
+        $modal_kapitel_completed .= html_writer::start_tag('div', ['class'=>'modal_content_style']);
+        $modal_kapitel_completed .= html_writer::start_span('close_style') . 'X' . html_writer::end_span();
+        $modal_kapitel_completed .= html_writer::nonempty_tag('h3', 'Du hast alle Lektionen in diesem Kapitel bearbeitet!', null);
+
+        $modal_kapitel_completed .= html_writer::start_span('done_style')  . html_writer::end_span();
+        $modal_kapitel_completed .= html_writer::start_tag('div', ['class'=>'modal_bottom_style']);
+        $modal_kapitel_completed .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
+        $modal_kapitel_completed .= html_writer::start_span('text_close') . 'SCHLIESSEN' . html_writer::end_span();
+        $modal_kapitel_completed .= html_writer::end_tag('button');
+        $modal_kapitel_completed .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'modal_btn_next_chapter mdl-right'));
+        $modal_kapitel_completed .= html_writer::end_tag('div');
+        $modal_kapitel_completed .= html_writer::end_tag('div');
+        $modal_kapitel_completed .= html_writer::end_tag('div');
+
+        if (is_last_section_of_chapter($thissection->id) && $check_completed_chapter['completed'] == false) {
+            //  && !$check_completed_chapter
+            // echo 'Get Chapter for Section';
+            // echo get_chapter_for_section($thissection->id);
+            // echo '<br>';
+            // echo $thissection->id;
+            $PAGE->requires->js_call_amd('format_mooin/show_popup');
+            echo $modal_last_section;
+        }
+         if ($check_completed_chapter['completed'] == true && is_last_section_of_chapter($thissection->id)) {
+
+            $PAGE->requires->js_call_amd('format_mooin/show_popup');
+            echo $modal_kapitel_completed;
+        }
+        // End
         // Display section bottom navigation.
         $sectionbottomnav = '';
         $sectionbottomnav .= html_writer::start_tag('div', array('class' => 'section-navigation mdl-bottom'));

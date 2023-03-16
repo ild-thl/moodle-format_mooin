@@ -1183,7 +1183,7 @@ function get_last_news($courseid, $forum_type) {
 //*/
 
 
-
+     $out = null;
     $sql = 'SELECT fp.*, f.id as forumid
                 FROM {forum_posts} as fp,
                     {forum_discussions} as fd,
@@ -2413,8 +2413,9 @@ function get_chapter_info($chapter) {
     }
     if ($completedsections == count($sectionids)) {
         $chaptercompleted = true;
+    }else {
+        $chaptercompleted = false;
     }
-
     $info['completed'] = $chaptercompleted;
     $info['lastvisited'] = $lastvisited;
     return $info;
@@ -2457,10 +2458,14 @@ function is_section_completed($courseid, $section) {
         return true;
     }
     */
+    $result = false;
     if (get_section_progress($courseid, $section->id, $USER->id) == 100) {
-        return true;
+        $result = true;
+    }else {
+        $result = false;
     }
-    return false;
+
+    return $result;
 }
 
 function set_new_badge($awardedtoid, $badgeissuedid) {
@@ -2703,7 +2708,7 @@ function get_course_certificates($courseid, $userid) {
             $certificate->name = $coursecertificate->name;
 
             // is certificate issued to user?
-            if ($issued = $DB->get_record('tool_certificate_issues', array('userid' => $userid, 'courseid' => $courseid))) {
+            if ($issued = $DB->get_record('tool_certificate_issues' ,array('userid' => $userid, 'courseid' => $courseid))) {
                 $url = '#';
                 $sql = 'SELECT *
                           FROM {modules} as m , {course_modules} as cm

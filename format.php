@@ -91,6 +91,7 @@ $out = null;
 $out_first_part = null;
 
 // $lesson = new lesson($lessonrecord);
+// Set the user not complete course in user_preferences
 
 if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // newsforum
