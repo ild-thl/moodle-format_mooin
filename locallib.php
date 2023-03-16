@@ -261,9 +261,9 @@ function complete_section($section, $userid) {
                     html_writer::tag('div',
                         html_writer::tag('div',
                             '',
-                            array('style' => 'width: ' . $p . '%; height: 15px; border: 0px; background: #7fb99f; text-align: center; float: left; border-radius: 12px; transition: width 2s ease-in-out', 'id' => 'mooin4ection' . $sectionid)
+                            array('style' => 'width: ' . $p . '%;', 'id' => 'mooinprogressbar', 'class' => 'progressbar-inner')
                         ),
-                        array('style' => 'width: ' . $width . '%; height: 15px; border: 1px; background: #C4DDD2; solid #aaa; margin: 0 auto; padding: 0;  border-radius: 12px;') //
+                        array('class' => 'progressbar')
                     ) .
                     // html_writer::tag('div', $p .'% der Lektion bearbeitet', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);margin-top: -8px;left: 50%;','id' => 'mooin4ection-text-' . $sectionid)) .
                     html_writer::tag('div', '', array('style' => 'clear: both;'))  .
@@ -806,8 +806,8 @@ function get_certificates($courseid) {
                 array_push($template_cert_id, $td->section);
            }
         }
-        
-        if(count($user_dont_cert) > 0 && count($user_cert) > 0) { //  
+
+        if(count($user_dont_cert) > 0 && count($user_cert) > 0) { //
             // what should we do if the current user doesn't have any certificate
             foreach($user_dont_cert as $other_user_c) {
                 if(!in_array($other_user_c->section,array_values($template_cert_id))) {
@@ -815,7 +815,7 @@ function get_certificates($courseid) {
                 }
             }
         }
-        
+
         if (count($templatedata1) > 0) {
             for ($i=0; $i < count($templatedata1); $i++) {
                 for($j = count($templatedata1) - 1; $j >= 0 ;$j--){
@@ -1165,9 +1165,9 @@ function get_last_news($courseid, $forum_type) {
         $news_forum_post = $DB->get_record_sql($cond_in_forum_posts, $param);
         // save the id for the current news forum
         $id_news = $news_forum_post->discussion - 1;
-        
+
         if($news_forum_post->mailnow == '0' && (time() - $news_forum_post->created) < 1800) {
-            
+
             $cond_in_forum_posts = 'SELECT f.*, fp.*
                                     FROM {forum} f
                                     LEFT JOIN mdl_forum_discussions fd ON fd.forum = f.id
@@ -1183,14 +1183,14 @@ function get_last_news($courseid, $forum_type) {
 //*/
 
 
-    $out = null;
-    $sql = 'SELECT fp.*, f.id as forumid 
-                FROM {forum_posts} as fp, 
-                    {forum_discussions} as fd, 
-                    {forum} as f 
-                WHERE fp.discussion = fd.id 
+     $out = null;
+    $sql = 'SELECT fp.*, f.id as forumid
+                FROM {forum_posts} as fp,
+                    {forum_discussions} as fd,
+                    {forum} as f
+                WHERE fp.discussion = fd.id
                 AND fd.forum = f.id
-                AND f.course = :courseid 
+                AND f.course = :courseid
                 AND (fp.mailnow = 1 OR fp.created < :wait) ';
     if ($forum_type == 'news') {
         $sql .= 'AND f.type = :news ';
@@ -2404,8 +2404,9 @@ function get_chapter_info($chapter) {
     }
     if ($completedsections == count($sectionids)) {
         $chaptercompleted = true;
+    }else {
+        $chaptercompleted = false;
     }
-
     $info['completed'] = $chaptercompleted;
     $info['lastvisited'] = $lastvisited;
     return $info;
@@ -2448,10 +2449,14 @@ function is_section_completed($courseid, $section) {
         return true;
     }
     */
+    $result = false;
     if (get_section_progress($courseid, $section->id, $USER->id) == 100) {
-        return true;
+        $result = true;
+    }else {
+        $result = false;
     }
-    return false;
+
+    return $result;
 }
 
 function set_new_badge($awardedtoid, $badgeissuedid) {
@@ -2593,17 +2598,17 @@ function set_discussion_viewed($userid, $forumid, $discussionid) {
             $read->lastread = $read->firstread;
             $DB->insert_record('forum_read', $read);
         }
-    }    
+    }
 }
 
 function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
     global $DB;
 
-    $sql = 'SELECT fp.* 
-              FROM {forum_posts} as fp, 
-                   {forum_discussions} as fd, 
-                   {forum} as f 
-             WHERE fp.discussion = fd.id 
+    $sql = 'SELECT fp.*
+              FROM {forum_posts} as fp,
+                   {forum_discussions} as fd,
+                   {forum} as f
+             WHERE fp.discussion = fd.id
                AND fd.forum = f.id
                AND f.course = :courseid ';
     if ($news) {
@@ -2615,8 +2620,8 @@ function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
     if ($forumid > 0) {
         $sql .= 'AND f.id = :forumid ';
     }
-    $sql .= '  AND fp.id not in (SELECT postid 
-                                  FROM {forum_read} 
+    $sql .= '  AND fp.id not in (SELECT postid
+                                  FROM {forum_read}
                                  WHERE userid = :userid) ';
 
     $params = array('courseid' => $courseid,
@@ -2639,12 +2644,12 @@ function get_course_certificates($courseid, $userid) {
     if ($dbman->table_exists($table) && $ilddigitalcerts = $DB->get_records('ilddigitalcert', array('course' => $courseid))) {
         // get user enrolment id
         $ueid = 0;
-        $sql = 'SELECT ue.* 
-                  FROM {enrol} as e, 
-                       {user_enrolments} as ue 
-                 WHERE e.courseid = :courseid 
-                   AND e.id = ue.enrolid 
-                   AND ue.userid = :userid 
+        $sql = 'SELECT ue.*
+                  FROM {enrol} as e,
+                       {user_enrolments} as ue
+                 WHERE e.courseid = :courseid
+                   AND e.id = ue.enrolid
+                   AND ue.userid = :userid
                    AND ue.status = 0 ';
         $params = array('courseid' => $courseid, 'userid' => $userid);
         if ($ue = $DB->get_record_sql($sql, $params)) {
@@ -2659,12 +2664,12 @@ function get_course_certificates($courseid, $userid) {
             $certificate->name = $ilddigitalcert->name;
 
             // is certificate issued to user?
-            $sql = 'SELECT di.* 
-                      FROM {ilddigitalcert_issued} as di, 
-                           {course_modules} as cm 
-                     WHERE cm.instance = :ilddigitalcertid 
-                       AND di.cmid = cm.id 
-                       AND di.userid = :userid 
+            $sql = 'SELECT di.*
+                      FROM {ilddigitalcert_issued} as di,
+                           {course_modules} as cm
+                     WHERE cm.instance = :ilddigitalcertid
+                       AND di.cmid = cm.id
+                       AND di.userid = :userid
                        AND di.enrolmentid = :ueid
                      LIMIT 1 ';
             $params = array('ilddigitalcertid' => $ilddigitalcert->id,
@@ -2673,7 +2678,7 @@ function get_course_certificates($courseid, $userid) {
             if ($issued = $DB->get_record_sql($sql, $params)) {
                 $certificate->userid = $userid;
                 $certificate->url = $CFG->wwwroot.'/mod/ilddigitalcert/view.php?id='.$issued->cmid.'&issuedid='.$issued->id.'&ueid='.$ueid;
-                
+
             }
             $certificates[] = $certificate;
         }
@@ -2692,17 +2697,17 @@ function get_course_certificates($courseid, $userid) {
             // is certificate issued to user?
             if ($issued = $DB->get_record('tool_certificate_issues' ,array('userid' => $userid, 'courseid' => $courseid))) {
                 $url = '#';
-                $sql = 'SELECT * 
-                          FROM {modules} as m , {course_modules} as cm 
-                         WHERE m.name = :coursecertificate 
-                           AND cm.module = m.id 
+                $sql = 'SELECT *
+                          FROM {modules} as m , {course_modules} as cm
+                         WHERE m.name = :coursecertificate
+                           AND cm.module = m.id
                            AND cm.instance = :coursecertificateid ';
                 $params = array('coursecertificate' => 'coursecertificate',
                                 'coursecertificateid' => $coursecertificate->id);
                 if ($cm = $DB->get_record_sql($sql, $params)) {
                     $url = $CFG->wwwroot.'/mod/coursecertificate/view.php?id='.$cm->id;
                 }
-                
+
                 $certificate->userid = $userid;
                 $certificate->url = $url;
             }

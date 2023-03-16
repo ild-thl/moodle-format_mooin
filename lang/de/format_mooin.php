@@ -34,7 +34,7 @@ $string['pluginname'] = 'mooin format';
 $string['section0name'] = 'Allgemein';
 $string['page-course-view-mooin'] = 'Any course main page in mooin format';
 $string['page-course-view-mooin-x'] = 'Any course page in mooin format';
-$string['hidefromothers'] = 'Abschnitt verbergen';
+$string['hidefromothers'] = 'Abschnitt sperren';
 $string['showfromothers'] = 'Abschnitt anzeigen';
 $string['privacy:metadata'] = 'Das mooin Kursformat-Plugin speichert keine persönlichen Daten.';
 $string['map_title'] = 'Karte der Teilnehmenden';
@@ -102,12 +102,18 @@ $string['start'] = 'Beginnen';
 $string['startlesson'] = 'In Lektion 1.1 beginnen';
 $string['chapter'] = 'Kapitel';
 $string['lesson'] = 'Lektion';
+$string['configlabel_forcetrackforums'] = 'Ungelesene Beiträge markieren erzwingen';
+$string['configdesc_forcetrackforums'] = 'Aktiviert automatisch immer die globale Moodle Einstellung: <a href="{$a}/admin/search.php?query=trackreadposts">{$a}/admin/search.php?query=trackreadposts</a><br>
+										  Das ist nötig, damit Nutzer/innen sehen können, welche Forenbeiträge noch nicht gelesen wurden und damit sie alle mit einem Klick als gelesen markiert werden können.
+										  Das ist sinnvoll, wenn sich Nutzer/innen zu einem Zeitpunkt in den Kurs einschreiben, an dem bereits sehr viele Beiträge verfasst wurden.';
+$string['update_config'] = 'Globale Moodle Settings aktualisieren';
+$string['hint_track_forums'] = 'Bitte aktualisiere deine Forum-Einstellungen damit neue Beiträge markiert werden <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">hier</a>.';
 
 // added by Jonas
 $string['unread_news'] = 'ungelesene Beiträge im ';
 $string['all_news_mobile'] = 'Alle Beiträge';
 $string['by'] = 'von ';
-$string['latest_contribution_mobile'] = 'Neuster Beitrag:';
+$string['latest_contribution_mobile'] = 'Neuester Beitrag:';
 $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['all_news'] = 'Newsforum';
 $string['topicoutline'] = 'Kursinhalt';

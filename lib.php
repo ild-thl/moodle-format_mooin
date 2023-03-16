@@ -170,7 +170,7 @@ class format_mooin extends format_base {
 
         // Check if there are callbacks to extend course navigation.
         parent::extend_course_navigation($navigation, $node);
-        
+
         $courseid = $this->get_course()->id;
 
         if ($badgesnode = $node->get('badgesview', navigation_node::TYPE_SETTING)) {
@@ -187,7 +187,7 @@ class format_mooin extends format_base {
                 new moodle_url('/course/format/mooin/forums.php', array('f' => $forum->id)),
                 navigation_node::TYPE_CUSTOM,
                 null,
-                'format_mooin_item',
+                'format_mooin_newsforum',
                 new pix_icon('i/news', '')
             );
         }
@@ -197,7 +197,7 @@ class format_mooin extends format_base {
             new moodle_url('/course/format/mooin/badges.php', array('id' => $courseid)),
             navigation_node::TYPE_CUSTOM,
             null,
-            'format_mooin_item',
+            'format_mooin_badges',
             new pix_icon('i/badge', '')
         );
 
@@ -206,7 +206,7 @@ class format_mooin extends format_base {
             new moodle_url('/course/format/mooin/certificates.php', array('id' => $courseid)),
             navigation_node::TYPE_CUSTOM,
             null,
-            'format_mooin_item',
+            'format_mooin_certificates',
             new pix_icon('t/award', '')
         );
 
@@ -215,7 +215,7 @@ class format_mooin extends format_base {
             new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid)),
             navigation_node::TYPE_CUSTOM,
             null,
-            'format_mooin_item',
+            'format_mooin_discussions',
             new pix_icon('t/messages', '')
         );
 
@@ -238,11 +238,99 @@ class format_mooin extends format_base {
         }
 
         require_once($CFG->dirroot.'/course/format/mooin/locallib.php');
-        
+
+        /*------------------------------------------------------------------*/
+        // if ($sections = $DB->get_records('course_sections', array('course' => $courseid), 'section')) {
+
+        //     foreach ($sections as $section) {
+
+        //         if ($sectionnode = $node->get($section->id, navigation_node::TYPE_SECTION)) {
+
+        //             $sectionnode->remove();
+        //         }
+        //         if ($section->section == 0) {
+        //             continue;
+        //         }
+        //     }
+        // }
+
+        // if ($chapters = get_course_chapters($courseid)) {
+        //     foreach($chapters as $chapter) {
+        //         $url="";
+        //         $pre = $chapter->chapter.' - ';
+        //         $title = '<b>'.$pre.$chapter->title.'</b>';
+        //         if (count(get_sectionids_for_chapter($chapter->id)) > 0) {
+        //             var_dump($chapter);
+        //             //$url = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid));
+        //             $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $chapter->$sectionid + 1));
+        //             //var_dump($url);
+        //         }
+        //         $icon = new pix_icon('i/folder', '');
+
+        //         $chapterinfo = get_chapter_info($chapter);
+        //         if ($chapterinfo['completed'] == true) {
+        //             $completed .= ' completed';
+        //         }
+
+        //         $sectionnode->$key = null;
+        //         $parent = $node->add('<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>',
+        //         $url,
+        //         navigation_node::TYPE_SECTION,
+        //         $pre,
+        //         $chapter->section,
+        //         $icon
+        //         );
+        //         if ($sections = get_section_array_for_chapter($chapter -> id) ) {
+        //             foreach($sections as $section) {
+
+        //                 $pre = get_section_prefix($section).' - ';
+        //                 if ($section->name) {
+        //                     $title = $pre.$section->name;
+        //                 }
+        //                 else {
+        //                     $title = $pre.$title;
+        //                 }
+        //                 $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section));
+        //                 $icon = new pix_icon('i/navigationitem', '');
+
+        //                 // mark as completed
+        //                 $progress_result = get_section_progress($courseid, $section->id, $USER->id);
+        //                 if ($progress_result == 100) {
+        //                     $completed .= ' completed';
+        //                 }
+
+        //                 // highlight as last visited section only if we are not in a section
+
+        //                 //$parent_node = $node->get(get_parent_chapter($section)->sectionid);
+
+        //                 $lol = $parent->add('<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>',
+        //                 $url,
+        //                 navigation_node::TYPE_SECTION,
+        //                 $pre,
+        //                 $section->id,
+        //                 $icon
+        //                 );
+        //                 $lol -> showinflatnavigation = true;
+        //                 $urlparams = $PAGE->url->params();
+        //                 if (!isset($urlparams['section'])) {
+        //                     if (get_user_preferences('format_mooin_last_section_in_course_'.$courseid, 0, $USER->id) == $section->section) {
+        //                         $lol->add_Class('lastvisitedsection');
+        //                     }
+        //                 }
+        //             }
+
+        //         }
+        //     }
+        // }
+
+        /*------------------------------------------------------------------*/
+
+
         if ($sections = $DB->get_records('course_sections', array('course' => $courseid), 'section')) {
             foreach ($sections as $section) {
                 if ($sectionnode = $node->get($section->id, navigation_node::TYPE_SECTION)) {
                     $sectionnode->remove();
+
                     if ($section->section == 0) {
                         continue;
                     }
@@ -253,6 +341,7 @@ class format_mooin extends format_base {
                     $lastvisitedsection = '';
 
                     if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+
                         $pre = $chapter->chapter.' - ';
                         $title = '<b>'.$pre.$chapter->title.'</b>';
                         if (count(get_sectionids_for_chapter($chapter->id)) > 0) {
@@ -264,6 +353,29 @@ class format_mooin extends format_base {
                         if ($chapterinfo['completed'] == true) {
                             $completed .= ' completed';
                         }
+
+
+                    $chapter_node = $node->add('<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>',
+                    null,
+                    navigation_node::TYPE_SECTION,
+                    $pre,
+                    $chapter->sectionid,
+                    $icon
+                    );
+                    $chapter_node->showinflatnavigation = true;
+                    $chapter_node->isexpandable = true;
+                    $chapter_node->collapse = true;
+                    $chapter_node->mainnavonly = true;
+                    if($chapter->chapter==1) {
+                        $chapter_node->preceedwithhr = false;
+                    } else {
+                        $chapter_node->preceedwithhr = true;
+                    }
+
+                    $chapter_node->add_class('chapter');
+                    $chapter_node->add_class('collapsed');
+
+
                     }
                     else {
                         $pre = get_section_prefix($section).' - ';
@@ -282,23 +394,54 @@ class format_mooin extends format_base {
                             $completed .= ' completed';
                         }
 
+                        // if (isset($icon)) {
+                        //     $sectionnodeNew->icon = $icon;
+                        // }
+                    // $sectionnode->$key = null;
+                    $chapter_node = $node->get(get_parent_chapter($section)->sectionid);
+                    // var_dump($parent_node -> key);
+                    // exit();
+                    if($chapter_node) {
+                        $section_node = $chapter_node->add('<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>',
+                        $url,
+                        navigation_node::TYPE_SECTION,
+                        $pre,
+                        $section->id,
+                        $icon
+                        );
+                        $section_node->showinflatnavigation = true;
+                        $section_node->collapse = true;
+                        $section_node->preceedwithhr = true;
+
                         // highlight as last visited section only if we are not in a section
                         $urlparams = $PAGE->url->params();
                         if (!isset($urlparams['section'])) {
                             if (get_user_preferences('format_mooin_last_section_in_course_'.$courseid, 0, $USER->id) == $section->section) {
-                                $lastvisitedsection = ' active';
+                                $section_node->add_Class('lastvisitedsection');
+                                //$section_node->make_active();
+                                //$section_node->parent->isexpandable = true;
+                                $section_node->parent->collapse = false;
+                                $section_node->parent->remove_class('collapsed');
                             }
                         }
+                        $section_node->add_Class('section');
                     }
 
-                    $sectionnode->text = '<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>';
-                    $sectionnode->shorttext = $pre;
-                    $sectionnode->action = $url;
-                    if (isset($icon)) {
-                        $sectionnode->icon = $icon;
+
+                    //$sectionnodeNew -> showinflatnavigation = true;
+                    //$parent_node->add_node($sectionnodeNew);
                     }
-                    // $sectionnode->$key = null;
-                    $node->add_node($sectionnode);
+
+                    // $sectionnode->text = '<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>';
+                    // $sectionnode->shorttext = $pre;
+                    // $sectionnode->action = $url;
+                    // if (isset($icon)) {
+                    //     $sectionnode->icon = $icon;
+                    // }
+                    // // $sectionnode->$key = null;
+                    // $node->add_node($sectionnode);
+                     //}
+
                 }
             }
         }
@@ -310,7 +453,7 @@ class format_mooin extends format_base {
                 $unenrolurl,
                 navigation_node::TYPE_CUSTOM,
                 null,
-                'format_mooin_item',
+                'format_mooin_unenrol',
                 new pix_icon('i/user', '')
             );
         }
@@ -720,7 +863,7 @@ function format_mooin_inplace_editable($itemtype, $itemid, $newvalue) {
 
 function format_mooin_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
     require_login($course, true);
-    
+
     if ($filearea != 'headerimagemobile' and $filearea != 'headerimagedesktop') {
         return false;
     }

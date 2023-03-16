@@ -92,7 +92,7 @@ $out_first_part = null;
 
 // $lesson = new lesson($lessonrecord);
 // Set the user not complete course in user_preferences
-// set_user_preference('format_mooin_course_completed_'.$USER->id . '_'. $course->id, 0, $course->id);
+
 if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // newsforum
 
@@ -109,7 +109,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     //$course_grade = round($grade_in_course);
 
     $course_grade = get_course_progress($course->id, $USER->id);
-    
+
     $progressbar  = null;
     if($course_grade == 0){
         $progressbar .= get_progress_bar_course(0, 100);
@@ -205,7 +205,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         $unenrol_btn = html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
         //echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
     }
-    
+
 
     $templatecontext = [
         'course_headerimage_mobil' => get_headerimage_url($course->id, true),
@@ -268,7 +268,9 @@ if (!empty($displaysection)) {
     $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
 } else {
     $PAGE->navbar;
-
+    if(!$USER->trackforums) {
+        \core\notification::warning(get_string('hint_track_forums', 'format_mooin', array('wwwroot' => $CFG->wwwroot, 'userid' => $USER->id)));
+    }
     $renderer->print_multiple_section_page($course, null, null, null, null);
 }
 

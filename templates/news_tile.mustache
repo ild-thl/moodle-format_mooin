@@ -1,6 +1,6 @@
 {{#news}}
 <div class="news pb-4">
-  <div class="container-md">
+  <div id="tour-news" class="container-md">
 
     {{{edit_newsforum_link}}}
     <br>
@@ -51,6 +51,7 @@
     </div>
   </div>
 </div>
+<div class="seperator"></div>
 {{/news}}
 {{^news}}
 {{#has_capability}}
@@ -58,5 +59,6 @@
   <span>Newsforum Einstellungen -</span>
   {{{edit_newsforum_link}}}
 </div>
+<div class="seperator"></div>
 {{/has_capability}}
 {{/news}}

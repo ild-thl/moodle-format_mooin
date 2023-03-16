@@ -83,9 +83,9 @@ $string['badge_options'] = 'Badge Einstellungen';
 $string['owner'] = 'Inhaber';
 $string['no_badges_awarded'] = 'Bisher wurden noch keine Badges in diesem Kurs verliehen';
 $string['no_badges_available'] = '<h2>In diesem Kurs sind noch keine Badges verfügbar!</h2>';
-$string['badge_overview_description'] = '<h5>Mit diesen Kursbadges bzw. digitalen Lernabzeichen können Sie den anderen Teilnehmerinnen und Teilnehmern hier auf demo.oncampus.de und auch der ganzen Welt im Web zeigen, welche Kursfortschritte Sie bereits gemacht haben.
+$string['badge_overview_description'] = 'Mit diesen Kursbadges bzw. digitalen Lernabzeichen können Sie den anderen Teilnehmerinnen und Teilnehmern hier auf demo.oncampus.de und auch der ganzen Welt im Web zeigen, welche Kursfortschritte Sie bereits gemacht haben.
 										<br />Weitere Informationen gibt es in der <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a>
-										und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a></h5>';
+										und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a>';
 $string['all_forums'] = 'Alle Diskussionsforen';
 $string['course_groups'] = 'Kursgruppen';
 $string['course_groups_descr'] = 'Hier kannst Du sehen, welche Arbeitsgruppen es in diesem Kurs gibt und entscheiden, welcher Du beitreten möchtest:';
@@ -116,6 +116,12 @@ $string['forum_unread'] = 'Ungelesenen Forum(s)';
 $string['discussions'] = 'Alle Diskussionen';
 $string['chapter'] = 'Chapter';
 $string['lesson'] = 'Lesson';
+$string['configlabel_forcetrackforums'] = 'Force track read posts';
+$string['configdesc_forcetrackforums'] = 'Automaticly activates the global setting: <a href="{$a}/admin/search.php?query=trackreadposts">{$a}/admin/search.php?query=trackreadposts</a><br>
+										  This is necessary for users to see, wich forum posts are unread and to mark them as read with one click.
+										  This is helpfull if users enrol at a time, when already a huge number of posts are written.';
+$string['update_config'] = 'Update global moodle settings';
+$string['hint_track_forums'] = 'Please update your forum settings to track forum posts <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">here</a>.';
 
 // added by Jonas
 $string['unread_news_single'] = 'ungelesener Beitrag im ';
@@ -125,12 +131,12 @@ $string['unread_discussions_single'] = 'ungelesener Beitrag in den ';
 $string['discussion_forum'] = 'Diskussionsforen';
 $string['all_news_mobile'] = 'Alle Beiträge';
 $string['by'] = 'von ';
-$string['latest_contribution_mobile'] = 'Neuster Beitrag:';
+$string['latest_contribution_mobile'] = 'Neuester Beitrag:';
 $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['next_lesson'] = 'Nächste Lektion';
 $string['previous_lesson'] = 'Vorherige Lektion';
-$string['next_chapter'] = 'Nächstes Kapitel';
-$string['previous_chapter'] = 'Vorheriges Kapitel';
+$string['next_chapter'] = 'NÄCHSTES KAPITEL';
+$string['previous_chapter'] = 'VORHERIGES KAPITEL';
 $string['topicoutline'] = 'Course content';
 $string['participant_map'] = 'Map of participants';
 $string['no_badges_image_text'] = 'No badges available';
