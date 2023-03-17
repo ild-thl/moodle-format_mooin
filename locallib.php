@@ -2752,3 +2752,30 @@ function get_course_certificates($courseid, $userid) {
     }
     return $certificates;
 }
+
+function set_new_certificate($awardedtoid, $issuedid, $modulename) {
+    set_user_preference('format_mooin_new_certificate_'.$modulename.'_'.$issuedid, true, $awardedtoid);
+}
+
+function unset_new_certificate($viewedbyuserid, $issuedid, $modulename) {
+    global $DB;
+    $tablename = 'ilddigitalcert_issued';
+    if ($modulename == 'coursecertificate') {
+        $tablename = 'tool_certificate_issues';
+    }
+    else if ($modulename == 'ilddigitalcert') {
+        $tablename = 'ilddigitalcert_issued';
+    }
+    $sql = 'SELECT * from :tablename 
+             WHERE id = :id 
+               AND userid = :userid ';
+    $params = array('tablename' => $tablename,
+                    'id' => $issuedid,
+                    'userid' => $viewedbyuserid);
+
+    if ($record = $DB->get_record_sql($sql, $params)) {
+        if ($record->userid == $viewedbyuserid) {
+            unset_user_preference('format_mooin_new_certificate_'.$modulename.'_'.$record->id, $viewedbyuserid);
+        }
+    }
+}
