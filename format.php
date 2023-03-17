@@ -213,7 +213,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         'coursename' => $course->fullname,
         'continue_url' => new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section)),
         'continue_text' => $start_continue,
-        'continue_text_no_lesson' => $start_continue,//_no_lesson,
+        'continue_text_no_lesson' => $start_continue_no_lesson,
         'news' => $news,
         'progressbar' => $progressbar,
         'badges_url' => new moodle_url('/course/format/mooin/badges.php', array('id' => $course->id)),
