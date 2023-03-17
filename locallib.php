@@ -2766,7 +2766,7 @@ function unset_new_certificate($viewedbyuserid, $issuedid, $modulename) {
     else if ($modulename == 'ilddigitalcert') {
         $tablename = 'ilddigitalcert_issued';
     }
-    $sql = 'SELECT * from :tablename 
+    $sql = 'SELECT * from {'.$tablename.'} 
              WHERE id = :id 
                AND userid = :userid ';
     $params = array('tablename' => $tablename,

@@ -49,6 +49,22 @@ class format_mooin_observer
         unset_new_badge($viewedbyuserid, $badgehash);
     }
 
+    public static function ilddigital_certificate_issued(\mod_ilddigitalcert\event\certificate_issued $event) {
+        global $CFG;
+        require_once($CFG->dirroot. '/course/format/mooin/locallib.php');
+        $awardedtoid = $event->relateduserid;
+        $issuedid = $event->objectid;
+        set_new_certificate($awardedtoid, $issuedid, 'ilddigitalcert');
+    }
+
+    public static function ilddigital_certificate_viewed(\mod_ilddigitalcert\event\certificate_viewed $event) {
+        global $CFG;
+        require_once($CFG->dirroot. '/course/format/mooin/locallib.php');
+        $viewedbyuserid = $event->userid;
+        $issuedid = $event->objectid;
+        unset_new_certificate($viewedbyuserid, $issuedid, 'ilddigitalcert');
+    }
+
     public static function discussion_viewed(\mod_forum\event\discussion_viewed $event) {
         global $CFG;
         require_once($CFG->dirroot. '/course/format/mooin/locallib.php');

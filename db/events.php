@@ -36,6 +36,14 @@ $observers = array(
         'callback' => 'format_mooin_observer::badge_viewed',
     ),
     array(
+        'eventname' => '\mod_ilddigitalcert\event\certificate_issued',
+        'callback' => 'format_mooin_observer::ilddigital_certificate_issued',
+    ),
+    array(
+        'eventname' => '\mod_ilddigitalcert\event\certificate_viewed',
+        'callback' => 'format_mooin_observer::ilddigital_certificate_viewed',
+    ),
+    array(
         'eventname' => '\mod_forum\event\discussion_viewed',
         'callback' => 'format_mooin_observer::discussion_viewed'
     )
