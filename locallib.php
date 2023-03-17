@@ -1021,7 +1021,7 @@ function show_certificat($courseid) {
                     for ($i= 0; $i < count($templ); $i++) {
                         //if ($templ[$i]->user_id == $USER->id) {
                         if ($templ[$i]->url != '#') { // if certificate is issued to user
-                            $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer; margin:0 10px 0 10px']); // certificat_card
+                            $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer;']); // certificat_card
                             // var_dump($templ[$i]);
                             // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
 
