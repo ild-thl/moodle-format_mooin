@@ -1021,14 +1021,14 @@ function show_certificat($courseid) {
                     for ($i= 0; $i < count($templ); $i++) {
                         //if ($templ[$i]->user_id == $USER->id) {
                         if ($templ[$i]->url != '#') { // if certificate is issued to user
-                            $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer;']); // certificat_card
+                            //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer;']); // certificat_card
                             // var_dump($templ[$i]);
                             // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
 
                             // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
                             //if($templ[$i]->component == 'mod_coursecertificate') {
                                 //$certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name);
+                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name, array('class' => 'certificate-img'));
                                 /*
                             } else {
 
@@ -1043,13 +1043,13 @@ function show_certificat($courseid) {
 
                             // $out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button;margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
-                            $out_certificat .= html_writer::end_tag('div'); // certificat_body
+                            //$out_certificat .= html_writer::end_tag('div'); // certificat_body
                         } else {
-                                $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:unset; opacity: 0.20']); // certificat_card
+                                //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:unset; opacity: 0.20']); // certificat_card
 
                                 //if($templ[$i]->component == 'mod_coursecertificate') {
                                 //$certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); // $templ[$i]->course_name . ' ' . $templ[$i]->index
+                                $out_certificat .= html_writer::span($templ[$i]->name, 'certificate-img'); // $templ[$i]->course_name . ' ' . $templ[$i]->index
 /*
                                 } else {
                                     $certificat_url = $templ[$i]->preview_url;
@@ -1064,7 +1064,7 @@ function show_certificat($courseid) {
                             */
                             //$out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button; margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
-                            $out_certificat .= html_writer::end_tag('div'); // certificat_body
+                            //$out_certificat .= html_writer::end_tag('div'); // certificat_body
                         }
 
 
@@ -2766,8 +2766,8 @@ function unset_new_certificate($viewedbyuserid, $issuedid, $modulename) {
     else if ($modulename == 'ilddigitalcert') {
         $tablename = 'ilddigitalcert_issued';
     }
-    $sql = 'SELECT * from {'.$tablename.'} 
-             WHERE id = :id 
+    $sql = 'SELECT * from {'.$tablename.'}
+             WHERE id = :id
                AND userid = :userid ';
     $params = array('tablename' => $tablename,
                     'id' => $issuedid,
