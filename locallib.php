@@ -1017,7 +1017,7 @@ function show_certificat($courseid) {
             }
             if (is_string($templ) != 1) {
 
-                $out_certificat .= html_writer::start_tag('div',['class'=>'certificat_list', 'style'=>'display:flex;justify-content: center']); // certificat_body
+                $out_certificat .= html_writer::start_tag('div',['class'=>'certificat_list']); // certificat_body
                     for ($i= 0; $i < count($templ); $i++) {
                         //if ($templ[$i]->user_id == $USER->id) {
                         if ($templ[$i]->url != '#') { // if certificate is issued to user
@@ -1346,7 +1346,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
                 WHERE fp.discussion = fd.id
                 AND fd.forum = f.id
                 AND f.course = :courseid
-                AND (fp.mailnow = 1 OR fp.created < :wait) 
+                AND (fp.mailnow = 1 OR fp.created < :wait)
                 AND f.type != :news ';
     $sql .= 'ORDER BY fp.created DESC LIMIT 1 ';
 
@@ -2643,7 +2643,7 @@ function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
                AND fd.forum = f.id
                AND f.course = :courseid
                AND cm.instance = f.id
-               AND cm.visible = 1 
+               AND cm.visible = 1
                AND (fp.mailnow = 1 OR fp.created < :wait) ';
     if ($forumid > 0) {
         $sql .= 'AND f.id = :forumid ';

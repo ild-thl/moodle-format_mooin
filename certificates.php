@@ -152,13 +152,15 @@ if ($result) {
     echo html_writer::tag('p', get_string('certificate_overview_description', 'format_mooin'));
     echo '<br />';
     $value .= $result;
+
 } else {
     $out = html_writer::div('', 'no-certificates-img');
     $out .= html_writer::span(get_string('no_certificates_image_text', 'format_mooin'), 'no-certificates-text');
     echo html_writer::div($out, 'no-certificates-container');
 }
 
-echo $value;
+//echo $value;
+echo html_writer::div($value, 'border-card');
 
 echo html_writer::end_div(); //close outer div
 echo $OUTPUT->footer();
