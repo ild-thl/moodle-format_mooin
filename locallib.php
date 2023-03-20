@@ -1031,18 +1031,18 @@ function show_certificat($courseid) {
             }
             if (is_string($templ) != 1) {
 
-                $out_certificat .= html_writer::start_tag('div',['class'=>'certificat_list', 'style'=>'display:flex;justify-content: center']); // certificat_body
+                $out_certificat .= html_writer::start_tag('div',['class'=>'certificat_list']); // certificat_body
                     for ($i= 0; $i < count($templ); $i++) {
                         //if ($templ[$i]->user_id == $USER->id) {
                         if ($templ[$i]->url != '#') { // if certificate is issued to user
-                            $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer; margin:0 10px 0 10px']); // certificat_card
+                            //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer;']); // certificat_card
                             // var_dump($templ[$i]);
                             // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
 
                             // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
                             //if($templ[$i]->component == 'mod_coursecertificate') {
                                 //$certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name);
+                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name, array('class' => 'certificate-img'));
                                 /*
                             } else {
 
@@ -1057,13 +1057,13 @@ function show_certificat($courseid) {
 
                             // $out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button;margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
-                            $out_certificat .= html_writer::end_tag('div'); // certificat_body
+                            //$out_certificat .= html_writer::end_tag('div'); // certificat_body
                         } else {
-                                $out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:unset; opacity: 0.20']); // certificat_card
+                                //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:unset; opacity: 0.20']); // certificat_card
 
                                 //if($templ[$i]->component == 'mod_coursecertificate') {
                                 //$certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name, ['style'=>'cursor:unset !important']); // $templ[$i]->course_name . ' ' . $templ[$i]->index
+                                $out_certificat .= html_writer::span($templ[$i]->name, 'certificate-img'); // $templ[$i]->course_name . ' ' . $templ[$i]->index
 /*
                                 } else {
                                     $certificat_url = $templ[$i]->preview_url;
@@ -1078,7 +1078,7 @@ function show_certificat($courseid) {
                             */
                             //$out_certificat .= html_writer::div($btn_certificat,'btn btn-secondary' ,['style'=>'cursor:unset, type:button; margin-top: 10px']);
                             // $out_certificat .= html_writer::end_tag('button'); // button
-                            $out_certificat .= html_writer::end_tag('div'); // certificat_body
+                            //$out_certificat .= html_writer::end_tag('div'); // certificat_body
                         }
 
 
@@ -1311,7 +1311,7 @@ function get_last_news($courseid, $forum_type) {
 function get_last_forum_discussion($courseid, $forum_type) {
     global $DB, $OUTPUT, $USER;
 
-
+/*
     $sql_second = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type != :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
     $param_second = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
     $news_course = $DB->get_record_sql($sql_second, $param_second);
@@ -1351,6 +1351,27 @@ function get_last_forum_discussion($courseid, $forum_type) {
     } else {
         $new_in_course = $DB->get_records_sql($sql, $param_first, $limitfrom = 0, $limitnum = 0);
     }
+//*/
+//*
+    $sql = 'SELECT fp.*, f.id as forumid
+                FROM {forum_posts} as fp,
+                    {forum_discussions} as fd,
+                    {forum} as f
+                WHERE fp.discussion = fd.id
+                AND fd.forum = f.id
+                AND f.course = :courseid
+                AND (fp.mailnow = 1 OR fp.created < :wait)
+                AND f.type != :news ';
+    $sql .= 'ORDER BY fp.created DESC LIMIT 1 ';
+
+    $params = array('courseid' => $courseid,
+                    'news' => 'news',
+                    'wait' => time() - 1800);
+
+    if ($latestpost = $DB->get_records_sql($sql, $params)) {
+        $new_in_course = $latestpost;
+    }
+//*/
     // Some test to fetch the forum with discussion within it
     // get the news annoucement & forum discussion for a specific news or forum
     // var_dump($new_in_course);
@@ -1372,7 +1393,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
 
             $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-inline-block align-items-center mb-3']); //right_part_new
 
-            $news_forum_id = $news_course->id;
+            //$news_forum_id = $news_course->id;
             // $newsurl = new moodle_url('/course/format/mooin/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
             $url_disc = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid));
             // new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
@@ -2636,7 +2657,8 @@ function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
                AND fd.forum = f.id
                AND f.course = :courseid
                AND cm.instance = f.id
-               AND cm.visible = 1 ';
+               AND cm.visible = 1
+               AND (fp.mailnow = 1 OR fp.created < :wait) ';
     if ($forumid > 0) {
         $sql .= 'AND f.id = :forumid ';
     }
@@ -2654,7 +2676,8 @@ function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
     $params = array('courseid' => $courseid,
                     'news' => 'news',
                     'userid' => $userid,
-                    'forumid' => $forumid);
+                    'forumid' => $forumid,
+                    'wait' => time() - 1800);
 
     $unreadposts = $DB->get_records_sql($sql, $params);
     return count($unreadposts);
@@ -2742,4 +2765,31 @@ function get_course_certificates($courseid, $userid) {
         }
     }
     return $certificates;
+}
+
+function set_new_certificate($awardedtoid, $issuedid, $modulename) {
+    set_user_preference('format_mooin_new_certificate_'.$modulename.'_'.$issuedid, true, $awardedtoid);
+}
+
+function unset_new_certificate($viewedbyuserid, $issuedid, $modulename) {
+    global $DB;
+    $tablename = 'ilddigitalcert_issued';
+    if ($modulename == 'coursecertificate') {
+        $tablename = 'tool_certificate_issues';
+    }
+    else if ($modulename == 'ilddigitalcert') {
+        $tablename = 'ilddigitalcert_issued';
+    }
+    $sql = 'SELECT * from {'.$tablename.'}
+             WHERE id = :id
+               AND userid = :userid ';
+    $params = array('tablename' => $tablename,
+                    'id' => $issuedid,
+                    'userid' => $viewedbyuserid);
+
+    if ($record = $DB->get_record_sql($sql, $params)) {
+        if ($record->userid == $viewedbyuserid) {
+            unset_user_preference('format_mooin_new_certificate_'.$modulename.'_'.$record->id, $viewedbyuserid);
+        }
+    }
 }
