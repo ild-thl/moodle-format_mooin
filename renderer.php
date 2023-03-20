@@ -708,17 +708,17 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         //$modal_kapitel_completed .= html_writer::start_span('done_style')  . html_writer::end_span();
         $modal_kapitel_completed .= html_writer::start_tag('div', ['class'=>'modal_bottom_style']);
-        $modal_kapitel_completed .= html_writer::span('Schliessen', 'modal_button_close mooin-btn btn-white text_close', array('role' => 'button'));
+        $modal_kapitel_completed .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
+        $modal_kapitel_completed .= html_writer::start_span('text_close') . 'SCHLIESSEN' . html_writer::end_span();
+        $modal_kapitel_completed .= html_writer::end_tag('button');
+        if ($sectionnavlinks['next'] !== "") {
+            $modal_kapitel_completed .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'modal_btn_next_chapter mdl-right'));
+        }
+       $modal_kapitel_completed .= html_writer::end_tag('div');
+        $modal_kapitel_completed .= html_writer::end_tag('div');
+        $modal_kapitel_completed .= html_writer::end_tag('div');
 
-        // $modal_kapitel_completed .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
-        // $modal_kapitel_completed .= html_writer::start_span('text_close') . 'SCHLIESSEN' . html_writer::end_span();
-        // $modal_kapitel_completed .= html_writer::end_tag('button');
-        $modal_kapitel_completed .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'modal_btn_next_chapter mooin-btn mooin-btn-primary'));
-        $modal_kapitel_completed .= html_writer::end_tag('div');
-        $modal_kapitel_completed .= html_writer::end_tag('div');
-        $modal_kapitel_completed .= html_writer::end_tag('div');
-
-        if (is_last_section_of_chapter($thissection->id) && $check_completed_chapter['completed'] == false) {
+        if (!$this->page->user_is_editing()  && is_last_section_of_chapter($thissection->id) && $check_completed_chapter['completed'] == false) {
             //  && !$check_completed_chapter
             // echo 'Get Chapter for Section';
             // echo get_chapter_for_section($thissection->id);
@@ -727,7 +727,8 @@ class format_mooin_renderer extends format_section_renderer_base {
             $PAGE->requires->js_call_amd('format_mooin/show_popup');
             echo $modal_last_section;
         }
-         if ($check_completed_chapter['completed'] == true && is_last_section_of_chapter($thissection->id)) {
+         if ((!$this->page->user_is_editing()  && $check_completed_chapter['completed'] == true && is_last_section_of_chapter($thissection->id)) || (
+         !$this->page->user_is_editing()  && is_section_completed($chapter_info->courseid, $thissection) && is_last_section_of_chapter($thissection->id) && $check_completed_chapter['completed'] == true)) {
 
             $PAGE->requires->js_call_amd('format_mooin/show_popup');
             echo $modal_kapitel_completed;
