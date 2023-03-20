@@ -663,16 +663,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                                     $modal_out .= html_writer::end_tag('button');
                                     $modal_out .= html_writer::end_tag('div');
                                     $modal_out .= html_writer::end_tag('div');
-                                if (!$this->page->user_is_editing() && intval($course_progress) == intval(100) && !$value_exist) { // && !$value_exist
-                                    //  && $v->value == 1
 
-                                    // $modal_out .= html_writer::start_tag('div', ['class'=>]);
-                                    $PAGE->requires->js_call_amd('format_mooin/show_popup');
-                                    echo $modal_out;
-                                    set_user_preference('format_mooin_course_completed_'.$USER->id . '_'. $course->id, 1, $USER->id);
-                                    //$PAGE->requires->js('format_mooin/show_popup');
-
-                                }
                                 // end
         // Second Modal display
         $modal_last_section = null;
@@ -681,10 +672,6 @@ class format_mooin_renderer extends format_section_renderer_base {
         $modal_last_section .= html_writer::start_span('close_style') . html_writer::end_span();
         $modal_last_section .= html_writer::nonempty_tag('h3', 'Du bist in der Letzten Lektion dieses Kapitels angekommen!', null);
 
-        // $modal_last_section .= html_writer::nonempty_tag('p', get_progress_bar_course($course_progress, 100), null);
-        // $modal_last_section .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
-        // $modal_last_section .= html_writer::start_span('text_close') . 'SCHLIESSEN' . html_writer::end_span();
-        // $modal_last_section .= html_writer::end_tag('button');
         $modal_last_section .= html_writer::span('Schliessen', 'modal_button_close mooin-btn btn-primary text_close', array('role' => 'button'));
 
         $modal_last_section .= html_writer::end_tag('div');
@@ -711,8 +698,11 @@ class format_mooin_renderer extends format_section_renderer_base {
         $modal_kapitel_completed .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
         $modal_kapitel_completed .= html_writer::start_span('text_close') . 'SCHLIESSEN' . html_writer::end_span();
         $modal_kapitel_completed .= html_writer::end_tag('button');
+
         if ($sectionnavlinks['next'] !== "") {
+            $modal_kapitel_completed .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
             $modal_kapitel_completed .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'modal_btn_next_chapter mdl-right'));
+            $modal_kapitel_completed .= html_writer::end_tag('button');
         }
        $modal_kapitel_completed .= html_writer::end_tag('div');
         $modal_kapitel_completed .= html_writer::end_tag('div');
@@ -727,7 +717,17 @@ class format_mooin_renderer extends format_section_renderer_base {
             $PAGE->requires->js_call_amd('format_mooin/show_popup');
             echo $modal_last_section;
         }
-         if ((!$this->page->user_is_editing()  && $check_completed_chapter['completed'] == true && is_last_section_of_chapter($thissection->id)) || (
+
+        if (!$this->page->user_is_editing() && intval($course_progress) == intval(100) && !$value_exist) { // && !$value_exist
+            //  && $v->value == 1
+
+            // $modal_out .= html_writer::start_tag('div', ['class'=>]);
+            $PAGE->requires->js_call_amd('format_mooin/show_popup');
+            echo $modal_out;
+            set_user_preference('format_mooin_course_completed_'.$USER->id . '_'. $course->id, 1, $USER->id);
+            //$PAGE->requires->js('format_mooin/show_popup');
+
+        } else if ((!$this->page->user_is_editing()  && $check_completed_chapter['completed'] == true && is_last_section_of_chapter($thissection->id)) || (
          !$this->page->user_is_editing()  && is_section_completed($chapter_info->courseid, $thissection) && is_last_section_of_chapter($thissection->id) && $check_completed_chapter['completed'] == true)) {
 
             $PAGE->requires->js_call_amd('format_mooin/show_popup');
