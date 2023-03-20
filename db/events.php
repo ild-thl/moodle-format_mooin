@@ -27,6 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $observers = array(
+    // Badges
     array(
         'eventname' => '\core\event\badge_awarded',
         'callback' => 'format_mooin_observer::badge_awarded',
@@ -35,6 +36,7 @@ $observers = array(
         'eventname' => '\core\event\badge_viewed',
         'callback' => 'format_mooin_observer::badge_viewed',
     ),
+    // ilddigitalcert
     array(
         'eventname' => '\mod_ilddigitalcert\event\certificate_issued',
         'callback' => 'format_mooin_observer::ilddigital_certificate_issued',
@@ -43,6 +45,16 @@ $observers = array(
         'eventname' => '\mod_ilddigitalcert\event\certificate_viewed',
         'callback' => 'format_mooin_observer::ilddigital_certificate_viewed',
     ),
+    // coursecertificate
+    array(
+        'eventname' => '\mod_coursecertificate\event\course_module_viewed',
+        'callback' => 'format_mooin_observer::course_certificate_viewed',
+    ),
+    array(
+        'eventname' => '\tool_certificate\event\certificate_issued',
+        'callback' => 'format_mooin_observer::course_certificate_issued',
+    ),
+    // Forum
     array(
         'eventname' => '\mod_forum\event\discussion_viewed',
         'callback' => 'format_mooin_observer::discussion_viewed'

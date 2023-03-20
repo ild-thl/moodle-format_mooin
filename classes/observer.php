@@ -65,6 +65,29 @@ class format_mooin_observer
         unset_new_certificate($viewedbyuserid, $issuedid, 'ilddigitalcert');
     }
 
+    public static function course_certificate_issued(\tool_certificate\event\certificate_issued $event) {
+        global $CFG;
+        require_once($CFG->dirroot. '/course/format/mooin/locallib.php');
+        $awardedtoid = $event->relateduserid;
+        $issuedid = $event->objectid;
+        set_new_certificate($awardedtoid, $issuedid, 'coursecertificate');
+    }
+
+    public static function course_certificate_viewed(\mod_coursecertificate\event\course_module_viewed $event) {
+        global $CFG, $DB;
+        require_once($CFG->dirroot. '/course/format/mooin/locallib.php');
+        $viewedbyuserid = $event->userid;
+        $coursecertificateid = $event->objectid;
+        if ($coursecertificate = $DB->get_record('coursecertificate', array('id' => $coursecertificateid))) {
+            if ($coursecertificateissue = $DB->get_record('tool_certificate_issues', 
+                                                           array('userid' => $viewedbyuserid,
+                                                                 'templateid' => $coursecertificate->template,
+                                                                 'courseid' => $coursecertificate->course))) {
+                unset_new_certificate($viewedbyuserid, $coursecertificateissue->id, 'coursecertificate');
+            }
+        }
+    }
+
     public static function discussion_viewed(\mod_forum\event\discussion_viewed $event) {
         global $CFG;
         require_once($CFG->dirroot. '/course/format/mooin/locallib.php');
