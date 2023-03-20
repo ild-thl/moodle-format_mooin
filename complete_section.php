@@ -27,6 +27,8 @@ require_once($CFG->libdir.'/filelib.php');
 require_once('../mooin/lib.php');
 require_once('../mooin/locallib.php');
 
+// require_once('../mooin/rendere.php');
+
 global $DB, $PAGE, $USER;
 
 $PAGE->requires->js_call_amd('format_mooin/complete_section');
@@ -53,5 +55,7 @@ $course_new = $courseformat->get_course();
 // Get the POST Data from complete_section.js
 $section = intval($_POST['section']);
 $sec = intval($_POST['section_inside_course']);
+$course_id = intval($_POST['course_id']);
 complete_section($section, $USER->id); // $sec
-// get_section_progress($course->id, $section, $USER->id);
+
+// $sectionnavlinks = get_nav_links($course, $modinfo->get_section_info_all(), $section);

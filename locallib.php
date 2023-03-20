@@ -274,6 +274,20 @@ function complete_section($section, $userid) {
         return $result;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $records
+     * @param boolean $details
+     * @param boolean $highlight
+     * @param boolean $badgename
+     * @return void
+     */
+    function get_all_section_number($courseid) {
+        global $DB;
+        $course = $DB->get_records('course_sections', array('course' => $courseid));
+        return count($course);
+    }
 // Badges functions
 /**
  *

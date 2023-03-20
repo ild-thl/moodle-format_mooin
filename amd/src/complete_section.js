@@ -62,7 +62,7 @@ define(['jquery'], function($) {
                     message: ' You have successfully complete this section',
                     type: 'success'
                 }); */
-                // Window.location.reload();
+                window.location.reload();
             },
             error: function(xhr, status, error) {
                 Y.log(error);
