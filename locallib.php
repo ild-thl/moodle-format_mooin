@@ -1375,7 +1375,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
     // Some test to fetch the forum with discussion within it
     // get the news annoucement & forum discussion for a specific news or forum
     // var_dump($new_in_course);
-    if (count($new_in_course) > 0) {
+    if ( !empty($new_in_course) && count($new_in_course) > 0) {
         $out = null;
         foreach ($new_in_course as $key => $value) {
             if(!empty($value->userid)) {
