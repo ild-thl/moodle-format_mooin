@@ -1030,11 +1030,17 @@ function show_certificat($courseid) {
                 $out_certificat = $templ;
             }
             if (is_string($templ) != 1) {
-
                 $out_certificat .= html_writer::start_tag('div',['class'=>'certificat_list']); // certificat_body
                     for ($i= 0; $i < count($templ); $i++) {
                         //if ($templ[$i]->user_id == $USER->id) {
                         if ($templ[$i]->url != '#') { // if certificate is issued to user
+                            // has user already viewed the certificate?
+                            $new = '';
+                            $certmod = $templ[$i]->certmod;
+                            $issuedid = $templ[$i]->issuedid;
+                            if (get_user_preferences('format_mooin_new_certificate_'.$certmod.'_'.$issuedid, 0, $USER->id) == 1) {
+                                $new = ' new-certificate-layer';
+                            }
                             //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer;']); // certificat_card
                             // var_dump($templ[$i]);
                             // $out_certificat .= html_writer::empty_tag('img', array('src' => $imageurl, 'class' => '', 'style' => 'width: 100px; height: 100px; margin: 0 auto')); // $opacity
@@ -1042,7 +1048,7 @@ function show_certificat($courseid) {
                             // $out_certificat .= html_writer::start_tag('button', ['class'=>'btn btn-primary btn-lg certificat-image', 'style'=>'margin-right:2rem']);
                             //if($templ[$i]->component == 'mod_coursecertificate') {
                                 //$certificat_url = $templ[$i]->preview_url;
-                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name, array('class' => 'certificate-img'));
+                                $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name, array('class' => 'certificate-img'.$new));
                                 /*
                             } else {
 
@@ -2728,7 +2734,8 @@ function get_course_certificates($courseid, $userid) {
             if ($issued = $DB->get_record_sql($sql, $params)) {
                 $certificate->userid = $userid;
                 $certificate->url = $CFG->wwwroot.'/mod/ilddigitalcert/view.php?id='.$issued->cmid.'&issuedid='.$issued->id.'&ueid='.$ueid;
-
+                $certificate->issuedid = $issued->id;
+                $certificate->certmod = 'ilddigitalcert';
             }
             $certificates[] = $certificate;
         }
@@ -2757,9 +2764,11 @@ function get_course_certificates($courseid, $userid) {
                 if ($cm = $DB->get_record_sql($sql, $params)) {
                     $url = $CFG->wwwroot.'/mod/coursecertificate/view.php?id='.$cm->id;
                 }
-
+                
                 $certificate->userid = $userid;
                 $certificate->url = $url;
+                $certificate->issuedid = $issued->id;
+                $certificate->certmod = 'coursecertificate';
             }
             $certificates[] = $certificate;
         }
