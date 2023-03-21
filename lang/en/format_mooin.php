@@ -83,9 +83,8 @@ $string['badge_options'] = 'Badge Einstellungen';
 $string['owner'] = 'Inhaber';
 $string['no_badges_awarded'] = 'Bisher wurden noch keine Badges in diesem Kurs verliehen';
 $string['no_badges_available'] = '<h2>In diesem Kurs sind noch keine Badges verfügbar!</h2>';
-$string['badge_overview_description'] = 'Mit diesen Kursbadges bzw. digitalen Lernabzeichen können Sie den anderen Teilnehmerinnen und Teilnehmern hier auf demo.oncampus.de und auch der ganzen Welt im Web zeigen, welche Kursfortschritte Sie bereits gemacht haben.
-										<br />Weitere Informationen gibt es in der <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a>
-										und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a>';
+$string['badge_overview_description'] = 'With the course badges or digital learning badges you can show the other participants here on this platform and also the whole world on the web which course progress you have already made.
+For more information, see <a href="https://en.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a> and <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a>';
 $string['all_forums'] = 'Alle Diskussionsforen';
 $string['course_groups'] = 'Kursgruppen';
 $string['course_groups_descr'] = 'Hier kannst Du sehen, welche Arbeitsgruppen es in diesem Kurs gibt und entscheiden, welcher Du beitreten möchtest:';
