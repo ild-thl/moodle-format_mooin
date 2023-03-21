@@ -673,7 +673,6 @@ class format_mooin_renderer extends format_section_renderer_base {
         $modal_last_section .= html_writer::nonempty_tag('h3', 'Du bist in der Letzten Lektion dieses Kapitels angekommen!', null);
 
         $modal_last_section .= html_writer::span('Schliessen', 'modal_button_close mooin-btn btn-primary text_close', array('role' => 'button'));
-
         $modal_last_section .= html_writer::end_tag('div');
         $modal_last_section .= html_writer::end_tag('div');
 
@@ -695,14 +694,17 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         //$modal_kapitel_completed .= html_writer::start_span('done_style')  . html_writer::end_span();
         $modal_kapitel_completed .= html_writer::start_tag('div', ['class'=>'modal_bottom_style']);
-        $modal_kapitel_completed .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
-        $modal_kapitel_completed .= html_writer::start_span('text_close') . 'SCHLIESSEN' . html_writer::end_span();
-        $modal_kapitel_completed .= html_writer::end_tag('button');
+        // $modal_kapitel_completed .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
+        // $modal_kapitel_completed .= html_writer::start_span('text_close') . 'SCHLIESSEN' . html_writer::end_span();
+        // $modal_kapitel_completed .= html_writer::end_tag('button');
+        $modal_kapitel_completed .= html_writer::span('Schliessen', 'modal_button_close mooin-btn btn-white text_close', array('role' => 'button'));
 
         if ($sectionnavlinks['next'] !== "") {
-            $modal_kapitel_completed .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
-            $modal_kapitel_completed .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'modal_btn_next_chapter mdl-right'));
-            $modal_kapitel_completed .= html_writer::end_tag('button');
+            // $modal_kapitel_completed .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
+            // $modal_kapitel_completed .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'modal_btn_next_chapter mdl-right'));
+            // $modal_kapitel_completed .= html_writer::end_tag('button');
+            $modal_kapitel_completed .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'modal_btn_next_chapter mooin-btn mooin-btn-primary'));
+
         }
        $modal_kapitel_completed .= html_writer::end_tag('div');
         $modal_kapitel_completed .= html_writer::end_tag('div');
