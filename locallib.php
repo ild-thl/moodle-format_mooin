@@ -1622,7 +1622,7 @@ function get_user_in_course($courseid) {
     foreach ($enrol_data as $key => $value) {
         $param_array = array('value_id' => $value->id);
         $count_val = $DB->get_records_sql($sql_query, $param_array);
-        $val = $DB->get_records_sql($sql_query, $param_array, 0, 3);// ('user_enrolments', ['enrolid' =>$value->id], 'userid');
+        $val = $DB->get_records_sql($sql_query, $param_array, 0, 5);// ('user_enrolments', ['enrolid' =>$value->id], 'userid');
         array_push($user_enrol_data, $val);
     }
 
@@ -2764,7 +2764,7 @@ function get_course_certificates($courseid, $userid) {
                 if ($cm = $DB->get_record_sql($sql, $params)) {
                     $url = $CFG->wwwroot.'/mod/coursecertificate/view.php?id='.$cm->id;
                 }
-                
+
                 $certificate->userid = $userid;
                 $certificate->url = $url;
                 $certificate->issuedid = $issued->id;
