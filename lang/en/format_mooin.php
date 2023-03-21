@@ -123,6 +123,7 @@ $string['configdesc_forcetrackforums'] = 'Automaticly activates the global setti
 $string['update_config'] = 'Update global moodle settings';
 $string['hint_track_forums'] = 'Please update your forum settings to track forum posts <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">here</a>.';
 $string['mark_all_as_read'] = 'Mark all as read';
+$string['mark_all_as_read_mobile'] = 'Read all';
 
 // added by Jonas
 $string['unread_news_single'] = 'ungelesener Beitrag im ';

@@ -109,8 +109,9 @@ $string['configdesc_forcetrackforums'] = 'Aktiviert automatisch immer die global
 $string['update_config'] = 'Globale Moodle Settings aktualisieren';
 $string['hint_track_forums'] = 'Bitte aktualisiere deine Forum-Einstellungen damit neue Beiträge markiert werden <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">hier</a>.';
 $string['mark_all_as_read'] = 'Alle als gelesen markieren';
+$string['mark_all_as_read_mobile'] = 'Alle gelesen';
 
-// added by Jonas
+
 $string['unread_news'] = 'ungelesene Beiträge im ';
 $string['all_news_mobile'] = 'Alle Beiträge';
 $string['by'] = 'von ';
