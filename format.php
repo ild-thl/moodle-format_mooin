@@ -187,6 +187,15 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     } else {
         $badges_count = false;
     }
+    // +x Certificates in desktop tile
+    if (count(get_certificates($course->id)) > 3) {
+       $other_certificates = (count(get_certificates($course->id))) -3;
+    } else {
+        $other_certificates = false;
+    }
+
+
+
     // Get Certificat number on moblie
     $cert = count_certificate($USER->id, $course->id);
     if($cert['completed'] > 0) {
@@ -229,6 +238,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         'other_badges' => $badges_count,
         'show_unenrol_btn' => $unenrol_btn,
         'certificates_number' => $certificates_number_mobile,
+        'other_certificates' => $other_certificates,
         'badges_number' => $badges_count_mobile
 
     ];
