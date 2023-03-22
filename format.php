@@ -188,8 +188,8 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         $badges_count = false;
     }
     // +x Certificates in desktop tile
-    if (count(get_certificates($course->id)) > 3) {
-       $other_certificates = (count(get_certificates($course->id))) -3;
+    if (count(get_course_certificates($course->id, $USER->id)) > 3) {
+       $other_certificates = (count(get_course_certificates($course->id, $USER->id))) -3;
     } else {
         $other_certificates = false;
     }
