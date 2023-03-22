@@ -658,9 +658,8 @@ class format_mooin_renderer extends format_section_renderer_base {
                                     $modal_out .= html_writer::nonempty_tag('h3', 'Du hast alle Lektionen in diesem Kurs bearbeiten!', null);
 
                                     $modal_out .= html_writer::nonempty_tag('p', get_progress_bar_course($course_progress, 100), null);
-                                    $modal_out .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
-                                    $modal_out .= html_writer::start_span('text_close') . 'SCHLIESSEN' . html_writer::end_span();
-                                    $modal_out .= html_writer::end_tag('button');
+                                    $modal_out .= html_writer::span('Schliessen', 'modal_button_close mooin-btn btn-primary text_close', array('role' => 'button'));
+
                                     $modal_out .= html_writer::end_tag('div');
                                     $modal_out .= html_writer::end_tag('div');
 
