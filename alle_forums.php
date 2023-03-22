@@ -110,8 +110,8 @@ $oc_showall = optional_param('showall', '', PARAM_RAW);
                         //$forum_index = html_writer::div($key, 'forum_index');
                         $markasunreadlink = html_writer::link(new moodle_url('/course/format/mooin/forums.php?f='.$oc_forum->id.'&markasread=1&redirect=1'), get_string('mark_all_as_read', 'format_mooin'));
                         $markasunreadlink = html_writer::div($markasunreadlink, 'markasunreadlink d-none d-md-flex');
-                        $markasunreadlink_mobile = html_writer::link(new moodle_url('/course/format/mooin/forums.php?f='.$oc_forum->id.'&markasread=1&redirect=1'), get_string('mark_all_as_read_mobile', 'format_mooin'));
-                        $markasunreadlink_mobile = html_writer::div($markasunreadlink_mobile, 'markasunreadlink-mobile mooin-btn d-flex d-md-none');
+                        $markasunreadlink_mobile = html_writer::link(new moodle_url('/course/format/mooin/forums.php?f='.$oc_forum->id.'&markasread=1&redirect=1'),'', array('class'=>'markasunreadlink-mobile mooin-btn d-flex d-md-none'));
+                        //$markasunreadlink_mobile = html_writer::div($markasunreadlink_mobile, 'markasunreadlink-mobile mooin-btn d-flex d-md-none');
                         $forum_unread = html_writer::div($unreadposts, 'count-container d-inline-flex inline-badge fw-700');
                         echo html_writer::start_span('forum_elemts_in_list') . $forum_element . ' ' . $forum_unread.' '.$markasunreadlink.$markasunreadlink_mobile.html_writer::end_span();
                     } else {
