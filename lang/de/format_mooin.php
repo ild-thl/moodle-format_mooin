@@ -122,6 +122,9 @@ $string['participant_map'] = 'Karte der Teilnehmenden';
 $string['no_badges_image_text'] = 'Keine Badges verfügbar';
 $string['no_certificates_image_text'] = 'Keine Zertifikate verfügbar';
 $string['no_forums_available'] = 'Keine Foren verfügbar';
+$string['modal_course_complete'] = 'Du hast alle Lektionen in diesem Kurs bearbeitet!';
+$string['modal_chapter_complete'] = 'Du hast alle Lektionen in diesem Kapitel bearbeitet!';
+$string['modal_last_section_of_chapter'] = 'Du bist in der letzten Lektion dieses Kapitels angekommen!';
 
 
 

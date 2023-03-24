@@ -839,7 +839,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                                     $modal_out .= html_writer::start_tag('div', ['id'=>'myModal', 'class'=>'modal_style']);
                                     $modal_out .= html_writer::start_tag('div', ['class'=>'modal_content_style']);
                                     $modal_out .= html_writer::start_span('close_style') . html_writer::end_span();
-                                    $modal_out .= html_writer::nonempty_tag('h3', 'Du hast alle Lektionen in diesem Kurs bearbeiten!', null);
+                                    $modal_out .= html_writer::nonempty_tag('h3', get_string('modal_course_complete', 'format_mooin'), null);
 
                                     $modal_out .= html_writer::nonempty_tag('p', get_progress_bar_course($course_progress, 100), null);
                                     $modal_out .= html_writer::span('Schliessen', 'modal_button_close mooin-btn btn-primary text_close', array('role' => 'button'));
@@ -853,7 +853,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $modal_last_section .= html_writer::start_tag('div', ['id'=>'myModal', 'class'=>'modal_style']);
         $modal_last_section .= html_writer::start_tag('div', ['class'=>'modal_content_style']);
         $modal_last_section .= html_writer::start_span('close_style') . html_writer::end_span();
-        $modal_last_section .= html_writer::nonempty_tag('h3', 'Du bist in der Letzten Lektion dieses Kapitels angekommen!', null);
+        $modal_last_section .= html_writer::nonempty_tag('h3', get_string('modal_last_section_of_chapter','format_mooin'), null);
 
         $modal_last_section .= html_writer::span('Schliessen', 'modal_button_close mooin-btn btn-primary text_close', array('role' => 'button'));
         $modal_last_section .= html_writer::end_tag('div');
@@ -872,7 +872,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $modal_kapitel_completed .= html_writer::start_tag('div', ['id'=>'myModal', 'class'=>'modal_style']);
         $modal_kapitel_completed .= html_writer::start_tag('div', ['class'=>'modal_content_style']);
         $modal_kapitel_completed .= html_writer::start_span('close_style') . html_writer::end_span();
-        $modal_kapitel_completed .= html_writer::nonempty_tag('h3', 'Du hast alle Lektionen in diesem Kapitel bearbeitet!', null);
+        $modal_kapitel_completed .= html_writer::nonempty_tag('h3', get_string('modal_chapter_complete','format_mooin'), null);
         $modal_kapitel_completed .= html_writer::span('', 'bi bi-check-circle');
 
         //$modal_kapitel_completed .= html_writer::start_span('done_style')  . html_writer::end_span();
