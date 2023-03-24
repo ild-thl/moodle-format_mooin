@@ -102,6 +102,190 @@ class format_mooin_renderer extends format_section_renderer_base {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section, false));
     }
 
+
+/**
+     * Generate the edit control items of a section
+     *
+     * @param stdClass $course The course entry from DB
+     * @param stdClass $section The course_section entry from DB
+     * @param bool $onsectionpage true if being printed on a section page
+     * @return array of edit control items
+     */
+    protected function section_edit_control_items($course, $section, $onsectionpage = false) {
+        if (!$this->page->user_is_editing()) {
+            return array();
+        }
+
+        global $DB;
+        if ($onsectionpage) {
+            $url = course_get_url($course, $section->section);
+        } else {
+            $url = course_get_url($course);
+        }
+        $url->param('sesskey', sesskey());
+
+        $sectionreturn = $onsectionpage ? $section->section : null;
+
+        $coursecontext = context_course::instance($course->id);
+        $numsections = course_get_format($course)->get_last_section_number();
+        $isstealth = $section->section > $numsections;
+
+        $baseurl = course_get_url($course, $sectionreturn);
+        $baseurl->param('sesskey', sesskey());
+
+        $controls = array();
+
+        if (!$isstealth && has_capability('moodle/course:update', $coursecontext)) {
+            if ($section->section > 0
+                && get_string_manager()->string_exists('editsection', 'format_'.$course->format)) {
+                $streditsection = get_string('editsection', 'format_'.$course->format);
+            } else {
+                $streditsection = get_string('editsection');
+            }
+
+            $controls['edit'] = array(
+                'url'   => new moodle_url('/course/editsection.php', array('id' => $section->id, 'sr' => $sectionreturn)),
+                'icon' => 'i/settings',
+                'name' => $streditsection,
+                'pixattr' => array('class' => ''),
+                'attr' => array('class' => 'icon edit'));
+        }
+
+        if ($section->section && has_capability('moodle/course:setcurrentsection', $coursecontext)) {
+                    /*
+                    if ($course->marker == $section->section) {  // Show the "light globe" on/off.
+                        $url->param('marker', 0);
+                        $highlightoff = get_string('highlightoff');
+                        $controls['highlight'] = [
+                            'url' => $url,
+                            'icon' => 'i/marked',
+                            'name' => $highlightoff,
+                            'pixattr' => ['class' => ''],
+                            'attr' => [
+                                'class' => 'editing_highlight',
+                                'data-action' => 'removemarker'
+                            ],
+                        ];
+                    } else {
+                        $url->param('marker', $section->section);
+                        $highlight = get_string('highlight');
+                        $controls['highlight'] = [
+                            'url' => $url,
+                            'icon' => 'i/marker',
+                            'name' => $highlight,
+                            'pixattr' => ['class' => ''],
+                            'attr' => [
+                                'class' => 'editing_highlight',
+                                'data-action' => 'setmarker'
+                            ],
+                        ];
+                    }
+                    */
+                    if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                        //$url = new moodle_url('/course/view.php');
+                        $url->param('unsetchapter', $section->id);
+                        $controls['unsetchapter'] = array(
+                            'url' => $url,
+                            'icon' => 'i/settings',
+                            'name' => get_string('unsetchapter', 'format_mooin'),
+                            'pixattr' => array('class' => ''),
+                            //'attr' => array('class' => 'icon editing_delete')
+                        );
+                    }
+                    else {
+                        //$url = new moodle_url('/course/view.php');
+                        $url->param('setchapter', $section->id);
+                        $controls['setchapter'] = array(
+                            'url' => $url,
+                            'icon' => 'i/settings',
+                            'name' => get_string('setchapter', 'format_mooin'),
+                            'pixattr' => array('class' => ''),
+                            //'attr' => array('class' => 'icon editing_delete')
+                        );
+                    }
+                }
+
+        if ($section->section) {
+            $url = clone($baseurl);
+            if (!$isstealth) {
+                if (has_capability('moodle/course:sectionvisibility', $coursecontext)) {
+                    if ($section->visible) { // Show the hide/show eye.
+                        $strhidefromothers = get_string('hidefromothers', 'format_'.$course->format);
+                        $url->param('hide', $section->section);
+                        $controls['visiblity'] = array(
+                            'url' => $url,
+                            'icon' => 'i/hide',
+                            'name' => $strhidefromothers,
+                            'pixattr' => array('class' => ''),
+                            'attr' => array('class' => 'icon editing_showhide',
+                                'data-sectionreturn' => $sectionreturn, 'data-action' => 'hide'));
+                    } else {
+                        $strshowfromothers = get_string('showfromothers', 'format_'.$course->format);
+                        $url->param('show',  $section->section);
+                        $controls['visiblity'] = array(
+                            'url' => $url,
+                            'icon' => 'i/show',
+                            'name' => $strshowfromothers,
+                            'pixattr' => array('class' => ''),
+                            'attr' => array('class' => 'icon editing_showhide',
+                                'data-sectionreturn' => $sectionreturn, 'data-action' => 'show'));
+                    }
+                }
+
+                if (!$onsectionpage) {
+                    if (has_capability('moodle/course:movesections', $coursecontext)) {
+                        $url = clone($baseurl);
+                        if ($section->section > 1) { // Add a arrow to move section up.
+                            $url->param('section', $section->section);
+                            $url->param('move', -1);
+                            $strmoveup = get_string('moveup');
+                            $controls['moveup'] = array(
+                                'url' => $url,
+                                'icon' => 'i/up',
+                                'name' => $strmoveup,
+                                'pixattr' => array('class' => ''),
+                                'attr' => array('class' => 'icon moveup'));
+                        }
+
+                        $url = clone($baseurl);
+                        if ($section->section < $numsections) { // Add a arrow to move section down.
+                            $url->param('section', $section->section);
+                            $url->param('move', 1);
+                            $strmovedown = get_string('movedown');
+                            $controls['movedown'] = array(
+                                'url' => $url,
+                                'icon' => 'i/down',
+                                'name' => $strmovedown,
+                                'pixattr' => array('class' => ''),
+                                'attr' => array('class' => 'icon movedown'));
+                        }
+                    }
+                }
+            }
+
+            if (course_can_delete_section($course, $section)) {
+                if (get_string_manager()->string_exists('deletesection', 'format_'.$course->format)) {
+                    $strdelete = get_string('deletesection', 'format_'.$course->format);
+                } else {
+                    $strdelete = get_string('deletesection');
+                }
+                $url = new moodle_url('/course/format/mooin/editsection.php', array(
+                    'id' => $section->id,
+                    'sr' => $sectionreturn,
+                    'delete' => 1,
+                    'sesskey' => sesskey()));
+                $controls['delete'] = array(
+                    'url' => $url,
+                    'icon' => 'i/delete',
+                    'name' => $strdelete,
+                    'pixattr' => array('class' => ''),
+                    'attr' => array('class' => 'icon editing_delete'));
+            }
+        }
+
+        return $controls;
+    }
+
     /**
      * Generate the edit control items of a section.
      *
@@ -110,99 +294,99 @@ class format_mooin_renderer extends format_section_renderer_base {
      * @param bool $onsectionpage true if being printed on a section page
      * @return array of edit control items
      */
-    protected function section_edit_control_items($course, $section, $onsectionpage = false) {
-        global $DB;
+    // protected function section_edit_control_items($course, $section, $onsectionpage = false) {
+    //     global $DB;
 
-        if (!$this->page->user_is_editing()) {
-            return [];
-        }
+    //     if (!$this->page->user_is_editing()) {
+    //         return [];
+    //     }
 
-        $coursecontext = context_course::instance($course->id);
+    //     $coursecontext = context_course::instance($course->id);
 
-        if ($onsectionpage) {
-            $url = course_get_url($course, $section->section);
-        } else {
-            $url = course_get_url($course);
-        }
-        $url->param('sesskey', sesskey());
+    //     if ($onsectionpage) {
+    //         $url = course_get_url($course, $section->section);
+    //     } else {
+    //         $url = course_get_url($course);
+    //     }
+    //     $url->param('sesskey', sesskey());
 
-        $controls = [];
-        if ($section->section && has_capability('moodle/course:setcurrentsection', $coursecontext)) {
-            /*
-            if ($course->marker == $section->section) {  // Show the "light globe" on/off.
-                $url->param('marker', 0);
-                $highlightoff = get_string('highlightoff');
-                $controls['highlight'] = [
-                    'url' => $url,
-                    'icon' => 'i/marked',
-                    'name' => $highlightoff,
-                    'pixattr' => ['class' => ''],
-                    'attr' => [
-                        'class' => 'editing_highlight',
-                        'data-action' => 'removemarker'
-                    ],
-                ];
-            } else {
-                $url->param('marker', $section->section);
-                $highlight = get_string('highlight');
-                $controls['highlight'] = [
-                    'url' => $url,
-                    'icon' => 'i/marker',
-                    'name' => $highlight,
-                    'pixattr' => ['class' => ''],
-                    'attr' => [
-                        'class' => 'editing_highlight',
-                        'data-action' => 'setmarker'
-                    ],
-                ];
-            }
-            */
-            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
-                //$url = new moodle_url('/course/view.php');
-                $url->param('unsetchapter', $section->id);
-                $controls['unsetchapter'] = array(
-                    'url' => $url,
-                    'icon' => 'i/settings',
-                    'name' => get_string('unsetchapter', 'format_mooin'),
-                    'pixattr' => array('class' => ''),
-                    //'attr' => array('class' => 'icon editing_delete')
-                );
-            }
-            else {
-                //$url = new moodle_url('/course/view.php');
-                $url->param('setchapter', $section->id);
-                $controls['setchapter'] = array(
-                    'url' => $url,
-                    'icon' => 'i/settings',
-                    'name' => get_string('setchapter', 'format_mooin'),
-                    'pixattr' => array('class' => ''),
-                    //'attr' => array('class' => 'icon editing_delete')
-                );
-            }
-        }
+    //     $controls = [];
+    //     if ($section->section && has_capability('moodle/course:setcurrentsection', $coursecontext)) {
+    //         /*
+    //         if ($course->marker == $section->section) {  // Show the "light globe" on/off.
+    //             $url->param('marker', 0);
+    //             $highlightoff = get_string('highlightoff');
+    //             $controls['highlight'] = [
+    //                 'url' => $url,
+    //                 'icon' => 'i/marked',
+    //                 'name' => $highlightoff,
+    //                 'pixattr' => ['class' => ''],
+    //                 'attr' => [
+    //                     'class' => 'editing_highlight',
+    //                     'data-action' => 'removemarker'
+    //                 ],
+    //             ];
+    //         } else {
+    //             $url->param('marker', $section->section);
+    //             $highlight = get_string('highlight');
+    //             $controls['highlight'] = [
+    //                 'url' => $url,
+    //                 'icon' => 'i/marker',
+    //                 'name' => $highlight,
+    //                 'pixattr' => ['class' => ''],
+    //                 'attr' => [
+    //                     'class' => 'editing_highlight',
+    //                     'data-action' => 'setmarker'
+    //                 ],
+    //             ];
+    //         }
+    //         */
+    //         if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+    //             //$url = new moodle_url('/course/view.php');
+    //             $url->param('unsetchapter', $section->id);
+    //             $controls['unsetchapter'] = array(
+    //                 'url' => $url,
+    //                 'icon' => 'i/settings',
+    //                 'name' => get_string('unsetchapter', 'format_mooin'),
+    //                 'pixattr' => array('class' => ''),
+    //                 //'attr' => array('class' => 'icon editing_delete')
+    //             );
+    //         }
+    //         else {
+    //             //$url = new moodle_url('/course/view.php');
+    //             $url->param('setchapter', $section->id);
+    //             $controls['setchapter'] = array(
+    //                 'url' => $url,
+    //                 'icon' => 'i/settings',
+    //                 'name' => get_string('setchapter', 'format_mooin'),
+    //                 'pixattr' => array('class' => ''),
+    //                 //'attr' => array('class' => 'icon editing_delete')
+    //             );
+    //         }
+    //     }
 
 
 
-        $parentcontrols = parent::section_edit_control_items($course, $section, $onsectionpage);
+    //     $parentcontrols = parent::section_edit_control_items($course, $section, $onsectionpage);
 
-        // If the edit key exists, we are going to insert our controls after it.
-        if (array_key_exists("edit", $parentcontrols)) {
-            $merged = [];
-            // We can't use splice because we are using associative arrays.
-            // Step through the array and merge the arrays.
-            foreach ($parentcontrols as $key => $action) {
-                $merged[$key] = $action;
-                if ($key == "edit") {
-                    // If we have come to the edit key, merge these controls here.
-                    $merged = array_merge($merged, $controls);
-                }
-            }
+    //     // If the edit key exists, we are going to insert our controls after it.
+    //     if (array_key_exists("edit", $parentcontrols)) {
+    //         $merged = [];
+    //         // We can't use splice because we are using associative arrays.
+    //         // Step through the array and merge the arrays.
+    //         foreach ($parentcontrols as $key => $action) {
+    //             $merged[$key] = $action;
+    //             if ($key == "edit") {
+    //                 // If we have come to the edit key, merge these controls here.
+    //                 $merged = array_merge($merged, $controls);
+    //             }
+    //         }
 
-            return $merged;
-        } else {
-            return array_merge($controls, $parentcontrols);
-        }
-    }
+    //         return $merged;
+    //     } else {
+    //         return array_merge($controls, $parentcontrols);
+    //     }
+    // }
 
      /**
      * Return the navbar content in specific section so that it can be echoed out by the layout
@@ -1035,6 +1219,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $url = new moodle_url('/course/changenumsections.php',
                     array('courseid' => $course->id,
                           'increase' => true,
+                          'returnurl' => course_get_url($course),
                           'sesskey' => sesskey()));
                 $icon = $this->output->pix_icon('t/switch_plus', $straddsection);
                 $out .= html_writer::link($url, $icon.get_accesshide($straddsection), array('class' => 'increase-sections'));
@@ -1046,6 +1231,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $url = new moodle_url('/course/changenumsections.php',
                     array('courseid' => $course->id,
                           'increase' => false,
+                          'returnurl' => course_get_url($course),
                           'sesskey' => sesskey()));
                 $icon = $this->output->pix_icon('t/switch_minus', $strremovesection);
                 $out .= html_writer::link($url, $icon.get_accesshide($strremovesection), array('class' => 'reduce-sections'));
@@ -1069,7 +1255,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $straddsections = get_string('addsections');
             }
             $url = new moodle_url('/course/changenumsections.php',
-                ['courseid' => $course->id, 'insertsection' => 0, 'sesskey' => sesskey()]);
+                ['courseid' => $course->id, 'insertsection' => 0,'returnurl' => course_get_url($course), 'sesskey' => sesskey()]);
             if ($sectionreturn !== null) {
                 $url->param('sectionreturn', $sectionreturn);
             }
