@@ -129,6 +129,6 @@ $string['no_forums_available'] = 'Keine Foren verfügbar';
 
 // Chapter in course
 $string['new_chapter'] = 'Neue Kapitel';
-$string['setchapter'] = 'Kapitel Einstellen';
-$string['unsetchapter'] = 'Kapitel Deaktivieren';
+$string['setchapter'] = 'Als Kapiteltitel einstellen';
+$string['unsetchapter'] = 'Als Lektion einstellen';
 $string['completed'] = 'Fertig';
