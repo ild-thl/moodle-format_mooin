@@ -694,7 +694,8 @@ class format_mooin extends format_base {
      * @return null|array any data for the Javascript post-processor (must be json-encodeable)
      */
     public function section_action($section, $action, $sr) {
-        global $PAGE;
+        global $PAGE, $DB;
+        require_once('locallib.php');
 
         if ($section->section && ($action === 'setmarker' || $action === 'removemarker')) {
             // Format 'mooin' allows to set and remove markers in addition to common section actions.
@@ -705,6 +706,36 @@ class format_mooin extends format_base {
 
         // For show/hide actions call the parent method and return the new content for .section_availability element.
         $rv = parent::section_action($section, $action, $sr);
+        if ($action == 'hide') {
+            // if chapter
+            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                // hide also child sections
+                if ($course = $DB->get_record('course', array('id' => $section->course))) {
+                    // get children
+                    $sectionids = get_sectionids_for_chapter($chapter->id);
+                    foreach ($sectionids as $sectionid) {
+                        if ($sec = $DB->get_record('course_sections', array('id' => $sectionid))) {
+                            course_update_section($course, $sec, array('visible' => 0));
+                        }
+                    }
+                }
+            }
+        }
+        if ($action == 'show') {
+            // if chapter
+            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                // show also child sections
+                if ($course = $DB->get_record('course', array('id' => $section->course))) {
+                    // get children
+                    $sectionids = get_sectionids_for_chapter($chapter->id);
+                    foreach ($sectionids as $sectionid) {
+                        if ($sec = $DB->get_record('course_sections', array('id' => $sectionid))) {
+                            course_update_section($course, $sec, array('visible' => 1));
+                        }
+                    }
+                }
+            }
+        }
         $renderer = $PAGE->get_renderer('format_mooin');
         $rv['section_availability'] = $renderer->section_availability($this->get_section($section));
         return $rv;
