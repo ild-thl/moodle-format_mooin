@@ -1065,6 +1065,12 @@ class format_mooin_renderer extends format_section_renderer_base {
                     $chaptercompleted = ' completed';
                 }
 
+                // mark as locked/invisible
+                $chapterlocked = '';
+                if (!$section->uservisible) {
+                    $chapterlocked = ' locked';
+                }
+
                 $lastvisited = 'false';
                 if ($chapterinfo['lastvisited'] == true) {
                     $lastvisited = 'true';
@@ -1072,7 +1078,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
                 $o .= html_writer::start_tag('li', [
                     'id' => 'section-' . $section->section,
-                    'class' => $classattr . ' chapter'.$chaptercompleted,
+                    'class' => $classattr . ' chapter'.$chaptercompleted.$chapterlocked,
                     'role' => 'region',
                     'aria-label' => $title,
                     'data-sectionid' => $section->section
