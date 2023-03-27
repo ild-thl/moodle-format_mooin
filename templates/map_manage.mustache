@@ -170,6 +170,13 @@
       popupAnchor: [0, -14]
     });
     var markerLists = [];
+
+    {{#usermarkers}}
+      var val = '{{.}}';
+      var marker = val.split('|');
+      L.marker( [marker[2], marker[3]],{icon:myIcon}).bindPopup(marker[0]).addTo(mymap);
+    {{/usermarkers}}
+
     {{#userdata}}
     
       /* L.Control.geocoder().options.geocoder.geocode('{{.}}', (res)=> {

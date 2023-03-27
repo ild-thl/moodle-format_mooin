@@ -596,21 +596,35 @@ $city_list = array();
        array_push($array_temp, $key. ' | ' .$value);
    }
    // var_dump(explode(',', ($array_temp[0])));
+
+$table->pagesize($perpage, $matchcount);
+$userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table->get_page_start(), $table->get_page_size());
+
+// generate array with city names and lat/lng
+$usermarkers = array();
+foreach ($userlist as $lu) {
+    if ($coord = get_user_coordinates($lu)) {
+        $usermarkers[] = $lu->city.'|'.$lu->country.'|'.$coord->lat.'|'.$coord->lng;
+    }
+}
+
     $map_title = get_string('map_title', 'format_mooin');
         $map_descr = get_string('map_descr', 'format_mooin');
         $templatecontext = (object)[
             'title' => $map_title,
             'desc' =>   $map_descr,
-            'userdata' => array_values($array_temp),//(array)$array_temp
+            //'userdata' => array_values($array_temp),//(array)$array_temp
+            'usermarkers' => $usermarkers
         ];
+        //print_object($templatecontext);
         echo $OUTPUT->render_from_template('format_mooin/map_manage', $templatecontext);
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 echo('<br>');//echo('<br>');echo('<br>');
 
-$table->pagesize($perpage, $matchcount);
+
 
 // List of participants at the current visible page - paging makes it relatively short.
-
+/*
 if ($USER->username == 'riegerj') {
 	if (preg_match('/(badges)/', $sort) == 1) {
 		$select .= ", (SELECT count(*) FROM {badge} ocb, {badge_issued} ocbi
@@ -623,9 +637,9 @@ if ($USER->username == 'riegerj') {
 		// die();
 	}
 }
+*/
 
 $userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table->get_page_start(), $table->get_page_size());
-
 
 /*
 if (preg_match('/(badges)/', $table->get_sql_sort()) == 1) {

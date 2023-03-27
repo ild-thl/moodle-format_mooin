@@ -2802,3 +2802,93 @@ function unset_new_certificate($viewedbyuserid, $issuedid, $modulename) {
         }
     }
 }
+function get_user_coordinates($user) {
+    if ($user->city != '') {
+        $coordinates = new stdClass();
+
+        // TODO add to settings
+        $url = 'http://api.geonames.org';
+        $apiusername = 'mooin4';
+
+        $response = getURLContent($url, "/search?username=".$apiusername."&maxRows=1&q=".urlencode($user->city)."&country=".urlencode($user->country));
+
+        if($response != "" && $xml = simplexml_load_string($response)) {
+            if (isset($xml->geoname->lat)) {
+                $coordinates->lat = floatval($xml->geoname->lat);
+                $coordinates->lng = floatval($xml->geoname->lng);
+            }
+        }
+        
+        return $coordinates;
+    }
+    return false;
+}
+
+/**
+ * removes the headers from a url response
+ * @return String body of the returned request
+ */
+function extractBody($response){
+
+	$crlf = "\r\n";
+	// split header and body
+    $pos = strpos($response, $crlf . $crlf);
+    if($pos === false){
+   	    return($response);
+    }
+
+    $header = substr($response, 0, $pos);
+    $body = substr($response, $pos + 2 * strlen($crlf));
+    // parse headers
+    $headers = array();
+    $lines = explode($crlf, $header);
+
+    foreach($lines as $line){
+   	    if(($pos = strpos($line, ':')) !== false){
+   		    $headers[strtolower(trim(substr($line, 0, $pos)))] = trim(substr($line, $pos+1));
+   	    }
+    }
+
+   	return $body;
+
+}
+
+/**
+ * Gets the content of a url request
+ * @uses $CFG
+ * @return String body of the returned request
+ */
+function getURLContent($domain,$path){
+
+	global $CFG;
+
+	$message = "GET $domain$path HTTP/1.0\r\n";
+	$msgaddress = str_replace("http://","",$domain);
+	$message .= "Host: $msgaddress\r\n";
+    $message .= "Connection: Close\r\n";
+    $message .= "\r\n";
+	
+	if($CFG->proxyhost != "" && $CFG->proxyport != 0){
+    	$address = $CFG->proxyhost;
+    	$port = $CFG->proxyport;
+	} else {
+		$address = str_replace("http://","",$domain);
+    	$port = 80;
+	}
+
+    /* Attempt to connect to the proxy server to retrieve the remote page */
+    if(!$socket = fsockopen($address, $port, $errno, $errstring, 20)){
+        echo "Couldn't connect to host $address: $errno: $errstring\n";
+        return "";
+    }
+
+    fwrite($socket, $message);
+    $content = "";
+    while (!feof($socket)){
+            $content .= fgets($socket, 1024);
+    }
+
+    fclose($socket);
+    $retStr = extractBody($content);
+    return $retStr;
+}
