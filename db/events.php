@@ -58,5 +58,14 @@ $observers = array(
     array(
         'eventname' => '\mod_forum\event\discussion_viewed',
         'callback' => 'format_mooin_observer::discussion_viewed'
+    ),
+    // User
+    array(
+        'eventname' => '\core\event\user_updated',
+        'callback' => 'format_mooin_observer::user_updated'
+    ),
+    array(
+        'eventname' => '\core\event\user_created',
+        'callback' => 'format_mooin_observer::user_created'
     )
 );

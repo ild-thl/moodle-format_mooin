@@ -603,7 +603,8 @@ $userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table
 // generate array with city names and lat/lng
 $usermarkers = array();
 foreach ($userlist as $lu) {
-    if ($coord = get_user_coordinates($lu)) {
+    //if ($coord = get_user_coordinates($lu)) {
+    if ($coord = get_user_coordinates_from_pref($lu->id)) {
         $usermarkers[] = $lu->city.'|'.$lu->country.'|'.$coord->lat.'|'.$coord->lng;
     }
 }

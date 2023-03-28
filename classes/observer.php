@@ -96,4 +96,26 @@ class format_mooin_observer
         $discussionid = $event->objectid;
         set_discussion_viewed($userid, $forumid, $discussionid);
     }
+
+    public static function user_updated(\core\event\user_updated $event) {
+        global $CFG, $DB;
+        require_once($CFG->dirroot. '/course/format/mooin/locallib.php');
+        $userid = $event->objectid;
+        if ($user = $DB->get_record('user', array('id' => $userid))) {
+            if ($coordinates = get_user_coordinates($user)) {
+                set_user_coordinates($userid, $coordinates->lat, $coordinates->lng);
+            }
+        }
+    }
+
+    public static function user_created(\core\event\user_created $event) {
+        global $CFG, $DB;
+        require_once($CFG->dirroot. '/course/format/mooin/locallib.php');
+        $userid = $event->objectid;
+        if ($user = $DB->get_record('user', array('id' => $userid))) {
+            if ($coordinates = get_user_coordinates($user)) {
+                set_user_coordinates($userid, $coordinates->lat, $coordinates->lng);
+            }
+        }
+    }
 }

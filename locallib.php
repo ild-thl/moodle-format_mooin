@@ -2802,6 +2802,7 @@ function unset_new_certificate($viewedbyuserid, $issuedid, $modulename) {
         }
     }
 }
+
 function get_user_coordinates($user) {
     if ($user->city != '') {
         $coordinates = new stdClass();
@@ -2891,4 +2892,22 @@ function getURLContent($domain,$path){
     fclose($socket);
     $retStr = extractBody($content);
     return $retStr;
+}
+
+function set_user_coordinates($userid, $lat, $lng) {
+    set_user_preference('format_mooin_user_coordinates', $lat.'|'.$lng, $userid);
+}
+
+function get_user_coordinates_from_pref($userid) {
+    $value = get_user_preferences('format_mooin_user_coordinates', '', $userid);
+    if ($value != '') {
+        $valuearray = explode('|', $value);
+        if (count($valuearray) == 2) {
+            $coordinates = new stdClass();
+            $coordinates->lat = $valuearray[0];
+            $coordinates->lng = $valuearray[1];
+            return $coordinates;
+        }
+    }
+    return false;
 }
