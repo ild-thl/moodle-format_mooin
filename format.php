@@ -210,9 +210,9 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         $badges_count_mobile = false;
     }
     // unenrol from course
+    $unenrol_btn = '';
     if ($unenrolurl = get_unenrol_url($course->id)) {
         $unenrol_btn = html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-link'));
-        //echo html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-btn'));
     }
 
 

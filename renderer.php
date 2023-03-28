@@ -597,6 +597,7 @@ class format_mooin_renderer extends format_section_renderer_base {
             }
         }
 
+        $changenumsection = '';
         if ($this->page->user_is_editing() and has_capability('moodle/course:update', $context)) {
             // Print stealth sections if present.
             foreach ($modinfo->get_section_info_all() as $section => $thissection) {
