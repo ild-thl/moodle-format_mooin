@@ -2807,9 +2807,8 @@ function get_user_coordinates($user) {
     if ($user->city != '') {
         $coordinates = new stdClass();
 
-        // TODO add to settings
-        $url = 'http://api.geonames.org';
-        $apiusername = 'mooin4';
+        $url = get_config('format_mooin', 'geonamesapi_url');
+        $apiusername = get_config('format_mooin', 'geonamesapi_username');
 
         $response = getURLContent($url, "/search?username=".$apiusername."&maxRows=1&q=".urlencode($user->city)."&country=".urlencode($user->country));
 

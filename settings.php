@@ -31,4 +31,16 @@ if ($ADMIN->fulltree) {
         get_string('configdesc_forcetrackforums', 'format_mooin', $CFG->wwwroot),
         1)
     );
+    $settings->add(new admin_setting_configtext(
+        'format_mooin/geonamesapi_url',
+        get_string('configlabel_geonamesapi_url', 'format_mooin'),
+        get_string('configdesc_geonamesapi_url', 'format_mooin'), 
+        'http://api.geonames.org'
+    ));
+    $settings->add(new admin_setting_configtext(
+        'format_mooin/geonamesapi_username',
+        get_string('configlabel_geonamesapi_username', 'format_mooin'),
+        get_string('configdesc_geonamesapi_username', 'format_mooin'), 
+        'mooin4'
+    ));
 }

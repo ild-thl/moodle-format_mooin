@@ -45,7 +45,7 @@ $string['hidefromothers'] = 'Hide topic';
 $string['showfromothers'] = 'Show topic';
 $string['privacy:metadata'] = 'The mooin format plugin does not store any personal data.';
 $string['map_title'] = 'Map of participants';
-$string['map_descr'] = 'Participant\'s city all over the world';
+$string['map_descr'] = 'Please add your city to your profile, so the participants map can be shown as complete as possible.';
 $string['badges'] = 'Meine Kursbadges';
 $string['see_badges'] = ' Alle Infos anzeigen';
 $string['community'] = 'Community';
@@ -123,6 +123,10 @@ $string['update_config'] = 'Update global moodle settings';
 $string['hint_track_forums'] = 'Please update your forum settings to track forum posts <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">here</a>.';
 $string['mark_all_as_read'] = 'Mark all as read';
 $string['mark_all_as_read_mobile'] = 'Read all';
+$string['configlabel_geonamesapi_url'] = 'GeoNames API-URL';
+$string['configdesc_geonamesapi_url'] = 'We need this service to show the coordinates of the participants on the map.';
+$string['configlabel_geonamesapi_username'] = 'GeoNames username';
+$string['configdesc_geonamesapi_username'] = 'To use this service you need a GeoNames account. You can create an account <a href="https://www.geonames.org/">here</a>. Our mooin demo account should only be used for testing.';
 
 // added by Jonas
 $string['unread_news_single'] = 'ungelesener Beitrag im ';

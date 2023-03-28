@@ -38,7 +38,7 @@ $string['hidefromothers'] = 'Abschnitt sperren';
 $string['showfromothers'] = 'Abschnitt anzeigen';
 $string['privacy:metadata'] = 'Das mooin Kursformat-Plugin speichert keine persönlichen Daten.';
 $string['map_title'] = 'Karte der Teilnehmenden';
-$string['map_descr'] = 'Die Stadt des Teilnehmers in der ganzen Welt';
+$string['map_descr'] = 'Bitte tragen Sie Ihren Wohnort in Ihr Profil ein, damit die Teilnehmendenkarte möglichst vollständig angezeigt werden kann.';
 $string['badges'] = 'Meine Kursbadges';
 $string['community'] = 'Community';
 $string['forums'] = 'Diskussionsforen';
@@ -109,6 +109,10 @@ $string['update_config'] = 'Globale Moodle Settings aktualisieren';
 $string['hint_track_forums'] = 'Bitte aktualisiere deine Forum-Einstellungen damit neue Beiträge markiert werden <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">hier</a>.';
 $string['mark_all_as_read'] = 'Alle als gelesen markieren';
 $string['mark_all_as_read_mobile'] = 'Alle gelesen';
+$string['configlabel_geonamesapi_url'] = 'GeoNames API-URL';
+$string['configdesc_geonamesapi_url'] = 'Dieser Service wird verwendet um die Koordinaten der Teilnehmenden auf der Teilnehmerkarte anzuzeigen.';
+$string['configlabel_geonamesapi_username'] = 'GeoNames Benutzername';
+$string['configdesc_geonamesapi_username'] = 'Um diesen Service zu nutzen wird ein GeoNames-Account benötigt. Dieser kann <a href="https://www.geonames.org/">hier</a> angelegt und aktiviert werden. Unser mooin Demo-Account sollte nur zu Testzwecken verwendet werden.';
 
 
 $string['unread_news'] = 'ungelesene Beiträge im ';

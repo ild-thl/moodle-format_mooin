@@ -595,7 +595,6 @@ $city_list = array();
    foreach ($val as $key => $value) {
        array_push($array_temp, $key. ' | ' .$value);
    }
-   // var_dump(explode(',', ($array_temp[0])));
 
 $table->pagesize($perpage, $matchcount);
 $userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table->get_page_start(), $table->get_page_size());
@@ -620,66 +619,9 @@ foreach ($userlist as $lu) {
         //print_object($templatecontext);
         echo $OUTPUT->render_from_template('format_mooin/map_manage', $templatecontext);
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-echo('<br>');//echo('<br>');echo('<br>');
-
-
-
-// List of participants at the current visible page - paging makes it relatively short.
-/*
-if ($USER->username == 'riegerj') {
-	if (preg_match('/(badges)/', $sort) == 1) {
-		$select .= ", (SELECT count(*) FROM {badge} ocb, {badge_issued} ocbi
-						WHERE ocb.courseid = :occourseid
-						  AND ocb.id = ocbi.badgeid
-						  AND ocbi.userid = u.id) AS badgecount ";
-		$params['occourseid'] = $course->id;
-		// echo "$select $from $where $sort";
-		// print_object($params);
-		// die();
-	}
-}
-*/
+echo('<br>');
 
 $userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table->get_page_start(), $table->get_page_size());
-
-/*
-if (preg_match('/(badges)/', $table->get_sql_sort()) == 1) {
-	// $userlist nach Badgeanzahl sortieren
-	$badges_userlist = array();
-	foreach($userlist as $bu) {
-		$oc_badges = badges_get_user_badges($bu->id, $course->id, null, null, null, true);
-		$bu->badgecount = count($oc_badges);
-		$badges_userlist[] = $bu;
-		// nach Badge-Anzahl sortieren
-		if (preg_match('/(ASC)/', $table->get_sql_sort()) == 1) {
-			usort($badges_userlist, "cmp_badges_desc");
-		}
-		else {
-			usort($badges_userlist, "cmp_badges_asc");
-		}
-		$userlist = $badges_userlist;
-	}
-}
-//*/
-
-/*  removed by oncampus
-// If there are multiple Roles in the course, then show a drop down menu for switching.
-if (count($rolenames) > 1) {
-    echo '<div class="rolesform">';
-    echo '<label for="rolesform_jump">'.get_string('currentrole', 'role').'&nbsp;</label>';
-    echo $OUTPUT->single_select($rolenamesurl, 'roleid', $rolenames, $roleid, null, 'rolesform');
-    echo '</div>';
-
-} else if (count($rolenames) == 1) {
-    // When all participants with the same role - print its name.
-    echo '<div class="rolesform">';
-    echo get_string('role').get_string('labelsep', 'langconfig');
-    $rolename = reset($rolenames);
-    echo $rolename;
-    echo '</div>';
-}
-*/
-
 
 if ($roleid > 0) {
     $a = new stdClass();
