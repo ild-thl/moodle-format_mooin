@@ -474,12 +474,14 @@ class format_mooin_renderer extends format_section_renderer_base {
         $links = array('previous' => '', 'previous_top' => '', 'next' => '', 'next_top' => '');
         $back = $sectionno - 1;
 
-        if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $sections[$back]->id))) {
-            $sections[$back]->name = $chapter->title;
-            $sections[$back]->ischapter = true;
-        }
-        else {
-            $sections[$back]->ischapter = false;
+        foreach ($sections as $section) {
+            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $sections[$section->section]->id))) {
+                $sections[$section->section]->name = $chapter->title;
+                $sections[$section->section]->ischapter = true;
+            }
+            else {
+                $sections[$section->section]->ischapter = false;
+            }
         }
 
         while ($back > 0 and empty($links['previous'])) {
@@ -505,6 +507,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         }
 
         $forward = $sectionno + 1;
+        /*
         if (isset($sections[$forward]->id)) {
             if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $sections[$forward]->id))) {
                 $sections[$forward]->name = $chapter->title;
@@ -513,6 +516,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $sections[$forward]->ischapter = false;
             }
         }
+        */
 
         $numsections = course_get_format($course)->get_last_section_number();
         while ($forward <= $numsections and empty($links['next'])) {
