@@ -910,7 +910,7 @@ class format_mooin_renderer extends format_section_renderer_base {
             $PAGE->requires->js_call_amd('format_mooin/show_popup');
             echo $modal_last_section;
         }
-
+        /*
         if (!$this->page->user_is_editing() && intval($course_progress) == intval(100) && !$value_exist) { // && !$value_exist
             //  && $v->value == 1
 
@@ -926,6 +926,7 @@ class format_mooin_renderer extends format_section_renderer_base {
             $PAGE->requires->js_call_amd('format_mooin/show_popup');
             echo $modal_kapitel_completed;
         }
+        //*/
         // End
         // Display section bottom navigation.
         $sectionbottomnav = '';
