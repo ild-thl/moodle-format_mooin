@@ -33,5 +33,17 @@ class update_config extends \core\task\scheduled_task {
                 }
             }
         }
+        if (get_config('format_mooin', 'forcecompletiondefault')) {
+            if (get_config('moodle', 'completiondefault') == 1) {
+                mtrace('Set value of setting completiondefault to 0');
+                set_config('completiondefault', 0);
+                if (get_config('moodle', 'completiondefault') == 0) {
+                    mtrace('Success!');
+                }
+                else {
+                    mtrace('Error!');
+                }
+            }
+        }
     }
 }

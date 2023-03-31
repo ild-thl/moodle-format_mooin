@@ -127,6 +127,8 @@ $string['configlabel_geonamesapi_url'] = 'GeoNames API-URL';
 $string['configdesc_geonamesapi_url'] = 'We need this service to show the coordinates of the participants on the map.';
 $string['configlabel_geonamesapi_username'] = 'GeoNames username';
 $string['configdesc_geonamesapi_username'] = 'To use this service you need a GeoNames account. You can create an account <a href="https://www.geonames.org/">here</a>. Our mooin demo account should only be used for testing.';
+$string['configlabel_forcecompletiondefault'] = 'Do not show activitycompletion as default';
+$string['configdesc_forcecompletiondefault'] = 'If new activities are added to the course, activity completion is not activated. If show completion is activated for a activity, the progressbar in this lesson depends on activity completion. Otherwise a button is shown in the footer of this lessen, to mark the lesson as completed.';
 
 // added by Jonas
 $string['unread_news_single'] = 'ungelesener Beitrag im ';

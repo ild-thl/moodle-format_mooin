@@ -113,7 +113,8 @@ $string['configlabel_geonamesapi_url'] = 'GeoNames API-URL';
 $string['configdesc_geonamesapi_url'] = 'Dieser Service wird verwendet um die Koordinaten der Teilnehmenden auf der Teilnehmerkarte anzuzeigen.';
 $string['configlabel_geonamesapi_username'] = 'GeoNames Benutzername';
 $string['configdesc_geonamesapi_username'] = 'Um diesen Service zu nutzen wird ein GeoNames-Account benötigt. Dieser kann <a href="https://www.geonames.org/">hier</a> angelegt und aktiviert werden. Unser mooin Demo-Account sollte nur zu Testzwecken verwendet werden.';
-
+$string['configlabel_forcecompletiondefault'] = 'Aktivitätsabschluss nicht anzeigen als Default';
+$string['configdesc_forcecompletiondefault'] = 'Wenn neue Aktivitäten im Kurs hinzugefügt werden, wird die Aktivitätsverfolgung standardmäßig nicht angezeigt. Sobald der Aktivitätsabschluss für eine Aktiviät eingeschaltet wird, ist der Fortschrittsbalken innerhalb dieser Lektion vom Aktivitätsabschluss abhängig. Ansonsten wird im Footer der Lektion ein Button angezeigt, mit dem die Lektion als abgeschlossen markiert werden kann.';
 
 $string['unread_news'] = 'ungelesene Beiträge im ';
 $string['all_news_mobile'] = 'Alle Beiträge';
