@@ -293,8 +293,28 @@ function complete_section($section, $userid) {
  *
  */
 function print_badges($records, $details = false, $highlight = false, $badgename = false) {
-    global $DB, $COURSE, $USER, $PAGE;
-
+    global $DB, $COURSE, $USER;
+    // sort by new layer
+    usort($records, function($first, $second){
+        global $USER;
+        if (!isset($first->issuedid)) {
+            $first->issuedid = 0;
+        }
+        if (!isset($second->issuedid)) {
+            $second->issuedid = 0;
+        }
+        $f = get_user_preferences('format_mooin_new_badge_'.$first->issuedid, 0, $USER->id);
+        $s = get_user_preferences('format_mooin_new_badge_'.$second->issuedid, 0, $USER->id);
+        if ($f < $s) {
+            return 1;
+        }
+        if ($f == $s) {
+            return 0;
+        }
+        if ($f > $s) {
+            return -1;
+        }
+    });
 
     $lis = '';
     // echo count(badges_get_user_badges($USER->id, $COURSE->id, null, null, null, null));
