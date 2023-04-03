@@ -638,7 +638,7 @@ class format_mooin_renderer extends format_section_renderer_base {
      */
     public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection) {
         global $PAGE, $DB, $USER, $OUTPUT;
-        $PAGE->requires->js_call_amd('theme_mooin/navigation-header', 'scrollHeader');
+        $PAGE->requires->js_call_amd('theme_mooin4/navigation-header', 'scrollHeader');
 
 
         $modinfo = get_fast_modinfo($course);
