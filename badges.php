@@ -35,7 +35,7 @@ $PAGE->set_url('/course/format/mooin/badges.php', array('id' => $course->id));
 
 echo $OUTPUT->header();
 
-
+/*
 $blockrecord = $DB->get_record('block_instances', array('blockname' => 'badges', 'parentcontextid' => $context->instanceid), '*', MUST_EXIST); // oc_mooc_nav || $context->id
 
 $blockinstance = block_instance('badges', $blockrecord); // oc_mooc_nav
@@ -67,7 +67,7 @@ if ($cert_m) {
         $percentage = 0;
         $mod_count = 0;
 
-        /* hvp start */
+        // hvp start
         require_once($CFG->libdir . '/gradelib.php');
         $hvp_percentage = 0;
         $hvp_module = $DB->get_record('modules', array('name' => 'hvp'));
@@ -86,7 +86,7 @@ if ($cert_m) {
             $percentage = $hvp_percentage;
             $mod_count++;
         }
-        /* hvp end */
+        // hvp end
 
         $percentage = $percentage / $mod_count;
 
@@ -114,6 +114,7 @@ if ($cert_m) {
         }
     }
 }
+*/
 /* echo '<br />';
 echo '<br />'; */
 
