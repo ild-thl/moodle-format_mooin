@@ -404,10 +404,12 @@ class format_mooin extends format_base {
                         //     $sectionnodeNew->icon = $icon;
                         // }
                     // $sectionnode->$key = null;
-                    $chapter_node = $node->get(get_parent_chapter($section)->sectionid);
+                    if ($parentchapter = get_parent_chapter($section)) {
+                        $chapter_node = $node->get($parentchapter->sectionid);
+                    }
                     // var_dump($parent_node -> key);
                     // exit();
-                    if($chapter_node) {
+                    if($parentchapter && $chapter_node) {
                         $section_node = $chapter_node->add('<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>',
                         $url,
                         navigation_node::TYPE_SECTION,

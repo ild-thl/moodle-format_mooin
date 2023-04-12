@@ -2830,7 +2830,7 @@ function get_user_coordinates($user) {
         $url = get_config('format_mooin', 'geonamesapi_url');
         $apiusername = get_config('format_mooin', 'geonamesapi_username');
 
-        $response = getURLContent($url, "/search?username=".$apiusername."&maxRows=1&q=".urlencode($user->city)."&country=".urlencode($user->country));
+        $response = get_url_content($url, "/search?username=".$apiusername."&maxRows=1&q=".urlencode($user->city)."&country=".urlencode($user->country));
 
         if($response != "" && $xml = simplexml_load_string($response)) {
             if (isset($xml->geoname->lat)) {
@@ -2848,7 +2848,7 @@ function get_user_coordinates($user) {
  * removes the headers from a url response
  * @return String body of the returned request
  */
-function extractBody($response){
+function extract_body($response){
 
 	$crlf = "\r\n";
 	// split header and body
@@ -2878,7 +2878,7 @@ function extractBody($response){
  * @uses $CFG
  * @return String body of the returned request
  */
-function getURLContent($domain,$path){
+function get_url_content($domain, $path){
 
 	global $CFG;
 
@@ -2909,7 +2909,7 @@ function getURLContent($domain,$path){
     }
 
     fclose($socket);
-    $retStr = extractBody($content);
+    $retStr = extract_body($content);
     return $retStr;
 }
 
