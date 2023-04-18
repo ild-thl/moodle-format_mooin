@@ -1861,6 +1861,32 @@ function course_navbar() {
     return $OUTPUT->render_from_template('theme_mooin4/custom_navbar', $templatecontext);
 }
 
+function subpage_navbar() {
+    global $PAGE, $OUTPUT, $COURSE;
+     $items = $PAGE->navbar->get_items();
+     $course_items = [];
+
+    //Split the navbar array at coursehome
+     foreach($items as $item) {
+        if ($item->key === $COURSE->id) {
+            $course_items = array_splice($items, intval(array_search($item, $items)));
+        }
+     }
+
+     $course_items[0]->add_class('course-title');
+     $last_node = $course_items[array_key_last($course_items)];
+     $last_node->action = null;
+     $last_node->shorttext = $last_node->text;
+
+
+     //Provide custom templatecontext for the new Navbar
+    $templatecontext = array(
+        'get_items'=> $course_items
+    );
+
+    return $OUTPUT->render_from_template('theme_mooin4/custom_navbar', $templatecontext);
+}
+
 
  /**
     * Return the navbar content in specific section on Desktop so that it can be echo out by the layout

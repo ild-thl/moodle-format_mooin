@@ -118,7 +118,7 @@ if ($cert_m) {
 /* echo '<br />';
 echo '<br />'; */
 
-echo html_writer::div(navbar('badges'), 'sticky-container');
+echo html_writer::div(subpage_navbar(), 'sticky-container');
 echo html_writer::start_div('mooin-md-container'); //open outer div
 //echo html_writer::div(navbar('badges'));
 

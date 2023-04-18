@@ -192,7 +192,7 @@ if($oc_m) {
     }
 } */
 
-echo html_writer::div(navbar('participants'), 'sticky-container');
+echo html_writer::div(subpage_navbar(), 'sticky-container');
 echo '<div class="userlist">';
 //echo '<div class="mooin-md-container">';
 

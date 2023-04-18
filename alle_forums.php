@@ -73,7 +73,7 @@ $oc_showall = optional_param('showall', '', PARAM_RAW);
 //$oc_counter = 0;
 
     // echo navbar('All Forums');
-    echo html_writer::div(navbar('all_forums'), 'sticky-container');
+    echo html_writer::div(subpage_navbar(), 'sticky-container');
 
     echo html_writer::start_div('mooin-md-container'); //open outer div
 

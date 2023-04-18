@@ -43,7 +43,7 @@ $out_certificat = null;
 $val = false;
 /* echo '<br />';
 echo '<br />'; */
-echo html_writer::div(navbar('certificates'), 'sticky-container');
+echo html_writer::div(subpage_navbar(), 'sticky-container');
 
 echo html_writer::start_div('mooin-md-container'); //open outer div
 //echo navbar('certificates');
