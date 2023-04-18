@@ -1833,6 +1833,35 @@ function user_print_forum($courseid) {
     return $result;
 }
 
+function course_navbar() {
+    global $PAGE, $OUTPUT, $COURSE;
+     $items = $PAGE->navbar->get_items();
+     $course_items = [];
+
+    //Split the navbar array at coursehome
+     foreach($items as $item) {
+        if ($item->key === $COURSE->id) {
+            $course_items = array_splice($items, intval(array_search($item, $items)));
+        }
+     }
+
+     $course_items[0]->add_class('course-title');
+     $section_node = $course_items[array_key_last($course_items)];
+     $section_node->action = null;
+     $text = $section_node->text;
+     $parts = explode(':', $text, 2);
+     $result = trim($parts[0]) . ':';
+     $text = $section_node->text = $result;
+
+     //Provide custom templatecontext for the new Navbar
+    $templatecontext = array(
+        'get_items'=> $course_items
+    );
+
+    return $OUTPUT->render_from_template('theme_mooin4/custom_navbar', $templatecontext);
+}
+
+
  /**
     * Return the navbar content in specific section on Desktop so that it can be echo out by the layout
     *
@@ -2838,7 +2867,7 @@ function get_user_coordinates($user) {
                 $coordinates->lng = floatval($xml->geoname->lng);
             }
         }
-        
+
         return $coordinates;
     }
     return false;
@@ -2887,7 +2916,7 @@ function get_url_content($domain, $path){
 	$message .= "Host: $msgaddress\r\n";
     $message .= "Connection: Close\r\n";
     $message .= "\r\n";
-	
+
 	if($CFG->proxyhost != "" && $CFG->proxyport != 0){
     	$address = $CFG->proxyhost;
     	$port = $CFG->proxyport;

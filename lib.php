@@ -348,8 +348,8 @@ class format_mooin extends format_base {
 
                     if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
 
-                        $pre = $chapter->chapter.' - ';
-                        $title = '<b>'.$pre.$chapter->title.'</b>';
+                        $pre = 'Kapitel '.$chapter->chapter.': ';
+                        $title = $pre.$chapter->title;
                         if (count(get_sectionids_for_chapter($chapter->id)) > 0) {
                             $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
                         }
@@ -364,14 +364,16 @@ class format_mooin extends format_base {
                     $chapter_node = $node->add('<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>',
                     null,
                     navigation_node::TYPE_SECTION,
-                    $pre,
+                    'Kap. '.$chapter->chapter,
                     $chapter->sectionid,
                     $icon
                     );
                     $chapter_node->showinflatnavigation = true;
                     $chapter_node->isexpandable = true;
                     $chapter_node->collapse = true;
-                    $chapter_node->mainnavonly = true;
+                    $chapter_node->mainnavonly = false;
+                    $chapter_node ->isactive = false;
+
                     if($chapter->chapter==1) {
                         $chapter_node->preceedwithhr = false;
                     } else {
@@ -384,7 +386,7 @@ class format_mooin extends format_base {
 
                     }
                     else {
-                        $pre = get_section_prefix($section).' - ';
+                        $pre = 'Lektion '.get_section_prefix($section).': ';
                         if ($section->name) {
                             $title = $pre.$section->name;
                         }
@@ -413,7 +415,7 @@ class format_mooin extends format_base {
                         $section_node = $chapter_node->add('<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>',
                         $url,
                         navigation_node::TYPE_SECTION,
-                        $pre,
+                        'Lekt. '.get_section_prefix($section).': ',
                         $section->id,
                         $icon
                         );

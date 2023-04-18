@@ -700,13 +700,13 @@ class format_mooin_renderer extends format_section_renderer_base {
         // breadcrumb come here
         // Custom Navbar in single-section display by different view ( Desktop & Mobile )
 
-        $sectiontitle .= html_writer::start_tag('div', array('class' => 'custom-navbar'));
-        $sectiontitle .= navbar($displaysection);
-        $sectiontitle .= html_writer::end_tag('div');
+        //$sectiontitle .= html_writer::start_tag('div', array('class' => 'custom-navbar'));
+        $sectiontitle .= course_navbar();
+        //$sectiontitle .= html_writer::end_tag('div');
 
-        $sectiontitle .= html_writer::start_tag('div', array('class' => 'custom-navbar-mobile'));
-        $sectiontitle .= navbar_mobile($displaysection);
-        $sectiontitle .= html_writer::end_tag('div');
+        // $sectiontitle .= html_writer::start_tag('div', array('class' => 'custom-navbar-mobile'));
+        // $sectiontitle .= navbar_mobile($displaysection);
+        // $sectiontitle .= html_writer::end_tag('div');
 
 
         $sectiontitle .= html_writer::start_tag('div', array('class' => 'inner-title-navigation'));
