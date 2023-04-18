@@ -160,7 +160,10 @@ if ($result) {
 }
 
 //echo $value;
-echo html_writer::div($value, 'border-card');
+if ($value) {
+    echo html_writer::div($value, 'border-card');
+}
+
 
 echo html_writer::end_div(); //close outer div
 echo $OUTPUT->footer();
