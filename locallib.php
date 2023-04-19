@@ -1646,6 +1646,18 @@ function get_user_in_course($courseid) {
         array_push($user_enrol_data, $val);
     }
 
+    $sql2 = 'SELECT ue.* 
+               FROM mdl_enrol AS e, mdl_user_enrolments AS ue 
+              WHERE e.courseid = :cid 
+                AND ue.enrolid = e.id 
+           ORDER BY timecreated DESC';
+    $user_enrol_data = [];
+    $params2 = $param = array('cid' => $courseid);
+    $user_enrolments = $DB->get_records_sql($sql2, $params2);
+    $user_count = count($user_enrolments);
+    $user_enrolments = $DB->get_records_sql($sql2, $params2, 0, 5);
+    array_push($user_enrol_data, $user_enrolments);
+
     if (isset($enrol_data)) {
         // $out .= html_writer::start_tag('div', ['class' =>'participant-card']); // participant-card
         // $out .= html_writer::start_tag('div', ['class' =>'participant-card-inner']); // participant-card-inner
@@ -1656,7 +1668,7 @@ function get_user_in_course($courseid) {
         // $out .= html_writer::nonempty_tag('p', get_string('user_card_title', 'format_mooin'), ['class'=>'caption fw-700 text-primary']);
 
 
-        $user_count = count($count_val);
+        //$user_count = count($count_val);
         $user_in_course = $user_count . ' ' . get_string('user_in_course', 'format_mooin');
         // $out .= html_writer::start_tag('p');
         // $out .= html_writer::start_span('fw-700') . $user_in_course . html_writer::end_span();
