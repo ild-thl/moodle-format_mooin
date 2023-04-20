@@ -292,7 +292,7 @@ function complete_section($section, $userid) {
 /**
  *
  */
-function print_badges($records, $details = false, $highlight = false, $badgename = false) {
+function print_badges_html($records, $details = false, $highlight = false, $badgename = false) {
     global $DB, $COURSE, $USER;
     // sort by new layer
     usort($records, function($first, $second){
@@ -407,12 +407,12 @@ function badge_remove($user_id, $course_id, $badge_position) {
 /**
  *
  */
-function display_user_and_availbale_badges($userid, $courseid) {
+function get_user_and_availbale_badges($userid, $courseid) {
     global $CFG, $USER, $PAGE;
     $result = null;
     require_once($CFG->dirroot . '/badges/renderer.php');
 
-    $coursebadges = get_badges($courseid, null, null, null);
+    $coursebadges = get_badge_records($courseid, null, null, null);
     $userbadges = badges_get_user_badges($userid, $courseid, null, null, null, true);
 
     foreach ($userbadges as $ub) {
@@ -425,7 +425,7 @@ function display_user_and_availbale_badges($userid, $courseid) {
         }
     }
     if ($coursebadges) {
-        $result = print_badges($coursebadges, false, true, true);
+        $result = print_badges_html($coursebadges, false, true, true);
     } else {
         //$result .= html_writer::start_span() . get_string('no_badges_available', 'format_mooin') . html_writer::end_span();
         $result = null;
@@ -436,7 +436,7 @@ function display_user_and_availbale_badges($userid, $courseid) {
 /**
  *
  */
-function get_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
+function get_badge_records($courseid = 0, $page = 0, $perpage = 0, $search = '') {
     global $DB, $PAGE;
 
     $params = array();
@@ -469,7 +469,7 @@ function get_badges($courseid = 0, $page = 0, $perpage = 0, $search = '') {
 /**
  *
  */
-function get_badges_since($courseid, $since, $global = false) {
+function get_badge_records_since($courseid, $since, $global = false) {
     global $DB, $USER;
     if (!$global) {
         $params = array();
@@ -552,7 +552,7 @@ function get_badges_since($courseid, $since, $global = false) {
 /**
  *
  */
-function display_badges($userid = 0, $courseid = 0, $since = 0, $print = true) {
+function get_badges_html($userid = 0, $courseid = 0, $since = 0, $print = true) {
     global $CFG, $PAGE, $USER, $SITE;
     require_once($CFG->dirroot . '/badges/renderer.php');
 
@@ -565,23 +565,19 @@ function display_badges($userid = 0, $courseid = 0, $since = 0, $print = true) {
 
     if ($userid == 0) {
         if ($since == 0) {
-            $records = get_badges($courseid, null, null, null);
+            $records = get_badge_records($courseid, null, null, null);
         } else {
-            $records = get_badges_since($courseid, $since, false);
-            // globale Badges
-            // if ($courseid != 0) {
-            // $records = array_merge(get_badges_since($courseid, $since, true), $records);
-            // }
+            $records = get_badge_records_since($courseid, $since, false);
         }
         $renderer = new core_badges_renderer($PAGE, '');
 
         // Print local badges.
         if ($records) {
-            //$right = $renderer->print_badges_list($records, $userid, true);
+            //$right = $renderer->print_badges_html_list($records, $userid, true);
             if ($since == 0) {
-                print_badges($records);
+                print_badges_html($records);
             } else {
-                print_badges($records, true);
+                print_badges_html($records, true);
             }
         }
     } elseif ($USER->id == $userid || has_capability('moodle/badges:viewotherbadges', $context)) {
@@ -607,7 +603,7 @@ function display_badges($userid = 0, $courseid = 0, $since = 0, $print = true) {
  *
  * @return string badges
  */
-function get_badges_list($userid, $courseid = 0) {
+function get_badges_list_html($userid, $courseid = 0) {
     global $CFG, $USER, $DB;
     require_once($CFG->dirroot . '/badges/renderer.php');
 

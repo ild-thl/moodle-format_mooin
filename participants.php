@@ -956,7 +956,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 					}
 				}
 				if ($not_a_teacher) {
-					$badges .= get_badges_list($user->id, $course->id);
+					$badges .= get_badges_list_html($user->id, $course->id);
 				}
 
 				$data[] = $badges;
@@ -1014,7 +1014,7 @@ echo html_writer::tag('h2', $out);
 // display_badges(0, $courseid, 24 * 60 * 60);
 //echo html_writer::tag('div', get_string('lastweek', 'format_mooin'), array('class' => 'oc_badges_text'));
 ob_start();
-display_badges(0, $courseid, 12 * 31 * 7 * 24 * 60 * 60);
+get_badges_html(0, $courseid, 12 * 31 * 7 * 24 * 60 * 60);
 $out = ob_get_contents();
 ob_end_clean();
 if ($out != '') {

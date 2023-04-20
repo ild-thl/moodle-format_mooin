@@ -158,7 +158,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // Add rendere here
     $badges = null;
     ob_start();
-    $badges .= display_user_and_availbale_badges($USER->id, $course->id);
+    $badges .= get_user_and_availbale_badges($USER->id, $course->id);
     $badges .= ob_get_contents();
     ob_end_clean();
 
@@ -182,8 +182,8 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
 
     // $b = display_user_and_availbale_badges($USER->id,$course->id);
     // var_dump($b);
-    if(count(get_badges($course->id, null, null, null))  > 3) {
-        $badges_count = count(get_badges($course->id, null, null, null)) - 3;
+    if(count(get_badge_records($course->id, null, null, null))  > 3) {
+        $badges_count = count(get_badge_records($course->id, null, null, null)) - 3;
     } else {
         $badges_count = false;
     }

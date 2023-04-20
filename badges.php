@@ -141,7 +141,7 @@ $out = html_writer::tag('div', get_string('overview', 'format_mooin'), array('cl
 echo html_writer::tag('h2', $out);
 //display_badges($USER->id, $courseid);
 ob_start();
-display_user_and_availbale_badges($USER->id, $courseid);
+get_user_and_availbale_badges($USER->id, $courseid);
 $out = ob_get_contents();
 ob_end_clean();
 if ($out != '') {
