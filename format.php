@@ -142,6 +142,25 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         // start learning
         $last_section = 1;
     }
+
+    // first section must not be a chapter
+    if ($last_section == 1) {
+        $sql = 'SELECT * 
+                  FROM `mdl_course_sections` as s 
+                 WHERE s.course = :course 
+                   AND s.section != 0 
+                   AND s.visible = 1 
+                   AND s.id NOT IN (SELECT c.sectionid 
+                                     FROM `mdl_format_mooin_chapter` AS c 
+                                     WHERE c.courseid = s.course)
+              ORDER BY s.section ASC
+                 LIMIT 1 ';
+        $params = array('course' => $course->id);
+        if ($ls = $DB->get_record_sql($sql, $params)) {
+            $last_section = $ls->section;
+        }
+    }
+
     $continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $last_section));
 
     // $dis = $DB->get_record('forum', ['course'=> $course->id, 'type'=>'general']);
