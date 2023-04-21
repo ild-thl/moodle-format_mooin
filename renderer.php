@@ -709,7 +709,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         // $sectiontitle .= html_writer::end_tag('div');
 
 
-        $sectiontitle .= html_writer::start_tag('div', array('class' => 'inner-title-navigation'));
+        $sectiontitle .= html_writer::start_tag('div', array('id' => 'sectionname-container', 'class' => 'inner-title-navigation'));
 
 
 
