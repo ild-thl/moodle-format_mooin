@@ -150,16 +150,12 @@ $string['no_badges_image_text'] = 'No badges available';
 $string['no_certificates_image_text'] = 'No certificates available';
 $string['no_forums_available'] = 'no forums available';
 
-
-
 $string['modal_course_complete'] = 'You have worked through all the lessons in this course!';
 $string['modal_course_complete_title'] = 'Kurs vollständig bearbeitet';
 $string['modal_chapter_complete'] = 'You have worked through all the lessons in this chapter!';
 $string['modal_chapter_complete_title'] = 'Kapitel vollständig bearbeitet';
 $string['modal_last_section_of_chapter'] = 'You have arrived at the last lesson of this chapter!';
 $string['modal_last_section_of_chapter_title'] = 'Kapitelende erreicht';
-
-
 
 // Chapter in course
 $string['new_chapter'] = 'New Chapter';
@@ -170,3 +166,4 @@ $string['completed'] = 'Done';
 $string['headerimagedesktop'] = 'Header-Bild Desktop (800 x 280px)';
 $string['headerimagemobile'] = 'Header-Bild Mobile (768 x768px)';
 $string['edit_course_header'] = 'Header-Bild Bearbeiten';
+$string['cannot_remove_chapter'] = 'This chapter cannot be removed, because there must be no lessons without parent chapter.';

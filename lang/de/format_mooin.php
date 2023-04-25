@@ -141,3 +141,4 @@ $string['new_lesson'] = 'Neue Lektion';
 $string['setchapter'] = 'Als Kapiteltitel einstellen';
 $string['unsetchapter'] = 'Als Lektion einstellen';
 $string['completed'] = 'Fertig';
+$string['cannot_remove_chapter'] = 'Dieses Kapitel kann nicht entfernt werden, weil es keine Lektionen ohne übergeordnetes Kapitel geben darf.';

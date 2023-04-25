@@ -79,7 +79,14 @@ if ($setchapter > 0 && has_capability('moodle/course:update', $context)) {
 }
 
 if ($unsetchapter > 0 && has_capability('moodle/course:update', $context)) {
-    unset_chapter($unsetchapter);
+    if ($chaptersection = $DB->get_record('course_sections', array('id' => $unsetchapter))) {
+        if ($chaptersection->section == 1) {
+            \core\notification::warning(get_string('cannot_remove_chapter', 'format_mooin'));
+        }
+        else {
+            unset_chapter($unsetchapter);
+        }
+    }
 }
 
 $progress = null;
