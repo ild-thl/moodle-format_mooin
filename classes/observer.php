@@ -118,4 +118,13 @@ class format_mooin_observer
             }
         }
     }
+
+    public static function section_created(\core\event\course_section_created $event) {
+        global $DB;
+        $newsection = new stdClass();
+        $newsection->id = $event->objectid;
+        $newsection->name = get_string('new_lesson', 'format_mooin');
+
+        $DB->update_record('course_sections', $newsection);
+    }
 }

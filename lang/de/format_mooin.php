@@ -135,12 +135,9 @@ $string['modal_chapter_complete_title'] = 'Kapitel vollständig bearbeitet';
 $string['modal_last_section_of_chapter'] = 'Du bist in der letzten Lektion dieses Kapitels angekommen!';
 $string['modal_last_section_of_chapter_title'] = 'Kapitelende erreicht';
 
-
-
-
-
 // Chapter in course
-$string['new_chapter'] = 'Neue Kapitel';
+$string['new_chapter'] = 'Neues Kapitel';
+$string['new_lesson'] = 'Neue Lektion';
 $string['setchapter'] = 'Als Kapiteltitel einstellen';
 $string['unsetchapter'] = 'Als Lektion einstellen';
 $string['completed'] = 'Fertig';

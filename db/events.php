@@ -67,5 +67,10 @@ $observers = array(
     array(
         'eventname' => '\core\event\user_created',
         'callback' => 'format_mooin_observer::user_created'
+    ),
+    // Sections
+    array(
+        'eventname' => '\core\event\course_section_created',
+        'callback' => 'format_mooin_observer::section_created'
     )
 );

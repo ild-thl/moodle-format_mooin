@@ -874,6 +874,29 @@ class format_mooin extends format_base {
     public function update_course_format_options($data, $oldcourse = null) {
         global $DB;
 
+        if (!$oldcourse) {
+            // Add first chapter, there must be no sections without parent chapter
+            $chaptertitle = get_string('chapter', 'format_mooin').' 1';
+
+            $newsection = new stdClass();
+            $newsection->course = $this->courseid;
+            $newsection->section = 1;
+            $newsection->name = $chaptertitle;
+            $newsection->summaryformat = 1;
+            $newsection->visible = 1;
+            $newsection->timemodified = time();
+
+            if ($newsectionid = $DB->insert_record('course_sections', $newsection)) {
+                $newchapter = new stdClass();
+                $newchapter->courseid = $this->courseid;
+                $newchapter->title = $chaptertitle;
+                $newchapter->sectionid = $newsectionid;
+                $newchapter->chapter = 1;
+
+                $DB->insert_record('format_mooin_chapter', $newchapter);
+            }
+        }
+
         if ($course = $DB->get_record('course', array('id' => $this->courseid))) {
             $course->enablecompletion = 1;
             $course->showcompletionconditions = 0;

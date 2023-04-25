@@ -163,6 +163,7 @@ $string['modal_last_section_of_chapter_title'] = 'Kapitelende erreicht';
 
 // Chapter in course
 $string['new_chapter'] = 'New Chapter';
+$string['new_lesson'] = 'New lesson';
 $string['setchapter'] = 'Set Chapter';
 $string['unsetchapter'] = 'Unset Chapter';
 $string['completed'] = 'Done';
