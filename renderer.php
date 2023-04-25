@@ -263,7 +263,9 @@ class format_mooin_renderer extends format_section_renderer_base {
                 }
             }
 
-            if (course_can_delete_section($course, $section)) {
+
+            $chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id)); 
+            if (course_can_delete_section($course, $section) && !$chapter) {
                 if (get_string_manager()->string_exists('deletesection', 'format_'.$course->format)) {
                     $strdelete = get_string('deletesection', 'format_'.$course->format);
                 } else {

@@ -488,6 +488,23 @@ class format_mooin extends format_base {
         global $PAGE, $DB;
         $titles = [];
         $course = $this->get_course();
+
+        /*
+        if ($firstsection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => 1))) {
+            if (!$firstchapter = $DB->get_record('format_mooin_chapter', array('courseid' => $course->id, 'sectionid' => $firstsection->id))) {
+                // So section with number 1 is not a chapter
+                // We need to change this
+                $newchapter = new stdClass();
+                $newchapter->courseid = $course->id;
+                $newchapter->title = get_string('chapter', 'format_mooin').' 1';
+                $newchapter->sectionid = $firstsection->id;
+                $newchapter->chapter = 1;
+
+                $DB->insert_record('format_mooin_chapter', $newchapter);
+            }
+        }
+        */
+
         $modinfo = get_fast_modinfo($course);
         $renderer = $this->get_renderer($PAGE);
         if ($renderer && ($sections = $modinfo->get_section_info_all())) {
