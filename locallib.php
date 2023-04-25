@@ -91,6 +91,7 @@ function complete_section($section, $userid) {
     // global $DB;
 
     set_user_preference('format_mooin_section_completed_'.$section, 1, $userid);
+    //$PAGE->requires->js_call_amd('format_mooin/modalTest', 'completeModal');
 
     // $sequences_in_sections = $DB->get_record('course_sections', ['course'=> $cid, 'section'=>$section], 'sequence', IGNORE_MISSING);
 }
@@ -1258,7 +1259,14 @@ function get_last_news($courseid, $forum_type) {
             $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-inline-block align-items-center mb-3']); //right_part_new
 
             $news_forum_id = $news_forum_post->forumid; //$new_in_course->id;
-            $newsurl = new moodle_url('/course/format/mooin/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
+            //$newsurl = new moodle_url('/course/format/mooin/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
+            if ($forum = $DB->get_record('forum', array('course' => $courseid, 'type' => 'news'))) {
+                if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
+                    if($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance'=>$forum->id))){
+                        $newsurl =  new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
+                    }
+                }
+            }
             $url_disc = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid));
             // new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
             if ($forum_type == 'news') {
@@ -1642,10 +1650,10 @@ function get_user_in_course($courseid) {
         array_push($user_enrol_data, $val);
     }
 
-    $sql2 = 'SELECT ue.* 
-               FROM mdl_enrol AS e, mdl_user_enrolments AS ue 
-              WHERE e.courseid = :cid 
-                AND ue.enrolid = e.id 
+    $sql2 = 'SELECT ue.*
+               FROM mdl_enrol AS e, mdl_user_enrolments AS ue
+              WHERE e.courseid = :cid
+                AND ue.enrolid = e.id
            ORDER BY timecreated DESC';
     $user_enrol_data = [];
     $params2 = $param = array('cid' => $courseid);

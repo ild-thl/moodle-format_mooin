@@ -188,14 +188,20 @@ class format_mooin extends format_base {
 
 
         if ($forum = $DB->get_record('forum', array('course' => $courseid, 'type' => 'news'))) {
-            $node->add(
-                get_string('news', 'format_mooin'),
-                new moodle_url('/course/format/mooin/forums.php', array('f' => $forum->id)),
-                navigation_node::TYPE_CUSTOM,
-                null,
-                'format_mooin_newsforum',
-                new pix_icon('i/news', '')
-            );
+            if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
+                if($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance'=>$forum->id))){
+                    $node->add(
+                        get_string('news', 'format_mooin'),
+                        new moodle_url('/mod/forum/view.php', array('id' => $cm->id)),
+                        navigation_node::TYPE_CUSTOM,
+                        null,
+                        'format_mooin_newsforum',
+                        new pix_icon('i/news', '')
+                    );
+
+                }
+            }
+
         }
 
         $node->add(
@@ -206,6 +212,7 @@ class format_mooin extends format_base {
             'format_mooin_badges',
             new pix_icon('i/badge', '')
         );
+
 
         $node->add(
             get_string('certificates', 'format_mooin'),
