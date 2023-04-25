@@ -1012,8 +1012,11 @@ class format_mooin_renderer extends format_section_renderer_base {
             'data-sectionreturnid' => $sectionreturn
         ]);
 
-        $leftcontent = $this->section_left_content($section, $course, $onsectionpage);
-        $o.= html_writer::tag('div', $leftcontent, array('class' => 'left side'));
+        // if section is number 1, prevent drag & drop, to avoid lessons without parent chapter
+        if ($section->section != 1) {
+            $leftcontent = $this->section_left_content($section, $course, $onsectionpage);
+            $o.= html_writer::tag('div', $leftcontent, array('class' => 'left side'));
+        }
 
         $rightcontent = $this->section_right_content($section, $course, $onsectionpage);
         $o.= html_writer::tag('div', $rightcontent, array('class' => 'right side'));
