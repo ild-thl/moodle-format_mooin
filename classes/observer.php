@@ -125,6 +125,12 @@ class format_mooin_observer
         $newsection->id = $event->objectid;
         $newsection->name = get_string('new_lesson', 'format_mooin');
 
+        if ($createdsection = $DB->get_record('course_sections', array('id' => $event->objectid))) {
+            if ($createdsection->section == 0) {
+                $newsection->name = get_string('lesson', 'format_mooin').' 0';
+            }
+        }
+
         $DB->update_record('course_sections', $newsection);
     }
 }
