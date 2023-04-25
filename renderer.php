@@ -232,7 +232,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                     }
                 }
 
-                if (!$onsectionpage) {
+                if (!$onsectionpage && $section->section != 1) { // Never allow moving section number 1
                     if (has_capability('moodle/course:movesections', $coursecontext)) {
                         $url = clone($baseurl);
                         if ($section->section > 1) { // Add a arrow to move section up.
