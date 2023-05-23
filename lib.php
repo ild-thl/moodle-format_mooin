@@ -920,6 +920,46 @@ class format_mooin extends format_base {
                 $DB->insert_record('format_mooin_chapter', $newchapter);
             }
         }
+        else { // add new chapter at position 1 if format is changed to mooin
+            // was format of oldcourse not mooin?
+            if ($oldcourse->format != 'mooin') {
+                // is there no chapter at position 1?
+                if ($section1 = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => 1))) {
+                    if (!$DB->get_record('format_mooin_chapter', array('courseid' => $this->courseid, 'sectionid' => $section1->id))) {
+                        // add new section
+                        //print_object($section1);die();
+                        $sectionnumber = $DB->count_records('course_sections', array('course' => $this->courseid));
+                        if ($sectionnumber > 0) {
+                            $chaptertitle = get_string('chapter', 'format_mooin').' 1';
+                            $newsection = new stdClass();
+                            $newsection->course = $this->courseid;
+                            $newsection->section = $sectionnumber;
+                            $newsection->name = $chaptertitle;
+                            $newsection->summaryformat = 1;
+                            $newsection->visible = 1;
+                            $newsection->timemodified = time();
+
+                            if ($newsectionid = $DB->insert_record('course_sections', $newsection)) {
+                                // move new section to position 1
+                                if ($course = $DB->get_record('course', array('id' => $this->courseid))) {
+                                    move_section_to($course, $sectionnumber, 1, true);
+                                    // convert new section to chapter
+                                    $newchapter = new stdClass();
+                                    $newchapter->courseid = $this->courseid;
+                                    $newchapter->title = $chaptertitle;
+                                    $newchapter->sectionid = $newsectionid;
+                                    $newchapter->chapter = 1;
+                                    $DB->insert_record('format_mooin_chapter', $newchapter);
+                                    // sort chapters
+                                    require_once('locallib.php');
+                                    sort_course_chapters($this->courseid);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         if ($course = $DB->get_record('course', array('id' => $this->courseid))) {
             $course->enablecompletion = 1;
