@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="course/format/mooin/db" VERSION="20221028" COMMENT="XMLDB file for Moodle course/format/mooin"
+<XMLDB PATH="course/format/mooin4/db" VERSION="20221028" COMMENT="XMLDB file for Moodle course/format/mooin4"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="format_mooin_chapter" COMMENT="DB table for the chapter in table of content course mooin fomat.">
+    <TABLE NAME="format_mooin4_chapter" COMMENT="DB table for the chapter in table of content course mooin4 fomat.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>

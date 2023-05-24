@@ -15,21 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for mooin course format.
+ * Privacy Subsystem implementation for mooin4 course format.
  *
- * @package    format_mooin
+ * @package    format_mooin4
  * @copyright  2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace format_mooin\privacy;
+namespace format_mooin4\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
 use core_privacy\local\metadata\null_provider;
 
 /**
- * Privacy Subsystem for mooin course format implementing null_provider.
+ * Privacy Subsystem for mooin4 course format implementing null_provider.
  *
  * @copyright  2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

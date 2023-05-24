@@ -24,7 +24,7 @@
  require_once('../../../config.php');
  require_once('../../../mod/forum/lib.php');
  require_once($CFG->libdir . '/completionlib.php');
- require_once('../mooin/locallib.php');
+ require_once('../mooin4/locallib.php');
  
  $id = optional_param('id', 0, PARAM_INT);       // Course Module ID
  $f = optional_param('f', 0, PARAM_INT);        // Forum ID
@@ -49,7 +49,7 @@
  if ($search) {
      $params['search'] = $search;
  }
- $PAGE->set_url('/course/format/mooin/forum_view.php', $params);
+ $PAGE->set_url('/course/format/mooin4/forum_view.php', $params);
  // removed by oncampus $PAGE->set_url('/mod/forum/view.php', $params);
  
  if ($id) {
@@ -233,7 +233,7 @@ if ($forum->type == 'qanda' && !has_capability('moodle/course:manageactivities',
 }
 
 // oncampus ////////////////
-require_once($CFG->dirroot . '/course/format/mooin/forum_lib.php');
+require_once($CFG->dirroot . '/course/format/mooin4/forum_lib.php');
 //blocks/oc_mooc_nav
 switch ($forum->type) {
     case 'single':

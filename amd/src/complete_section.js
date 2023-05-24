@@ -17,7 +17,7 @@
 /**
  * Mark a Section (Lektion) in Chapter Card as complete.
  *
- * @module     format_mooin/complete_section
+ * @module     format_mooin4/complete_section
  * @copyright  2022 Perial Dupont Nguefack Kuaguim
  */
 define(['jquery'], function($) {
@@ -54,7 +54,7 @@ define(['jquery'], function($) {
         // Y.log(dataSend);
         $.ajax({
             type: 'POST',
-            url: 'format/mooin/complete_section.php', // Format/mooin/
+            url: 'format/mooin4/complete_section.php', // Format/mooin4/
             data: dataSend,
             success: (dataSend) => {
                 Y.log(dataSend);

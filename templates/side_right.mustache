@@ -1,11 +1,11 @@
 <div class="badges-certificates-card">
   <div class="container pt-2">
-    <h2>{{#str}} badges_certificates, format_mooin {{/str}}</h2>
+    <h2>{{#str}} badges_certificates, format_mooin4 {{/str}}</h2>
     <div class="badges-card">
       <div class="d-flex align-items-center">
         <span class="icon-wrapper badges-icon"></span>
         <p class="caption fw-700 text-primary pl-2">
-          <a href="{{badges_url}}">{{#str}} badges, format_mooin {{/str}}</a>
+          <a href="{{badges_url}}">{{#str}} badges, format_mooin4 {{/str}}</a>
         </p>
         {{{manage_badges_link}}}
       </div>
@@ -19,19 +19,19 @@
         {{^badges}}
         <div class="d-flex w-100 align-items-center">
           <div class="no-badges-img"></div>
-          <span class="no-badge-text">{{#str}}no_badges_image_text, format_mooin{{/str}}</span>
+          <span class="no-badge-text">{{#str}}no_badges_image_text, format_mooin4{{/str}}</span>
         </div>
         {{/badges}}
       </div>
       <div class="primary-link d-block text-right">
-        <a href="{{badges_url}}">{{#str}} see_badges, format_mooin {{/str}}</a>
+        <a href="{{badges_url}}">{{#str}} see_badges, format_mooin4 {{/str}}</a>
       </div>
     </div>
 
     <div class="certificate-card">
       <div class="d-flex align-items-center">
         <span class="icon-wrapper award-icon"></span>
-        <a href="{{certificate_url}}" class="caption fw-700 text-primary pl-2">{{#str}} certificates, format_mooin
+        <a href="{{certificate_url}}" class="caption fw-700 text-primary pl-2">{{#str}} certificates, format_mooin4
           {{/str}}</a>
         {{#has_capability}}
         <button type="button" class="btn info-tip" data-toggle="tooltip" data-placement="top"
@@ -50,13 +50,13 @@
         {{^certificates}}
         <div class="d-flex w-100 align-items-center">
           <div class="no-certificates-img"></div>
-          <span class="no-certificates-text">{{#str}} no_certificates_image_text, format_mooin {{/str}}</span>
+          <span class="no-certificates-text">{{#str}} no_certificates_image_text, format_mooin4 {{/str}}</span>
         </div>
 
         {{/certificates}}
       </div>
       <div class="primary-link d-block text-right">
-        <a href="{{certificate_url}}">{{#str}} see_badges, format_mooin {{/str}}</a>
+        <a href="{{certificate_url}}">{{#str}} see_badges, format_mooin4 {{/str}}</a>
       </div>
     </div>
   </div>
@@ -64,7 +64,7 @@
 
 <div class="community">
   <div class="container">
-    <h2>{{#str}} community, format_mooin {{/str}}</h2>
+    <h2>{{#str}} community, format_mooin4 {{/str}}</h2>
     {{#has_capability}}
     <button type="button" class="btn info-tip" data-toggle="tooltip" data-placement="top"
       title="Diskussionsforen werden in den Lektionen angelegt.">
@@ -73,7 +73,7 @@
     {{/has_capability}}
 
       <div class="d-flex align-items-center">
-        {{> format_mooin/discussions_tile}}
+        {{> format_mooin4/discussions_tile}}
       </div>
 
       {{#userlist}}
@@ -82,16 +82,16 @@
           <div class="d-flex">
             <span class="icon-wrapper participant-icon"></span>
             <div>
-              <a href="{{participants_url}}" class="caption fw-700 text-primary">{{#str}} user_card_title, format_mooin
+              <a href="{{participants_url}}" class="caption fw-700 text-primary">{{#str}} user_card_title, format_mooin4
                 {{/str}}</a>
               <br>
-              <span class="fw-700">{{user_count}} {{#str}} user_in_course, format_mooin {{/str}}</span>
-              <p class="caption-sm fw-700">{{#str}} new_user, format_mooin {{/str}}</p>
+              <span class="fw-700">{{user_count}} {{#str}} user_in_course, format_mooin4 {{/str}}</span>
+              <p class="caption-sm fw-700">{{#str}} new_user, format_mooin4 {{/str}}</p>
               <ul class="caption-sm">{{{user_list}}}</ul>
             </div>
           </div>
           <div class="primary-link d-none d-md-block text-right">
-            <a href="{{participants_url}}">{{#str}} show_all_infos, format_mooin {{/str}}</a>
+            <a href="{{participants_url}}">{{#str}} show_all_infos, format_mooin4 {{/str}}</a>
           </div>
         </div>
 

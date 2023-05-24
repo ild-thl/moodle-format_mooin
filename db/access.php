@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /* $capabilities = array(
-    'moodle/mooin:aluhatsoff' => array(
+    'moodle/mooin4:aluhatsoff' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
@@ -25,7 +25,7 @@
     )
 ); */
 $capabilities = array(
-    /* 'format/mooin:myaddinstance' => array(
+    /* 'format/mooin4:myaddinstance' => array(
     'captype' => 'write',
     'contextlevel' => CONTEXT_SYSTEM,
     'archetypes' => array(
@@ -36,7 +36,7 @@ $capabilities = array(
         'user' => CAP_ALLOW
     )
     ),
-    'format/mooin:addinstance' => array(
+    'format/mooin4:addinstance' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
@@ -48,7 +48,7 @@ $capabilities = array(
         )
     )
     , */
-    'format/mooin:readuserpage' => array(
+    'format/mooin4:readuserpage' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
@@ -57,7 +57,7 @@ $capabilities = array(
             'student' => CAP_ALLOW
         )
     ),
-    'format/mooin:aluhatsoff' => array(
+    'format/mooin4:aluhatsoff' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
@@ -66,7 +66,7 @@ $capabilities = array(
             'student' => CAP_ALLOW
         )
     ),
-    'format/mooin:createchapter' => [
+    'format/mooin4:createchapter' => [
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -77,7 +77,7 @@ $capabilities = array(
         ]
 
     ],
-    'format/mooin:managechapter' => [
+    'format/mooin4:managechapter' => [
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -87,7 +87,7 @@ $capabilities = array(
             'teacher' => CAP_ALLOW
         ]
     ],
-    'format/mooin:managesection' => [
+    'format/mooin4:managesection' => [
         'riskbitmask' => RISK_CONFIG,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,

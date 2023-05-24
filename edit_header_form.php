@@ -17,7 +17,7 @@
 /**
  * Page that shows a form to manage and set additional metadata dor a course.
  *
- * @package     format_mooin
+ * @package     format_mooin4
  * @copyright   2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,8 +31,8 @@ class edit_header_form extends \moodleform {
         $mform = $this->_form;
         $filemanageropts = $this->_customdata['filemanageropts'];        
 
-        $mform->addElement('filemanager', 'headerimagedesktop', get_string('headerimagedesktop', 'format_mooin'), null, $filemanageropts);
-        $mform->addElement('filemanager', 'headerimagemobile', get_string('headerimagemobile', 'format_mooin'), null, $filemanageropts);
+        $mform->addElement('filemanager', 'headerimagedesktop', get_string('headerimagedesktop', 'format_mooin4'), null, $filemanageropts);
+        $mform->addElement('filemanager', 'headerimagemobile', get_string('headerimagemobile', 'format_mooin4'), null, $filemanageropts);
 
         $this->add_action_buttons();
     }

@@ -25,17 +25,17 @@ $systemcontext = context_system::instance();
 $PAGE->set_course($course);
 $PAGE->set_pagelayout('course');
 $PAGE->set_context(\context_course::instance($course->id));
-$PAGE->set_title("$course->shortname: " . get_string('my_certificate', 'format_mooin'));
+$PAGE->set_title("$course->shortname: " . get_string('my_certificate', 'format_mooin4'));
 $PAGE->set_heading($course->fullname);
 
 // $PAGE->set_pagetype('course-view-' . $course->format);
 // $PAGE->add_body_class('path-user');                     // So we can style it independently.
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
-// $PAGE->navbar->add(get_string('my_certificate', 'format_mooin'));
+// $PAGE->navbar->add(get_string('my_certificate', 'format_mooin4'));
 
 // require_once('./locallib.php');
 
-$PAGE->set_url('/course/format/mooin/certificates.php', array('id' => $course->id));
+$PAGE->set_url('/course/format/mooin4/certificates.php', array('id' => $course->id));
 
 echo $OUTPUT->header();
 
@@ -45,10 +45,10 @@ $val = false;
 echo '<br />'; */
 echo html_writer::div(subpage_navbar(), 'sticky-container');
 
-echo html_writer::start_div('mooin-md-container'); //open outer div
+echo html_writer::start_div('mooin4-md-container'); //open outer div
 //echo navbar('certificates');
 
-echo html_writer::tag('h2', html_writer::tag('div', get_string('my_certificate', 'format_mooin'), array('class' => 'oc_badges_text')));
+echo html_writer::tag('h2', html_writer::tag('div', get_string('my_certificate', 'format_mooin4'), array('class' => 'oc_badges_text')));
 
 
 
@@ -101,7 +101,7 @@ echo html_writer::tag('h2', html_writer::tag('div', get_string('my_certificate',
                 // $templatedata[$i]->image = '../images/certificat.png';
             }
     }else {
-        $templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
+        $templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin4'));
     }
 
     if (gettype($templatedata) == 'string') {
@@ -149,13 +149,13 @@ $value = null;
 $result = show_certificat($courseid);
 
 if ($result) {
-    echo html_writer::tag('p', get_string('certificate_overview_description', 'format_mooin'));
+    echo html_writer::tag('p', get_string('certificate_overview_description', 'format_mooin4'));
     echo '<br />';
     $value .= $result;
 
 } else {
     $out = html_writer::div('', 'no-certificates-img');
-    $out .= html_writer::span(get_string('no_certificates_image_text', 'format_mooin'), 'no-certificates-text');
+    $out .= html_writer::span(get_string('no_certificates_image_text', 'format_mooin4'), 'no-certificates-text');
     echo html_writer::div($out, 'no-certificates-container');
 }
 

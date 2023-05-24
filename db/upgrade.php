@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Upgrade scripts for mooin course format.
+ * Upgrade scripts for mooin4 course format.
  *
- * @package    format_mooin
+ * @package    format_mooin4
  * @copyright  2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,12 +25,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Upgrade script for mooin course format.
+ * Upgrade script for mooin4 course format.
  *
  * @param int|float $oldversion the version we are upgrading from
  * @return bool result
  */
-function xmldb_format_mooin_upgrade($oldversion) {
+function xmldb_format_mooin4_upgrade($oldversion) {
     global $CFG, $DB;
 
     $dbman = $DB->get_manager();
@@ -55,26 +55,26 @@ function xmldb_format_mooin_upgrade($oldversion) {
 
     if ($oldversion < 2022102800) {
 
-        // Define table format_mooin_chapter to be created.
-        $table = new xmldb_table('format_mooin_chapter');
+        // Define table format_mooin4_chapter to be created.
+        $table = new xmldb_table('format_mooin4_chapter');
 
-        // Adding fields to table format_mooin_chapter.
+        // Adding fields to table format_mooin4_chapter.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('title', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
         $table->add_field('sectionid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('chapter', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
-        // Adding keys to table format_mooin_chapter.
+        // Adding keys to table format_mooin4_chapter.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
-        // Conditionally launch create table for format_mooin_chapter.
+        // Conditionally launch create table for format_mooin4_chapter.
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
         }
 
-        // Mooin savepoint reached.
-        upgrade_plugin_savepoint(true, 2022102800, 'format', 'mooin');
+        // mooin4 savepoint reached.
+        upgrade_plugin_savepoint(true, 2022102800, 'format', 'mooin4');
     }
 
     return true;

@@ -17,7 +17,7 @@
 /**
  * Mark a Section (Lektion) in Chapter Card as complete.
  *
- * @module     format_mooin/show_popup
+ * @module     format_mooin4/show_popup
  * @copyright  2022 Perial Dupont Nguefack Kuaguim
  */
 define(['jquery'], function($) {

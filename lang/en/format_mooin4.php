@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component mooin course format.
+ * Strings for component mooin4 course format.
  *
- * @package   format_mooin
+ * @package   format_mooin4
  * @copyright 2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,13 +37,13 @@ $string['letze_beitrag'] = 'Neuester Beitrag ';
 $string['discussion_news'] = 'Zur Nachricht';
 $string['newsectionname'] = 'New name for topic {$a}';
 $string['sectionname'] = 'Topic';
-$string['pluginname'] = 'mooin format';
+$string['pluginname'] = 'Mooin 4.0 format';
 $string['section0name'] = 'General';
-$string['page-course-view-mooin'] = 'Any course main page in mooin format';
-$string['page-course-view-mooin-x'] = 'Any course page in mooin format';
+$string['page-course-view-mooin4'] = 'Any course main page in mooin 4.0 format';
+$string['page-course-view-mooin4-x'] = 'Any course page in mooin 4.0 format';
 $string['hidefromothers'] = 'Hide topic';
 $string['showfromothers'] = 'Show topic';
-$string['privacy:metadata'] = 'The mooin format plugin does not store any personal data.';
+$string['privacy:metadata'] = 'The Mooin 4.0 format plugin does not store any personal data.';
 $string['map_title'] = 'Map of participants';
 $string['map_descr'] = 'Please add your city to your profile, so the participants map can be shown as complete as possible.';
 $string['badges'] = 'Meine Kursbadges';
@@ -65,7 +65,7 @@ $string['awarded_badges'] = 'Kürzlich verliehene Badges';
 $string['hide_tabs'] = 'MOOC-Tabs verstecken';
 $string['highscore'] = 'Highscore';
 $string['in_course'] = 'In diesem Kurs';
-$string['in_mooin'] = 'Kursübergreifend auf der Plattform';
+$string['in_mooin4'] = 'Kursübergreifend auf der Plattform';
 $string['lastday'] = 'In den letzten 24 Stunden';
 $string['lastweek'] = 'In den letzten 7 Tagen';
 $string['discussion_link'] = 'ID für das allgemeine Diskussionsforum';
@@ -126,7 +126,7 @@ $string['mark_all_as_read_mobile'] = 'Read all';
 $string['configlabel_geonamesapi_url'] = 'GeoNames API-URL';
 $string['configdesc_geonamesapi_url'] = 'We need this service to show the coordinates of the participants on the map.';
 $string['configlabel_geonamesapi_username'] = 'GeoNames username';
-$string['configdesc_geonamesapi_username'] = 'To use this service you need a GeoNames account. You can create an account <a href="https://www.geonames.org/">here</a>. Our mooin demo account should only be used for testing.';
+$string['configdesc_geonamesapi_username'] = 'To use this service you need a GeoNames account. You can create an account <a href="https://www.geonames.org/">here</a>. Our mooin 4.0 demo account should only be used for testing.';
 $string['configlabel_forcecompletiondefault'] = 'Do not show activitycompletion as default';
 $string['configdesc_forcecompletiondefault'] = 'If new activities are added to the course, activity completion is not activated. If show completion is activated for a activity, the progressbar in this lesson depends on activity completion. Otherwise a button is shown in the footer of this lessen, to mark the lesson as completed.';
 

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,9 +16,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * mooin course format. Display the whole course as "mooin" made of modules.
+ * mooin4 course format. Display the whole course as "mooin4" made of modules.
  *
- * @package format_mooin
+ * @package format_mooin4
  * @copyright 2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -57,18 +58,18 @@ if (($marker >= 0) && has_capability('moodle/course:setcurrentsection', $context
 // Make sure section 0 is created.
 course_create_sections_if_missing($course, 0);
 
-// mooin: get section and set last visited in userpref
+// mooin4: get section and set last visited in userpref
 $sectionnumber = optional_param('section', 0, PARAM_INT);
 if ($sectionnumber > 0) {
-    set_user_preference('format_mooin_last_section_in_course_'.$course->id, $sectionnumber, $USER->id);
+    set_user_preference('format_mooin4_last_section_in_course_'.$course->id, $sectionnumber, $USER->id);
 }
 else if ($sectionnumber == 0) {
-    $last_section = get_user_preferences('format_mooin_last_section_in_course_'.$course->id, 0, $USER->id);
+    $last_section = get_user_preferences('format_mooin4_last_section_in_course_'.$course->id, 0, $USER->id);
 }
 
-$renderer = $PAGE->get_renderer('format_mooin');
+$renderer = $PAGE->get_renderer('format_mooin4');
 
-// mooin: print tiles here
+// mooin4: print tiles here
 $sectionnumber = optional_param('section', 0, PARAM_INT);
 $unsetchapter = optional_param('unsetchapter', 0, PARAM_INT); // sectionid
 $setchapter = optional_param('setchapter', 0, PARAM_INT); // sectionid
@@ -81,7 +82,7 @@ if ($setchapter > 0 && has_capability('moodle/course:update', $context)) {
 if ($unsetchapter > 0 && has_capability('moodle/course:update', $context)) {
     if ($chaptersection = $DB->get_record('course_sections', array('id' => $unsetchapter))) {
         if ($chaptersection->section == 1) {
-            \core\notification::warning(get_string('cannot_remove_chapter', 'format_mooin'));
+            \core\notification::warning(get_string('cannot_remove_chapter', 'format_mooin4'));
         }
         else {
             unset_chapter($unsetchapter);
@@ -129,8 +130,8 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $sectionnumber = 1;
     $continue_url = new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $sectionnumber));
 
-    $start_continue = get_string('startlesson', 'format_mooin');
-    $start_continue_no_lesson = get_string('start', 'format_mooin');
+    $start_continue = get_string('startlesson', 'format_mooin4');
+    $start_continue_no_lesson = get_string('start', 'format_mooin4');
     // get last visited section from userpref
     if (isset($last_section)) {
         if ($last_section == 0) {
@@ -138,11 +139,11 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
             $last_section = 1;
         } else {
             // continue learning
-            $start_continue_no_lesson = get_string('continue_no_lesson', 'format_mooin');
+            $start_continue_no_lesson = get_string('continue_no_lesson', 'format_mooin4');
             if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                $start_continue = get_string('continue', 'format_mooin', get_section_prefix($continuesection));
+                $start_continue = get_string('continue', 'format_mooin4', get_section_prefix($continuesection));
             } else {
-                $start_continue = get_string('continue', 'format_mooin');
+                $start_continue = get_string('continue', 'format_mooin4');
             }
         }
     } else {
@@ -158,7 +159,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
                    AND s.section != 0 
                    AND s.visible = 1 
                    AND s.id NOT IN (SELECT c.sectionid 
-                                     FROM `mdl_format_mooin_chapter` AS c 
+                                     FROM `mdl_format_mooin4_chapter` AS c 
                                      WHERE c.courseid = s.course)
               ORDER BY s.section ASC
                  LIMIT 1 ';
@@ -177,9 +178,9 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $dis = $DB->get_record_sql($sql_first, $param_first);
 
    //  $diskussions_url = new moodle_url('/mod/forum/view.php', array('f' => $dis->id, 'tab' => '1'));
-   $diskussions_url = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $course->id));
+   $diskussions_url = new moodle_url('/course/format/mooin4/alle_forums.php', array('id' => $course->id));
 
-    $participants_url = new moodle_url('/course/format/mooin/participants.php', array('id' => $course->id));
+    $participants_url = new moodle_url('/course/format/mooin4/participants.php', array('id' => $course->id));
 
     // Add rendere here
     $badges = null;
@@ -188,11 +189,11 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     $badges .= ob_get_contents();
     ob_end_clean();
 
-    $certificates_url = new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id));
+    $certificates_url = new moodle_url('/course/format/mooin4/certificates.php', array('id' => $course->id));
 
     if (get_last_forum_discussion($course->id, 'news') != null) {
         $check_diskussion = get_last_forum_discussion($course->id, 'news');
-        // $check_diskussion = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $course->id));
+        // $check_diskussion = new moodle_url('/course/format/mooin4/alle_forums.php', array('id' => $course->id));
     }
 
     // Participants
@@ -238,7 +239,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     // unenrol from course
     $unenrol_btn = '';
     if ($unenrolurl = get_unenrol_url($course->id)) {
-        $unenrol_btn = html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin'), array('class' => 'unenrol-link'));
+        $unenrol_btn = html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin4'), array('class' => 'unenrol-link'));
     }
 
 
@@ -251,8 +252,8 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         'continue_text_no_lesson' => $start_continue_no_lesson,
         'news' => $news,
         'progressbar' => $progressbar,
-        'badges_url' => new moodle_url('/course/format/mooin/badges.php', array('id' => $course->id)),
-        'certificate_url' => new moodle_url('/course/format/mooin/certificates.php', array('id' => $course->id)),
+        'badges_url' => new moodle_url('/course/format/mooin4/badges.php', array('id' => $course->id)),
+        'certificate_url' => new moodle_url('/course/format/mooin4/certificates.php', array('id' => $course->id)),
         'discussions_url' => $diskussions_url,
         'participants_url' => $participants_url,
         'badges' => $badges,
@@ -275,7 +276,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
     if (has_capability('moodle/course:update', $coursecontext)) {
         $gear_icon = html_writer::span('', 'bi bi-gear-fill');
 
-        $edit_header_url = new moodle_url('/course/format/mooin/edit_header.php', array('course' => $course->id));
+        $edit_header_url = new moodle_url('/course/format/mooin4/edit_header.php', array('course' => $course->id));
         $edit_header_link = html_writer::link($edit_header_url, $gear_icon, array('class' => 'edit-header-link'));
 
         // $sql_first = 'SELECT * FROM mdl_forum WHERE course = :id_course AND type = :type_forum ORDER BY ID DESC LIMIT 1'; //ORDER BY ID DESC LIMIT 1
@@ -283,7 +284,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         // $new_in_course = $DB->get_record_sql($sql_first, $param_first);
 
         $test = forum_get_course_forum($course->id, 'news');
-        $edit_newsforum = new moodle_url('/course/format/mooin/forums.php', array('f' => $test -> id, 'tab' => 1)); // mod/forum/view.php
+        $edit_newsforum = new moodle_url('/course/format/mooin4/forums.php', array('f' => $test -> id, 'tab' => 1)); // mod/forum/view.php
         //$edit_newsforum = new moodle_url($test);
         $edit_newsforum_link = html_writer::link($edit_newsforum, $gear_icon);
 
@@ -297,7 +298,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         $templatecontext['has_capability'] = true;
     }
 
-    echo $OUTPUT->render_from_template('format_mooin/mooin_mainpage', $templatecontext);
+    echo $OUTPUT->render_from_template('format_mooin4/mooin4_mainpage', $templatecontext);
 }
 
 if (!empty($displaysection)) {
@@ -305,7 +306,7 @@ if (!empty($displaysection)) {
 } else {
     $PAGE->navbar;
     if(!$USER->trackforums) {
-        \core\notification::warning(get_string('hint_track_forums', 'format_mooin', array('wwwroot' => $CFG->wwwroot, 'userid' => $USER->id)));
+        \core\notification::warning(get_string('hint_track_forums', 'format_mooin4', array('wwwroot' => $CFG->wwwroot, 'userid' => $USER->id)));
     }
     $renderer->print_multiple_section_page($course, null, null, null, null);
 }
@@ -314,4 +315,4 @@ if (!empty($displaysection)) {
 
 
 // Include course format js module.
-$PAGE->requires->js('/course/format/mooin/format.js');
+$PAGE->requires->js('/course/format/mooin4/format.js');

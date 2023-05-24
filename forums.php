@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * @package   format_mooin
+ * @package   format_mooin4
  * @copyright 2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -23,7 +23,7 @@
 require_once('../../../config.php');
 require_once('../../../mod/forum/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
-require_once('../mooin/locallib.php');
+require_once('../mooin4/locallib.php');
 
 $id = optional_param('id', 0, PARAM_INT);       // Course ID
 $cmid = optional_param('cmid', 0, PARAM_INT);       // Course module ID
@@ -35,8 +35,8 @@ $page = optional_param('page', 0, PARAM_INT);     // which page to show
 $search = optional_param('search', '', PARAM_CLEAN);// search string
 $markasread = optional_param('markasread', 0, PARAM_INT);
 $redirect = optional_param('redirect', 0, PARAM_INT);
-// $PAGE->navbar->add(get_string('my_forum', 'format_mooin'));
-// mooin
+// $PAGE->navbar->add(get_string('my_forum', 'format_mooin4'));
+// mooin4
 $page = -1;
 
 $params = array();
@@ -54,7 +54,7 @@ if ($page) {
 if ($search) {
     $params['search'] = $search;
 }
-$PAGE->set_url('/course/format/mooin/forums.php', $params);  // /mod/forum/view.php', $params
+$PAGE->set_url('/course/format/mooin4/forums.php', $params);  // /mod/forum/view.php', $params
 
 
 
@@ -141,7 +141,7 @@ echo $OUTPUT->header();
 // echo $output->heading($pagetitle);
 
 //echo navbar('Alle Forums');
-// echo navbar_mobile(get_string('all_forums', 'format_mooin'));
+// echo navbar_mobile(get_string('all_forums', 'format_mooin4'));
 // Some capability checks.
 
 if (empty($cm->visible) and !has_capability('moodle/course:viewhiddenactivities', $context)) {
@@ -158,7 +158,7 @@ if (!empty($forum->intro) && $forum->type != 'single' && $forum->type != 'teache
     echo $OUTPUT->box(format_module_intro('forum', $forum, $cm->id), 'generalbox', 'intro');
 }
 
-// mooin Link: Meine Beiträge und Suche
+// mooin4 Link: Meine Beiträge und Suche
 
 
 $mythreads_url = new moodle_url('/mod/forum/user.php', array('id' => $USER->id, 'course' => $course->id));
@@ -175,13 +175,13 @@ if ($markasread) {
         }
     }
     if ($redirect) {
-        redirect($CFG->wwwroot.'/course/format/mooin/alle_forums.php?id='.$course->id);
+        redirect($CFG->wwwroot.'/course/format/mooin4/alle_forums.php?id='.$course->id);
     }
 }
 // Show Link/Button to mark all as unread
 if (count_unread_posts($USER->id, $course->id, false, $forum->id) > 0) {
     echo '<p>';
-    echo html_writer::link(new moodle_url('/course/format/mooin/forums.php?f='.$forum->id.'&markasread=1'), get_string('mark_all_as_read', 'format_mooin'));
+    echo html_writer::link(new moodle_url('/course/format/mooin4/forums.php?f='.$forum->id.'&markasread=1'), get_string('mark_all_as_read', 'format_mooin4'));
     echo '</P>';
 }
 
@@ -249,8 +249,8 @@ if ($forum->type == 'qanda' && !has_capability('moodle/course:manageactivities',
     echo $OUTPUT->notification(get_string('qandanotify', 'forum'));
 }
 
-// mooin ////////////////
-require_once($CFG->dirroot . '/course/format/mooin/forum_lib.php');
+// mooin4 ////////////////
+require_once($CFG->dirroot . '/course/format/mooin4/forum_lib.php');
 
 switch ($forum->type) {
     case 'single':

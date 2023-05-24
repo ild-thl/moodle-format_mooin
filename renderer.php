@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderer for outputting the mooin course format.
+ * Renderer for outputting the mooin4 course format.
  *
- * @package format_mooin
+ * @package format_mooin4
  * @copyright 2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,18 +28,18 @@ require_once('locallib.php');
 
 global $PAGE;
 // Call jquery amd
-//$PAGE->requires->js_call_amd('format_mooin/complete_section');
-//$PAGE->requires->js_call_amd('format_mooin/section_completion_handler', 'init', [[
+//$PAGE->requires->js_call_amd('format_mooin4/complete_section');
+//$PAGE->requires->js_call_amd('format_mooin4/section_completion_handler', 'init', [[
 //    'section' => $section->id
 //]]);
 
 /**
- * Basic renderer for mooin format.
+ * Basic renderer for mooin4 format.
  *
  * @copyright 2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_mooin_renderer extends format_section_renderer_base {
+class format_mooin4_renderer extends format_section_renderer_base {
 
     /**
      * Constructor method, calls the parent constructor.
@@ -50,7 +50,7 @@ class format_mooin_renderer extends format_section_renderer_base {
     public function __construct(moodle_page $page, $target) {
         parent::__construct($page, $target);
 
-        // Since format_mooin_renderer::section_edit_control_items() only displays the 'Highlight' control
+        // Since format_mooin4_renderer::section_edit_control_items() only displays the 'Highlight' control
         // when editing mode is on we need to be sure that the link 'Turn editing mode on' is available for a user
         // who does not have any other managing capability.
         $page->set_other_editing_capability('moodle/course:setcurrentsection');
@@ -184,13 +184,13 @@ class format_mooin_renderer extends format_section_renderer_base {
                         ];
                     }
                     */
-                    if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+                    if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
                         //$url = new moodle_url('/course/view.php');
                         $url->param('unsetchapter', $section->id);
                         $controls['unsetchapter'] = array(
                             'url' => $url,
                             'icon' => 'i/settings',
-                            'name' => get_string('unsetchapter', 'format_mooin'),
+                            'name' => get_string('unsetchapter', 'format_mooin4'),
                             'pixattr' => array('class' => ''),
                             //'attr' => array('class' => 'icon editing_delete')
                         );
@@ -201,7 +201,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                         $controls['setchapter'] = array(
                             'url' => $url,
                             'icon' => 'i/settings',
-                            'name' => get_string('setchapter', 'format_mooin'),
+                            'name' => get_string('setchapter', 'format_mooin4'),
                             'pixattr' => array('class' => ''),
                             //'attr' => array('class' => 'icon editing_delete')
                         );
@@ -267,14 +267,14 @@ class format_mooin_renderer extends format_section_renderer_base {
             }
 
 
-            $chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id));
+            $chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id));
             if (course_can_delete_section($course, $section) && !$chapter) {
                 if (get_string_manager()->string_exists('deletesection', 'format_'.$course->format)) {
                     $strdelete = get_string('deletesection', 'format_'.$course->format);
                 } else {
                     $strdelete = get_string('deletesection');
                 }
-                $url = new moodle_url('/course/format/mooin/editsection.php', array(
+                $url = new moodle_url('/course/format/mooin4/editsection.php', array(
                     'id' => $section->id,
                     'sr' => $sectionreturn,
                     'delete' => 1,
@@ -346,13 +346,13 @@ class format_mooin_renderer extends format_section_renderer_base {
     //             ];
     //         }
     //         */
-    //         if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
+    //         if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
     //             //$url = new moodle_url('/course/view.php');
     //             $url->param('unsetchapter', $section->id);
     //             $controls['unsetchapter'] = array(
     //                 'url' => $url,
     //                 'icon' => 'i/settings',
-    //                 'name' => get_string('unsetchapter', 'format_mooin'),
+    //                 'name' => get_string('unsetchapter', 'format_mooin4'),
     //                 'pixattr' => array('class' => ''),
     //                 //'attr' => array('class' => 'icon editing_delete')
     //             );
@@ -363,7 +363,7 @@ class format_mooin_renderer extends format_section_renderer_base {
     //             $controls['setchapter'] = array(
     //                 'url' => $url,
     //                 'icon' => 'i/settings',
-    //                 'name' => get_string('setchapter', 'format_mooin'),
+    //                 'name' => get_string('setchapter', 'format_mooin4'),
     //                 'pixattr' => array('class' => ''),
     //                 //'attr' => array('class' => 'icon editing_delete')
     //             );
@@ -480,7 +480,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $back = $sectionno - 1;
 
         foreach ($sections as $section) {
-            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $sections[$section->section]->id))) {
+            if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $sections[$section->section]->id))) {
                 $sections[$section->section]->name = $chapter->title;
                 $sections[$section->section]->ischapter = true;
             }
@@ -498,9 +498,9 @@ class format_mooin_renderer extends format_section_renderer_base {
                 }
                 $previouslink = html_writer::tag('span', $this->output->larrow(), array('class' => 'larrow'));
                 if(isset($sections[$back]->ischapter)) {
-                    $previouslink .= get_string('previous_lesson','format_mooin');
+                    $previouslink .= get_string('previous_lesson','format_mooin4');
                 } else {
-                    $previouslink .= get_string('previous_chapter','format_mooin');
+                    $previouslink .= get_string('previous_chapter','format_mooin4');
                 }
 
                 $links['previous'] = html_writer::link(course_get_url($course, $back), $previouslink, $params);
@@ -514,7 +514,7 @@ class format_mooin_renderer extends format_section_renderer_base {
         $forward = $sectionno + 1;
         /*
         if (isset($sections[$forward]->id)) {
-            if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $sections[$forward]->id))) {
+            if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $sections[$forward]->id))) {
                 $sections[$forward]->name = $chapter->title;
                 $sections[$forward]->ischapter = true;
             }else if ($sections[$forward]) {
@@ -531,10 +531,10 @@ class format_mooin_renderer extends format_section_renderer_base {
                     $params = array('class' => 'dimmed_text');
                 }
                 if(isset($sections[$forward]->ischapter)) {
-                    $nextlink = get_string('next_lesson','format_mooin');
+                    $nextlink = get_string('next_lesson','format_mooin4');
 
                 } else {
-                    $nextlink = get_string('next_chapter','format_mooin');
+                    $nextlink = get_string('next_chapter','format_mooin4');
                     $params = array('class' => 'next_chapter');
                 }
 
@@ -568,7 +568,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         $context = context_course::instance($course->id);
 
-        $out .= $this->output->heading(get_string('topicoutline','format_mooin'), 2, ''); //accesshide
+        $out .= $this->output->heading(get_string('topicoutline','format_mooin4'), 2, ''); //accesshide
         //$out .= $this->output->heading($this->page_title(), 2, ''); //accesshide
 
         // Copy activity clipboard..
@@ -697,8 +697,8 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         // Title with section navigation links.
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
-        //$PAGE->requires->js_call_amd('format_mooin/complete_section', [['link' => $sectionnavlinks['next']]]);
-        $PAGE->requires->js_call_amd('format_mooin/section_completion_handler', 'init', [[
+        //$PAGE->requires->js_call_amd('format_mooin4/complete_section', [['link' => $sectionnavlinks['next']]]);
+        $PAGE->requires->js_call_amd('format_mooin4/section_completion_handler', 'init', [[
             'section_id' => $thissection->id,
             'course_id' => $course->id
         ]]);
@@ -820,8 +820,8 @@ class format_mooin_renderer extends format_section_renderer_base {
                                                                     'completion' => 2))) {
 
             $complete_button = '';
-            if (get_user_preferences('format_mooin_section_completed_'.$thissection->id, 0, $USER->id) == 0) {
-                $complete_button .= html_writer::start_tag('button', array('data-action' => 'format_mooin/section_completion_handler-button', 'type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$thissection->id, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Seite als gelesen markieren'));
+            if (get_user_preferences('format_mooin4_section_completed_'.$thissection->id, 0, $USER->id) == 0) {
+                $complete_button .= html_writer::start_tag('button', array('data-action' => 'format_mooin4/section_completion_handler-button', 'type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$thissection->id, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Seite als gelesen markieren'));
 
                 $complete_button .= 'Seite als gelesen markieren';
                 $complete_button .= html_writer::end_tag('button');
@@ -842,7 +842,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
                                 // find a way to show the popup in a section after completion
                                 $course_progress = get_course_progress($course->id, $USER->id);
-                                $value = 'format_mooin_course_completed_'.$USER->id. '_'.$course->id;
+                                $value = 'format_mooin4_course_completed_'.$USER->id. '_'.$course->id;
 
                                 $sql = 'SELECT up.*
                                         FROM {user_preferences} up
@@ -854,13 +854,13 @@ class format_mooin_renderer extends format_section_renderer_base {
                                 $modal_out = null;
                                     $modal_out .= html_writer::start_tag('div', ['id'=>'myModal', 'class'=>'modal_style']);
                                     $modal_out .= html_writer::start_tag('div', ['class'=>'modal_content_style']);
-                                    $modal_out .= html_writer::span(get_string('modal_course_complete_title', 'format_mooin'), 'modal-title');
+                                    $modal_out .= html_writer::span(get_string('modal_course_complete_title', 'format_mooin4'), 'modal-title');
 
                                     $modal_out .= html_writer::start_span('close_style') . html_writer::end_span();
-                                    $modal_out .= html_writer::nonempty_tag('h3', get_string('modal_course_complete', 'format_mooin'), null);
+                                    $modal_out .= html_writer::nonempty_tag('h3', get_string('modal_course_complete', 'format_mooin4'), null);
                                     $modal_out .= html_writer::span('', 'bi bi-mortarboard-fill');
                                     //$modal_out .= html_writer::nonempty_tag('p', get_progress_bar_course($course_progress, 100), null);
-                                    $modal_out .= html_writer::span('Schliessen', 'modal_button_close mooin-btn btn-primary text_close', array('role' => 'button'));
+                                    $modal_out .= html_writer::span('Schliessen', 'modal_button_close mooin4-btn btn-primary text_close', array('role' => 'button'));
 
                                     $modal_out .= html_writer::end_tag('div');
                                     $modal_out .= html_writer::end_tag('div');
@@ -870,20 +870,20 @@ class format_mooin_renderer extends format_section_renderer_base {
         $modal_last_section = null;
         $modal_last_section .= html_writer::start_tag('div', ['id'=>'myModal', 'class'=>'modal_style']);
         $modal_last_section .= html_writer::start_tag('div', ['class'=>'modal_content_style']);
-        $modal_last_section .= html_writer::span(get_string('modal_last_section_of_chapter_title','format_mooin'), 'modal-title');
+        $modal_last_section .= html_writer::span(get_string('modal_last_section_of_chapter_title','format_mooin4'), 'modal-title');
 
         $modal_last_section .= html_writer::start_span('close_style') . html_writer::end_span();
-        $modal_last_section .= html_writer::nonempty_tag('h3', get_string('modal_last_section_of_chapter','format_mooin'), null);
+        $modal_last_section .= html_writer::nonempty_tag('h3', get_string('modal_last_section_of_chapter','format_mooin4'), null);
         $modal_last_section .= html_writer::span('', 'bi bi-star');
 
-        $modal_last_section .= html_writer::span('Schliessen', 'modal_button_close mooin-btn btn-primary text_close', array('role' => 'button'));
+        $modal_last_section .= html_writer::span('Schliessen', 'modal_button_close mooin4-btn btn-primary text_close', array('role' => 'button'));
         $modal_last_section .= html_writer::end_tag('div');
         $modal_last_section .= html_writer::end_tag('div');
 
         // Get chapter
 
         $chapter_position_in_course = get_chapter_for_section($thissection->id);
-        $chapter_info = $DB->get_record('format_mooin_chapter', ['courseid'=>$course->id, 'chapter'=>$chapter_position_in_course]);
+        $chapter_info = $DB->get_record('format_mooin4_chapter', ['courseid'=>$course->id, 'chapter'=>$chapter_position_in_course]);
         // End Modal
 
         $check_completed_chapter = get_chapter_info($chapter_info);
@@ -892,9 +892,9 @@ class format_mooin_renderer extends format_section_renderer_base {
         $modal_kapitel_completed = null;
         $modal_kapitel_completed .= html_writer::start_tag('div', ['id'=>'myModal', 'class'=>'modal_style']);
         $modal_kapitel_completed .= html_writer::start_tag('div', ['class'=>'modal_content_style']);
-        $modal_kapitel_completed .= html_writer::span(get_string('modal_chapter_complete_title','format_mooin'), 'modal-title');
+        $modal_kapitel_completed .= html_writer::span(get_string('modal_chapter_complete_title','format_mooin4'), 'modal-title');
         $modal_kapitel_completed .= html_writer::start_span('close_style') . html_writer::end_span();
-        $modal_kapitel_completed .= html_writer::nonempty_tag('h3', get_string('modal_chapter_complete','format_mooin'), null);
+        $modal_kapitel_completed .= html_writer::nonempty_tag('h3', get_string('modal_chapter_complete','format_mooin4'), null);
         $modal_kapitel_completed .= html_writer::span('', 'bi bi-check-circle');
 
         //$modal_kapitel_completed .= html_writer::start_span('done_style')  . html_writer::end_span();
@@ -904,21 +904,21 @@ class format_mooin_renderer extends format_section_renderer_base {
         // $modal_kapitel_completed .= html_writer::end_tag('button');
 
         if ($sectionnavlinks['next'] !== "") {
-            $modal_kapitel_completed .= html_writer::span('Schliessen', 'modal_button_close mooin-btn btn-white text_close', array('role' => 'button'));
+            $modal_kapitel_completed .= html_writer::span('Schliessen', 'modal_button_close mooin4-btn btn-white text_close', array('role' => 'button'));
 
             // $modal_kapitel_completed .= html_writer::start_tag('button', ['class'=>'modal_button_close btn-primary']);
             // $modal_kapitel_completed .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'modal_btn_next_chapter mdl-right'));
             // $modal_kapitel_completed .= html_writer::end_tag('button');
-            $modal_kapitel_completed .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'modal_btn_next_chapter mooin-btn mooin-btn-primary'));
+            $modal_kapitel_completed .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'modal_btn_next_chapter mooin4-btn mooin4-btn-primary'));
         } else {
-            $modal_kapitel_completed .= html_writer::span('Schliessen', 'modal_button_close mooin-btn btn-primary text_close', array('role' => 'button'));
+            $modal_kapitel_completed .= html_writer::span('Schliessen', 'modal_button_close mooin4-btn btn-primary text_close', array('role' => 'button'));
 
         }
        $modal_kapitel_completed .= html_writer::end_tag('div');
         $modal_kapitel_completed .= html_writer::end_tag('div');
         $modal_kapitel_completed .= html_writer::end_tag('div');
 
-        //$PAGE->requires->js_call_amd('format_mooin/modalTest', 'completeModal');
+        //$PAGE->requires->js_call_amd('format_mooin4/modalTest', 'completeModal');
 
         if (!$this->page->user_is_editing()  && is_last_section_of_chapter($thissection->id) && $check_completed_chapter['completed'] == false) {
             //  && !$check_completed_chapter
@@ -926,7 +926,7 @@ class format_mooin_renderer extends format_section_renderer_base {
             // echo get_chapter_for_section($thissection->id);
             // echo '<br>';
             // echo $thissection->id;
-            $PAGE->requires->js_call_amd('format_mooin/show_popup');
+            $PAGE->requires->js_call_amd('format_mooin4/show_popup');
             echo $modal_last_section;
         }
         /*
@@ -934,15 +934,15 @@ class format_mooin_renderer extends format_section_renderer_base {
             //  && $v->value == 1
 
             // $modal_out .= html_writer::start_tag('div', ['class'=>]);
-            $PAGE->requires->js_call_amd('format_mooin/show_popup');
+            $PAGE->requires->js_call_amd('format_mooin4/show_popup');
             echo $modal_out;
-            set_user_preference('format_mooin_course_completed_'.$USER->id . '_'. $course->id, 1, $USER->id);
-            //$PAGE->requires->js('format_mooin/show_popup');
+            set_user_preference('format_mooin4_course_completed_'.$USER->id . '_'. $course->id, 1, $USER->id);
+            //$PAGE->requires->js('format_mooin4/show_popup');
 
         } else if ((!$this->page->user_is_editing()  && $check_completed_chapter['completed'] == true && is_last_section_of_chapter($thissection->id)) || (
          !$this->page->user_is_editing()  && is_section_completed($chapter_info->courseid, $thissection) && is_last_section_of_chapter($thissection->id) && $check_completed_chapter['completed'] == true)) {
 
-            $PAGE->requires->js_call_amd('format_mooin/show_popup');
+            $PAGE->requires->js_call_amd('format_mooin4/show_popup');
             echo $modal_kapitel_completed;
         }
         //*/
@@ -962,7 +962,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         // Close single-section div.
         echo html_writer::end_tag('div');
-        //$PAGE->requires->js_call_amd('format_mooin/test', 'init');
+        //$PAGE->requires->js_call_amd('format_mooin4/test', 'init');
     }
 
     /**
@@ -1043,13 +1043,13 @@ class format_mooin_renderer extends format_section_renderer_base {
         if ($hasnamenotsecpg || $hasnamesecpg) {
             $classes = '';
         }
-        if ($chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id))) {
-            //$section->name = get_string('chapter', 'format_mooin').' '.$chapter->chapter.' - '.$chapter->title;
+        if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
+            //$section->name = get_string('chapter', 'format_mooin4').' '.$chapter->chapter.' - '.$chapter->title;
             $section->name = $chapter->title;
-            $sectionname = get_string('chapter', 'format_mooin').' '.$chapter->chapter.' '.html_writer::tag('span', $this->section_title_without_link($section, $course));
+            $sectionname = get_string('chapter', 'format_mooin4').' '.$chapter->chapter.' '.html_writer::tag('span', $this->section_title_without_link($section, $course));
         }
         else {
-            $sectionname = get_string('lesson', 'format_mooin').' '.get_section_prefix($section).' '.html_writer::tag('span', $this->section_title($section, $course));
+            $sectionname = get_string('lesson', 'format_mooin4').' '.get_section_prefix($section).' '.html_writer::tag('span', $this->section_title($section, $course));
         }
 
         $o .= $this->output->heading($sectionname, 3, 'sectionname' . $classes, "sectionid-{$section->id}-title");
@@ -1081,7 +1081,7 @@ class format_mooin_renderer extends format_section_renderer_base {
             $classattr .= ' current';
         }
 
-        $chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id));
+        $chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id));
 
         $title = get_section_name($course, $section);
         $o = '';
@@ -1118,7 +1118,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $o .= html_writer::tag('div', '', array('class' => 'left side'));
                 $o .= html_writer::tag('div', '', array('class' => 'right side'));
                 $o .= html_writer::start_tag('div', array('class' => 'content'));
-                $title = get_string('chapter', 'format_mooin').' '.$chapter->chapter . ': ' . $chapter->title;
+                $title = get_string('chapter', 'format_mooin4').' '.$chapter->chapter . ': ' . $chapter->title;
                 $sectionids = get_sections_for_chapter($chapter->id);
                 $h = html_writer::span('','list-marker');
                 $h .= $this->output->heading($title, 3, 'section-title');
@@ -1174,7 +1174,7 @@ class format_mooin_renderer extends format_section_renderer_base {
 
                 // highlight as last visited section
                 $lastvisitedsection = '';
-                if (get_user_preferences('format_mooin_last_section_in_course_'.$course->id, 0, $USER->id) == $section->section) {
+                if (get_user_preferences('format_mooin4_last_section_in_course_'.$course->id, 0, $USER->id) == $section->section) {
                     $lastvisitedsection = ' active';
                 }
 
@@ -1191,7 +1191,7 @@ class format_mooin_renderer extends format_section_renderer_base {
                 $o .= html_writer::start_tag('div', array('class' => 'content'));
 
                 $sectionprefix = get_section_prefix($section);
-                $title = get_string('lesson', 'format_mooin').' '.$sectionprefix . ': ' . $title;
+                $title = get_string('lesson', 'format_mooin4').' '.$sectionprefix . ': ' . $title;
 
                 if ($section->uservisible) {
                     $title = html_writer::tag(

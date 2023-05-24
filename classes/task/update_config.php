@@ -1,6 +1,6 @@
 <?php
 
-namespace format_mooin\task;
+namespace format_mooin4\task;
 
 /**
  * Scheduled task for updating trackreadposts in global config,
@@ -14,14 +14,14 @@ class update_config extends \core\task\scheduled_task {
      * @return string
      */
     public function get_name() {
-        return get_string('update_config', 'format_mooin');
+        return get_string('update_config', 'format_mooin4');
     }
 
     /**
      * Execute the task.
      */
     public function execute() {
-        if (get_config('format_mooin', 'forcetrackforums')) {
+        if (get_config('format_mooin4', 'forcetrackforums')) {
             if (!get_config('moodle', 'forum_trackreadposts')) {
                 mtrace('Set value of setting forum_trackreadposts to 1');
                 set_config('forum_trackreadposts', 1);
@@ -33,7 +33,7 @@ class update_config extends \core\task\scheduled_task {
                 }
             }
         }
-        if (get_config('format_mooin', 'forcecompletiondefault')) {
+        if (get_config('format_mooin4', 'forcecompletiondefault')) {
             if (get_config('moodle', 'completiondefault') == 1) {
                 mtrace('Set value of setting completiondefault to 0');
                 set_config('completiondefault', 0);

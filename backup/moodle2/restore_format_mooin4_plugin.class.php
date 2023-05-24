@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Specialised restore for mooin course format.
+ * Specialised restore for mooin4 course format.
  *
- * @package   format_mooin
+ * @package   format_mooin4
  * @category  backup
  * @copyright 2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,16 +26,16 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Specialised restore for mooin course format.
+ * Specialised restore for mooin4 course format.
  *
  * Processes 'numsections' from the old backup files and hides sections that used to be "orphaned".
  *
- * @package   format_mooin
+ * @package   format_mooin4
  * @category  backup
  * @copyright 2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_format_mooin_plugin extends restore_format_plugin {
+class restore_format_mooin4_plugin extends restore_format_plugin {
 
     /** @var int */
     protected $originalnumsections = 0;
@@ -101,7 +101,7 @@ class restore_format_mooin_plugin extends restore_format_plugin {
 
         $data = $this->connectionpoint->get_data();
         $backupinfo = $this->step->get_task()->get_info();
-        if ($backupinfo->original_course_format !== 'mooin' || !isset($data['tags']['numsections'])) {
+        if ($backupinfo->original_course_format !== 'mooin4' || !isset($data['tags']['numsections'])) {
             // Backup from another course format or backup file does not even have 'numsections'.
             return;
         }

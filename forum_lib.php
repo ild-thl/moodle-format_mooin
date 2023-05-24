@@ -88,7 +88,7 @@ function oc_forum_print_latest_discussions($course, $forum, $maxdiscussions = -1
 
     if ($canstart) {
         echo '<div class="py-3">'; // singlebutton forumaddnew
-        echo "<form  id=\"newdiscussionform\" method=\"get\" action=\"$CFG->wwwroot/course/format/mooin/forum_post.php\">";
+        echo "<form  id=\"newdiscussionform\" method=\"get\" action=\"$CFG->wwwroot/course/format/mooin4/forum_post.php\">";
         echo '<div>';
         echo "<input type=\"hidden\" name=\"forum\" value=\"$forum->id\" />";
         switch ($forum->type) {

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component mooin course format.
+ * Strings for component mooin4 course format.
  *
- * @package   format_mooin
+ * @package   format_mooin4
  * @copyright 2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,13 +30,13 @@ $string['deletesection'] = 'Abschnitt löschen';
 $string['news'] = 'News';
 $string['newsectionname'] = 'Neuer Name für Abschnitt {$a}';
 $string['sectionname'] = 'Abschnitt';
-$string['pluginname'] = 'mooin format';
+$string['pluginname'] = 'Mooin 4.0 Kursformat';
 $string['section0name'] = 'Allgemein';
-$string['page-course-view-mooin'] = 'Any course main page in mooin format';
-$string['page-course-view-mooin-x'] = 'Any course page in mooin format';
+$string['page-course-view-mooin4'] = 'Any course main page in mooin 4.0 format';
+$string['page-course-view-mooin4-x'] = 'Any course page in mooin 4.0 format';
 $string['hidefromothers'] = 'Abschnitt sperren';
 $string['showfromothers'] = 'Abschnitt anzeigen';
-$string['privacy:metadata'] = 'Das mooin Kursformat-Plugin speichert keine persönlichen Daten.';
+$string['privacy:metadata'] = 'Das Mooin 4.0 Kursformat-Plugin speichert keine persönlichen Daten.';
 $string['map_title'] = 'Karte der Teilnehmenden';
 $string['map_descr'] = 'Bitte tragen Sie Ihren Wohnort in Ihr Profil ein, damit die Teilnehmendenkarte möglichst vollständig angezeigt werden kann.';
 $string['badges'] = 'Meine Kursbadges';
@@ -56,7 +56,7 @@ $string['awarded_badges'] = 'Kürzlich verliehene Badges';
 $string['hide_tabs'] = 'MOOC-Tabs verstecken';
 $string['highscore'] = 'Highscore';
 $string['in_course'] = 'In diesem Kurs';
-$string['in_mooin'] = 'Kursübergreifend auf der Plattform';
+$string['in_mooin4'] = 'Kursübergreifend auf der Plattform';
 $string['lastday'] = 'In den letzten 24 Stunden';
 $string['lastweek'] = 'In den letzten 7 Tagen';
 $string['discussion_link'] = 'ID für das allgemeine Diskussionsforum';
@@ -112,7 +112,7 @@ $string['mark_all_as_read_mobile'] = 'Alle gelesen';
 $string['configlabel_geonamesapi_url'] = 'GeoNames API-URL';
 $string['configdesc_geonamesapi_url'] = 'Dieser Service wird verwendet um die Koordinaten der Teilnehmenden auf der Teilnehmerkarte anzuzeigen.';
 $string['configlabel_geonamesapi_username'] = 'GeoNames Benutzername';
-$string['configdesc_geonamesapi_username'] = 'Um diesen Service zu nutzen wird ein GeoNames-Account benötigt. Dieser kann <a href="https://www.geonames.org/">hier</a> angelegt und aktiviert werden. Unser mooin Demo-Account sollte nur zu Testzwecken verwendet werden.';
+$string['configdesc_geonamesapi_username'] = 'Um diesen Service zu nutzen wird ein GeoNames-Account benötigt. Dieser kann <a href="https://www.geonames.org/">hier</a> angelegt und aktiviert werden. Unser Mooin 4.0 Demo-Account sollte nur zu Testzwecken verwendet werden.';
 $string['configlabel_forcecompletiondefault'] = 'Aktivitätsabschluss nicht anzeigen als Default';
 $string['configdesc_forcecompletiondefault'] = 'Wenn neue Aktivitäten im Kurs hinzugefügt werden, wird die Aktivitätsverfolgung standardmäßig nicht angezeigt. Sobald der Aktivitätsabschluss für eine Aktiviät eingeschaltet wird, ist der Fortschrittsbalken innerhalb dieser Lektion vom Aktivitätsabschluss abhängig. Ansonsten wird im Footer der Lektion ein Button angezeigt, mit dem die Lektion als abgeschlossen markiert werden kann.';
 

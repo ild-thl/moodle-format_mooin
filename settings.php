@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Settings for format_mooin
+ * Settings for format_mooin4
  *
- * @package    format_mooin
+ * @package    format_mooin4
  * @copyright  2023 TH Lübeck ISy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,27 +26,27 @@
 
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox(
-        'format_mooin/forcetrackforums',
-        get_string('configlabel_forcetrackforums', 'format_mooin'),
-        get_string('configdesc_forcetrackforums', 'format_mooin', $CFG->wwwroot),
+        'format_mooin4/forcetrackforums',
+        get_string('configlabel_forcetrackforums', 'format_mooin4'),
+        get_string('configdesc_forcetrackforums', 'format_mooin4', $CFG->wwwroot),
         1)
     );
     $settings->add(new admin_setting_configcheckbox(
-        'format_mooin/forcecompletiondefault',
-        get_string('configlabel_forcecompletiondefault', 'format_mooin'),
-        get_string('configdesc_forcecompletiondefault', 'format_mooin', $CFG->wwwroot),
+        'format_mooin4/forcecompletiondefault',
+        get_string('configlabel_forcecompletiondefault', 'format_mooin4'),
+        get_string('configdesc_forcecompletiondefault', 'format_mooin4', $CFG->wwwroot),
         1)
     );
     $settings->add(new admin_setting_configtext(
-        'format_mooin/geonamesapi_url',
-        get_string('configlabel_geonamesapi_url', 'format_mooin'),
-        get_string('configdesc_geonamesapi_url', 'format_mooin'), 
+        'format_mooin4/geonamesapi_url',
+        get_string('configlabel_geonamesapi_url', 'format_mooin4'),
+        get_string('configdesc_geonamesapi_url', 'format_mooin4'), 
         'http://api.geonames.org'
     ));
     $settings->add(new admin_setting_configtext(
-        'format_mooin/geonamesapi_username',
-        get_string('configlabel_geonamesapi_username', 'format_mooin'),
-        get_string('configdesc_geonamesapi_username', 'format_mooin'), 
+        'format_mooin4/geonamesapi_username',
+        get_string('configlabel_geonamesapi_username', 'format_mooin4'),
+        get_string('configdesc_geonamesapi_username', 'format_mooin4'), 
         'mooin4'
     ));
 }

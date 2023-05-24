@@ -16,7 +16,7 @@
 /**
  * Definition of assignment scheduled tasks.
  *
- * @package   format_mooin
+ * @package   format_mooin4
  * @copyright 2023 TH Lübeck ISy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $tasks = array(
     array(
-        'classname' => '\format_mooin\task\update_config',
+        'classname' => '\format_mooin4\task\update_config',
         'blocking' => 0,
         'minute' => '*',
         'hour' => '*',

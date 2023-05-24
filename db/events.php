@@ -17,7 +17,7 @@
 /**
  * Trigger the specified events
  *
- * @package     format_mooin
+ * @package     format_mooin4
  * @category    event
  * @copyright   2023 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -30,47 +30,47 @@ $observers = array(
     // Badges
     array(
         'eventname' => '\core\event\badge_awarded',
-        'callback' => 'format_mooin_observer::badge_awarded',
+        'callback' => 'format_mooin4_observer::badge_awarded',
     ),
     array(
         'eventname' => '\core\event\badge_viewed',
-        'callback' => 'format_mooin_observer::badge_viewed',
+        'callback' => 'format_mooin4_observer::badge_viewed',
     ),
     // ilddigitalcert
     array(
         'eventname' => '\mod_ilddigitalcert\event\certificate_issued',
-        'callback' => 'format_mooin_observer::ilddigital_certificate_issued',
+        'callback' => 'format_mooin4_observer::ilddigital_certificate_issued',
     ),
     array(
         'eventname' => '\mod_ilddigitalcert\event\certificate_viewed',
-        'callback' => 'format_mooin_observer::ilddigital_certificate_viewed',
+        'callback' => 'format_mooin4_observer::ilddigital_certificate_viewed',
     ),
     // coursecertificate
     array(
         'eventname' => '\mod_coursecertificate\event\course_module_viewed',
-        'callback' => 'format_mooin_observer::course_certificate_viewed',
+        'callback' => 'format_mooin4_observer::course_certificate_viewed',
     ),
     array(
         'eventname' => '\tool_certificate\event\certificate_issued',
-        'callback' => 'format_mooin_observer::course_certificate_issued',
+        'callback' => 'format_mooin4_observer::course_certificate_issued',
     ),
     // Forum
     array(
         'eventname' => '\mod_forum\event\discussion_viewed',
-        'callback' => 'format_mooin_observer::discussion_viewed'
+        'callback' => 'format_mooin4_observer::discussion_viewed'
     ),
     // User
     array(
         'eventname' => '\core\event\user_updated',
-        'callback' => 'format_mooin_observer::user_updated'
+        'callback' => 'format_mooin4_observer::user_updated'
     ),
     array(
         'eventname' => '\core\event\user_created',
-        'callback' => 'format_mooin_observer::user_created'
+        'callback' => 'format_mooin4_observer::user_created'
     ),
     // Sections
     array(
         'eventname' => '\core\event\course_section_created',
-        'callback' => 'format_mooin_observer::section_created'
+        'callback' => 'format_mooin4_observer::section_created'
     )
 );

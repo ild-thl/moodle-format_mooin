@@ -18,20 +18,20 @@
  * Complete a Lektion inside a chapter
  *
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @package format_mooin
+ * @package format_mooin4
  * @author Nguefack
  */
 require_once('../../../config.php');
 require_once($CFG->libdir.'/tablelib.php');
 require_once($CFG->libdir.'/filelib.php');
-require_once('../mooin/lib.php');
-require_once('../mooin/locallib.php');
+require_once('../mooin4/lib.php');
+require_once('../mooin4/locallib.php');
 
- require_once('../mooin/renderer.php');
+ require_once('../mooin4/renderer.php');
 
 global $DB, $PAGE, $USER;
 
-//$PAGE->requires->js_call_amd('format_mooin/complete_section');
+//$PAGE->requires->js_call_amd('format_mooin4/complete_section');
 
 $contextid    = optional_param('contextid', 0, PARAM_INT); // One of this or.
 $courseid     = optional_param('id', 0, PARAM_INT); // This are required. required_param('id', PARAM_INT);

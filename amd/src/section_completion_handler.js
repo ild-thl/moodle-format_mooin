@@ -4,7 +4,7 @@
 //   course_id,
 //   section_id,
 // ) => fetchMany([{
-//   methodname: 'format_mooin_check_completion_status',
+//   methodname: 'format_mooin4_check_completion_status',
 //   args: {
 //     course_id,
 //     section_id,
@@ -14,7 +14,7 @@
 const Selectors = {
   actions: {
     buttonClicked:
-      '[data-action="format_mooin/section_completion_handler-button"]',
+      '[data-action="format_mooin4/section_completion_handler-button"]',
   },
 };
 
@@ -40,7 +40,7 @@ export const init = ({section_id, course_id}) => {
       var formData = new FormData();
       formData.append("section", section_id);
       formData.append("course_id", course_id);
-      xhr.open("POST", "format/mooin/complete_section.php", true);
+      xhr.open("POST", "format/mooin4/complete_section.php", true);
 
       xhr.send(formData);
 

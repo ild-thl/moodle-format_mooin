@@ -91,8 +91,8 @@ function complete_section($section, $userid) {
     // global $DB;
     //global $PAGE;
 
-    set_user_preference('format_mooin_section_completed_'.$section, 1, $userid);
-    //$PAGE->requires->js_call_amd('format_mooin/modalTest', 'completeModal');
+    set_user_preference('format_mooin4_section_completed_'.$section, 1, $userid);
+    //$PAGE->requires->js_call_amd('format_mooin4/modalTest', 'completeModal');
 
     // $sequences_in_sections = $DB->get_record('course_sections', ['course'=> $cid, 'section'=>$section], 'sequence', IGNORE_MISSING);
 }
@@ -307,8 +307,8 @@ function print_badges_html($records, $details = false, $highlight = false, $badg
         if (!isset($second->issuedid)) {
             $second->issuedid = 0;
         }
-        $f = get_user_preferences('format_mooin_new_badge_'.$first->issuedid, 0, $USER->id);
-        $s = get_user_preferences('format_mooin_new_badge_'.$second->issuedid, 0, $USER->id);
+        $f = get_user_preferences('format_mooin4_new_badge_'.$first->issuedid, 0, $USER->id);
+        $s = get_user_preferences('format_mooin4_new_badge_'.$second->issuedid, 0, $USER->id);
         if ($f < $s) {
             return 1;
         }
@@ -347,7 +347,7 @@ function print_badges_html($records, $details = false, $highlight = false, $badg
 
         if (isset($record->uniquehash)) {
             $url = new moodle_url('/badges/badge.php', array('hash' => $record->uniquehash));
-            $badgeisnew = get_user_preferences('format_mooin_new_badge_'.$record->issuedid, 0, $USER->id);
+            $badgeisnew = get_user_preferences('format_mooin4_new_badge_'.$record->issuedid, 0, $USER->id);
         } else {
             $url = new moodle_url('/badges/overview.php', array('id' => $record->id));
             $badgeisnew = 0;
@@ -431,7 +431,7 @@ function get_user_and_availbale_badges($userid, $courseid) {
     if ($coursebadges) {
         $result = print_badges_html($coursebadges, false, true, true);
     } else {
-        //$result .= html_writer::start_span() . get_string('no_badges_available', 'format_mooin') . html_writer::end_span();
+        //$result .= html_writer::start_span() . get_string('no_badges_available', 'format_mooin4') . html_writer::end_span();
         $result = null;
     }
     return $result;
@@ -887,7 +887,7 @@ function get_certificates($courseid) {
 
 
     }  else {
-        //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin'));
+        //$templatedata =  $OUTPUT->heading(get_string('certificate_overview', 'format_mooin4'));
         $templatedata1 = [];
     }
     if($DB->get_manager()->table_exists($table_course_certificate)){
@@ -1058,7 +1058,7 @@ function show_certificat($courseid) {
                             $new = '';
                             $certmod = $templ[$i]->certmod;
                             $issuedid = $templ[$i]->issuedid;
-                            if (get_user_preferences('format_mooin_new_certificate_'.$certmod.'_'.$issuedid, 0, $USER->id) == 1) {
+                            if (get_user_preferences('format_mooin4_new_certificate_'.$certmod.'_'.$issuedid, 0, $USER->id) == 1) {
                                 $new = ' new-certificate-layer';
                             }
                             //$out_certificat .= html_writer::start_tag('div', ['class'=>'certificate-img', 'style'=>'cursor:pointer;']); // certificat_card
@@ -1136,9 +1136,9 @@ function news_forum_url($courseid, $forum_type){
     // get the news annoucement & forum discussion for a specific news or forum
     $result = '';
     $news_forum_id = $new_in_course->id;
-    $newsurl = new moodle_url('/course/format/mooin/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
-    $url_disc = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid));
-    // new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
+    $newsurl = new moodle_url('/course/format/mooin4/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
+    $url_disc = new moodle_url('/course/format/mooin4/alle_forums.php', array('id' => $courseid));
+    // new moodle_url('/course/format/mooin4/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
     if ($new_in_course == true) {
 
         if ($forum_type == 'news') {
@@ -1257,12 +1257,12 @@ function get_last_news($courseid, $forum_type) {
 
             $out .= html_writer::start_tag('div', ['class'=> 'news']); // card_news
             $out .= html_writer::start_tag('div', ['class'=> 'container']); //container
-            $out .= html_writer::nonempty_tag('h2',get_string('news', 'format_mooin'),['class' => 'mb-1']);
+            $out .= html_writer::nonempty_tag('h2',get_string('news', 'format_mooin4'),['class' => 'mb-1']);
 
             $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-inline-block align-items-center mb-3']); //right_part_new
 
             $news_forum_id = $news_forum_post->forumid; //$new_in_course->id;
-            //$newsurl = new moodle_url('/course/format/mooin/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
+            //$newsurl = new moodle_url('/course/format/mooin4/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
             if ($forum = $DB->get_record('forum', array('course' => $courseid, 'type' => 'news'))) {
                 if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
                     if($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance'=>$forum->id))){
@@ -1270,8 +1270,8 @@ function get_last_news($courseid, $forum_type) {
                     }
                 }
             }
-            $url_disc = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid));
-            // new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
+            $url_disc = new moodle_url('/course/format/mooin4/alle_forums.php', array('id' => $courseid));
+            // new moodle_url('/course/format/mooin4/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
             if ($forum_type == 'news') {
                 // Falls es neue Nachrichten gibt
                 //$unread_news_number = get_unread_news_forum($courseid, 'news');
@@ -1280,18 +1280,18 @@ function get_last_news($courseid, $forum_type) {
 
                 if($unread_news_number == 1) {
                     $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_news_number . html_writer::end_span();
-                    //$new_news .= get_string('unread_news_single', 'format_mooin');
-                    $new_news .= html_writer::link($newsurl, get_string('unread_news_single', 'format_mooin') . get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin'), 'class' =>'primary-link'));
+                    //$new_news .= get_string('unread_news_single', 'format_mooin4');
+                    $new_news .= html_writer::link($newsurl, get_string('unread_news_single', 'format_mooin4') . get_string('all_news', 'format_mooin4'), array('title' => get_string('all_news', 'format_mooin4'), 'class' =>'primary-link'));
                 }
                 else if ($unread_news_number > 1) {
                     $new_news .= html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_news_number . html_writer::end_span(); //Notification Counter
-                    //$new_news .= get_string('unread_news', 'format_mooin');
-                    $new_news .= html_writer::link($newsurl, get_string('unread_news', 'format_mooin') . get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin'), 'class' =>'primary-link'));
+                    //$new_news .= get_string('unread_news', 'format_mooin4');
+                    $new_news .= html_writer::link($newsurl, get_string('unread_news', 'format_mooin4') . get_string('all_news', 'format_mooin4'), array('title' => get_string('all_news', 'format_mooin4'), 'class' =>'primary-link'));
 
 
                 } else {
                     $new_news = false;
-                    $out .= html_writer::link($newsurl, get_string('all_news', 'format_mooin'), array('title' => get_string('all_news', 'format_mooin')));;
+                    $out .= html_writer::link($newsurl, get_string('all_news', 'format_mooin4'), array('title' => get_string('all_news', 'format_mooin4')));;
                 }
 
 
@@ -1421,15 +1421,15 @@ function get_last_forum_discussion($courseid, $forum_type) {
 
             $out .= html_writer::start_tag('div', ['class'=> 'news']); // card_news
             $out .= html_writer::start_tag('div', ['class'=> 'container']); //container
-            $out .= html_writer::nonempty_tag('h2',get_string('news', 'format_mooin'),['class' => 'mb-1']);
+            $out .= html_writer::nonempty_tag('h2',get_string('news', 'format_mooin4'),['class' => 'mb-1']);
             // $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-inline-block align-items-center mb-3']); //right_part_new
 
             $out .= html_writer::start_tag('div', ['class' => 'd-none d-md-inline-block align-items-center mb-3']); //right_part_new
 
             //$news_forum_id = $news_course->id;
-            // $newsurl = new moodle_url('/course/format/mooin/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
-            $url_disc = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid));
-            // new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
+            // $newsurl = new moodle_url('/course/format/mooin4/forums.php', array('f' => $news_forum_id, 'tab' => 1)); // mod/forum/view.php
+            $url_disc = new moodle_url('/course/format/mooin4/alle_forums.php', array('id' => $courseid));
+            // new moodle_url('/course/format/mooin4/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
 
                 $sql = 'SELECT * FROM mdl_forum WHERE course = :cid AND type != :tid ORDER BY ID ASC';
                 $param = array('cid' =>$courseid, 'tid' => 'news');
@@ -1450,30 +1450,30 @@ function get_last_forum_discussion($courseid, $forum_type) {
 
                     if ($unread_forum_number == 1) {
                         $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
-                        //$new_news .= get_string('unread_discussions_single', 'format_mooin');
-                        $new_news .= html_writer::link($url_disc, get_string('unread_discussions_single', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
+                        //$new_news .= get_string('unread_discussions_single', 'format_mooin4');
+                        $new_news .= html_writer::link($url_disc, get_string('unread_discussions_single', 'format_mooin4') . get_string('discussion_forum', 'format_mooin4'), array('title' => get_string('discussion_forum', 'format_mooin4'), 'class' =>'primary-link'));
                     }
                     if ($unread_forum_number > 1) {
                         $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
-                        //$new_news .= get_string('unread_discussions', 'format_mooin');
-                        $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
+                        //$new_news .= get_string('unread_discussions', 'format_mooin4');
+                        $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin4') . get_string('discussion_forum', 'format_mooin4'), array('title' => get_string('discussion_forum', 'format_mooin4'), 'class' =>'primary-link'));
                     }
                     if ($unread_forum_number >= 99) {
                         $small_countcontainer = true;
                         $new_news = html_writer::start_span('count-container count-container-small d-inline-flex inline-badge fw-700 mr-1') . "99+" . html_writer::end_span();
-                        //$new_news .= get_string('unread_discussions', 'format_mooin');
-                        $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin') . get_string('discussion_forum', 'format_mooin'), array('title' => get_string('discussion_forum', 'format_mooin'), 'class' =>'primary-link'));
+                        //$new_news .= get_string('unread_discussions', 'format_mooin4');
+                        $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin4') . get_string('discussion_forum', 'format_mooin4'), array('title' => get_string('discussion_forum', 'format_mooin4'), 'class' =>'primary-link'));
                     }
 
                     /* if ($unread_forum_number >= 1) {
                         $out .= html_writer::start_span('count-container inline-batch fw-700 mr-1') . $unread_forum_number . html_writer::end_span(); //Notification Counter
-                        $out .= html_writer::link($url_disc, get_string('all_discussions', 'format_mooin'), array('title' => get_string('all_discussions', 'format_mooin'), 'class' =>'primary-link'));
+                        $out .= html_writer::link($url_disc, get_string('all_discussions', 'format_mooin4'), array('title' => get_string('all_discussions', 'format_mooin4'), 'class' =>'primary-link'));
                     }  else {
-                        $out .= html_writer::link($url_disc, get_string('all_forums', 'format_mooin'), array('title' => get_string('all_forums', 'format_mooin')));
+                        $out .= html_writer::link($url_disc, get_string('all_forums', 'format_mooin4'), array('title' => get_string('all_forums', 'format_mooin4')));
                     } */
                 } else {
                     $new_news = false;
-                    $out .= html_writer::link($url_disc, get_string('all_forums', 'format_mooin'), array('title' => get_string('all_forums', 'format_mooin'))); // newsurl
+                    $out .= html_writer::link($url_disc, get_string('all_forums', 'format_mooin4'), array('title' => get_string('all_forums', 'format_mooin4'))); // newsurl
                 }
 
             // }
@@ -1511,8 +1511,8 @@ function get_last_forum_discussion($courseid, $forum_type) {
     } else {
         // $out = null;
         // $news_forum_id = $news_course->id;
-        // $url_disc = new moodle_url('/course/format/mooin/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
-        $url_disc = new moodle_url('/course/format/mooin/alle_forums.php', array('id' => $courseid));
+        // $url_disc = new moodle_url('/course/format/mooin4/forum_view.php', array('f'=>$news_forum_id, 'tab'=>1));
+        $url_disc = new moodle_url('/course/format/mooin4/alle_forums.php', array('id' => $courseid));
         $templatecontext = [
             'disc_url' => $url_disc,
             'neue_forum_number' => 0,
@@ -1618,7 +1618,7 @@ function get_progress_bar_course($p, $width) {
             html_writer::tag('div',
                 html_writer::tag('div',
                     '',
-                    array('style' => 'width: ' . $p . '%;', 'id' => 'mooinprogressbar', 'class' => 'progressbar-inner')
+                    array('style' => 'width: ' . $p . '%;', 'id' => 'mooin4progressbar', 'class' => 'progressbar-inner')
                 ),
                 array('class' => 'progressbar')
             ) .
@@ -1672,15 +1672,15 @@ function get_user_in_course($courseid) {
         // $out .= html_writer::start_span('icon-wrapper participant-icon') . html_writer::end_span();
 
         // $out .= html_writer::start_tag('div');
-        // $out .= html_writer::nonempty_tag('p', get_string('user_card_title', 'format_mooin'), ['class'=>'caption fw-700 text-primary']);
+        // $out .= html_writer::nonempty_tag('p', get_string('user_card_title', 'format_mooin4'), ['class'=>'caption fw-700 text-primary']);
 
 
         //$user_count = count($count_val);
-        $user_in_course = $user_count . ' ' . get_string('user_in_course', 'format_mooin');
+        $user_in_course = $user_count . ' ' . get_string('user_in_course', 'format_mooin4');
         // $out .= html_writer::start_tag('p');
         // $out .= html_writer::start_span('fw-700') . $user_in_course . html_writer::end_span();
         // $out .= html_writer::end_tag('p');
-        // $out .= html_writer::nonempty_tag('p', get_string('new_user', 'format_mooin'), ['class' => 'caption fw-700']);
+        // $out .= html_writer::nonempty_tag('p', get_string('new_user', 'format_mooin4'), ['class' => 'caption fw-700']);
 
         // $out .= html_writer::start_tag('ul', ['class' => 'caption', 'style' => 'line-height: 3rem']); // user_card_list
 
@@ -1708,14 +1708,14 @@ function get_user_in_course($courseid) {
         // $out .= html_writer::end_tag('div'); // d-flex
 
         // $out .= html_writer::start_tag('div', ['class' => 'primary-link d-none d-md-block text-right']);
-        $participants_url = new moodle_url('/course/format/mooin/participants.php', array('id' => $courseid));
-        $participants_link = html_writer::link($participants_url, get_string('show_all_infos', 'format_mooin'), array('title' => get_string('participants', 'format_mooin')));
+        $participants_url = new moodle_url('/course/format/mooin4/participants.php', array('id' => $courseid));
+        $participants_link = html_writer::link($participants_url, get_string('show_all_infos', 'format_mooin4'), array('title' => get_string('participants', 'format_mooin4')));
         // $out .= $participants_link;
         // $out .= html_writer::end_tag('div'); // d-none d-md-block text-right
         // $out .= html_writer::end_tag('div'); // participant-card-inner
         // $out .= html_writer::end_tag('div'); // participant-card
     } else {
-        $out .= html_writer::div(get_string('no_user', 'format_mooin'), 'no_user_class'); // '
+        $out .= html_writer::div(get_string('no_user', 'format_mooin4'), 'no_user_class'); // '
     }
 
     $templatecontext = [
@@ -1750,7 +1750,7 @@ function get_headerimage_url($courseid, $mobile = true) {
                and mimetype like :mimetype';
 
     $params = array('contextid' => $context->id,
-        'component' => 'format_mooin',
+        'component' => 'format_mooin4',
         'filearea' => $filearea,
         'courseid' => $courseid,
                     'mimetype' => 'image/%');
@@ -1764,7 +1764,7 @@ function get_headerimage_url($courseid, $mobile = true) {
         return false;
     }
 
-    $url = new moodle_url('/pluginfile.php/'.$context->id.'/format_mooin/'.$filearea.'/'.$courseid.'/0/'.$filename);
+    $url = new moodle_url('/pluginfile.php/'.$context->id.'/format_mooin4/'.$filearea.'/'.$courseid.'/0/'.$filename);
     return $url;
 }
 
@@ -1927,7 +1927,7 @@ function navbar($displaysection = 0) {
 
     // Make chapter request anfrage
     $chapters_data = $DB->get_records_sql("SELECT fmc.*
-                                            FROM {format_mooin_chapter} fmc
+                                            FROM {format_mooin4_chapter} fmc
                                             WHERE fmc.courseid = ?", array($COURSE->id));
     $htmlblocks = array();
     // Iterate the navarray and display each node
@@ -2003,7 +2003,7 @@ function navbar($displaysection = 0) {
                     $content = html_writer::tag('li', $OUTPUT->render($item));
                 } else if ($i === $itemcount - 2) {
                     // var_dump($item);
-                    $content_link = html_writer::link(new moodle_url('/course/format/mooin/alle_forums.php', ['id'=> $COURSE->id]), get_string('all_forums', 'format_mooin'));
+                    $content_link = html_writer::link(new moodle_url('/course/format/mooin4/alle_forums.php', ['id'=> $COURSE->id]), get_string('all_forums', 'format_mooin4'));
                     $content = html_writer::tag('li', $before . ' / '. $content_link); // , ['class'=>'breadcrumb-item']
                 } else if($i === $itemcount - 1) {
                     // echo($OUTPUT->render($item));
@@ -2045,7 +2045,7 @@ function navbar($displaysection = 0) {
                     $content = html_writer::tag('li', $before . ' / '. $OUTPUT->render($item));
                 } else if ($i == $itemcount - 1) {
 
-                    $content = html_writer::tag('li', $before . $OUTPUT->render($item) . ' / ' . get_string($val, 'format_mooin')); // $separator.$this->render($item)
+                    $content = html_writer::tag('li', $before . $OUTPUT->render($item) . ' / ' . get_string($val, 'format_mooin4')); // $separator.$this->render($item)
                 } else if($i == $itemcount - 2) {
                     $content = html_writer::tag('li', ''); // $OUTPUT->render($item)
                 } else {
@@ -2092,7 +2092,7 @@ function navbar_mobile($displaysection = 0) {
 
     // Make chapter request anfrage
     $chapters_data = $DB->get_records_sql("SELECT fmc.*
-                                            FROM {format_mooin_chapter} fmc
+                                            FROM {format_mooin4_chapter} fmc
                                             WHERE fmc.courseid = ?", array($COURSE->id));
     $htmlblocks = array();
     // Iterate the navarray and display each node
@@ -2170,10 +2170,10 @@ function navbar_mobile($displaysection = 0) {
                     $content = html_writer::tag('li', $before . '' );
                 }
                 else if ($i === $itemcount - 3) {
-                    $content_link = html_writer::link(new moodle_url('/course/format/mooin/view.php', ['id'=> $COURSE->id]), reduce_string($COURSE->shortname, 0));
+                    $content_link = html_writer::link(new moodle_url('/course/format/mooin4/view.php', ['id'=> $COURSE->id]), reduce_string($COURSE->shortname, 0));
                     $content = html_writer::tag('li', $before . ''.  $content_link);
                 } else if ($i === $itemcount - 2) {
-                    $content_link = html_writer::link(new moodle_url('/course/format/mooin/alle_forums.php', ['id'=> $COURSE->id]), reduce_string(get_string('all_forums', 'format_mooin'), 6));
+                    $content_link = html_writer::link(new moodle_url('/course/format/mooin4/alle_forums.php', ['id'=> $COURSE->id]), reduce_string(get_string('all_forums', 'format_mooin4'), 6));
                     $content = html_writer::tag('li', $before . ' / '. $content_link); // , ['class'=>'breadcrumb-item']
                 } else if($i === $itemcount - 1) {
                     // echo($OUTPUT->render($item));
@@ -2199,7 +2199,7 @@ function navbar_mobile($displaysection = 0) {
                 } else if($i === $itemcount - 1) {
                     /* var_dump($item->component);
                     if($item->title === 'Forum') {
-                        $content_link = html_writer::link(new moodle_url('/course/format/mooin/alle_forums.php', ['id'=> $COURSE->id]), get_string('all_forums', 'format_mooin'));
+                        $content_link = html_writer::link(new moodle_url('/course/format/mooin4/alle_forums.php', ['id'=> $COURSE->id]), get_string('all_forums', 'format_mooin4'));
                         $content = html_writer::tag('li', $before . ' / '. $content_link .' / ' . $item->text); // $OUTPUT->render($item)
                     } else {
                         $content = html_writer::tag('li', $before . ' / '. $OUTPUT->render($item));
@@ -2219,7 +2219,7 @@ function navbar_mobile($displaysection = 0) {
                 else if ($i === $itemcount - 3) {
                     $content = html_writer::tag('li', $before . ' / '. $OUTPUT->render($item));
                 } else if ($i == $itemcount - 1) {
-                    $content = html_writer::tag('li', $before . $OUTPUT->render($item) . ' / ' . get_string('all_forums', 'format_mooin')); // $separator.$this->render($item)
+                    $content = html_writer::tag('li', $before . $OUTPUT->render($item) . ' / ' . get_string('all_forums', 'format_mooin4')); // $separator.$this->render($item)
                 } else if($i == $itemcount - 2) {
                     $content = html_writer::tag('li', ''); // $OUTPUT->render($item)
                 } else {
@@ -2263,7 +2263,7 @@ function get_chapter_title($value) {
     global $DB;
 
     $val = '';
-    $value = $DB->get_record('format_mooin_chapter', ['sectionid'=>$value]);
+    $value = $DB->get_record('format_mooin4_chapter', ['sectionid'=>$value]);
     if ($value) {
        $val = $value->title;
     }
@@ -2287,7 +2287,7 @@ function get_chapter_number($value) {
 function unset_chapter($sectionid) {
     global $DB;
 
-    $DB->delete_records('format_mooin_chapter', array('sectionid' => $sectionid));
+    $DB->delete_records('format_mooin4_chapter', array('sectionid' => $sectionid));
     if ($csection = $DB->get_record('course_sections', array('id' => $sectionid))) {
         sort_course_chapters($csection->course);
     }
@@ -2296,7 +2296,7 @@ function unset_chapter($sectionid) {
 function set_chapter($sectionid) {
     global $DB;
 
-    if ($DB->get_record('format_mooin_chapter', array('sectionid' => $sectionid))) {
+    if ($DB->get_record('format_mooin4_chapter', array('sectionid' => $sectionid))) {
         return;
     }
 
@@ -2308,7 +2308,7 @@ function set_chapter($sectionid) {
     }
 
     if (!$csectiontitle) {
-        $csectiontitle = get_string('new_chapter', 'format_mooin');
+        $csectiontitle = get_string('new_chapter', 'format_mooin4');
     }
 
     $chapter = new stdClass();
@@ -2316,7 +2316,7 @@ function set_chapter($sectionid) {
     $chapter->title = $csectiontitle;
     $chapter->sectionid = $sectionid;
     $chapter->chapter = 0;
-    $DB->insert_record('format_mooin_chapter', $chapter);
+    $DB->insert_record('format_mooin4_chapter', $chapter);
 
     sort_course_chapters($csection->course);
 }
@@ -2327,9 +2327,9 @@ function sort_course_chapters($courseid) {
     $number = 0;
     foreach ($coursechapters as $coursechapter) {
         $number++;
-        if ($existingcoursechapter = $DB->get_record('format_mooin_chapter', array('id' => $coursechapter->id))) {
+        if ($existingcoursechapter = $DB->get_record('format_mooin4_chapter', array('id' => $coursechapter->id))) {
             $existingcoursechapter->chapter = $number;
-            $DB->update_record('format_mooin_chapter', $existingcoursechapter);
+            $DB->update_record('format_mooin4_chapter', $existingcoursechapter);
         }
     }
 }
@@ -2338,7 +2338,7 @@ function get_course_chapters($courseid) {
     global $DB;
 
     $sql = 'SELECT c.*, s.section
-              FROM {format_mooin_chapter} as c, {course_sections} as s
+              FROM {format_mooin4_chapter} as c, {course_sections} as s
              WHERE s.course = :courseid
                and s.id = c.sectionid
           order by s.section asc';
@@ -2465,7 +2465,7 @@ function get_section_prefix($section) {
 function get_parent_chapter($section) {
     global $DB;
 
-    $chapters = $DB->get_records('format_mooin_chapter', array('courseid' => $section->course));
+    $chapters = $DB->get_records('format_mooin4_chapter', array('courseid' => $section->course));
     foreach ($chapters as $chapter) {
         $sids = get_sectionids_for_chapter($chapter->id);
         if (in_array($section->id, $sids)) {
@@ -2479,7 +2479,7 @@ function get_parent_chapter($section) {
 function get_sectionids_for_chapter($chapterid) {
     global $DB;
     $result = array();
-    if ($chapter = $DB->get_record('format_mooin_chapter', array('id' => $chapterid))) {
+    if ($chapter = $DB->get_record('format_mooin4_chapter', array('id' => $chapterid))) {
         $chapters = get_course_chapters($chapter->courseid);
         $start = 0;
         $end = 0;
@@ -2512,7 +2512,7 @@ function get_sectionids_for_chapter($chapterid) {
 function get_expand_string($section) {
     global $DB, $USER;
     $expand = '';
-    $last_section = get_user_preferences('format_mooin_last_section_in_course_'.$section->course, 0, $USER->id);
+    $last_section = get_user_preferences('format_mooin4_last_section_in_course_'.$section->course, 0, $USER->id);
     $parentchapter = get_parent_chapter($section);
     $sectionids = get_sectionids_for_chapter($parentchapter->id);
     if ($record = $DB->get_record('course_sections', array('course' => $section->course, 'section' => $last_section))) {
@@ -2539,7 +2539,7 @@ function get_chapter_info($chapter) {
             $completedsections++;
         }
 
-        $last_section = get_user_preferences('format_mooin_last_section_in_course_'.$chapter->courseid, 0, $USER->id);
+        $last_section = get_user_preferences('format_mooin4_last_section_in_course_'.$chapter->courseid, 0, $USER->id);
         if ($record = $DB->get_record('course_sections', array('course' => $chapter->courseid, 'section' => $last_section))) {
             if ($record->id == $sectionid) {
                 $lastvisited = true;
@@ -2604,7 +2604,7 @@ function is_section_completed($courseid, $section) {
 }
 
 function set_new_badge($awardedtoid, $badgeissuedid) {
-    set_user_preference('format_mooin_new_badge_'.$badgeissuedid, true, $awardedtoid);
+    set_user_preference('format_mooin4_new_badge_'.$badgeissuedid, true, $awardedtoid);
 }
 
 function unset_new_badge($viewedbyuserid, $badgehash) {
@@ -2614,7 +2614,7 @@ function unset_new_badge($viewedbyuserid, $badgehash) {
     if ($records = $DB->get_records_sql($sql, $params)) {
         if (count($records) == 1) {
             if ($records[array_key_first($records)]->userid == $viewedbyuserid) {
-                unset_user_preference('format_mooin_new_badge_'.$records[array_key_first($records)]->id, $viewedbyuserid);
+                unset_user_preference('format_mooin4_new_badge_'.$records[array_key_first($records)]->id, $viewedbyuserid);
             }
         }
     }
@@ -2631,7 +2631,7 @@ function count_unviewed_badges($userid, $courseid) {
     $params = array('courseid' => $courseid, 'userid' => $userid);
     if ($records = $DB->get_records_sql($sql, $params)) {
         foreach ($records as $record) {
-            $badgeisnew = get_user_preferences('format_mooin_new_badge_'.$record->id, 0, $userid);
+            $badgeisnew = get_user_preferences('format_mooin4_new_badge_'.$record->id, 0, $userid);
             if ($badgeisnew) {
                 $unviewed_badges++;
             }
@@ -2691,7 +2691,7 @@ function get_section_progress($courseid, $sectionid, $userid) {
 
     // no activities with completion activated?
     if ($activities == 0) {
-        if (get_user_preferences('format_mooin_section_completed_'.$sectionid, 0, $userid) == 1) {
+        if (get_user_preferences('format_mooin4_section_completed_'.$sectionid, 0, $userid) == 1) {
             return 100;
         }
         else {
@@ -2709,7 +2709,7 @@ function get_course_progress($courseid, $userid) {
     $i = 0;
     if ($sections = $DB->get_records('course_sections', array('course' => $courseid))) {
         foreach ($sections as $section) {
-            if (!$DB->get_record('format_mooin_chapter', array('sectionid' => $section->id)) &&
+            if (!$DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id)) &&
                     $section->section != 0) {
                 $i++;
                 $percentage += get_section_progress($courseid, $section->id, $userid);
@@ -2871,7 +2871,7 @@ function get_course_certificates($courseid, $userid) {
 }
 
 function set_new_certificate($awardedtoid, $issuedid, $modulename) {
-    set_user_preference('format_mooin_new_certificate_'.$modulename.'_'.$issuedid, true, $awardedtoid);
+    set_user_preference('format_mooin4_new_certificate_'.$modulename.'_'.$issuedid, true, $awardedtoid);
 }
 
 function unset_new_certificate($viewedbyuserid, $issuedid, $modulename) {
@@ -2892,7 +2892,7 @@ function unset_new_certificate($viewedbyuserid, $issuedid, $modulename) {
 
     if ($record = $DB->get_record_sql($sql, $params)) {
         if ($record->userid == $viewedbyuserid) {
-            unset_user_preference('format_mooin_new_certificate_'.$modulename.'_'.$record->id, $viewedbyuserid);
+            unset_user_preference('format_mooin4_new_certificate_'.$modulename.'_'.$record->id, $viewedbyuserid);
         }
     }
 }
@@ -2901,8 +2901,8 @@ function get_user_coordinates($user) {
     if ($user->city != '') {
         $coordinates = new stdClass();
 
-        $url = get_config('format_mooin', 'geonamesapi_url');
-        $apiusername = get_config('format_mooin', 'geonamesapi_username');
+        $url = get_config('format_mooin4', 'geonamesapi_url');
+        $apiusername = get_config('format_mooin4', 'geonamesapi_username');
 
         $response = get_url_content($url, "/search?username=".$apiusername."&maxRows=1&q=".urlencode($user->city)."&country=".urlencode($user->country));
 
@@ -2988,11 +2988,11 @@ function get_url_content($domain, $path){
 }
 
 function set_user_coordinates($userid, $lat, $lng) {
-    set_user_preference('format_mooin_user_coordinates', $lat.'|'.$lng, $userid);
+    set_user_preference('format_mooin4_user_coordinates', $lat.'|'.$lng, $userid);
 }
 
 function get_user_coordinates_from_pref($userid) {
-    $value = get_user_preferences('format_mooin_user_coordinates', '', $userid);
+    $value = get_user_preferences('format_mooin4_user_coordinates', '', $userid);
     if ($value != '') {
         $valuearray = explode('|', $value);
         if (count($valuearray) == 2) {

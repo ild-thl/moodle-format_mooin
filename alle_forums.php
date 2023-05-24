@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * @package   mod_forum
+ * @package   format_mooin4
  * @copyright 2023 ISY
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -23,7 +23,7 @@
 require_once('../../../config.php');
 require_once('../../../mod/forum/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
-require_once('../mooin/locallib.php');
+require_once('../mooin4/locallib.php');
 
 $id = optional_param('id', 0, PARAM_INT);       // Course Module ID
 $f = optional_param('f', 0, PARAM_INT);        // Forum ID
@@ -48,13 +48,13 @@ $systemcontext = context_system::instance();
 $PAGE->set_course($course);
 $PAGE->set_pagelayout('course');
 $PAGE->set_context(\context_course::instance($course->id));
-// $PAGE->set_title("$course->shortname: " . get_string('my_badges', 'format_mooin'));
+// $PAGE->set_title("$course->shortname: " . get_string('my_badges', 'format_mooin4'));
 // $PAGE->set_heading($course->fullname);
 
 // $PAGE->set_pagetype('course-view-' . $course->format);
 // $PAGE->add_body_class('path-user');                     // So we can style it independently.
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
-$PAGE->set_url('/course/format/mooin/alle_forums.php', array('id' => $course->id));
+$PAGE->set_url('/course/format/mooin4/alle_forums.php', array('id' => $course->id));
 
 echo $OUTPUT->header();
 
@@ -75,11 +75,11 @@ $oc_showall = optional_param('showall', '', PARAM_RAW);
     // echo navbar('All Forums');
     echo html_writer::div(subpage_navbar(), 'sticky-container');
 
-    echo html_writer::start_div('mooin-md-container'); //open outer div
+    echo html_writer::start_div('mooin4-md-container'); //open outer div
 
     //echo navbar('all_forums');
 
-    echo '<h2>' . get_string('all_forums', 'format_mooin') . '</h2>';
+    echo '<h2>' . get_string('all_forums', 'format_mooin4') . '</h2>';
     //echo '<br>';
     echo html_writer::start_div('border-card'); //open outer div
 
@@ -103,15 +103,15 @@ $oc_showall = optional_param('showall', '', PARAM_RAW);
 
                 $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $course->id, 'module' => $oc_m->id), '*', $strictness=IGNORE_MISSING);
 
-                $oc_link = html_writer::link(new moodle_url('/course/format/mooin/forums.php?f=' . $oc_forum->id .'&tab='.'1'), $oc_forum->name);
+                $oc_link = html_writer::link(new moodle_url('/course/format/mooin4/forums.php?f=' . $oc_forum->id .'&tab='.'1'), $oc_forum->name);
                 if (intval($oc_cm->visible) === 1) {
                     $forum_element =  html_writer::div($value++  . ' ' .$oc_link, 'forum_title');
                     if ($unreadposts >= 1) {
                         //$forum_index = html_writer::div($key, 'forum_index');
-                        $markasunreadlink = html_writer::link(new moodle_url('/course/format/mooin/forums.php?f='.$oc_forum->id.'&markasread=1&redirect=1'), get_string('mark_all_as_read', 'format_mooin'));
+                        $markasunreadlink = html_writer::link(new moodle_url('/course/format/mooin4/forums.php?f='.$oc_forum->id.'&markasread=1&redirect=1'), get_string('mark_all_as_read', 'format_mooin4'));
                         $markasunreadlink = html_writer::div($markasunreadlink, 'markasunreadlink d-none d-md-flex');
-                        $markasunreadlink_mobile = html_writer::link(new moodle_url('/course/format/mooin/forums.php?f='.$oc_forum->id.'&markasread=1&redirect=1'),'', array('class'=>'markasunreadlink-mobile mooin-btn d-flex d-md-none'));
-                        //$markasunreadlink_mobile = html_writer::div($markasunreadlink_mobile, 'markasunreadlink-mobile mooin-btn d-flex d-md-none');
+                        $markasunreadlink_mobile = html_writer::link(new moodle_url('/course/format/mooin4/forums.php?f='.$oc_forum->id.'&markasread=1&redirect=1'),'', array('class'=>'markasunreadlink-mobile mooin4-btn d-flex d-md-none'));
+                        //$markasunreadlink_mobile = html_writer::div($markasunreadlink_mobile, 'markasunreadlink-mobile mooin4-btn d-flex d-md-none');
                         $forum_unread = html_writer::div($unreadposts, 'count-container d-inline-flex inline-badge fw-700');
                         echo html_writer::start_span('forum_elemts_in_list') . $forum_element . ' ' . $forum_unread.' '.$markasunreadlink.$markasunreadlink_mobile.html_writer::end_span();
                     } else {
@@ -130,10 +130,10 @@ $oc_showall = optional_param('showall', '', PARAM_RAW);
         */
     } else {
         // $out = html_writer::div('', 'no-forum');
-        // $out .= html_writer::span(get_string('no_forums_available', 'format_mooin'), 'no-forums-text mt-3 d-inline-block');
+        // $out .= html_writer::span(get_string('no_forums_available', 'format_mooin4'), 'no-forums-text mt-3 d-inline-block');
         // echo html_writer::div($out, 'text-center');
         $out = html_writer::div('', 'no-forum-img');
-        $out .= html_writer::span(get_string('no_forums_available', 'format_mooin'), 'no-forums-text');
+        $out .= html_writer::span(get_string('no_forums_available', 'format_mooin4'), 'no-forums-text');
         echo html_writer::div($out, 'no-forums-container');
     }
     echo html_writer::end_div(); //close border-card div
