@@ -167,3 +167,5 @@ $string['headerimagedesktop'] = 'Header-Bild Desktop (800 x 280px)';
 $string['headerimagemobile'] = 'Header-Bild Mobile (768 x768px)';
 $string['edit_course_header'] = 'Header-Bild Bearbeiten';
 $string['cannot_remove_chapter'] = 'This chapter cannot be removed, because there must be no lessons without parent chapter.';
+
+$string['course_overview'] = 'Courseoverview';
