@@ -27,11 +27,11 @@ require_once($CFG->libdir.'/filelib.php');
 require_once('../mooin/lib.php');
 require_once('../mooin/locallib.php');
 
-// require_once('../mooin/rendere.php');
+ require_once('../mooin/renderer.php');
 
 global $DB, $PAGE, $USER;
 
-$PAGE->requires->js_call_amd('format_mooin/complete_section');
+//$PAGE->requires->js_call_amd('format_mooin/complete_section');
 
 $contextid    = optional_param('contextid', 0, PARAM_INT); // One of this or.
 $courseid     = optional_param('id', 0, PARAM_INT); // This are required. required_param('id', PARAM_INT);
@@ -54,8 +54,19 @@ $course_new = $courseformat->get_course();
 
 // Get the POST Data from complete_section.js
 $section = intval($_POST['section']);
-$sec = intval($_POST['section_inside_course']);
-$course_id = intval($_POST['course_id']);
+// $sec = intval($_POST['section_inside_course']);
+// $course_id = intval($_POST['course_id']);
 complete_section($section, $USER->id); // $sec
+$section = $DB->get_record('course_sections', array('id' => $section));
+$chapter = get_parent_chapter($section);
+$info = get_chapter_info($chapter);
+if ($info['completed']) {
+    echo json_encode(array('completed' => true));
+} else {
+    echo json_encode(array('completed' => false));
+}
+
+
+
 
 // $sectionnavlinks = get_nav_links($course, $modinfo->get_section_info_all(), $section);
