@@ -205,6 +205,15 @@ class format_mooin extends format_base {
         }
 
         $node->add(
+            get_string('course_overview', 'format_mooin'),
+            new moodle_url('/course/view.php', array('id' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_mooin_course_overview',
+            new pix_icon('i/location', '')
+        );
+
+        $node->add(
             get_string('badges', 'format_mooin'),
             new moodle_url('/course/format/mooin/badges.php', array('id' => $courseid)),
             navigation_node::TYPE_CUSTOM,
@@ -368,7 +377,7 @@ class format_mooin extends format_base {
                         }
 
 
-                    $chapter_node = $node->add('<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>',
+                    $chapter_node = $node->add($title,
                     null,
                     navigation_node::TYPE_SECTION,
                     'Kap. '.$chapter->chapter,
@@ -387,7 +396,7 @@ class format_mooin extends format_base {
                         $chapter_node->preceedwithhr = true;
                     }
 
-                    $chapter_node->add_class('chapter');
+                    $chapter_node->add_class('chapter'.$completed.$lastvisitedsection);
                     $chapter_node->add_class('collapsed');
 
 
@@ -419,7 +428,7 @@ class format_mooin extends format_base {
                     // var_dump($parent_node -> key);
                     // exit();
                     if($parentchapter && $chapter_node) {
-                        $section_node = $chapter_node->add('<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>',
+                        $section_node = $chapter_node->add($title,
                         $url,
                         navigation_node::TYPE_SECTION,
                         'Lekt. '.get_section_prefix($section).': ',
@@ -441,7 +450,7 @@ class format_mooin extends format_base {
                                 $section_node->parent->remove_class('collapsed');
                             }
                         }
-                        $section_node->add_Class('section');
+                        $section_node->add_Class('section'.$completed.$lastvisitedsection);
                     }
 
 
