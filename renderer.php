@@ -28,7 +28,10 @@ require_once('locallib.php');
 
 global $PAGE;
 // Call jquery amd
-$PAGE->requires->js_call_amd('format_mooin/complete_section');
+//$PAGE->requires->js_call_amd('format_mooin/complete_section');
+//$PAGE->requires->js_call_amd('format_mooin/section_completion_handler', 'init', [[
+//    'section' => $section->id
+//]]);
 
 /**
  * Basic renderer for mooin format.
@@ -264,7 +267,7 @@ class format_mooin_renderer extends format_section_renderer_base {
             }
 
 
-            $chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id)); 
+            $chapter = $DB->get_record('format_mooin_chapter', array('sectionid' => $section->id));
             if (course_can_delete_section($course, $section) && !$chapter) {
                 if (get_string_manager()->string_exists('deletesection', 'format_'.$course->format)) {
                     $strdelete = get_string('deletesection', 'format_'.$course->format);
@@ -694,6 +697,12 @@ class format_mooin_renderer extends format_section_renderer_base {
 
         // Title with section navigation links.
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
+        //$PAGE->requires->js_call_amd('format_mooin/complete_section', [['link' => $sectionnavlinks['next']]]);
+        $PAGE->requires->js_call_amd('format_mooin/section_completion_handler', 'init', [[
+            'section_id' => $thissection->id,
+            'course_id' => $course->id
+        ]]);
+
         $sectiontitle = '';
 
 
@@ -812,16 +821,16 @@ class format_mooin_renderer extends format_section_renderer_base {
 
             $complete_button = '';
             if (get_user_preferences('format_mooin_section_completed_'.$thissection->id, 0, $USER->id) == 0) {
-                $complete_button .= html_writer::start_tag('button', array('type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$thissection->id, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Lektion als bearbeitet markieren'));
+                $complete_button .= html_writer::start_tag('button', array('data-action' => 'format_mooin/section_completion_handler-button', 'type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$thissection->id, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Seite als gelesen markieren'));
 
-                $complete_button .= html_writer::start_span('bottom_button-' .$thissection->id) . 'Lektion als bearbeitet markieren' . html_writer::end_span();
+                $complete_button .= 'Seite als gelesen markieren';
                 $complete_button .= html_writer::end_tag('button');
             }
             else {
-                $complete_button .= html_writer::start_tag('div', array('type'=>'button','class'=>'comp_btn btn-secondary complete_section-' .$thissection->id, 'id' => 'id_bottom_complete-' .$thissection->id));
+                $complete_button .= html_writer::start_tag('button', array('class'=>'comp_btn completed btn-secondary complete_section-' .$thissection->id, 'id' => 'id_bottom_complete-' .$thissection->id, "disabled" => "true"));
 
-                $complete_button .= html_writer::start_span('bottom_button-' .$thissection->id) . 'Lektion als bearbeitet markieren' . html_writer::end_span();
-                $complete_button .= html_writer::end_tag('div');
+                $complete_button .= html_writer::start_span('bottom_button-' .$thissection->id) . 'Seite gelesen' . html_writer::end_span();
+                $complete_button .= html_writer::end_tag('button');
             }
             echo $complete_button;
         }
@@ -908,6 +917,8 @@ class format_mooin_renderer extends format_section_renderer_base {
        $modal_kapitel_completed .= html_writer::end_tag('div');
         $modal_kapitel_completed .= html_writer::end_tag('div');
         $modal_kapitel_completed .= html_writer::end_tag('div');
+
+        //$PAGE->requires->js_call_amd('format_mooin/modalTest', 'completeModal');
 
         if (!$this->page->user_is_editing()  && is_last_section_of_chapter($thissection->id) && $check_completed_chapter['completed'] == false) {
             //  && !$check_completed_chapter
