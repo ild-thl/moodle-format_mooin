@@ -89,6 +89,7 @@ function completion_indicator($numcomplete, $numoutof, $aspercent, $isoverall) {
  */
 function complete_section($section, $userid) {
     // global $DB;
+    //global $PAGE;
 
     set_user_preference('format_mooin_section_completed_'.$section, 1, $userid);
     //$PAGE->requires->js_call_amd('format_mooin/modalTest', 'completeModal');
@@ -257,6 +258,7 @@ function complete_section($section, $userid) {
     * Get  Progress bar
     */
     function get_progress_bar($p, $width, $sectionid = 0) {
+        $percentageText = html_writer::span($p."%", "fw-700", array( 'id' => 'mooin4ection-text-' . $sectionid));
         //$p_width = $width / 100 * $p;
         $result = html_writer::tag('div',
                     html_writer::tag('div',
@@ -270,7 +272,8 @@ function complete_section($section, $userid) {
                     html_writer::tag('div', '', array('style' => 'clear: both;'))  .
                     // html_writer::start_span('',['style' => 'float: left;font-size: 12px; margin-left: 12px; margin-top: 5px;font-weight: bold']) . $p . '% ' . html_writer::end_span() . // .' % bearbeitet'
                     // html_writer::tag('div', $p .'% der Lektion bearbeitet', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);left: 50%;','id' => 'mooin4ection-text-' . $sectionid)) . // margin-top: -8px;
-                    html_writer::tag('div', '<b>'.$p.'% </b> der Lektion bearbeitet', array('style' => 'float: left; font-size: 12px; display: contents; margin-left: 12px; padding-left: 5px;color: #555; width: 100%', 'id' => 'mooin4ection-text-' . $sectionid)) , // text-align: center; position: absolute;
+
+                    html_writer::tag('div', $percentageText. " der Lektion bearbeitet", array('style' => 'float: left; font-size: 12px; display: contents; margin-left: 12px; padding-left: 5px;color: #555; width: 100%')) , // text-align: center; position: absolute;
                     array('class' => 'mooin4ection-div')); // float: left; position: absolute;
         return $result;
     }
