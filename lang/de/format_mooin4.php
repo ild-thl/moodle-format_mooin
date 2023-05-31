@@ -38,7 +38,7 @@ $string['hidefromothers'] = 'Abschnitt sperren';
 $string['showfromothers'] = 'Abschnitt anzeigen';
 $string['privacy:metadata'] = 'Das Mooin 4.0 Kursformat-Plugin speichert keine persönlichen Daten.';
 $string['map_title'] = 'Karte der Teilnehmenden';
-$string['map_descr'] = 'Bitte tragen Sie Ihren Wohnort in Ihr Profil ein, damit die Teilnehmendenkarte möglichst vollständig angezeigt werden kann.';
+$string['map_descr'] = 'Bitte trage deinen Wohnort in dein Profil ein, damit die Teilnehmendenkarte möglichst vollständig angezeigt werden kann.';
 $string['badges'] = 'Meine Kursbadges';
 $string['community'] = 'Community';
 $string['forums'] = 'Diskussionsforen';
@@ -70,49 +70,42 @@ $string['directory_link'] = 'ID des Verzeichnisses für die Kapitelbilder';
 $string['course_badges'] = 'Kursbadges';
 $string['overview'] = 'Badgeübersicht';
 $string['profile_badges'] = 'Alle Badges in meinem Profil';
-$string['badge_options'] = 'Badge Einstellungen';
+$string['badge_options'] = 'Badge-Einstellungen';
 $string['owner'] = 'Inhaber';
 $string['no_badges_awarded'] = 'Bisher wurden noch keine Badges in diesem Kurs verliehen';
-$string['no_badges_available'] = 'In diesem Kurs sind noch keine Badges verfügbar';
-$string['badge_overview_description'] = 'Mit den Kursbadges bzw. digitalen Lernabzeichen kannst du den anderen Teilnehmerinnen und Teilnehmern hier auf dieser Plattform und auch der ganzen Welt im Web zeigen, welche Kursfortschritte du bereits gemacht hast.
-Weitere Informationen gibt es in der <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a> und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a>';
+$string['no_badges_available'] = 'In diesem Kurs sind noch keine Badges verfügbar!';
+$string['badge_overview_description'] = 'Mit den Kursbadges bzw. digitalen Lernabzeichen kannst du den anderen Teilnehmenden hier auf dieser Plattform und weltweit im Web zeigen, welche Kursfortschritte du bereits gemacht hast. Weitere Informationen gibt es auf <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a> und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a>';
 $string['all_forums'] = 'Alle Diskussionsforen';
 $string['course_groups'] = 'Kursgruppen';
-$string['course_groups_descr'] = 'Hier kannst Du sehen, welche Arbeitsgruppen es in diesem Kurs gibt und entscheiden, welcher Du beitreten möchtest:';
-$string['profile_city_descr'] = 'Bitte tragt Euren Wohnort in Euer Profil ein, damit die Teilnehmerkarte möglichst vollständig angezeigt werden kann.';
+$string['course_groups_descr'] = 'Hier kannst du sehen, welche Arbeitsgruppen es in diesem Kurs gibt und entscheiden, welcher du beitreten möchtest:';
+$string['profile_city_descr'] = 'Bitte trage deinen Wohnort in dein Profil ein, damit die Teilnehmendenkarte möglichst vollständig angezeigt werden kann.';
 $string['number_of_questions'] = 'Anzahl aller Capira-Quizfragen';
-$string['cert_descr'] = 'Herzlichen Glückwunsch! Sie haben mindestens {$a} Prozent der im Kurs enthaltenen Selbsttests erfolgreich bearbeitet und können sich hier Ihre Teilnahmebestätigung herunterladen.';
+$string['cert_descr'] = 'Herzlichen Glückwunsch! Du hast mindestens {$a} Prozent der im Kurs enthaltenen Selbsttests erfolgreich bearbeitet. Hier kannst du dir deine Teilnahmebestätigung herunterladen.';
 $string['certificate'] = 'Teilnahmebestätigung';
 $string['cert_addtext'] = 'Lorem ipsum';
 $string['required_questions'] = 'Benötigte korrekte Antworten in %';
 $string['only_for_trainers'] = 'Nur für Admins und Trainer sichtbar';
 $string['my_certificate'] = 'Kurszertifikate';
-$string['certificate_overview_description'] = 'Herlichen Glückwunsch! Sie haben die im Kurs enthaltenen Selbtsttest erfolgreich bearbeitet und können sich hier Ihre Teilnahmenbestätigung herunterladen.';
-$string['certificate_overview'] = 'Es gibt noch kein Zertifikat für diese Kurs!';
-/* $string['course'] = 'Kurs';
-$string['participants'] = 'Kursteilnehmer';
-$string['badges'] = 'Auszeichnungen und Bescheinigungen';
-$string['news'] = 'News';
-$string['social_media'] = 'Social Media';
-$string['discuss'] = 'Allgemeines Diskussionsforum'; */
+$string['certificate_overview_description'] = '<h5>Herzlichen Glückwunsch! Du hast die im Kurs enthaltenen Selbtsttests erfolgreich bearbeitet. Hier kannst du die deine Teilnahmebestätigung herunterladen.</h5>';
+$string['certificate_overview'] = 'Es gibt noch kein Zertifikat für diesen Kurs!';
 
-$string['unenrol'] = 'Aus Kurs ausschreiben';
 $string['start'] = 'Beginnen';
 $string['startlesson'] = 'In Lektion 1.1 beginnen';
 $string['chapter'] = 'Kapitel';
 $string['lesson'] = 'Lektion';
+
 $string['configlabel_forcetrackforums'] = 'Ungelesene Beiträge markieren erzwingen';
 $string['configdesc_forcetrackforums'] = 'Aktiviert automatisch immer die globale Moodle Einstellung: <a href="{$a}/admin/search.php?query=trackreadposts">{$a}/admin/search.php?query=trackreadposts</a><br>
 										  Das ist nötig, damit Nutzer/innen sehen können, welche Forenbeiträge noch nicht gelesen wurden und damit sie alle mit einem Klick als gelesen markiert werden können.
 										  Das ist sinnvoll, wenn sich Nutzer/innen zu einem Zeitpunkt in den Kurs einschreiben, an dem bereits sehr viele Beiträge verfasst wurden.';
-$string['update_config'] = 'Globale Moodle Settings aktualisieren';
-$string['hint_track_forums'] = 'Bitte aktualisiere deine Forum-Einstellungen damit neue Beiträge markiert werden <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">hier</a>.';
+$string['update_config'] = 'Globale Moodle-Settings aktualisieren';
+$string['hint_track_forums'] = 'Bitte aktualisiere deine Forum-Einstellungen, damit neue Beiträge markiert werden <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">hier</a>.';
 $string['mark_all_as_read'] = 'Alle als gelesen markieren';
 $string['mark_all_as_read_mobile'] = 'Alle gelesen';
 $string['configlabel_geonamesapi_url'] = 'GeoNames API-URL';
-$string['configdesc_geonamesapi_url'] = 'Dieser Service wird verwendet um die Koordinaten der Teilnehmenden auf der Teilnehmerkarte anzuzeigen.';
+$string['configdesc_geonamesapi_url'] = 'Dieser Service wird verwendet, um die Koordinaten der Teilnehmenden auf der Teilnehmendenkarte anzuzeigen.';
 $string['configlabel_geonamesapi_username'] = 'GeoNames Benutzername';
-$string['configdesc_geonamesapi_username'] = 'Um diesen Service zu nutzen wird ein GeoNames-Account benötigt. Dieser kann <a href="https://www.geonames.org/">hier</a> angelegt und aktiviert werden. Unser Mooin 4.0 Demo-Account sollte nur zu Testzwecken verwendet werden.';
+$string['configdesc_geonamesapi_username'] = 'Um diesen Service zu nutzen, wird ein GeoNames-Account benötigt. Dieser kann <a href="https://www.geonames.org/">hier</a> angelegt und aktiviert werden. Unser Mooin 4.0 Demo-Account sollte nur zu Testzwecken verwendet werden.';
 $string['configlabel_forcecompletiondefault'] = 'Aktivitätsabschluss nicht anzeigen als Default';
 $string['configdesc_forcecompletiondefault'] = 'Wenn neue Aktivitäten im Kurs hinzugefügt werden, wird die Aktivitätsverfolgung standardmäßig nicht angezeigt. Sobald der Aktivitätsabschluss für eine Aktiviät eingeschaltet wird, ist der Fortschrittsbalken innerhalb dieser Lektion vom Aktivitätsabschluss abhängig. Ansonsten wird im Footer der Lektion ein Button angezeigt, mit dem die Lektion als abgeschlossen markiert werden kann.';
 
@@ -135,12 +128,43 @@ $string['modal_chapter_complete_title'] = 'Kapitel vollständig bearbeitet';
 $string['modal_last_section_of_chapter'] = 'Du bist in der letzten Lektion dieses Kapitels angekommen!';
 $string['modal_last_section_of_chapter_title'] = 'Kapitelende erreicht';
 
-// Chapter in course
+// Chapter in course, abgeglichen mit Englisch
 $string['new_chapter'] = 'Neues Kapitel';
 $string['new_lesson'] = 'Neue Lektion';
 $string['setchapter'] = 'Als Kapiteltitel einstellen';
 $string['unsetchapter'] = 'Als Lektion einstellen';
 $string['completed'] = 'Fertig';
+$string['headerimagedesktop'] = 'Header-Bild Desktop (800 x 280px)';
+$string['headerimagemobile'] = 'Header-Bild Mobile (768 x 768px)';
+$string['edit_course_header'] = 'Header-Bild Bearbeiten';
 $string['cannot_remove_chapter'] = 'Dieses Kapitel kann nicht entfernt werden, weil es keine Lektionen ohne übergeordnetes Kapitel geben darf.';
-
 $string['course_overview'] = 'Kursübersicht';
+
+// added by Jonas, war tw. nicht in Deutsch vorhanden
+$string['unread_news_single'] = 'ungelesener Beitrag im ';
+$string['unread_discussions'] = 'ungelesene Beiträge im ';
+$string['unread_discussions_single'] = 'ungelesener Beitrag im ';
+$string['discussion_forum'] = 'Diskussionsforum';
+$string['next_lesson'] = 'Nächste Lektion';
+$string['previous_lesson'] = 'Vorherige Lektion';
+$string['next_chapter'] = 'NÄCHSTES KAPITEL';
+$string['previous_chapter'] = 'VORHERIGES KAPITEL';
+
+// Neu aus Englisch hinzugefügt
+$string['see_badges'] = ' Alle Infos anzeigen';
+$string['users'] = 'Teilnehmende';
+$string['user_card_title'] = 'Teilnehmende im Kurs';
+$string['user_in_course'] = 'Personen nehmen teil';
+$string['new_user'] = 'Neu hinzugekommen: ';
+$string['no_user'] = 'Keine Teilnehmenden wurden hinzugefügt!';
+$string['welcome'] = 'Herzlich Willkommen im Kurs';
+$string['forum_unread'] = 'Ungelesene Foren';
+$string['discussions'] = 'Alle Diskussionen';
+
+$string['discussion']= '<h5><strong>Letzter Beitrag</h5></strong>';
+$string['all_discussions'] = 'Ungelesene Beiträge in den Diskussionsforen';
+$string['old_discussion'] = 'Ältere Diskussionen';
+$string['old_news'] = 'Ältere News';
+$string['all_news'] = 'Newsforum';
+$string['letze_beitrag'] = 'Neuester Beitrag ';
+$string['discussion_news'] = 'Zur Nachricht';
