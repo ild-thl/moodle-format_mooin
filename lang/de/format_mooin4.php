@@ -95,9 +95,8 @@ $string['chapter'] = 'Kapitel';
 $string['lesson'] = 'Lektion';
 
 $string['configlabel_forcetrackforums'] = 'Ungelesene Beiträge markieren erzwingen';
-$string['configdesc_forcetrackforums'] = 'Aktiviert automatisch immer die globale Moodle Einstellung: <a href="{$a}/admin/search.php?query=trackreadposts">{$a}/admin/search.php?query=trackreadposts</a><br>
-										  Das ist nötig, damit Nutzer/innen sehen können, welche Forenbeiträge noch nicht gelesen wurden und damit sie alle mit einem Klick als gelesen markiert werden können.
-										  Das ist sinnvoll, wenn sich Nutzer/innen zu einem Zeitpunkt in den Kurs einschreiben, an dem bereits sehr viele Beiträge verfasst wurden.';
+$string['configdesc_forcetrackforums'] = 'Aktiviert automatisch immer die globale Moodle-Einstellung: <a href="{$a}/admin/search.php?query=trackreadposts">{$a}/admin/search.php?query=trackreadposts</a><br>
+										  Notwendig, damit Nutzende sehen können, welche Forenbeiträge noch nicht gelesen wurden. Ungelesene Beiträge können dann alle mit einem Klick als gelesen markiert werden. Dies ist sinnvoll, wenn sich Nutzende zu einem Zeitpunkt in den Kurs einschreiben, an dem bereits sehr viele Beiträge verfasst worden sind.'';
 $string['update_config'] = 'Globale Moodle-Settings aktualisieren';
 $string['hint_track_forums'] = 'Bitte aktualisiere deine Forum-Einstellungen, damit neue Beiträge markiert werden <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">hier</a>.';
 $string['mark_all_as_read'] = 'Alle als gelesen markieren';
