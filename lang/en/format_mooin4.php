@@ -96,7 +96,7 @@ $string['lesson'] = 'Lesson';
 
 $string['configlabel_forcetrackforums'] = 'Force mark unread posts';
 $string['configdesc_forcetrackforums'] = 'Automatically activates the global Moodle setting: <a href="{$a}/admin/search.php?query=trackreadposts">{$a}/admin/search.php?query=trackreadposts</a><br>
-										  Required for users to see which forum posts have not yet been read. Unread posts can then all be marked as read with one click. This is useful if users enrol in the course at a time when a large number of posts have already been made'.';
+										  Required for users to see which forum posts have not yet been read. Unread posts can then all be marked as read with one click. This is useful if users enrol in the course at a time when a large number of posts have already been made.';
 $string['update_config'] = 'Update global Moodle setting';
 $string['hint_track_forums'] = 'Please update your forum preferences <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">here</a> to ensure that new posts are marked.';
 $string['mark_all_as_read'] = 'Mark all as read';
