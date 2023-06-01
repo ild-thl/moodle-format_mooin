@@ -38,7 +38,7 @@ $string['hidefromothers'] = 'Hide section';
 $string['showfromothers'] = 'Show section';
 $string['privacy:metadata'] = 'The Mooin 4.0 format plugin does not store any personal data.';
 $string['map_title'] = 'Participant map';
-$string['map_descr'] = 'Please add your location to your profile, so that we can display the participant map as accurately as possible.';
+$string['map_descr'] = 'Please enter your location in your profile to ensure that the participant map is displayed as accurately as possible.';
 $string['badges'] = 'My course badges';
 $string['community'] = 'Community';
 $string['forums'] = 'Discussion forums';
@@ -78,8 +78,8 @@ $string['badge_overview_description'] = 'With the course badges you can show oth
 $string['all_forums'] = 'All discussion forums';
 $string['course_groups'] = 'Course groups';
 $string['course_groups_descr'] = 'Here you can see which groups there are in this course and decide which one you want to join:';
-$string['profile_city_descr'] = 'Please add your location to your profile, so that we can display the participant map as accurately as possible.';
-$string['number_of_questions'] = 'Number of Capira questions';
+$string['profile_city_descr'] = 'Please enter your location in your profile to ensure that the participant map is displayed as accurately as possible.';
+$string['number_of_questions'] = 'Number of capira questions';
 $string['cert_descr'] = 'Congratulations! You have successfully completed at least {$a} percent of the tests included in this course. You can download your certificate of participation here.';
 $string['certificate'] = 'Certificate of participation';
 $string['cert_addtext'] = 'Lorem ipsum';
@@ -96,10 +96,9 @@ $string['lesson'] = 'Lesson';
 
 $string['configlabel_forcetrackforums'] = 'Force mark unread posts';
 $string['configdesc_forcetrackforums'] = 'Automatically activates the global Moodle setting: <a href="{$a}/admin/search.php?query=trackreadposts">{$a}/admin/search.php?query=trackreadposts</a><br>
-										  This is necessary so that users can see which forum posts have not yet been read. These can then be marked as read with one click.
-										  Useful if users enroll in the course at a time when a large number of posts have already been made.';
+										  Required for users to see which forum posts have not yet been read. Unread posts can then all be marked as read with one click. This is useful if users enrol in the course at a time when a large number of posts have already been made'.';
 $string['update_config'] = 'Update global Moodle setting';
-$string['hint_track_forums'] = 'Please update your forum preferences <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">here</a> so that new posts are marked.';
+$string['hint_track_forums'] = 'Please update your forum preferences <a href="{$a->wwwroot}/user/forum.php?id={$a->userid}&course=1">here</a> to ensure that new posts are marked.';
 $string['mark_all_as_read'] = 'Mark all as read';
 $string['mark_all_as_read_mobile'] = 'All read';
 $string['configlabel_geonamesapi_url'] = 'GeoNames API-URL';
