@@ -204,14 +204,18 @@ class format_mooin4 extends format_base {
 
         }
 
-        $node->add(
-            get_string('course_overview', 'format_mooin4'),
-            new moodle_url('/course/view.php', array('id' => $courseid)),
+        $overview = $node->add(
+            $this->get_course()->shortname,
+            //get_string('course_overview', 'format_mooin4'),
+            null,
+            //new moodle_url('/course/view.php', array('id' => $courseid)),
             navigation_node::TYPE_CUSTOM,
             null,
             'format_mooin4_course_overview',
             new pix_icon('i/location', '')
         );
+        $overview->showinflatnavigation=true;
+        //$overview->add_class('overview_node');
 
         $node->add(
             get_string('badges', 'format_mooin4'),
