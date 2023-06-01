@@ -160,10 +160,10 @@ $string['welcome'] = 'Welcome to the course';
 $string['forum_unread'] = 'Unread Forums';
 $string['discussions'] = 'All Discussions';
 
-$string['discussion']= '<h5><strong>Last post</h5></strong>';
+$string['discussion']= '<h5><strong>Latest post</h5></strong>';
 $string['all_discussions'] = 'Unread posts in forums';
 $string['old_discussion'] = 'Old discussions';
 $string['old_news'] = 'Old news';
 $string['all_news'] = 'News';
-$string['letze_beitrag'] = 'Latest Post';
-$string['discussion_news'] = 'To the news';
+$string['letze_beitrag'] = 'Latest post';
+$string['discussion_news'] = 'View post';
