@@ -821,15 +821,15 @@ class format_mooin4_renderer extends format_section_renderer_base {
 
             $complete_button = '';
             if (get_user_preferences('format_mooin4_section_completed_'.$thissection->id, 0, $USER->id) == 0) {
-                $complete_button .= html_writer::start_tag('button', array('data-action' => 'format_mooin4/section_completion_handler-button', 'type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$thissection->id, 'name'=> 'btnComplete-' . $displaysection,'value' => 'Seite als gelesen markieren'));
+                $complete_button .= html_writer::start_tag('button', array('data-action' => 'format_mooin4/section_completion_handler-button', 'type' => 'button', 'class'=>'comp_btn btn-outline-secondary btn_comp bottom_complete-' .$course->id, 'id' => 'id_bottom_complete-' .$thissection->id, 'name'=> 'btnComplete-' . $displaysection,'value' => get_string('mark_page_as_read', 'format_mooin4')));
 
-                $complete_button .= 'Seite als gelesen markieren';
+                $complete_button .= get_string('mark_page_as_read', 'format_mooin4');
                 $complete_button .= html_writer::end_tag('button');
             }
             else {
                 $complete_button .= html_writer::start_tag('button', array('class'=>'comp_btn completed btn-secondary complete_section-' .$thissection->id, 'id' => 'id_bottom_complete-' .$thissection->id, "disabled" => "true"));
 
-                $complete_button .= html_writer::start_span('bottom_button-' .$thissection->id) . 'Seite gelesen' . html_writer::end_span();
+                $complete_button .= html_writer::start_span('bottom_button-' .$thissection->id) . get_string('page_read', 'format_mooin4') . html_writer::end_span();
                 $complete_button .= html_writer::end_tag('button');
             }
             echo $complete_button;
