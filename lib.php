@@ -384,7 +384,7 @@ class format_mooin4 extends format_base {
                     $chapter_node = $node->add($title,
                     null,
                     navigation_node::TYPE_SECTION,
-                    'Kap. '.$chapter->chapter,
+                    get_string('chapter_short','format_mooin4').' '.$chapter->chapter,
                     $chapter->sectionid,
                     $icon
                     );
@@ -435,7 +435,7 @@ class format_mooin4 extends format_base {
                         $section_node = $chapter_node->add($title,
                         $url,
                         navigation_node::TYPE_SECTION,
-                        'Lekt. '.get_section_prefix($section).': ',
+                        get_string('lesson_short','format_mooin4').' '.get_section_prefix($section).': ',
                         $section->id,
                         $icon
                         );

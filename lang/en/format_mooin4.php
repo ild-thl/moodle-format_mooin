@@ -91,7 +91,9 @@ $string['certificate_overview'] = 'There is no certificate for this course avail
 $string['start'] = 'Start';
 $string['startlesson'] = 'Start in lesson 1.1';
 $string['chapter'] = 'Chapter';
+$string['chapter_short'] = 'ch.';
 $string['lesson'] = 'Lesson';
+$string['lesson_short'] = 'lsn.';
 
 $string['configlabel_forcetrackforums'] = 'Force mark unread posts';
 $string['configdesc_forcetrackforums'] = 'Automatically activates the global Moodle setting: <a href="{$a}/admin/search.php?query=trackreadposts">{$a}/admin/search.php?query=trackreadposts</a><br>

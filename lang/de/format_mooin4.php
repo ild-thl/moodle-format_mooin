@@ -91,7 +91,9 @@ $string['certificate_overview'] = 'Es gibt noch kein Zertifikat für diesen Kurs
 $string['start'] = 'Beginnen';
 $string['startlesson'] = 'In Lektion 1.1 beginnen';
 $string['chapter'] = 'Kapitel';
+$string['chapter_short'] = 'Kap.';
 $string['lesson'] = 'Lektion';
+$string['lesson_short'] = 'Lek.';
 
 $string['configlabel_forcetrackforums'] = 'Ungelesene Beiträge markieren erzwingen';
 $string['configdesc_forcetrackforums'] = 'Aktiviert automatisch immer die globale Moodle-Einstellung: <a href="{$a}/admin/search.php?query=trackreadposts">{$a}/admin/search.php?query=trackreadposts</a><br>
