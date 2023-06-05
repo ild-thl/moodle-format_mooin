@@ -149,7 +149,7 @@ $value = null;
 $result = show_certificat($courseid);
 
 if ($result) {
-    echo html_writer::tag('p', get_string('certificate_overview_description', 'format_mooin4'));
+    echo html_writer::tag('h5', get_string('certificate_overview_description', 'format_mooin4'));
     echo '<br />';
     $value .= $result;
 
