@@ -72,8 +72,8 @@ $string['overview'] = 'Badge overview';
 $string['profile_badges'] = 'All badges in my profile';
 $string['badge_options'] = 'Badge options';
 $string['owner'] = 'Owner';
-$string['no_badges_awarded'] = 'No badges have been issued in this course yet';
-$string['badge_overview_description'] = 'With the course badges you can show other participants on this platform and throughout the web what course progress you have already made. For more information, see <a href="https://en.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a> and <a href="http://openbadges.org" target="_blank">OpenBadges.org</a>';
+$string['no_badges_awarded'] = 'No badges have been issued in this course yet.';
+$string['badge_overview_description'] = 'With course badges you can show other participants on this platform and on the web what progress you have already made. For more information, see <a href="https://en.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a> and <a href="http://openbadges.org" target="_blank">OpenBadges.org</a>';
 $string['all_forums'] = 'All discussion forums';
 $string['course_groups'] = 'Course groups';
 $string['course_groups_descr'] = 'Here you can see which groups there are in this course and decide which one you want to join:';
@@ -86,14 +86,14 @@ $string['required_questions'] = 'Required correct answers in %';
 $string['only_for_trainers'] = 'Visible only for admins and trainers';
 $string['my_certificate'] = 'Course certificates';
 $string['certificate_overview_description'] = 'Congratulations! You have successfully completed the tests included in the course. You can download your certificate of participation here.';
-$string['certificate_overview'] = 'There is no certificate for this course available yet';
+$string['certificate_overview'] = 'There is no certificate for this course available yet.';
 
 $string['start'] = 'Start';
 $string['startlesson'] = 'Start in lesson 1.1';
 $string['chapter'] = 'Chapter';
-$string['chapter_short'] = 'ch.';
+$string['chapter_short'] = 'Ch.';
 $string['lesson'] = 'Lesson';
-$string['lesson_short'] = 'lsn.';
+$string['lesson_short'] = 'Lsn.';
 
 $string['configlabel_forcetrackforums'] = 'Force mark unread posts';
 $string['configdesc_forcetrackforums'] = 'Automatically activates the global Moodle setting: <a href="{$a}/admin/search.php?query=trackreadposts">{$a}/admin/search.php?query=trackreadposts</a><br>
@@ -147,20 +147,20 @@ $string['unread_discussions_single'] = 'unread post in the ';
 $string['discussion_forum'] = 'discussion forums';
 $string['next_lesson'] = 'Next lesson';
 $string['previous_lesson'] = 'Previous lesson';
-$string['next_chapter'] = 'Next Chapter';
-$string['previous_chapter'] = 'Previous Chapter';
-$string['discussions_tooltip'] = 'Discussion forums are created in the lessons.';
-$string['certificates_tooltip'] = 'Certificates are created in the lessons.';
-$string['newsforum_settings'] = 'Newsforum settings';
-$string['course_progress_text'] = 'of the course processed';
-$string['lesson_progress_text'] = 'of the lesson processed';
-$string['progress_text_short'] = 'processed';
+$string['next_chapter'] = 'Next chapter';
+$string['previous_chapter'] = 'Previous chapter';
+$string['discussions_tooltip'] = 'Discussion forums are added in lessons.';
+$string['certificates_tooltip'] = 'Certificates are added in lessons.';
+$string['newsforum_settings'] = 'News forum settings';
+$string['course_progress_text'] = 'of the course completed';
+$string['lesson_progress_text'] = 'of the lesson completed';
+$string['progress_text_short'] = 'completed';
 $string['mark_page_as_read'] = 'Mark page as read';
 $string['page_read'] = 'Page read';
 
 
 // zu Deutsch neu hinzugefügt
-$string['show_all_infos'] = 'Show all info';
+$string['show_all_infos'] = 'Show details';
 $string['users'] = 'Users';
 $string['user_card_title'] = 'Course participants';
 //$string['participants'] = 'participants <span class="fw-400">in the course</span>';
