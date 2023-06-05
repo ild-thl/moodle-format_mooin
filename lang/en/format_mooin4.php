@@ -148,9 +148,18 @@ $string['next_lesson'] = 'Next lesson';
 $string['previous_lesson'] = 'Previous lesson';
 $string['next_chapter'] = 'Next Chapter';
 $string['previous_chapter'] = 'Previous Chapter';
+$string['discussions_tooltip'] = 'Discussion forums are created in the lessons.';
+$string['certificates_tooltip'] = 'Certificates are created in the lessons.';
+$string['newsforum_settings'] = 'Newsforum settings';
+$string['course_progress_text'] = 'of the course processed';
+$string['lesson_progress_text'] = 'of the lesson processed';
+$string['progress_text_short'] = 'processed';
+$string['mark_page_as_read'] = 'Mark page as read';
+$string['page_read'] = 'Page read';
+
 
 // zu Deutsch neu hinzugefügt
-$string['see_badges'] = ' Alle Infos anzeigen';
+$string['show_all_infos'] = 'Show all info';
 $string['users'] = 'Users';
 $string['user_card_title'] = 'Course participants';
 $string['user_in_course'] = 'participants <span class="fw-400">in the course</span>';

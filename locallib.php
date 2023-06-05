@@ -258,7 +258,7 @@ function complete_section($section, $userid) {
     * Get  Progress bar
     */
     function get_progress_bar($p, $width, $sectionid = 0) {
-        $percentageText = html_writer::span($p."%", "fw-700", array( 'id' => 'mooin4ection-text-' . $sectionid));
+        $percentage = html_writer::span($p."% ", "fw-700", array( 'id' => 'mooin4ection-text-' . $sectionid));
         //$p_width = $width / 100 * $p;
         $result = html_writer::tag('div',
                     html_writer::tag('div',
@@ -273,7 +273,7 @@ function complete_section($section, $userid) {
                     // html_writer::start_span('',['style' => 'float: left;font-size: 12px; margin-left: 12px; margin-top: 5px;font-weight: bold']) . $p . '% ' . html_writer::end_span() . // .' % bearbeitet'
                     // html_writer::tag('div', $p .'% der Lektion bearbeitet', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);left: 50%;','id' => 'mooin4ection-text-' . $sectionid)) . // margin-top: -8px;
 
-                    html_writer::tag('div', $percentageText. " der Lektion bearbeitet", array('style' => 'float: left; font-size: 12px; display: contents; margin-left: 12px; padding-left: 5px;color: #555; width: 100%')) , // text-align: center; position: absolute;
+                    html_writer::tag('div', $percentage. get_string('lesson_progress_text', 'format_mooin4'), array('style' => 'float: left; font-size: 12px; display: contents; margin-left: 12px; padding-left: 5px;color: #555; width: 100%')) , // text-align: center; position: absolute;
                     array('class' => 'mooin4ection-div')); // float: left; position: absolute;
         return $result;
     }
@@ -1623,8 +1623,8 @@ function get_progress_bar_course($p, $width) {
                 array('class' => 'progressbar')
             ) .
             html_writer::start_span('',['style' => 'font-weight: bold']) . $p . '%' . html_writer::end_span() .
-            html_writer::start_span(' d-sm-inline d-md-none ') . ' bearbeitet' . html_writer::end_span() .
-            html_writer::start_span(' d-none d-md-inline ') . ' des Kurses bearbeitet' . html_writer::end_span()); // 'class' => 'oc-progress-div',
+            html_writer::start_span(' d-sm-inline d-md-none ') . ' ' . get_string('progress_text_short','format_mooin4') . html_writer::end_span() .
+            html_writer::start_span(' d-none d-md-inline ') .' ' . get_string('course_progress_text','format_mooin4') . html_writer::end_span()); // 'class' => 'oc-progress-div',
     return $result;
 }
 
@@ -1974,7 +1974,7 @@ function navbar($displaysection = 0) {
                         if($c == " ") {
                             $chapter_n = str_replace("-", "",$OUTPUT->render($item));
                         } else {
-                            $chapter_n = 'Kapitel ' . ' ' . $c ;
+                            $chapter_n = get_string('chapter','format_mooin4') . ' ' . $c ;
                             // $chapiter leer change the output
                         }
 

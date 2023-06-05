@@ -146,11 +146,19 @@ $string['unread_discussions_single'] = 'ungelesener Beitrag in den ';
 $string['discussion_forum'] = 'Diskussionsforen';
 $string['next_lesson'] = 'Nächste Lektion';
 $string['previous_lesson'] = 'Vorherige Lektion';
-$string['next_chapter'] = 'NÄCHSTES KAPITEL';
-$string['previous_chapter'] = 'VORHERIGES KAPITEL';
+$string['next_chapter'] = 'Nächstes Kapitel';
+$string['previous_chapter'] = 'Vorheriges Kapitel';
+$string['discussions_tooltip'] = 'Diskussionsforen werden in den Lektionen angelegt.';
+$string['certificates_tooltip'] = 'Zertifikate werden in den Lektionen angelegt.';
+$string['newsforum_settings'] = 'Newsforum Einstellungen';
+$string['course_progress_text'] = 'des Kurses bearbeitet';
+$string['progress_text_short'] = 'bearbeitet';
+$string['mark_page_as_read'] = 'Seite als gelesen markieren';
+$string['page_read'] = 'Seite gelesen';
+
 
 // Neu aus Englisch hinzugefügt
-$string['see_badges'] = ' Alle Infos anzeigen';
+$string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['users'] = 'Teilnehmende';
 $string['user_card_title'] = 'Teilnehmende im Kurs';
 $string['user_in_course'] = 'Personen <span class="fw-400">nehmen teil</span>';

@@ -28,7 +28,7 @@
       <div class="news-card-inner pt-1">
         <span class="caption-sm d-none d-md-block">
           <a href="{{discussion_url}}" class="fw-700 text-primary">{{#str}} letze_beitrag, format_mooin4{{/str}}</a>
-          von {{{user_firstname}}} - {{{created_news}}}
+          {{#str}} by, format_mooin4 {{/str}} {{{user_firstname}}} - {{{created_news}}}
         </span>
         <span class="caption d-flex d-md-none justify-content-between">
           <a href="{{discussion_url}}" class="fw-700">{{#str}} latest_contribution_mobile, format_mooin4{{/str}}</a>
@@ -56,7 +56,7 @@
 {{^news}}
 {{#has_capability}}
 <div class="text-center text-md-right p-2 mr-md-5">
-  <span>Newsforum Einstellungen -</span>
+  <span>{{#str}} newsforum_settings, format_mooin4 {{/str}} -</span>
   {{{edit_newsforum_link}}}
 </div>
 <div class="seperator"></div>

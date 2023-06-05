@@ -24,7 +24,7 @@
         {{/badges}}
       </div>
       <div class="primary-link d-block text-right">
-        <a href="{{badges_url}}">{{#str}} see_badges, format_mooin4 {{/str}}</a>
+        <a href="{{badges_url}}">{{#str}} show_all_infos, format_mooin4 {{/str}}</a>
       </div>
     </div>
 
@@ -35,7 +35,7 @@
           {{/str}}</a>
         {{#has_capability}}
         <button type="button" class="btn info-tip" data-toggle="tooltip" data-placement="top"
-          title="Zertifikate werden in den Lektionen angelegt.">
+          title=" {{#str}} certificates_tooltip, format_mooin4 {{/str}}">
           <span class="bi bi-info-circle-fill"></span>
         </button>
         {{/has_capability}}
@@ -56,7 +56,7 @@
         {{/certificates}}
       </div>
       <div class="primary-link d-block text-right">
-        <a href="{{certificate_url}}">{{#str}} see_badges, format_mooin4 {{/str}}</a>
+        <a href="{{certificate_url}}">{{#str}} show_all_infos, format_mooin4 {{/str}}</a>
       </div>
     </div>
   </div>
@@ -67,7 +67,7 @@
     <h2>{{#str}} community, format_mooin4 {{/str}}</h2>
     {{#has_capability}}
     <button type="button" class="btn info-tip" data-toggle="tooltip" data-placement="top"
-      title="Diskussionsforen werden in den Lektionen angelegt.">
+      title="{{#str}} discussions_tooltip, format_mooin4 {{/str}}">
       <span class="bi bi-info-circle-fill"></span>
     </button>
     {{/has_capability}}
