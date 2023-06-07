@@ -153,6 +153,7 @@ $string['discussions_tooltip'] = 'Diskussionsforen werden in den Lektionen angel
 $string['certificates_tooltip'] = 'Zertifikate werden in den Lektionen angelegt.';
 $string['newsforum_settings'] = 'Newsforum Einstellungen';
 $string['course_progress_text'] = 'des Kurses bearbeitet';
+$string['lesson_progress_text'] = 'der Lektion bearbeitet';
 $string['progress_text_short'] = 'bearbeitet';
 $string['mark_page_as_read'] = 'Seite als gelesen markieren';
 $string['page_read'] = 'Seite gelesen';
