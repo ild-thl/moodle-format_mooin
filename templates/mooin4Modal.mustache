@@ -1,0 +1,28 @@
+
+
+<div class="modal moodle-has-zindex mooin4-modal" data-region="modal-container" aria-hidden="true" role="dialog">
+    <div class="modal-dialog {{$classes}}{{classes}}{{/classes}}" role="document" data-region="modal" aria-labelledby="{{uniqid}}-modal-title" tabindex="0">
+        <div class="modal-content">
+            <div class="modal-header {{$headerclasses}}{{headerclasses}}{{/headerclasses}}" data-region="header">
+
+                {{$header}}
+                    <p id="{{uniqid}}-modal-title" class="modal-title" data-region="title">{{$title}}{{title}}{{/title}}</p>
+                {{/header}}
+                <button type="button" class="close" data-action="hide" aria-label="{{#cleanstr}}closebuttontitle{{/cleanstr}}">
+                  <i class="bi bi-x-circle-fill"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-region="body">
+                {{$body}}
+                    {{{body}}}
+                {{/body}}
+            </div>
+            <div class="modal-footer" data-region="footer">
+                {{$footer}}
+                    {{{footer}}}
+                {{/footer}}
+            </div>
+        </div>
+    </div>
+</div>
+

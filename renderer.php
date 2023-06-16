@@ -698,10 +698,7 @@ class format_mooin4_renderer extends format_section_renderer_base {
         // Title with section navigation links.
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
         //$PAGE->requires->js_call_amd('format_mooin4/complete_section', [['link' => $sectionnavlinks['next']]]);
-        $PAGE->requires->js_call_amd('format_mooin4/section_completion_handler', 'init', [[
-            'section_id' => $thissection->id,
-            'course_id' => $course->id
-        ]]);
+
 
         $sectiontitle = '';
 
@@ -927,8 +924,22 @@ class format_mooin4_renderer extends format_section_renderer_base {
             // echo '<br>';
             // echo $thissection->id;
             $PAGE->requires->js_call_amd('format_mooin4/show_popup');
-            echo $modal_last_section;
+            //echo $modal_last_section;
         }
+
+        $isLastSectionOfChapter = false;
+        if (!$this->page->user_is_editing() && is_last_section_of_chapter($thissection->id) && $check_completed_chapter['completed'] == false) {
+            $isLastSectionOfChapter = true;
+        }
+        $PAGE->requires->js_call_amd('format_mooin4/section_completion_handler', 'init',
+          [[
+             'section_id' => $thissection->id,
+             'isLastSectionOfChapter' => $isLastSectionOfChapter
+
+         ]]);
+         $PAGE->requires->js_call_amd('format_mooin4/modalGenerator', 'init');
+
+
         /*
         if (!$this->page->user_is_editing() && intval($course_progress) == intval(100) && !$value_exist) { // && !$value_exist
             //  && $v->value == 1

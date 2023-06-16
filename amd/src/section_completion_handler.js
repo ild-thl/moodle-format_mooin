@@ -1,15 +1,10 @@
-//import {call as fetchMany} from 'core/ajax';
-
-// export const check_completion_status = (
-//   course_id,
-//   section_id,
-// ) => fetchMany([{
-//   methodname: 'format_mooin4_check_completion_status',
-//   args: {
-//     course_id,
-//     section_id,
-//   },
-// }])[0];
+import Ajax from "core/ajax";
+import Notification from "core/notification";
+import { get_string as getString } from "core/str";
+import ModalFactory from "core/modal_factory";
+import Mooin4Modal from "format_mooin4/mooin4Modal";
+import Templates from "core/templates";
+import { relativeUrl } from "core/url";
 
 const Selectors = {
   actions: {
@@ -18,47 +13,93 @@ const Selectors = {
   },
 };
 
-export const init = ({section_id, course_id}) => {
-  var xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = () => {
-    if (xhr.readyState == 4) {
-      if (xhr.status == 200) {
-        var result = JSON.parse(xhr.response);
-        if (result) {
-            window.console.log(result.completed);
-        }
-      }
-    }
-  };
+export const init = async ({ section_id, isLastSectionOfChapter })  => {
+  if (isLastSectionOfChapter) {
+    const modal = await ModalFactory.create({
+      title: "Kapitelende erreicht",
+      body: '<p>Du bist in der letzten Lektion dieses Kapitels angekommen!</p><i class="bi bi-star"></i>',
+      footer: '<button type="button" class="mooin4-btn mooin4-btn-primary"'+
+      'data-action="hide">Schließen<i class="bi bi-x-circle-fill"></i></button>',
+      type: Mooin4Modal.TYPE,
+      scrollable: false,
+    });
+    modal.show();
+  }
+
 
   let progressbar = document.getElementById(`mooin4ection${section_id}`);
-  let percentageText = document.getElementById(`mooin4ection-text-${section_id}`);
+  let percentageText = document.getElementById(
+    `mooin4ection-text-${section_id}`
+  );
   let navdrawerSection = document.querySelector(`[data-key="${section_id}"]`);
 
   document.addEventListener("click", (e) => {
     if (e.target.closest(Selectors.actions.buttonClicked)) {
-      var formData = new FormData();
-      formData.append("section", section_id);
-      formData.append("course_id", course_id);
-      xhr.open("POST", "format/mooin4/complete_section.php", true);
+      var promises = Ajax.call([
+        {
+          methodname: "format_mooin4_check_completion_status",
+          args: { section_id: Number(section_id), isActivity: false },
+        },
+      ]);
+      promises[0]
+        .done(async function (data) {
+          e.target.textContent = await getString("page_read", "format_mooin4");
 
-      xhr.send(formData);
+          e.target.classList.add("completed");
+          navdrawerSection.classList.add("completed");
+          e.target.disabled = true;
+          progressbar.style.width = "100%";
+          percentageText.innerText = "100%" + " ";
 
-      e.target.textContent = "Seite gelesen";
-
-      e.target.classList.add('completed');
-      navdrawerSection.classList.add('completed');
-      e.target.disabled = true;
-      progressbar.style.width = "100%";
-      percentageText.innerText = "100%";
+          if (data.show_chapter_modal) {
+            let navdrawerChapter = document.querySelector(
+              `[data-key="${data.chapter_id}"]`
+            );
+            navdrawerChapter.classList.add("completed");
+            var footerContent = "";
+            if (data.next_chapter < 0) {
+               footerContent =
+                '<button type="button" class="mooin4-btn mooin4-btn-special"' +
+                 'data-action="hide">Schließen<i class="bi bi-x-circle-fill"></i></button>';
+            } else {
+               footerContent =
+                '<button type="button" class="mooin4-btn mooin4-btn-special"' +
+                 'data-action="hide">Schließen<i class="bi bi-x-circle-fill"></i></button>' +
+                '<a href="' +
+                relativeUrl("/course/view.php", {
+                  id: data.course_id,
+                  section: data.next_chapter,
+                }) +
+                '" class="mooin4-btn mooin4-btn-primary">Nächstes Kapitel</a>';
+            }
+            const modal = await ModalFactory.create({
+              title: "Kapitel vollständig bearbeitet",
+              body: '<p>Du hast alle Lektionen in diesem Kapitel bearbeitet!</p><i class="bi bi-check-circle"></i>',
+              footer: footerContent,
+              type: Mooin4Modal.TYPE,
+              scrollable: false,
+            });
+            modal.show();
+          }
+          window.console.log(data.show_course_modal);
+          if (data.show_course_modal) {
+            let navdrawerChapter = document.querySelector(
+              `[data-key="${data.chapter_id}"]`
+            );
+            navdrawerChapter.classList.add("completed");
+            const modal = await ModalFactory.create({
+              title: "Kurs vollständig bearbeitet",
+              body: '<p>Du hast alle Lektionen in diesem Kurs bearbeitet!</p><i class="bi bi-mortarboard-fill"></i>',
+              footer:
+                '<button type="button" class="mooin4-btn mooin4-btn-special"'+
+                 'data-action="hide">Schließen<i class="bi bi-x-circle-fill"></i></button>',
+              type: Mooin4Modal.TYPE,
+              scrollable: false,
+            });
+            modal.show();
+          }
+        })
+        .fail();
     }
   });
-
-  // let completeBtn = document.getElementById(`btn_comp`);
-  // let sectionNumber;
-  // window.console.log(section);
-  // completeBtn.addEventListener(() => {
-  //   sectionNumber = section;
-  //   window.console.log(sectionNumber);
-  // });
 };

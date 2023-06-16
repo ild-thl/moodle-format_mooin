@@ -69,4 +69,4 @@ if ($info['completed']) {
 
 
 
-// $sectionnavlinks = get_nav_links($course, $modinfo->get_section_info_all(), $section);
+ //$sectionnavlinks = get_nav_links($course, $modinfo->get_section_info_all(), $section);
