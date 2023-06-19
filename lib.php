@@ -454,7 +454,7 @@ class format_mooin4 extends format_base {
                                 $section_node->parent->remove_class('collapsed');
                             }
                         }
-                        $section_node->add_Class('section'.$completed.$lastvisitedsection);
+                        $section_node->add_Class('lesson'.$completed.$lastvisitedsection);
                     }
 
 
