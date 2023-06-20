@@ -7,19 +7,23 @@ To use the course format, at least two Moodle plugins are necessary.
 
 We need to install the **course format**
 
-    cd /opt/www/lms.futureskills-sh.de/moodle/course/format/
+    cd /path/to/moodle/course/format/
     
     git clone https://github.com/ild-thl/moodle-format_mooin.git mooin4
 
 and the **MOOIN 4.0 Design**
 
-    cd /opt/www/lms.futureskills-sh.de/moodle/theme/
+    cd /path/to/moodle/theme/
     
     git clone https://github.com/ild-thl/moodle-theme_mooin.git mooin4
     
-For a better user experience we recommand to use **H5P** (https://moodle.org/plugins/mod_hvp)
+For a better user experience we recommand to use **H5P** (https://moodle.org/plugins/mod_hvp). With some modifications (coming soon...)
 
-and the local Plugin **H5P Extender**. More information comming soon...
+and the local Plugin **H5P Extender**
+
+    cd /path/to/moodle/local/
+    
+    git clone https://github.com/ild-thl/moodle-local_ildhvp4.git ildhvp4
 
 ## Usage
 First check if changing Designs in courses is enabled. Go to **Site Administration > Appearance > Theme settings** and enable **Allow course themes** (allowcoursethemes).
