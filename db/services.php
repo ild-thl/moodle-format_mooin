@@ -8,7 +8,15 @@ $functions = array(
         'description' => 'check completion status',
         'type' => 'write',
         'ajax' => true
-    )
+    ),
+    'format_mooin4_setgrade' => array(
+        'classname' => 'format_mooin4_external',
+        'methodname' => 'setgrade',
+        'classpath' => 'course/format/mooin4/externallib.php',
+        'description' => 'Set H5P grade',
+        'type' => 'write',
+        'ajax' => true
+    ),
 );
 
 // $services = array(

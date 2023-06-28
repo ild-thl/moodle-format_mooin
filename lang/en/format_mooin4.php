@@ -127,6 +127,7 @@ $string['modal_chapter_complete'] = 'You have completed all lessons in this chap
 $string['modal_chapter_complete_title'] = 'Chapter completed';
 $string['modal_last_section_of_chapter'] = 'You have reached the last lesson of this chapter!';
 $string['modal_last_section_of_chapter_title'] = 'End of chapter';
+$string['close'] = 'Close';
 
 // Chapter in course, abgeglichen mit Deutsch
 $string['new_chapter'] = 'New chapter';

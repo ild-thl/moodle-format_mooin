@@ -129,4 +129,57 @@ class format_mooin4_external extends external_api
       'next_chapter' =>  new external_value(PARAM_INT, 'Next Chapter'),
     ));
   }
+
+
+
+  /**
+     * Returns description of method parameters
+     * @return external_function_parameters
+     */
+    public static function setgrade_parameters() {
+      return new external_function_parameters(array(
+          'contentid' => new external_value(PARAM_INT, 'H5P content id'),
+          'score' => new external_value(PARAM_FLOAT, 'H5P score'),
+          'maxscore' => new external_value(PARAM_FLOAT, 'H5P max score')
+      ));
+  }
+
+  /**
+   * Returns status
+   * @return array user data
+   */
+  public static function setgrade($contentid, $score, $maxscore) {
+      global $SESSION;
+      //Parameter validation
+      //REQUIRED
+      $params = self::validate_parameters(self::setgrade_parameters(),
+          array(
+              'contentid' => $contentid,
+              'score' => $score,
+              'maxscore' => $maxscore
+          ));
+
+      //Context validation
+      //OPTIONAL but in most web service it should present
+      $context = \context_system::instance();
+      self::validate_context($context);
+
+      $progress = setgrade($contentid, $score, $maxscore);
+
+      return array(
+          'sectionid' => $progress['sectionid'],
+          'percentage' => $progress['percentage']
+      );
+  }
+
+  /**
+   * Returns description of method result value
+   * @return external_single_structure
+   */
+  public static function setgrade_returns() {
+      return new \external_single_structure(array(
+          'sectionid' => new external_value(PARAM_INT, 'Section ID'),
+          'percentage' => new external_value(PARAM_FLOAT, 'Percentage of section progress'),
+      ), 'Section progress');
+  }
 }
