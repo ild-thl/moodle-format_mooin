@@ -132,6 +132,8 @@ define([
 
       if (percentage >= passPercentage) {
         ILD.setResult(contentId, 100, 100);
+      } else {
+        ILD.setResult(contentId, percentage, 100);
       }
     }
 
@@ -274,6 +276,7 @@ define([
           function (event) {
             if (event.data === 0) {
               ILD.setResult(contentId, 100, 100);
+
             }
           }
         );

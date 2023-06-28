@@ -923,7 +923,7 @@ class format_mooin4_renderer extends format_section_renderer_base {
             // echo get_chapter_for_section($thissection->id);
             // echo '<br>';
             // echo $thissection->id;
-            $PAGE->requires->js_call_amd('format_mooin4/show_popup');
+            //$PAGE->requires->js_call_amd('format_mooin4/show_popup');
             //echo $modal_last_section;
         }
 

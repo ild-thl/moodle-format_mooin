@@ -3043,7 +3043,7 @@ function setgrade($contextid, $score, $maxscore) {
         $user_grade = 0;
     }
 
-    if ($score > $user_grade) {
+    if ($score >= $user_grade) {
         // Set grade using Gradebook API.
         $hvp->cmidnumber = $cm->idnumber;
         $hvp->name = $cm->name;
