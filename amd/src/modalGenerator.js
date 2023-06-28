@@ -60,7 +60,7 @@ export const init = () => {
       title: await getString("modal_course_complete_title", "format_mooin4"),
       body: '<p>' + await getString("modal_course_complete", "format_mooin4") + '</p><i class="bi bi-mortarboard-fill"></i>',
       footer:
-        '<button type="button" class="mooin4-btn mooin4-btn-special"' +
+        '<button type="button" class="mooin4-btn mooin4-btn-primary"' +
         'data-action="hide">' + await getString("close", "format_mooin4") + '<i class="bi bi-x-circle-fill"></i></button>',
       type: Mooin4Modal.TYPE,
       scrollable: false,
