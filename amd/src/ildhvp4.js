@@ -130,11 +130,7 @@ define([
       var percentage = (score / maxScore) * 100;
       var passPercentage = ILD.questionSetPassPercentage[contentId];
 
-      if (percentage >= passPercentage) {
-        ILD.setResult(contentId, 100, 100);
-      } else {
         ILD.setResult(contentId, percentage, 100);
-      }
     }
 
     // Check if Essay is scored.
@@ -195,7 +191,7 @@ define([
 
         var percentage = Math.round(data.percentage);
         var percentage_int = String(percentage + "%");
-        var percentage_text = String(percentage + "%");
+        var percentage_text = String(percentage + "%"+" ");
 
         $("#" + div_id, window.parent.document).css("width", percentage_int);
         $("#" + text_div_id, window.parent.document).html(percentage_text);
