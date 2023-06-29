@@ -130,7 +130,12 @@ define([
       var percentage = (score / maxScore) * 100;
       var passPercentage = ILD.questionSetPassPercentage[contentId];
 
+      if (percentage >= passPercentage) {
+        ILD.setResult(contentId, 100, 100);
+      } else {
         ILD.setResult(contentId, percentage, 100);
+      }
+
     }
 
     // Check if Essay is scored.
