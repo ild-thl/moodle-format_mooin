@@ -934,7 +934,8 @@ class format_mooin4_renderer extends format_section_renderer_base {
         $PAGE->requires->js_call_amd('format_mooin4/section_completion_handler', 'init',
           [[
              'section_id' => $thissection->id,
-             'isLastSectionOfChapter' => $isLastSectionOfChapter
+             'isLastSectionOfChapter' => $isLastSectionOfChapter,
+             'courseCompletedAlready' => is_course_completed($course->id)
 
          ]]);
          $PAGE->requires->js_call_amd('format_mooin4/modalGenerator', 'init');
@@ -1058,6 +1059,7 @@ class format_mooin4_renderer extends format_section_renderer_base {
             //$section->name = get_string('chapter', 'format_mooin4').' '.$chapter->chapter.' - '.$chapter->title;
             $section->name = $chapter->title;
             $sectionname = get_string('chapter', 'format_mooin4').' '.$chapter->chapter.' '.html_writer::tag('span', $this->section_title_without_link($section, $course));
+            $classes .= ' chapter-editing';
         }
         else {
             $sectionname = get_string('lesson', 'format_mooin4').' '.get_section_prefix($section).' '.html_writer::tag('span', $this->section_title($section, $course));

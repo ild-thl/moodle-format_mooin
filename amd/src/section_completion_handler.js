@@ -13,19 +13,31 @@ const Selectors = {
   },
 };
 
-export const init = async ({ section_id, isLastSectionOfChapter })  => {
+export const init = async ({
+  section_id,
+  isLastSectionOfChapter,
+  courseCompletedAlready,
+}) => {
   if (isLastSectionOfChapter) {
     const modal = await ModalFactory.create({
-      title: await getString("modal_last_section_of_chapter_title", "format_mooin4"),
-      body: '<p>' + await getString("modal_last_section_of_chapter", "format_mooin4") + '</p><i class="bi bi-star"></i>',
-      footer: '<button type="button" class="mooin4-btn mooin4-btn-primary"'+
-      'data-action="hide">' + await getString("close", "format_mooin4") + '<i class="bi bi-x-circle-fill"></i></button>',
+      title: await getString(
+        "modal_last_section_of_chapter_title",
+        "format_mooin4"
+      ),
+      body:
+        "<p>" +
+        (await getString("modal_last_section_of_chapter", "format_mooin4")) +
+        '</p><i class="bi bi-star"></i>',
+      footer:
+        '<button type="button" class="mooin4-btn mooin4-btn-primary"' +
+        'data-action="hide">' +
+        (await getString("close", "format_mooin4")) +
+        '<i class="bi bi-x-circle-fill"></i></button>',
       type: Mooin4Modal.TYPE,
       scrollable: false,
     });
     modal.show();
   }
-
 
   let progressbar = document.getElementById(`mooin4ection${section_id}`);
   let percentageText = document.getElementById(
@@ -38,7 +50,12 @@ export const init = async ({ section_id, isLastSectionOfChapter })  => {
       var promises = Ajax.call([
         {
           methodname: "format_mooin4_check_completion_status",
-          args: { section_id: Number(section_id), isActivity: false },
+          args: {
+            section_id: Number(section_id),
+            isActivity: false,
+            course_already_completed: courseCompletedAlready,
+            chapter_already_completed: false,
+          },
         },
       ]);
       promises[0]
@@ -52,10 +69,10 @@ export const init = async ({ section_id, isLastSectionOfChapter })  => {
           percentageText.innerText = "100%" + " ";
 
           var message = {
-            action: 'showModal',
-            modal: {data}
+            action: "showModal",
+            modal: { data },
           };
-          window.postMessage(message, '*');
+          window.postMessage(message, "*");
 
           // if (data.show_chapter_modal) {
           //   let navdrawerChapter = document.querySelector(

@@ -7,7 +7,16 @@ define([
   "core/modal_factory",
   "format_mooin4/mooin4Modal",
   "format_mooin4/modalGenerator",
-], function ($, ajax, notification, Str, Url, ModalFactory, Mooin4Modal, generateModal) {
+], function (
+  $,
+  ajax,
+  notification,
+  Str,
+  Url,
+  ModalFactory,
+  Mooin4Modal,
+  generateModal
+) {
   /** @namespace */
   var ILD = ILD || {};
 
@@ -135,7 +144,6 @@ define([
       } else {
         ILD.setResult(contentId, percentage, 100);
       }
-
     }
 
     // Check if Essay is scored.
@@ -196,28 +204,34 @@ define([
 
         var percentage = Math.round(data.percentage);
         var percentage_int = String(percentage + "%");
-        var percentage_text = String(percentage + "%"+" ");
+        var percentage_text = String(percentage + "%" + " ");
 
         $("#" + div_id, window.parent.document).css("width", percentage_int);
         $("#" + text_div_id, window.parent.document).html(percentage_text);
 
-
         if (data.percentage === 100) {
-          var navdrawerSection = window.parent.document.querySelector(`[data-key="${data.sectionid}"]`);
-              navdrawerSection.classList.add("completed");
-            var promises = ajax.call([
+          var navdrawerSection = window.parent.document.querySelector(
+            `[data-key="${data.sectionid}"]`
+          );
+          navdrawerSection.classList.add("completed");
+          var promises = ajax.call([
             {
               methodname: "format_mooin4_check_completion_status",
-              args: { section_id: Number(data.sectionid), isActivity: true },
+              args: {
+                section_id: Number(data.sectionid),
+                isActivity: true,
+                course_already_completed: data.course_already_completed,
+                chapter_already_completed: data.chapter_already_completed
+              },
             },
           ]);
           promises[0]
             .done(function (data) {
               var message = {
-                action: 'showModal',
-                modal: {data}
+                action: "showModal",
+                modal: { data },
               };
-              window.top.postMessage(message, '*');
+              window.top.postMessage(message, "*");
             })
             .fail();
         }
@@ -277,7 +291,6 @@ define([
           function (event) {
             if (event.data === 0) {
               ILD.setResult(contentId, 100, 100);
-
             }
           }
         );

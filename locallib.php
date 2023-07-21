@@ -1676,7 +1676,7 @@ function get_user_in_course($courseid) {
 
 
         //$user_count = count($count_val);
-        $user_in_course = $user_count . ' ' . get_string('user_in_course', 'format_mooin4');
+        $user_in_course = $user_count . ' ' . get_string('user', 'format_mooin4').get_string('in_course', 'format_mooin4');
         // $out .= html_writer::start_tag('p');
         // $out .= html_writer::start_span('fw-700') . $user_in_course . html_writer::end_span();
         // $out .= html_writer::end_tag('p');
@@ -2603,6 +2603,22 @@ function is_section_completed($courseid, $section) {
     return $result;
 }
 
+function is_course_completed($course_id) {
+    global $DB;
+    $is_course_completed = false;
+    if ($course_chapters = $DB->get_records('format_mooin4_chapter', array('courseid' => $course_id))) {
+      $is_course_completed = true;
+      foreach ($course_chapters as $chapter) {
+        $chapter_info = get_chapter_info($chapter);
+        if ($chapter_info['completed'] == false) {
+          $is_course_completed = false;
+          return false;
+        }
+      }
+    }
+    return $is_course_completed;
+}
+
 function set_new_badge($awardedtoid, $badgeissuedid) {
     set_user_preference('format_mooin4_new_badge_'.$badgeissuedid, true, $awardedtoid);
 }
@@ -3009,7 +3025,7 @@ function get_user_coordinates_from_pref($userid) {
 
 function setgrade($contextid, $score, $maxscore) {
     global $DB, $USER, $CFG;
-    require($CFG->dirroot . '/mod/hvp/lib.php');
+    require_once($CFG->dirroot . '/mod/hvp/lib.php');
 
     $cm = get_coursemodule_from_instance('hvp', $contextid);
     if (!$cm) {
