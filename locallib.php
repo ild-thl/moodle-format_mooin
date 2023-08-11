@@ -1253,7 +1253,7 @@ function get_last_news($courseid, $forum_type) {
 
         // Get the right date for new creation
         // Deutsches Datumsformat hier oder in der lang file?
-        $created_news = date("d. m. Y,  G:i", date((int)$news_forum_post->created));
+        $created_news = date("d.m.Y, G:i", date((int)$news_forum_post->created));
 
             $out .= html_writer::start_tag('div', ['class'=> 'news']); // card_news
             $out .= html_writer::start_tag('div', ['class'=> 'container']); //container
@@ -1417,7 +1417,7 @@ function get_last_forum_discussion($courseid, $forum_type) {
 
             // Get the right date for new creation
             // Deutsches Datumsformat hier oder in der lang file?
-            $created_news = date("d. m. Y,  G:i", date((int)$value->created));
+            $created_news = date("d.m.Y, G:i", date((int)$value->created));
 
             $out .= html_writer::start_tag('div', ['class'=> 'news']); // card_news
             $out .= html_writer::start_tag('div', ['class'=> 'container']); //container
