@@ -12,7 +12,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Moodle. If not, see <http: //www.gnu.org/licenses />.
+along with Moodle. If not, see
+<http: //www.gnu.org/licenses />.
 }}
 {{!
 @template format_mooin4/mooin4_mainpage
@@ -36,39 +37,38 @@ Example context (json):
 }}
 
 <div class="wrapper">
-  <div class="main-container bg-white">
+    <div class="main-container bg-white">
 
-   {{> format_mooin4/course-title-header}}
-    <div class="white-bg">
-    <div class="inner-wrapper">
+        {{> format_mooin4/course-title-header}}
 
-    {{> format_mooin4/news_tile}}
+        <div class="white-bg">
+            <div class="inner-wrapper">
+
+                {{> format_mooin4/news_tile}}
+                
+                {{> format_mooin4/progress}}
+
+                <div class="seperator"></div>
+
+                {{> format_mooin4/mobile_badges}}
+                {{> format_mooin4/mobile_community}}
+
+                <div class="tablet-view d-none d-sm-block d-lg-none">
+                    {{> format_mooin4/tablet_badescommunity}}
+                </div>
 
 
 
-     {{> format_mooin4/progress}}
+                {{> format_mooin4/topics}}
+                {{{show_unenrol_btn}}}
 
-
-      <div class="seperator"></div>
-
-      {{> format_mooin4/mobile_badges}}
-
-
-
-      {{> format_mooin4/mobile_community}}
-
-
-      {{> format_mooin4/topics}}
-
-      {{{show_unenrol_btn}}}
+            </div>
+        </div>
 
     </div>
-  </div>
-  </div>
 
-  <div class="side-right d-none d-md-inline-block">
+    <div class="side-right d-none d-lg-inline-block">
+        {{> format_mooin4/side_right}}
+    </div>
 
-   {{> format_mooin4/side_right}}
-
-  </div>
 </div>

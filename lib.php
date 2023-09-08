@@ -45,6 +45,10 @@ class format_mooin4 extends format_base {
         return true;
     }
 
+    // public function supports_components() {
+    //     return true;
+    // }
+
     /**
      * Returns the display name of the given section that the course prefers.
      *
@@ -246,9 +250,13 @@ class format_mooin4 extends format_base {
         );
 
         $participantsnode = $node->get('participants', navigation_node::TYPE_CONTAINER);
-        $participantsnode->remove();
-        $participantsnode->action = $url = new moodle_url('/course/format/mooin4/participants.php', array('id' => $courseid));
+        if ($participantsnode) {
+            $participantsnode->remove();
+            $participantsnode->action = $url = new moodle_url('/course/format/mooin4/participants.php', array('id' => $courseid));
         $node->add_node($participantsnode);
+        }
+       
+        
 
         // We want to remove the general section if it is empty.
         $modinfo = get_fast_modinfo($this->get_course());
