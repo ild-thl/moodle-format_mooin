@@ -2,53 +2,57 @@
 <div class="news pb-4">
   <div id="tour-news" class="container-md">
 
-    {{{edit_newsforum_link}}}
-    <br>
-    <h2 class="mb-1">{{#str}} news, format_mooin4 {{/str}}</h2>
-    <div class="d-none d-sm-inline-block align-items-center mb-3">
-      {{#new_news}}
-      {{{new_news}}}
-      {{/new_news}}
-
-      {{^new_news}}
-      <span>{{neue_news_number}}</span>
-      {{#str}} unread_news, format_mooin4 {{/str}}
-      <a href="{{news_url}}" class="primary-link">{{#str}} all_news, format_mooin4 {{/str}}</a>
-      {{/new_news}}
-
-
-    </div>
-    <div class="news-card d-flex">
-      <span class="news-icon position-relative">
+    <!-- {{{edit_newsforum_link}}} -->
+    <a href="{{news_url}}">
+      <span class="bi bi-gear-fill"></span>
+    </a>
+     <br>
+      <h2 class="mb-1">{{#str}} news, format_mooin4 {{/str}}</h2>
+      <div class="d-none d-sm-inline-block align-items-center mb-3">
         {{#new_news}}
-        <div class="position-absolute mr-1 d-sm-none count-container inline-badge fw-700">{{neue_news_number}}</div>
+        {{{new_news}}}
         {{/new_news}}
-      </span>
 
-      <div class="news-card-inner pt-1">
-        <span class="caption-sm d-none d-sm-block">
-          <a href="{{discussion_url}}" class="fw-700 text-primary">{{#str}} latest_post, format_mooin4{{/str}}</a>
-          {{#str}} by, format_mooin4 {{/str}} {{{user_firstname}}} - {{{created_news}}}
+        {{^new_news}}
+        <span>{{neue_news_number}}</span>
+        {{#str}} unread_news, format_mooin4 {{/str}}
+        <a href="{{news_url}}" class="primary-link">{{#str}} all_news, format_mooin4 {{/str}}</a>
+        {{/new_news}}
+
+
+      </div>
+      <div class="news-card d-flex">
+        <span class="news-icon position-relative">
+          {{#new_news}}
+          <div class="position-absolute mr-1 d-sm-none count-container inline-badge fw-700">{{neue_news_number}}</div>
+          {{/new_news}}
         </span>
-        <span class="caption d-flex d-sm-none justify-content-between">
-          <a href="{{discussion_url}}" class="fw-700">{{#str}} latest_contribution_mobile, format_mooin4{{/str}}</a>
-          <a href="{{news_url}}" class="primary-link text-primary">{{#str}} all_news_mobile, format_mooin4 {{/str}}</a>
-        </span>
-        <div class="position-relative pt-0 pt-md-1">
-          <span class="new_user_picture d-none d-sm-block">{{{user_picture}}}</span>
-          <p class="fw-500 text-truncate">{{{news_title}}}</p>
-          <div class="d-none d-sm-block">
-            <div class="message">
-              {{{news_text}}}
+
+        <div class="news-card-inner pt-1">
+          <span class="caption-sm d-none d-sm-block">
+            <a href="{{discussion_url}}" class="fw-700 text-primary">{{#str}} latest_post, format_mooin4{{/str}}</a>
+            {{#str}} by, format_mooin4 {{/str}} {{{user_firstname}}} - {{{created_news}}}
+          </span>
+          <span class="caption d-flex d-sm-none justify-content-between">
+            <a href="{{discussion_url}}" class="fw-700">{{#str}} latest_contribution_mobile, format_mooin4{{/str}}</a>
+            <a href="{{news_url}}" class="primary-link text-primary">{{#str}} all_news_mobile, format_mooin4
+              {{/str}}</a>
+          </span>
+          <div class="position-relative pt-0 pt-md-1">
+            <span class="new_user_picture d-none d-sm-block">{{{user_picture}}}</span>
+            <p class="fw-500 text-truncate">{{{news_title}}}</p>
+            <div class="d-none d-sm-block">
+              <div class="message">
+                {{{news_text}}}
+              </div>
+
             </div>
-
+          </div>
+          <div class="primary-link d-none d-sm-block text-right">
+            <a href="{{discussion_url}}">{{#str}} discussion_news, format_mooin4 {{/str}}</a>
           </div>
         </div>
-        <div class="primary-link d-none d-sm-block text-right">
-          <a href="{{discussion_url}}">{{#str}} discussion_news, format_mooin4 {{/str}}</a>
-        </div>
       </div>
-    </div>
   </div>
 </div>
 <div class="seperator"></div>
