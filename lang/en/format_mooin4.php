@@ -109,7 +109,7 @@ $string['configdesc_geonamesapi_username'] = 'A GeoNames account is required to 
 $string['configlabel_forcecompletiondefault'] = 'Do not show activity completion as default';
 $string['configdesc_forcecompletiondefault'] = 'When new activities are added to the course, activity tracking is not displayed by default. Once activity completion is turned on for an activity, the progress bar for that lesson is dependent on activity completion. Otherwise, a button is displayed in the lesson footer to mark the lesson as completed.';
 
-$string['unread_news'] = 'unread posts in the';
+$string['unread_news'] = 'unread posts in the ';
 $string['all_news_mobile'] = 'All news';
 $string['by'] = 'by ';
 $string['latest_contribution_mobile'] = 'Latest post:';
