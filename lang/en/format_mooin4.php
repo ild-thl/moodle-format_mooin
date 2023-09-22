@@ -140,6 +140,7 @@ $string['headerimagemobile'] = 'Header image mobile (768 x 768px)';
 $string['edit_course_header'] = 'Edit header image';
 $string['cannot_remove_chapter'] = 'This chapter cannot be removed because there cannot be lessons without a parent chapter.';
 $string['course_overview'] = 'Course overview';
+$string['migrate_to_mooin40'] = 'Convert to Mooin 4.0 course format';
 
 // added by Jonas, zu Deutsch neu hinzugefügt
 $string['unread_news_single'] = 'unread post in the ';

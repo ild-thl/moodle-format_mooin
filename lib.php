@@ -185,7 +185,19 @@ class format_mooin4 extends format_base {
             $gradesnode->remove();
         }
 
-
+        $coursecontext = context_course::instance($courseid);
+        if ($blockrecord = $DB->get_record('block_instances', array('blockname' => 'oc_mooc_nav',
+            'parentcontextid' => $coursecontext->id))) {
+            // TODO add node with link to script
+            $node->add(
+                get_string('migrate_to_mooin40', 'format_mooin4'),
+                new moodle_url('/course/format/mooin4/migrate_to_mooin40.php', array('id' => $courseid, 'confirm' => 1)),
+                navigation_node::TYPE_CUSTOM,
+                null,
+                'format_mooin4_migrate',
+                new pix_icon('t/edit', '')
+            );
+        }
 
         if ($forum = $DB->get_record('forum', array('course' => $courseid, 'type' => 'news'))) {
             if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
