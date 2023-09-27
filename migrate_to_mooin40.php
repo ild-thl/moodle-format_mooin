@@ -50,7 +50,7 @@ else {
 if ($confirm == 1) {
     echo '<p>Der Kurs "'.$course->fullname.'" (id: '.$courseid.') wird in das neue Kursformat Mooin 4.0 konvertiert!</p>';
     echo '<p>Bitte beachte auch folgende Hinweise zur Umstellung der MOOCs auf das neue Kursformat: <a href="https://futurelearnlab.de/hub/blocks/ildmetaselect/detailpage.php?id=364" target="blank">Anleitung</a></p>';
-    echo '<p><a href="'.$CFG->wwwroot.'/course/format/mooin4/migrate_to_mooin40.php?id='.$courseid.'&confirm=0">OK</a> ';
+    echo '<p><a href="'.$CFG->wwwroot.'/course/format/mooin4/migrate_to_mooin40.php?id='.$courseid.'&confirm=0">OK</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     echo '<a href="'.$CFG->wwwroot.'/course/view.php?id='.$courseid.'">cancel</a></p>';
     die();
 }
@@ -62,6 +62,11 @@ if (!$blockrecord = $DB->get_record('block_instances', array('blockname' => 'oc_
 }
 
 $block_oc_mooc_nav = block_instance('oc_mooc_nav', $blockrecord);
+if ($blockposition = $DB->get_record('block_positions', array('blockinstanceid' => $block_oc_mooc_nav->instance->id))) {
+    if ($blockposition->visible == 0) {
+        die('error: check block_oc_mooc_nav config (visibility)');
+    }
+}
 
 $chapter_configtext = $block_oc_mooc_nav->config->chapter_configtext;
 //print_object($chapter_configtext);
@@ -178,7 +183,7 @@ foreach ($lines as $line) {
             }
         }
         else {
-            die('error get section');
+            echo('error: get section '.$sectioncount);
         }
         $i++;
         $sectioncount++;
@@ -186,6 +191,7 @@ foreach ($lines as $line) {
     //echo '<p>sectioncount: '.$sectioncount.'</p>';
 }
 
+echo '<p>delete blocks: ';
 // Get unnessessary blocks and remove from course
 if ($blockinstances = $DB->get_records('block_instances', array('parentcontextid' => $coursecontext->id))) {
     foreach($blockinstances as $blockinstance) {
@@ -194,9 +200,11 @@ if ($blockinstances = $DB->get_records('block_instances', array('parentcontextid
             $blockinstance->blockname == 'oc_course_footer' ||
             $blockinstance->blockname == 'oc_mooc_nav') {
                 blocks_delete_instance($blockinstance);
+                echo '</br>'.$blockinstance->blockname.' OK';
         }
     }
 }
+echo '</p>';
 
 // delete all sections that are not configured and empty
 $sql = "select * 
@@ -217,8 +225,39 @@ if ($emptysections = $DB->get_records_sql($sql, $params)) {
 }
 
 // change theme
+echo '<p>Change theme to mooin4... ';
 $course->theme = 'mooin4';
-$DB->update_record('course', $course);
+if ($DB->update_record('course', $course)) {
+    echo 'OK';
+}
+echo '</p>';
+
+// change name of folder "Kapitelbilder" to "Kapitelbilder (Backup aus altem Kursformat)"
+echo '<p>change name of folder Kapitelbilder... ';
+$cmid = $block_oc_mooc_nav->config->directory_link;
+if (($cm = get_coursemodule_from_id('folder', $cmid)) && $cm->course == $courseid) {
+    if ($folder = $DB->get_record('folder', array('id' => $cm->instance, 'course' => $courseid))) {
+        $folder->name = "Kapitelbilder (Backup aus altem Kursformat)";
+        if ($DB->update_record('folder', $folder)) {
+            echo 'OK';
+        }
+    }
+}
+echo '</p>';
+
+// delete mod page "social media"
+echo '<p>delete mod page social media... ';
+$cmid = $block_oc_mooc_nav->config->socialmedia_link;
+if (($cm = get_coursemodule_from_id('page', $cmid)) && $cm->course == $courseid) {
+    try {
+        course_delete_module($cm->id, true);
+        echo 'OK';
+    } catch (\Exception $e) {
+        throw new \coding_exception("The course module {$cm->id} could not be deleted. "
+            . "{$e->getMessage()}: {$e->getFile()}({$e->getLine()}) {$e->getTraceAsString()}");
+    }
+}
+echo '</p>';
 
 // link to course
 echo '<p><a href="'.$CFG->wwwroot.'/course/view.php?id='.$courseid.'">to course</a></p>';
