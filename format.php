@@ -215,14 +215,25 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         $badges_count = false;
     }
     // +x Certificates in desktop tile
+    
+    //*
+    $course_certificates = get_course_certificates($course->id, $USER->id);
+    
+    $cert_count = count($course_certificates);
+    if ($cert_count > 3) {
+        $other_certificates = $cert_count - 3;
+    } else {
+        $other_certificates = false;
+    }
+    //*/
+    /*
     if (count(get_course_certificates($course->id, $USER->id)) > 3) {
        $other_certificates = (count(get_course_certificates($course->id, $USER->id))) -3;
     } else {
         $other_certificates = false;
     }
-
-
-
+    //*/
+    
     // Get Certificat number on moblie
     $cert = count_certificate($USER->id, $course->id);
     if($cert['completed'] > 0) {

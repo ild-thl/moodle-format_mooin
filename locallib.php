@@ -2828,9 +2828,9 @@ function get_course_certificates($courseid, $userid) {
             $certificate->userid = 0;
             $certificate->url = '#';
             $certificate->name = $ilddigitalcert->name;
-
+            
             // is certificate issued to user?
-            $sql = 'SELECT di.*
+            $sql = 'SELECT di.id, di.cmid 
                       FROM {ilddigitalcert_issued} as di,
                            {course_modules} as cm
                      WHERE cm.instance = :ilddigitalcertid
