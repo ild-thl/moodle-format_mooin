@@ -173,6 +173,9 @@ foreach ($lines as $line) {
                         $labellines = preg_split("/[\r\n]+/", trim($label->name));
                         $lessonname = $labellines[0];
                         //print_object($labellines[0]);
+                        // remove lesson number at the beginning of the line
+                        $pattern = '/^(\d+(\.\d*)?|\.\d+)/';
+                        $lessonname = trim(preg_replace($pattern, '', $lessonname));
                         $section->name = $lessonname;
                         $DB->update_record('course_sections', $section);
                     }
