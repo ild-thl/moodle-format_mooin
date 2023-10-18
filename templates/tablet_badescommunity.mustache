@@ -102,7 +102,8 @@
 
                 {{#news_text}}
                 <div class="news-card d-flex">
-                    <span class="chat-icon"></span>
+                <div class="d-flex">
+                <span class="chat-icon"></span>
                     <div class="news-card-inner pt-1">
                         <span class="caption-sm d-none d-sm-block">
                             <a href="{{discussion_url}}" class="fw-700 text-primary">{{#str}} latest_post,
@@ -121,10 +122,13 @@
                                 {{{news_text}}}
                             </div>
                         </div>
-                        <div class="primary-link d-none d-sm-block text-right">
+                        
+                    </div>
+                </div>
+                    
+                    <div class="primary-link d-none d-sm-block text-right">
                             <a href="{{discussion_url}}">{{#str}} discussion_news, format_mooin4 {{/str}}</a>
                         </div>
-                    </div>
                 </div>
                 {{/news_text}}
 
