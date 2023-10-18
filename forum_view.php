@@ -33,6 +33,7 @@
  $changegroup = optional_param('group', -1, PARAM_INT);   // choose the current group
  $page = optional_param('page', 0, PARAM_INT);     // which page to show
  $search = optional_param('search', '', PARAM_CLEAN);// search string
+ $PAGE->set_pagelayout('incourse');
  
  // oncampus
  $page = -1;
@@ -118,7 +119,7 @@ $PAGE->set_heading($course->fullname);
 
 echo $OUTPUT->header();
 
-echo navbar('Alle Forums');
+//echo navbar('Alle Forums');
 /// Some capability checks.
 if (empty($cm->visible) and !has_capability('moodle/course:viewhiddenactivities', $context)) {
     notice(get_string("activityiscurrentlyhidden"));

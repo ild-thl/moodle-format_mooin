@@ -141,7 +141,7 @@ echo $OUTPUT->header();
 // echo $output->heading($pagetitle);
 
 //echo navbar('Alle Forums');
-// echo navbar_mobile(get_string('all_forums', 'format_mooin4'));
+ //echo navbar_mobile(get_string('all_forums', 'format_mooin4'));
 // Some capability checks.
 
 if (empty($cm->visible) and !has_capability('moodle/course:viewhiddenactivities', $context)) {
@@ -153,7 +153,7 @@ if (!has_capability('mod/forum:viewdiscussion', $context)) {
 }
 
 
-echo $OUTPUT->heading(format_string($forum->name), 2);
+//echo $OUTPUT->heading(format_string($forum->name), 2);
 if (!empty($forum->intro) && $forum->type != 'single' && $forum->type != 'teacher') {
     echo $OUTPUT->box(format_module_intro('forum', $forum, $cm->id), 'generalbox', 'intro');
 }

@@ -1912,165 +1912,165 @@ function subpage_navbar() {
     *
     * @return string XHTML navbar
 */
-function navbar($displaysection = 0) {
-    global $COURSE, $PAGE, $OUTPUT, $DB;
-    $items = $PAGE->navbar->get_items(); //$this->page
-    $itemcount = count($items);
-    if ($itemcount === 0) {
-        return '';
-    }
+// function navbar($displaysection = 0) {
+//     global $COURSE, $PAGE, $OUTPUT, $DB;
+//     $items = $PAGE->navbar->get_items(); //$this->page
+//     $itemcount = count($items);
+//     if ($itemcount === 0) {
+//         return '';
+//     }
 
-    // Make a DB request in course_sections to get all the sections data
-    $sections_data = $DB->get_records_sql("SELECT cs.*
-                                        FROM {course_sections} cs
-                                        WHERE cs.course = ? AND cs.section != 0  AND cs.visible = 1", array($COURSE->id));
+//     // Make a DB request in course_sections to get all the sections data
+//     $sections_data = $DB->get_records_sql("SELECT cs.*
+//                                         FROM {course_sections} cs
+//                                         WHERE cs.course = ? AND cs.section != 0  AND cs.visible = 1", array($COURSE->id));
 
-    // Make chapter request anfrage
-    $chapters_data = $DB->get_records_sql("SELECT fmc.*
-                                            FROM {format_mooin4_chapter} fmc
-                                            WHERE fmc.courseid = ?", array($COURSE->id));
-    $htmlblocks = array();
-    // Iterate the navarray and display each node
-    $separator = get_separator();
-    $before = '&nbsp';
-    $val = '';
-    $chapter_val = '';
-    $chapter_n = '';
-    $b = '';
-    // $c = '';
-    $chapter_array = [];
-    $chap = '';
-    $array_chap = [];
-    for ($i=0;$i < $itemcount;$i++) {
+//     // Make chapter request anfrage
+//     $chapters_data = $DB->get_records_sql("SELECT fmc.*
+//                                             FROM {format_mooin4_chapter} fmc
+//                                             WHERE fmc.courseid = ?", array($COURSE->id));
+//     $htmlblocks = array();
+//     // Iterate the navarray and display each node
+//     $separator = get_separator();
+//     $before = '&nbsp';
+//     $val = '';
+//     $chapter_val = '';
+//     $chapter_n = '';
+//     $b = '';
+//     // $c = '';
+//     $chapter_array = [];
+//     $chap = '';
+//     $array_chap = [];
+//     for ($i=0;$i < $itemcount;$i++) {
 
-        if ($displaysection != 0 && !is_string($displaysection)) {
+//         if ($displaysection != 0 && !is_string($displaysection)) {
 
-            $item = $items[$i];
+//             $item = $items[$i];
 
-            $item->hideicon = true;
-            if ($i===0) {
-                $content = html_writer::tag('li', '  ');
-            } else
-            if($i === $itemcount - 2) {
+//             $item->hideicon = true;
+//             if ($i===0) {
+//                 $content = html_writer::tag('li', '  ');
+//             } else
+//             if($i === $itemcount - 2) {
 
-                $content = html_writer::tag('li', '  '. $OUTPUT->render($item));
-            }else
-            if ($i === $itemcount - 1) {
-                    foreach ($sections_data as $value) {
+//                 $content = html_writer::tag('li', '  '. $OUTPUT->render($item));
+//             }else
+//             if ($i === $itemcount - 1) {
+//                     foreach ($sections_data as $value) {
 
-                        array_push($chapter_array, get_chapter_title($value->id));
+//                         array_push($chapter_array, get_chapter_title($value->id));
 
-                    }
+//                     }
 
-                    foreach($chapter_array as $chap_value) {
-                        if($chap_value != ''){
-                            $chap = ': ' . $chap_value;
-                        }
-                        array_push($array_chap, $chap);
-                        $c = get_chapter_number($OUTPUT->render($item));
+//                     foreach($chapter_array as $chap_value) {
+//                         if($chap_value != ''){
+//                             $chap = ': ' . $chap_value;
+//                         }
+//                         array_push($array_chap, $chap);
+//                         $c = get_chapter_number($OUTPUT->render($item));
 
-                        $b = get_lektion_number($OUTPUT->render($item));
+//                         $b = get_lektion_number($OUTPUT->render($item));
 
-                        if($c == " ") {
-                            $chapter_n = str_replace("-", "",$OUTPUT->render($item));
-                        } else {
-                            $chapter_n = get_string('chapter','format_mooin4') . ' ' . $c ;
-                            // $chapiter leer change the output
-                        }
+//                         if($c == " ") {
+//                             $chapter_n = str_replace("-", "",$OUTPUT->render($item));
+//                         } else {
+//                             $chapter_n = get_string('chapter','format_mooin4') . ' ' . $c ;
+//                             // $chapiter leer change the output
+//                         }
 
-                    }
-                    for($i = 1; $i <= count($array_chap); $i++) {
-                        if($i == $displaysection ) {
-                            $content = html_writer::tag('li', $before . ' / '. $chapter_n . $array_chap[$i-1] , ['class'=>'chap']); // $separator.$this->render($item)
-                            $content .= html_writer::tag('li', $before . ' / Lektion: ' . $b, ['class'=>'sec']); // $separator.$this->render($item)
+//                     }
+//                     for($i = 1; $i <= count($array_chap); $i++) {
+//                         if($i == $displaysection ) {
+//                             $content = html_writer::tag('li', $before . ' / '. $chapter_n . $array_chap[$i-1] , ['class'=>'chap']); // $separator.$this->render($item)
+//                             $content .= html_writer::tag('li', $before . ' / Lektion: ' . $b, ['class'=>'sec']); // $separator.$this->render($item)
 
-                        }
-                    }
-            } else {
-                $content = '';
-            }
-        } else if (gettype($displaysection) === 'string') {
-            // var_dump($itemcount);
-            if($itemcount > 4) {
-                $item = $items[$i];
-                $item->hideicon = true;
-                if ($i === $itemcount - 5) {
-                    $content = html_writer::tag('li', '');
-                } elseif ($i === $itemcount - 4) {
-                    $content = html_writer::tag('li', '' );
-                }
-                else if ($i === $itemcount - 3) {
-                    $content = html_writer::tag('li', $OUTPUT->render($item));
-                } else if ($i === $itemcount - 2) {
-                    // var_dump($item);
-                    $content_link = html_writer::link(new moodle_url('/course/format/mooin4/alle_forums.php', ['id'=> $COURSE->id]), get_string('all_forums', 'format_mooin4'));
-                    $content = html_writer::tag('li', $before . ' / '. $content_link); // , ['class'=>'breadcrumb-item']
-                } else if($i === $itemcount - 1) {
-                    // echo($OUTPUT->render($item));
-                    // var_dump($item->text);
-                    $content = html_writer::tag('li', $before . ' / '. $item->text); // $OUTPUT->render($item)
-                } else {
-                    $content = '';
-                }
-            }
-            if ($itemcount == 4) {
-                // $val = $displaysection;
-                $item = $items[$i];
-                $item->hideicon = true;
-                if ($i === 0) {
-                    $content = html_writer::tag('li', '');
-                } elseif ($i === $itemcount - 4) {
-                    $content = html_writer::tag('li',   $OUTPUT->render($item));
-                }
-                else if ($i === $itemcount - 3) {
-                    $content = html_writer::tag('li',' ');
-                } else if ($i === $itemcount - 2) {
-                    $content = html_writer::tag('li', $OUTPUT->render($item)); // , ['class'=>'breadcrumb-item']
-                } else if($i === $itemcount - 1) {
-                    $content = html_writer::tag('li', $before . ' / '. $item->text); // $OUTPUT->render($item)
-                } else {
-                    $content = '';
-                }
-            }
-            if ($itemcount <= 3) {
-                $val = $displaysection;
-                $item = $items[$i];
-                $item->hideicon = true;
+//                         }
+//                     }
+//             } else {
+//                 $content = '';
+//             }
+//         } else if (gettype($displaysection) === 'string') {
+//             // var_dump($itemcount);
+//             if($itemcount > 4) {
+//                 $item = $items[$i];
+//                 $item->hideicon = true;
+//                 if ($i === $itemcount - 5) {
+//                     $content = html_writer::tag('li', '');
+//                 } elseif ($i === $itemcount - 4) {
+//                     $content = html_writer::tag('li', '' );
+//                 }
+//                 else if ($i === $itemcount - 3) {
+//                     $content = html_writer::tag('li', $OUTPUT->render($item));
+//                 } else if ($i === $itemcount - 2) {
+//                     // var_dump($item);
+//                     $content_link = html_writer::link(new moodle_url('/course/format/mooin4/alle_forums.php', ['id'=> $COURSE->id]), get_string('all_forums', 'format_mooin4'));
+//                     $content = html_writer::tag('li', $before . ' / '. $content_link); // , ['class'=>'breadcrumb-item']
+//                 } else if($i === $itemcount - 1) {
+//                     // echo($OUTPUT->render($item));
+//                     // var_dump($item->text);
+//                     $content = html_writer::tag('li', $before . ' / '. $item->text); // $OUTPUT->render($item)
+//                 } else {
+//                     $content = '';
+//                 }
+//             }
+//             if ($itemcount == 4) {
+//                 // $val = $displaysection;
+//                 $item = $items[$i];
+//                 $item->hideicon = true;
+//                 if ($i === 0) {
+//                     $content = html_writer::tag('li', '');
+//                 } elseif ($i === $itemcount - 4) {
+//                     $content = html_writer::tag('li',   $OUTPUT->render($item));
+//                 }
+//                 else if ($i === $itemcount - 3) {
+//                     $content = html_writer::tag('li',' ');
+//                 } else if ($i === $itemcount - 2) {
+//                     $content = html_writer::tag('li', $OUTPUT->render($item)); // , ['class'=>'breadcrumb-item']
+//                 } else if($i === $itemcount - 1) {
+//                     $content = html_writer::tag('li', $before . ' / '. $item->text); // $OUTPUT->render($item)
+//                 } else {
+//                     $content = '';
+//                 }
+//             }
+//             if ($itemcount <= 3) {
+//                 $val = $displaysection;
+//                 $item = $items[$i];
+//                 $item->hideicon = true;
 
-                if ($i == 0) {
+//                 if ($i == 0) {
 
-                    $content = html_writer::tag('li',  ''); // $OUTPUT->render($item)
-                }
-                else if ($i === $itemcount - 3) {
-                    $content = html_writer::tag('li', $before . ' / '. $OUTPUT->render($item));
-                } else if ($i == $itemcount - 1) {
+//                     $content = html_writer::tag('li',  ''); // $OUTPUT->render($item)
+//                 }
+//                 else if ($i === $itemcount - 3) {
+//                     $content = html_writer::tag('li', $before . ' / '. $OUTPUT->render($item));
+//                 } else if ($i == $itemcount - 1) {
 
-                    $content = html_writer::tag('li', $before . $OUTPUT->render($item) . ' / ' . get_string($val, 'format_mooin4')); // $separator.$this->render($item)
-                } else if($i == $itemcount - 2) {
-                    $content = html_writer::tag('li', ''); // $OUTPUT->render($item)
-                } else {
-                    $content = '';
-                }
-            }
-        }
-        /*  {
-            $content = html_writer::tag('li', $separator.$this->render($item));
-        } */
-        $htmlblocks[] = $content;
-    }
+//                     $content = html_writer::tag('li', $before . $OUTPUT->render($item) . ' / ' . get_string($val, 'format_mooin4')); // $separator.$this->render($item)
+//                 } else if($i == $itemcount - 2) {
+//                     $content = html_writer::tag('li', ''); // $OUTPUT->render($item)
+//                 } else {
+//                     $content = '';
+//                 }
+//             }
+//         }
+//         /*  {
+//             $content = html_writer::tag('li', $separator.$this->render($item));
+//         } */
+//         $htmlblocks[] = $content;
+//     }
 
-    //accessibility: heading for navbar list  (MDL-20446)
-    $navbarcontent = html_writer::tag('span', get_string('pagepath'),
-            array('class' => 'accesshide', 'id' => 'navbar-label'));
-    // $navbarcontent .= html_writer::start_tag('nav', array('aria-labelledby' => 'navbar-label'));
+//     //accessibility: heading for navbar list  (MDL-20446)
+//     $navbarcontent = html_writer::tag('span', get_string('pagepath'),
+//             array('class' => 'accesshide', 'id' => 'navbar-label'));
+//     // $navbarcontent .= html_writer::start_tag('nav', array('aria-labelledby' => 'navbar-label'));
 
-    $navbarcontent .= html_writer::tag('nav',
-            html_writer::tag('ol', join('', $htmlblocks),array('class' => "breadcrumb navbar_desktop", 'id'=> 'menu'),array('aria-labelledby' => 'navbar-label')), //navmenu
-            );
-    // $navbarcontent .= html_writer::start_tag('ul', array('id' => "menu"));
-    // XHTML
-    return $navbarcontent;
-}
+//     $navbarcontent .= html_writer::tag('nav',
+//             html_writer::tag('ol', join('', $htmlblocks),array('class' => "breadcrumb navbar_desktop", 'id'=> 'menu'),array('aria-labelledby' => 'navbar-label')), //navmenu
+//             );
+//     // $navbarcontent .= html_writer::start_tag('ul', array('id' => "menu"));
+//     // XHTML
+//     return $navbarcontent;
+// }
 
  /**
     * Return the navbar content in specific section on Mobile so that it can be echo out by the layout
