@@ -722,7 +722,7 @@ class format_mooin4_renderer extends format_section_renderer_base {
 
 
 
-        $sectiontitle .= html_writer::tag('span', $sectionnavlinks['previous_top'], array('class' => 'mdl-left')); //Screenreader?
+        $sectiontitle .= html_writer::tag('span', $sectionnavlinks['previous_top'], array('class' => 'mdl-left', 'aria-label' => get_string('previous_lesson', 'format_mooin4'))); //Screenreader?
         // Title attributes
         $classes = 'sectionname';
         if (!$thissection->visible) {
@@ -731,7 +731,7 @@ class format_mooin4_renderer extends format_section_renderer_base {
         }
         $sectionname = html_writer::tag('span', $this->section_title_without_link($thissection, $course));
         $sectiontitle .= $this->output->heading($sectionname, 3, $classes);
-        $sectiontitle .= html_writer::tag('span', $sectionnavlinks['next_top'], array('class' => 'mdl-right'));
+        $sectiontitle .= html_writer::tag('span', $sectionnavlinks['next_top'], array('class' => 'mdl-right', 'aria-label' => get_string('next_lesson', 'format_mooin4')));
 
         $sectiontitle .= html_writer::end_tag('div');
 
@@ -962,9 +962,9 @@ class format_mooin4_renderer extends format_section_renderer_base {
         // Display section bottom navigation.
         $sectionbottomnav = '';
         $sectionbottomnav .= html_writer::start_tag('div', array('class' => 'section-navigation mdl-bottom'));
-        $sectionbottomnav .= html_writer::tag('span', $sectionnavlinks['previous'], array('class' => 'mdl-left'));
+        $sectionbottomnav .= html_writer::tag('span', $sectionnavlinks['previous'], array('class' => 'mdl-left', 'aria-label' => get_string('previous_lesson', 'format_mooin4')));
 
-        $sectionbottomnav .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'mdl-right'));
+        $sectionbottomnav .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'mdl-right', 'aria-label' => get_string('next_lesson', 'format_mooin4')));
         /* $sectionbottomnav .= html_writer::tag('div', $this->section_nav_selection($course, $sections, $displaysection),
             array('class' => 'mdl-align')); */
        /*  $sectionbottomnav .= html_writer::tag('div', $this->section_nav_selection($course, $sections, $displaysection),
