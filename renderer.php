@@ -917,19 +917,16 @@ class format_mooin4_renderer extends format_section_renderer_base {
 
         //$PAGE->requires->js_call_amd('format_mooin4/modalTest', 'completeModal');
 
-        if (!$this->page->user_is_editing()  && is_last_section_of_chapter($thissection->id) && $check_completed_chapter['completed'] == false) {
-            //  && !$check_completed_chapter
-            // echo 'Get Chapter for Section';
-            // echo get_chapter_for_section($thissection->id);
-            // echo '<br>';
-            // echo $thissection->id;
-            //$PAGE->requires->js_call_amd('format_mooin4/show_popup');
-            //echo $modal_last_section;
-        }
+       
 
         $isLastSectionOfChapter = false;
         if (!$this->page->user_is_editing() && is_last_section_of_chapter($thissection->id) && $check_completed_chapter['completed'] == false) {
-            $isLastSectionOfChapter = true;
+            //$chapter = get_parent_chapter($thissection);
+            if (!get_user_preferences('hide_modal_for_section_'.$thissection->id)) {
+                $isLastSectionOfChapter = true;
+                set_user_preference('hide_modal_for_section_'.$thissection->id, 'true');
+            }
+            
         }
         $PAGE->requires->js_call_amd('format_mooin4/section_completion_handler', 'init',
           [[
