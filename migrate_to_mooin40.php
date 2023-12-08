@@ -62,7 +62,7 @@ if (!$blockrecord = $DB->get_record('block_instances', array('blockname' => 'oc_
 }
 
 $block_oc_mooc_nav = block_instance('oc_mooc_nav', $blockrecord);
-if ($blockposition = $DB->get_record('block_positions', array('blockinstanceid' => $block_oc_mooc_nav->instance->id))) {
+if ($blockposition = $DB->get_record('block_positions', array('blockinstanceid' => $block_oc_mooc_nav->instance->id, 'contextid' => $block_oc_mooc_nav->instance->parentcontextid))) {
     if ($blockposition->visible == 0) {
         die('error: check block_oc_mooc_nav config (visibility)');
     }
