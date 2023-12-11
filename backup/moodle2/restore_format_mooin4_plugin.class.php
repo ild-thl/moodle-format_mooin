@@ -116,7 +116,7 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
 
         $backupinfo = $this->step->get_task()->get_info();
         $contextid = $this->task->get_contextid();
-        
+
         $this->restore_files('headerimagedesktop');
         $this->restore_files('headerimagemobile');
 
@@ -131,13 +131,13 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
             );
         }
 
-        $DB->delete_records('format_mooin4_chapter', array('chapter' => 1));
+        $DB->delete_records('format_mooin4_chapter', array('chapter' => 1, 'courseid' => $this->step->get_task()->get_courseid()));
 
-       foreach ($this->chapters as $chapter) {
-        $id = $this->get_mappingid('course_section', $chapter->sectionid);
-        $chapter->sectionid = $id;
-        $DB->insert_record('format_mooin4_chapter', $chapter);
-       }
+        foreach ($this->chapters as $chapter) {
+            $id = $this->get_mappingid('course_section', $chapter->sectionid);
+            $chapter->sectionid = $id;
+            $DB->insert_record('format_mooin4_chapter', $chapter);
+        }
 
 
 
