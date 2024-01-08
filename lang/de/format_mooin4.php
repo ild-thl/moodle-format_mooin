@@ -168,7 +168,7 @@ $string['user'] = 'Personen';
 $string['in_course'] = 'nehmen teil';
 $string['new_user'] = 'Neu hinzugekommen: ';
 $string['no_user'] = 'Keine Teilnehmenden wurden hinzugefügt!';
-$string['welcome'] = 'Herzlich Willkommen im Kurs';
+$string['welcome'] = 'Herzlich willkommen im Kurs';
 $string['forum_unread'] = 'Ungelesene Foren';
 $string['discussions'] = 'Alle Diskussionen';
 
