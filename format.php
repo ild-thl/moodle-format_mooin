@@ -253,6 +253,13 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         $unenrol_btn = html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin4'), array('class' => 'unenrol-link'));
     }
 
+    $no_forums = false;
+    $sql = 'SELECT * FROM mdl_forum WHERE course = :cid AND type != :tid ORDER BY ID DESC';
+    $param = array('cid' =>$COURSE->id, 'tid' => 'news');
+    $oc_foren = $DB->get_records_sql($sql, $param);
+    if (count($oc_foren) == 0) {
+        $no_forums = true;
+    }
 
     $templatecontext = [
         'course_headerimage_mobil' => get_headerimage_url($course->id, true),
@@ -277,7 +284,8 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         'show_unenrol_btn' => $unenrol_btn,
         'certificates_number' => $certificates_number_mobile,
         'other_certificates' => $other_certificates,
-        'badges_number' => $badges_count_mobile
+        'badges_number' => $badges_count_mobile,
+        'no_forums' => $no_forums
 
     ];
 

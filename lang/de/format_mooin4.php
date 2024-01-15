@@ -75,6 +75,7 @@ $string['owner'] = 'Inhaber';
 $string['no_badges_awarded'] = 'Bisher wurden noch keine Badges in diesem Kurs verliehen.';
 $string['badge_overview_description'] = 'Mit den Kursbadges bzw. digitalen Lernabzeichen kannst du den anderen Teilnehmenden hier auf dieser Plattform und weltweit im Web zeigen, welche Kursfortschritte du bereits gemacht hast. Weitere Informationen gibt es auf <a href="https://de.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a> und bei <a href="http://openbadges.org"  target="_blank">OpenBadges.org</a>';
 $string['all_forums'] = 'Alle Diskussionsforen';
+$string['show_all_forums'] = 'Alle Diskussionsforen anzeigen';
 $string['course_groups'] = 'Kursgruppen';
 $string['course_groups_descr'] = 'Hier kannst du sehen, welche Arbeitsgruppen es in diesem Kurs gibt und entscheiden, welcher du beitreten möchtest:';
 $string['profile_city_descr'] = 'Bitte trage deinen Wohnort in dein Profil ein, damit die Teilnehmendenkarte möglichst vollständig angezeigt werden kann.';
@@ -120,6 +121,7 @@ $string['participant_map'] = 'Karte der Teilnehmenden';
 $string['no_badges_image_text'] = 'Keine Badges verfügbar';
 $string['no_certificates_image_text'] = 'Keine Zertifikate verfügbar';
 $string['no_forums_available'] = 'Keine Foren verfügbar';
+$string['no_contributions_available'] = 'Noch keine Beiträge vorhanden';
 
 $string['modal_course_complete'] = 'Du hast alle Lektionen in diesem Kurs bearbeitet!';
 $string['modal_course_complete_title'] = 'Kurs vollständig bearbeitet';
