@@ -45,6 +45,10 @@ class format_mooin4 extends format_base {
         return true;
     }
 
+    public function uses_indentation(): bool {
+        return false;
+    }
+
     // public function supports_components() {
     //     return true;
     // }
