@@ -160,6 +160,7 @@ $string['lesson_progress_text'] = 'der Lektion bearbeitet';
 $string['progress_text_short'] = 'bearbeitet';
 $string['mark_page_as_read'] = 'Seite als gelesen markieren';
 $string['page_read'] = 'Seite gelesen';
+$string['allparticipants'] = 'Alle Teilnehmenden';
 
 
 // Neu aus Englisch hinzugefügt

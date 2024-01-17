@@ -257,6 +257,7 @@ class format_mooin4 extends format_base {
         if ($participantsnode) {
             $participantsnode->remove();
             $participantsnode->action = $url = new moodle_url('/course/format/mooin4/participants.php', array('id' => $courseid));
+            $participantsnode->text = get_string('participants', 'format_mooin4');
         $node->add_node($participantsnode);
         }
        

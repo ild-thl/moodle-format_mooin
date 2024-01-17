@@ -160,6 +160,7 @@ $string['lesson_progress_text'] = 'of the lesson completed';
 $string['progress_text_short'] = 'completed';
 $string['mark_page_as_read'] = 'Mark page as read';
 $string['page_read'] = 'Page read';
+$string['allparticipants'] = 'All participants';
 
 
 // zu Deutsch neu hinzugefügt

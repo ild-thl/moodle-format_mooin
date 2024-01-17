@@ -197,7 +197,7 @@ echo '<div class="userlist">';
 //echo '<div class="mooin4-md-container">';
 
 //echo navbar('participants');
-echo '<h2>'.get_string("participant_map","format_mooin4").'</h2>';
+echo '<h2>'.get_string("participants","format_mooin4").'</h2>';
 
 if ($isseparategroups and (!$currentgroup) ) {
     // The user is not in the group so show message and exit.
@@ -659,7 +659,7 @@ if ($roleid > 0) {
         $strallparticipants = get_string('allsiteusers', 'role');
     } else {
 
-        $strallparticipants = get_string('allparticipants');
+        $strallparticipants = get_string('allparticipants', 'format_mooin4');
     }
     if ($matchcount < $totalcount) {
         echo $OUTPUT->heading($strallparticipants.get_string('labelsep', 'langconfig').$matchcount.'/'.$totalcount . $editlink, 3);
