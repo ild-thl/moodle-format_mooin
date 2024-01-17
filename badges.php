@@ -127,11 +127,10 @@ echo html_writer::start_div('mooin4-md-container'); //open outer div
 // echo navbar('badges');
 // echo html_writer::end_div();
 
-echo html_writer::tag('h2', html_writer::tag('div', get_string('course_badges', 'format_mooin4'), array('class' => 'oc_badges_text')));
+echo html_writer::tag('h2', html_writer::tag('div', get_string('badges', 'format_mooin4'), array('class' => 'oc_badges_text')));
 
 $badge_description = html_writer::tag('p', get_string('badge_overview_description', 'format_mooin4'));
-echo html_writer::div($badge_description,'border-card');
-echo '<br />';
+echo html_writer::div($badge_description);
 echo '<div>' . html_writer::link(new moodle_url('/user/profile.php', array('id' => $USER->id)), get_string('profile_badges', 'format_mooin4')) . '<br />';
 echo html_writer::link(new moodle_url('/badges/mybackpack.php'), get_string('badge_options', 'format_mooin4')) . '</div><br />';
 
