@@ -48,7 +48,7 @@ echo html_writer::div(subpage_navbar(), 'sticky-container');
 echo html_writer::start_div('mooin4-md-container'); //open outer div
 //echo navbar('certificates');
 
-echo html_writer::tag('h2', html_writer::tag('div', get_string('my_certificate', 'format_mooin4'), array('class' => 'oc_badges_text')));
+echo html_writer::tag('h2', html_writer::tag('div', get_string('certificates', 'format_mooin4'), array('class' => 'oc_badges_text')));
 
 
 
