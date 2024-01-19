@@ -302,7 +302,7 @@ if ($sectionnumber == 0 ) { // && !$PAGE->user_is_editing()
         // $param_first = array('id_course'=>$courseid, 'type_forum'=>$forum_type);
         // $new_in_course = $DB->get_record_sql($sql_first, $param_first);
 
-        $test = forum_get_course_forum($course->id, 'news');
+        //$test = forum_get_course_forum($course->id, 'news');
         $edit_newsforum = new moodle_url('/course/format/mooin4/forums.php', array('f' => $test -> id, 'tab' => 1)); // mod/forum/view.php
         //$edit_newsforum = new moodle_url($test);
         $edit_newsforum_link = html_writer::link($edit_newsforum, $gear_icon);
