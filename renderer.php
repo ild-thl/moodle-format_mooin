@@ -1128,7 +1128,7 @@ class format_mooin4_renderer extends format_section_renderer_base {
                 $o .= html_writer::tag('div', '', array('class' => 'left side'));
                 $o .= html_writer::tag('div', '', array('class' => 'right side'));
                 $o .= html_writer::start_tag('div', array('class' => 'content'));
-                $title = get_string('chapter', 'format_mooin4').' '.$chapter->chapter . ': ' . $chapter->title;
+                $title = get_string('chapter', 'format_mooin4').' '.$chapter->chapter . ': ' . $title;
                 $sectionids = get_sections_for_chapter($chapter->id);
                 $h = html_writer::span('','list-marker');
                 $h .= $this->output->heading($title, 3, 'section-title');

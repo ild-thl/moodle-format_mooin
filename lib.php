@@ -298,7 +298,7 @@ class format_mooin4 extends format_base {
                     if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
 
                         $pre = get_string('chapter','format_mooin4').' '.$chapter->chapter.': ';
-                        $title = $pre.$chapter->title;
+                        $title = $pre.get_section_name($this->get_course(), $section);
                         if (count(get_sectionids_for_chapter($chapter->id)) > 0) {
                             $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
                         }
@@ -337,7 +337,7 @@ class format_mooin4 extends format_base {
                     else {
                         $pre = get_string('lesson','format_mooin4').' '.get_section_prefix($section).': ';
                         if ($section->name) {
-                            $title = $pre.$section->name;
+                            $title = $pre.get_section_name($this->get_course(), $section);
                         }
                         else {
                             $title = $pre.$title;
