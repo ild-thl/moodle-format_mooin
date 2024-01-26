@@ -193,6 +193,7 @@ if($oc_m) {
 } */
 
 echo html_writer::div(subpage_navbar(), 'sticky-container');
+echo html_writer::start_div('mooin4-subpage-bg');
 echo '<div class="userlist">';
 //echo '<div class="mooin4-md-container">';
 
@@ -1036,6 +1037,7 @@ if ($enrol = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' =
 }
 //echo '</div>';  // md-container.
 echo '</div>';  // Userlist.
+echo '</div>';
 
 echo $OUTPUT->footer();
 

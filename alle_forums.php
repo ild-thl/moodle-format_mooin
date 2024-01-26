@@ -74,7 +74,7 @@ $oc_showall = optional_param('showall', '', PARAM_RAW);
 
     // echo navbar('All Forums');
     echo html_writer::div(subpage_navbar(), 'sticky-container');
-
+    echo html_writer::start_div('mooin4-subpage-bg');
     echo html_writer::start_div('mooin4-md-container'); //open outer div
 
     //echo navbar('all_forums');
@@ -138,6 +138,7 @@ $oc_showall = optional_param('showall', '', PARAM_RAW);
     }
     echo html_writer::end_div(); //close border-card div
     echo html_writer::end_div(); //close outer div
+    echo html_writer::end_div();
 
 echo $OUTPUT->footer($course);
 

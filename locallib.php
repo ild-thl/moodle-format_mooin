@@ -274,7 +274,7 @@ function complete_section($section, $userid) {
                     // html_writer::tag('div', $p .'% der Lektion bearbeitet', array('style' => 'float: right; padding: 0; position: relative; color: #555; width: 100%; font-size: 12px; transform: translate(-50%, -50%);left: 50%;','id' => 'mooin4ection-text-' . $sectionid)) . // margin-top: -8px;
 
                     html_writer::tag('div', $percentage. get_string('lesson_progress_text', 'format_mooin4'), array('style' => 'float: left; font-size: 12px; display: contents; margin-left: 12px; padding-left: 5px;color: #555; width: 100%')) , // text-align: center; position: absolute;
-                    array('class' => 'mooin4ection-div')); // float: left; position: absolute;
+                    array('id' => 'mooin4ection-div','class' => 'mooin4ection-div')); // float: left; position: absolute;
         return $result;
     }
 
@@ -1416,7 +1416,6 @@ function get_last_forum_discussion($courseid, $forum_type) {
             $user = $DB->get_record('user', ['id' => $value->userid], '*');
 
             // Get the right date for new creation
-            // Deutsches Datumsformat hier oder in der lang file?
             $created_news = date("d.m.Y, G:i", date((int)$value->created));
 
             $out .= html_writer::start_tag('div', ['class'=> 'news']); // card_news

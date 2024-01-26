@@ -119,6 +119,7 @@ if ($cert_m) {
 echo '<br />'; */
 
 echo html_writer::div(subpage_navbar(), 'sticky-container');
+echo html_writer::start_div('mooin4-subpage-bg');
 echo html_writer::start_div('mooin4-md-container'); //open outer div
 //echo html_writer::div(navbar('badges'));
 
@@ -154,6 +155,8 @@ if ($out != '') {
     //echo html_writer::tag('div', '', array('class' => 'no-badges-img'));
 
 }
+// echo html_writer::end_div();
+// echo html_writer::end_div();
 
 // Badges, die man erreichen kann (in diesem Kurs und Plattformbadges)
 // echo html_writer::tag('div', get_string('available_badges', 'format_mooin4'), array('class' => 'oc_badges_text'));
