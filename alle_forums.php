@@ -81,11 +81,12 @@ $oc_showall = optional_param('showall', '', PARAM_RAW);
 
     echo '<h2>' . get_string('all_forums', 'format_mooin4') . '</h2>';
     //echo '<br>';
-    echo html_writer::start_div('border-card'); //open outer div
+    
 
 
     $value = '1';
     if (count($oc_foren) >= 1) {
+        echo html_writer::start_div('border-card'); //open outer div
 
         foreach ($oc_foren as $key => $oc_forum) {
             $cm = get_coursemodule_from_instance('forum', $oc_forum->id, $course->id);
@@ -121,6 +122,7 @@ $oc_showall = optional_param('showall', '', PARAM_RAW);
             }
 
         }
+        echo html_writer::end_div(); //close border-card div
         /*
         if ($oc_counter > 1) {
             ob_end_flush();
@@ -136,7 +138,7 @@ $oc_showall = optional_param('showall', '', PARAM_RAW);
         $out .= html_writer::span(get_string('no_forums_available', 'format_mooin4'), 'no-forums-text');
         echo html_writer::div($out, 'no-forums-container');
     }
-    echo html_writer::end_div(); //close border-card div
+    
     echo html_writer::end_div(); //close outer div
     echo html_writer::end_div();
 
