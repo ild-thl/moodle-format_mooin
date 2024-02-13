@@ -1,0 +1,37 @@
+{{!
+@template format_moointopics/local/content/coursefrontpage
+
+Displays the course frontpage.
+
+Example context (json):
+{
+"header": {
+"headerimageURL": URL,
+},
+"coursename": "Coursename",
+"coureprogress": {
+
+}
+}
+}}
+
+    <div class="coursefrontpage">
+        <div class="coursefrontpage__main">
+            {{#header}}
+                {{> format_moointopics/local/content/frontpage/header }}
+            {{/header}}
+            {{#news_section}}
+                {{> format_moointopics/local/content/frontpage/news_section }}
+            {{/news_section}}
+            <div class="seperator"></div>
+            {{#courseprogress}}
+                {{> format_moointopics/local/content/frontpage/courseprogress }}
+            {{/courseprogress}}
+            {{> format_moointopics/local/content/frontpage/coursetable }}
+        </div>
+        <div class="coursefrontpage__side">
+            {{> format_moointopics/local/content/frontpage/badges_and_certificates }}
+            {{> format_moointopics/local/content/frontpage/community }}
+        </div> 
+    </div>
+
