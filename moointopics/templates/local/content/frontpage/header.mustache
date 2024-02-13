@@ -1,0 +1,24 @@
+{{!
+    @template format_moointopics/local/content/frontpage/header
+
+    Displays the frontpage header.
+
+    Example context (json):
+    {
+        "headerimageURL": URL
+    }
+}}
+
+<div class="coursefrontpage__header position-relative">
+    {{#headerimageURL}}
+        <img src="{{{headerimageURL}}}" alt="" class="header-image">
+    {{/headerimageURL}}
+    {{^headerimageURL}}
+        <div class="desktop-placeholder"></div>
+    {{/headerimageURL}}
+
+    <div class="title-overlay position-absolute">
+        <p> {{#str}}welcome, format_moointopics{{/str}} </p>
+        <h2>{{coursename}}</h2>
+    </div>
+</div>

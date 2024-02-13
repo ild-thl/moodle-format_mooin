@@ -1,0 +1,22 @@
+{{!
+    @template format_moointopics/local/content/frontpage/courseprogress
+
+    Displays the frontpage courseprogress.
+
+    Example context (json):
+    {
+        "continue_url": URL,
+        "continue_text": "Start Learning"
+    }
+}}
+
+<div class="coursefrontpage__course-progress">
+    <h2>{{#str}} progress, format_moointopics {{/str}}</h2>
+    <div class="d-flex course-progress-inner">
+        <div class="progress-container">
+            <div class="progressbar"></div>
+            <span>0% des Kurses bearbeitet</span>
+        </div>
+        <a href="#" class="moointopics-btn moointopics-btn--primary">Weiterlernen</a>
+    </div>
+</div>
