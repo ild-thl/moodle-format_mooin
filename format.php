@@ -55,23 +55,23 @@ course_create_sections_if_missing($course, 0);
 $renderer = $PAGE->get_renderer('format_moointopics');
 
 $sectionnumber = optional_param('section', 0, PARAM_INT);
-$unsetchapter = optional_param('unsetchapter', 0, PARAM_INT); // sectionid
-$setchapter = optional_param('setchapter', 0, PARAM_INT); // sectionid
+//$unsetchapter = optional_param('unsetchapter', 0, PARAM_INT); // sectionid
+//$setchapter = optional_param('setchapter', 0, PARAM_INT); // sectionid
 
 // set or unset chapter
-if ($setchapter > 0 && has_capability('moodle/course:update', $context)) {
-    \format_moointopics\local\chapterlib::set_chapter($setchapter);
-}
+// if ($setchapter > 0 && has_capability('moodle/course:update', $context)) {
+//     \format_moointopics\local\chapterlib::set_chapter($setchapter);
+// }
 
-if ($unsetchapter > 0 && has_capability('moodle/course:update', $context)) {
-    if ($chaptersection = $DB->get_record('course_sections', array('id' => $unsetchapter))) {
-        if ($chaptersection->section == 1) {
-            \core\notification::warning(get_string('cannot_remove_chapter', 'format_mooin4'));
-        } else {
-            \format_moointopics\local\chapterlib::unset_chapter($unsetchapter);
-        }
-    }
-}
+// if ($unsetchapter > 0 && has_capability('moodle/course:update', $context)) {
+//     if ($chaptersection = $DB->get_record('course_sections', array('id' => $unsetchapter))) {
+//         if ($chaptersection->section == 1) {
+//             \core\notification::warning(get_string('cannot_remove_chapter', 'format_mooin4'));
+//         } else {
+//             \format_moointopics\local\chapterlib::unset_chapter($unsetchapter);
+//         }
+//     }
+// }
 
 
 if (!empty($displaysection)) {

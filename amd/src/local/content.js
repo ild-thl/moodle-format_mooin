@@ -30,7 +30,7 @@ import Section from 'format_moointopics/local/content/section';
 import CmItem from 'format_moointopics/local/content/section/cmitem';
 // Course actions is needed for actions that are not migrated to components.
 import courseActions from 'core_course/actions';
-import DispatchActions from 'core_courseformat/local/content/actions';
+import DispatchActions from 'format_moointopics/local/content/actions';
 import * as CourseEvents from 'core_course/events';
 // The jQuery module is only used for interacting with Boostrap 4. It can we removed when MDL-71979 is integrated.
 import jQuery from 'jquery';
@@ -236,6 +236,7 @@ export default class Component extends BaseComponent {
             {watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist},
             // Section visibility.
             {watch: `section.visible:updated`, handler: this._reloadSection},
+            {watch: `section.isChapter:updated`, handler: this._reloadSection},
             // Reindex sections and cms.
             {watch: `state:updated`, handler: this._indexContents},
             // State changes thaty require to reload course modules.
@@ -583,6 +584,7 @@ export default class Component extends BaseComponent {
      * @param {object} param0.element the state object
      */
     _reloadSection({element}) {
+        window.console.log("RELOAD");
         const pendingReload = new Pending(`courseformat/content:reloadSection_${element.id}`);
         const sectionitem = this.getElement(this.selectors.SECTION, element.id);
         if (sectionitem) {

@@ -57,6 +57,7 @@ class controlmenu extends controlmenu_base {
         $section = $this->section;
         $course = $format->get_course();
         $sectionreturn = $format->get_section_number();
+        $usecomponents = $format->supports_components();
 
         $coursecontext = context_course::instance($course->id);
 
@@ -66,6 +67,7 @@ class controlmenu extends controlmenu_base {
             $url = course_get_url($course);
         }
         $url->param('sesskey', sesskey());
+        
 
         $controls = [];
 
@@ -79,23 +81,37 @@ class controlmenu extends controlmenu_base {
             //Add the chapter set/unset controlls
             if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $section->id))) {
                 //$url = new moodle_url('/course/view.php');
-                $url->param('unsetchapter', $section->id);
-                $controls['unsetchapter'] = array(
+                $url->param('unsetchapter', $section->section);
+                $controls['chapter'] = array(
                     'url' => $url,
                     'icon' => 'i/settings',
                     'name' => get_string('unsetchapter', 'format_moointopics'),
                     'pixattr' => array('class' => ''),
-                    //'attr' => array('class' => 'icon editing_delete')
+                    'attr' => [
+                        'class' => 'icon editing_showhide',
+                        'data-sectionreturn' => $sectionreturn,
+                        'data-action' => ($usecomponents) ? 'sectionUnsetChapter' : 'unsetChapter',
+                        'data-id' => $section->id,
+                        'data-swapname' => get_string('setchapter', 'format_moointopics'),
+                        'data-swapicon' => 'i/settings',
+                    ],
                 );
             } else {
                 //$url = new moodle_url('/course/view.php');
-                $url->param('setchapter', $section->id);
-                $controls['setchapter'] = array(
+                $url->param('setchapter', $section->section);
+                $controls['chapter'] = array(
                     'url' => $url,
                     'icon' => 'i/settings',
                     'name' => get_string('setchapter', 'format_moointopics'),
                     'pixattr' => array('class' => ''),
-                    //'attr' => array('class' => 'icon editing_delete')
+                    'attr' => [
+                        'class' => 'icon editing_showhide',
+                        'data-sectionreturn' => $sectionreturn,
+                        'data-action' => ($usecomponents) ? 'sectionSetChapter' : 'setChapter',
+                        'data-id' => $section->id,
+                        'data-swapname' => get_string('unsetchapter', 'format_moointopics'),
+                        'data-swapicon' => 'i/settings',
+                    ],
                 );
             }
         }

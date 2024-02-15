@@ -42,6 +42,8 @@ export default class extends DndSection {
             SECTIONBADGES: `[data-region="sectionbadges"]`,
             SHOWSECTION: `[data-action="sectionShow"]`,
             HIDESECTION: `[data-action="sectionHide"]`,
+            SETCHAPTER: `[data-action="sectionSetChapter"]`,
+            UNSETCHAPTER: `[data-action="sectionUnsetChapter"]`,
             ACTIONTEXT: `.menu-action-text`,
             ICON: `.icon`,
         };
@@ -51,6 +53,7 @@ export default class extends DndSection {
             HASDESCRIPTION: 'description',
             HIDE: 'd-none',
             HIDDEN: 'hidden',
+            CHAPTER: 'chapter',
         };
 
         // We need our id to watch specific events.
@@ -130,6 +133,7 @@ export default class extends DndSection {
         this.element.classList.toggle(this.classes.DRAGGING, element.dragging ?? false);
         this.element.classList.toggle(this.classes.LOCKED, element.locked ?? false);
         this.element.classList.toggle(this.classes.HIDDEN, !element.visible ?? false);
+        this.element.classList.toggle(this.classes.CHAPTER, !element.isChapter ?? false);
         this.locked = element.locked;
         // The description box classes depends on the section state.
         const sectioninfo = this.getElement(this.selectors.SECTIONINFO);
@@ -169,6 +173,15 @@ export default class extends DndSection {
             selector = this.selectors.HIDESECTION;
             newAction = 'sectionShow';
         }
+
+        if (section.isChapter) {
+            selector = this.selectors.SETCHAPTER;
+            newAction = 'sectionUnsetChapter';
+        } else {
+            selector = this.selectors.UNSETCHAPTER;
+            newAction = 'sectionSetChapter';
+        }
+
         // Find the affected action.
         const affectedAction = this.getElement(selector);
         if (!affectedAction) {

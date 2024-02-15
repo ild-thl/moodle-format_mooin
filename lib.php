@@ -218,34 +218,34 @@ class format_moointopics extends core_courseformat\base {
         }
     }
 
-    /**
-     * Custom action after section has been moved in AJAX mode.
-     *
-     * Used in course/rest.php
-     *
-     * @return array This will be passed in ajax respose
-     */
-    public function ajax_section_move() {
-        global $DB, $PAGE;
-        $titles = [];
-        $course = $this->get_course();
-        $modinfo = get_fast_modinfo($course);
-        $renderer = $this->get_renderer($PAGE);
-        if ($renderer && ($sections = $modinfo->get_section_info_all())) {
-            foreach ($sections as $number => $section) {
+    // /**
+    //  * Custom action after section has been moved in AJAX mode.
+    //  *
+    //  * Used in course/rest.php
+    //  *
+    //  * @return array This will be passed in ajax respose
+    //  */
+    // public function ajax_section_move() {
+    //     global $DB, $PAGE;
+    //     $titles = [];
+    //     $course = $this->get_course();
+    //     $modinfo = get_fast_modinfo($course);
+    //     $renderer = $this->get_renderer($PAGE);
+    //     if ($renderer && ($sections = $modinfo->get_section_info_all())) {
+    //         foreach ($sections as $number => $section) {
                 
-                if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $section->id))) {
-                    \format_moointopics\local\chapterlib::sort_course_chapters($course->id);
-                    //$section->name = $chapter->title;
-                    $titles[$number] = get_string('chapter', 'format_moointopics').' '.$chapter->chapter.' '.$renderer->section_title_without_link($section, $course);
-                }
-                else {
-                    $titles[$number] = get_string('lesson', 'format_moointopics').' '.\format_moointopics\local\chapterlib::get_section_prefix($section).' '.$renderer->section_title($section, $course);
-                }
-            }
-        }
-        return ['sectiontitles' => $titles, 'action' => 'move'];
-    }
+    //             if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $section->id))) {
+    //                 \format_moointopics\local\chapterlib::sort_course_chapters($course->id);
+    //                 //$section->name = $chapter->title;
+    //                 $titles[$number] = get_string('chapter', 'format_moointopics').' '.$chapter->chapter.' '.$renderer->section_title_without_link($section, $course);
+    //             }
+    //             else {
+    //                 $titles[$number] = get_string('lesson', 'format_moointopics').' '.\format_moointopics\local\chapterlib::get_section_prefix($section).' '.$renderer->section_title($section, $course);
+    //             }
+    //         }
+    //     }
+    //     return ['sectiontitles' => $titles, 'action' => 'move'];
+    // }
 
     /**
      * Returns the list of blocks to be automatically added for the newly created course.
@@ -505,31 +505,82 @@ class format_moointopics extends core_courseformat\base {
      * @param int $sr
      * @return null|array any data for the Javascript post-processor (must be json-encodeable)
      */
+    // public function section_action($section, $action, $sr) {
+    //     global $PAGE;
+
+    //     if ($section->section && ($action === 'setmarker' || $action === 'removemarker')) {
+    //         // Format 'topics' allows to set and remove markers in addition to common section actions.
+    //         require_capability('moodle/course:setcurrentsection', context_course::instance($this->courseid));
+    //         course_set_marker($this->courseid, ($action === 'setmarker') ? $section->section : 0);
+    //         return null;
+    //     }
+
+    //     \format_moointopics\local\chapterlib::sort_course_chapters($section->course);
+
+    //     // For show/hide actions call the parent method and return the new content for .section_availability element.
+    //     $rv = parent::section_action($section, $action, $sr);
+    //     $renderer = $PAGE->get_renderer('format_moointopics');
+
+    //     if (!($section instanceof section_info)) {
+    //         $modinfo = course_modinfo::instance($this->courseid);
+    //         $section = $modinfo->get_section_info($section->section);
+    //     }
+    //     $elementclass = $this->get_output_classname('content\\section\\availability');
+    //     $availability = new $elementclass($this, $section);
+
+    //     $rv['section_availability'] = $renderer->render($availability);
+    //     return $rv;
+    // }
+
     public function section_action($section, $action, $sr) {
         global $PAGE;
-
-        if ($section->section && ($action === 'setmarker' || $action === 'removemarker')) {
-            // Format 'topics' allows to set and remove markers in addition to common section actions.
-            require_capability('moodle/course:setcurrentsection', context_course::instance($this->courseid));
-            course_set_marker($this->courseid, ($action === 'setmarker') ? $section->section : 0);
-            return null;
+        if (!$this->uses_sections() || !$section->section) {
+            // No section actions are allowed if course format does not support sections.
+            // No actions are allowed on the 0-section by default (overwrite in course format if needed).
+            throw new moodle_exception('sectionactionnotsupported', 'core', null, s($action));
         }
+
+        $course = $this->get_course();
+        $coursecontext = context_course::instance($course->id);
+        $modinfo = $this->get_modinfo();
+        $renderer = $this->get_renderer($PAGE);
 
         \format_moointopics\local\chapterlib::sort_course_chapters($section->course);
 
-        // For show/hide actions call the parent method and return the new content for .section_availability element.
-        $rv = parent::section_action($section, $action, $sr);
-        $renderer = $PAGE->get_renderer('format_moointopics');
-
         if (!($section instanceof section_info)) {
-            $modinfo = course_modinfo::instance($this->courseid);
             $section = $modinfo->get_section_info($section->section);
         }
-        $elementclass = $this->get_output_classname('content\\section\\availability');
-        $availability = new $elementclass($this, $section);
 
-        $rv['section_availability'] = $renderer->render($availability);
-        return $rv;
+        if ($sr) {
+            $this->set_section_number($sr);
+        }
+
+        switch($action) {
+            case 'hide':
+            case 'show':
+                require_capability('moodle/course:sectionvisibility', $coursecontext);
+                $visible = ($action === 'hide') ? 0 : 1;
+                course_update_section($course, $section, array('visible' => $visible));
+                break;
+                case 'sectionSetChapter':
+                    //TODO: Add capability
+                    format_moointopics\local\chapterlib::set_chapter($section->id);
+                    course_update_section($course, $section, array('chapterstatus' => true));
+                    break;
+                case 'sectionUnsetChapter':
+                    //TODO: Add capability
+                    format_moointopics\local\chapterlib::unset_chapter($section->id);
+                    course_update_section($course, $section, array('chapterstatus' => false));
+                    break;
+            case 'refresh':
+                return [
+                    'content' => $renderer->course_section_updated($this, $section),
+                ];
+            default:
+                throw new moodle_exception('sectionactionnotsupported', 'core', null, s($action));
+        }
+
+        return ['modules' => $this->get_section_modules_updated($section)];
     }
 
     /**
@@ -594,5 +645,88 @@ function format_moointopics_inplace_editable($itemtype, $itemid, $newvalue) {
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
 }
+
+// function course_update_section($course, $section, $data) {
+//     global $DB;
+
+//     $courseid = (is_object($course)) ? $course->id : (int)$course;
+
+//     // Some fields can not be updated using this method.
+//     $data = array_diff_key((array)$data, array('id', 'course', 'section', 'sequence'));
+//     $changevisibility = (array_key_exists('visible', $data) && (bool)$data['visible'] != (bool)$section->visible);
+//     $changechapterstatus = (array_key_exists('chapterstatus', $data) && (bool)$data['chapterstatus'] != (bool)$section->chapter);
+//     if (array_key_exists('name', $data) && \core_text::strlen($data['name']) > 255) {
+//         throw new moodle_exception('maximumchars', 'moodle', '', 255);
+//     }
+
+//     // Update record in the DB and course format options.
+//     $data['id'] = $section->id;
+//     $data['timemodified'] = time();
+//     $DB->update_record('course_sections', $data);
+//     // Invalidate the section cache by given section id.
+//     course_modinfo::purge_course_section_cache_by_id($courseid, $section->id);
+//     rebuild_course_cache($courseid, false, true);
+//     course_get_format($courseid)->update_section_format_options($data);
+
+//     // Update fields of the $section object.
+//     foreach ($data as $key => $value) {
+//         if (property_exists($section, $key)) {
+//             $section->$key = $value;
+//         }
+//     }
+
+//     // Trigger an event for course section update.
+//     $event = \core\event\course_section_updated::create(
+//         array(
+//             'objectid' => $section->id,
+//             'courseid' => $courseid,
+//             'context' => context_course::instance($courseid),
+//             'other' => array('sectionnum' => $section->section)
+//         )
+//     );
+//     $event->trigger();
+
+//     // If section visibility was changed, hide the modules in this section too.
+//     if ($changevisibility && !empty($section->sequence)) {
+//         $modules = explode(',', $section->sequence);
+//         $cmids = [];
+//         foreach ($modules as $moduleid) {
+//             if ($cm = get_coursemodule_from_id(null, $moduleid, $courseid)) {
+//                 $cmids[] = $cm->id;
+//                 if ($data['visible']) {
+//                     // As we unhide the section, we use the previously saved visibility stored in visibleold.
+//                     set_coursemodule_visible($moduleid, $cm->visibleold, $cm->visibleoncoursepage, false);
+//                 } else {
+//                     // We hide the section, so we hide the module but we store the original state in visibleold.
+//                     set_coursemodule_visible($moduleid, 0, $cm->visibleoncoursepage, false);
+//                     $DB->set_field('course_modules', 'visibleold', $cm->visible, ['id' => $moduleid]);
+//                 }
+//                 \core\event\course_module_updated::create_from_cm($cm)->trigger();
+//             }
+//         }
+//         \course_modinfo::purge_course_modules_cache($courseid, $cmids);
+//         rebuild_course_cache($courseid, false, true);
+//     }
+
+//     if ($changechapterstatus && !empty($section->sequence)) {
+//         $modules = explode(',', $section->sequence);
+//         $cmids = [];
+//         foreach ($modules as $moduleid) {
+//             if ($cm = get_coursemodule_from_id(null, $moduleid, $courseid)) {
+//                 $cmids[] = $cm->id;
+//                 if ($data['chapterstatus']) {
+//                     //setChapter
+//                     \format_moointopics\local\chapterlib::set_chapter($section->id);
+//                 } else {
+//                     //unsetChapter
+//                     \format_moointopics\local\chapterlib::unset_chapter($section->id);
+//                 }
+//                 \core\event\course_module_updated::create_from_cm($cm)->trigger();
+//             }
+//         }
+//         \course_modinfo::purge_course_modules_cache($courseid, $cmids);
+//         rebuild_course_cache($courseid, false, true);
+//     }
+// }
 
 
