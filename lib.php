@@ -564,13 +564,13 @@ class format_moointopics extends core_courseformat\base {
                 break;
                 case 'sectionSetChapter':
                     //TODO: Add capability
-                    format_moointopics\local\chapterlib::set_chapter($section->id);
-                    course_update_section($course, $section, array('chapterstatus' => true));
+                    //format_moointopics\local\chapterlib::set_chapter($section->id);
+                    //course_update_section($course, $section, array('chapterstatus' => true));
                     break;
                 case 'sectionUnsetChapter':
                     //TODO: Add capability
-                    format_moointopics\local\chapterlib::unset_chapter($section->id);
-                    course_update_section($course, $section, array('chapterstatus' => false));
+                    //format_moointopics\local\chapterlib::unset_chapter($section->id);
+                    //course_update_section($course, $section, array('chapterstatus' => false));
                     break;
             case 'refresh':
                 return [

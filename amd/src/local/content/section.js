@@ -133,7 +133,7 @@ export default class extends DndSection {
         this.element.classList.toggle(this.classes.DRAGGING, element.dragging ?? false);
         this.element.classList.toggle(this.classes.LOCKED, element.locked ?? false);
         this.element.classList.toggle(this.classes.HIDDEN, !element.visible ?? false);
-        this.element.classList.toggle(this.classes.CHAPTER, !element.isChapter ?? false);
+        this.element.classList.toggle(this.classes.CHAPTER, element.isChapter ?? false);
         this.locked = element.locked;
         // The description box classes depends on the section state.
         const sectioninfo = this.getElement(this.selectors.SECTIONINFO);

@@ -45,10 +45,21 @@ class section extends section_base {
         $isChapter = false;
 
         if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $this->section->id))) {
-            $isChapter = true;
-        } 
+            $isChapter = $chapter->chapter;
+        } else {
+            $parentchapter = \format_moointopics\local\chapterlib::get_parent_chapter($this->section);
+        }
         $data = (object)parent::export_for_template($output);
         $data->isChapter = $isChapter;
+        if ($parentchapter) {
+            $data->parentChapter = $parentchapter->chapter;
+
+            if ($parentchapterAsSection = $DB->get_record('course_sections', array('id' => $parentchapter->sectionid))) {
+                $data->innerChapterNumber = $this->section->section - $parentchapterAsSection->section;
+            }
+
+            
+        }
 
         return $data;
     }

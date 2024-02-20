@@ -47,8 +47,8 @@ prefetchStrings('core', ['movecoursesection', 'movecoursemodule', 'confirm', 'de
 const directMutations = {
     sectionHide: 'sectionHide',
     sectionShow: 'sectionShow',
-    setChapter: 'sectionSetChapter',
-    unsetChapter: 'sectionUnsetChapter',
+    // sectionSetChapter: 'sectionSetChapter',
+    // sectionUnsetChapter: 'sectionUnsetChapter',
     cmHide: 'cmHide',
     cmShow: 'cmShow',
     cmStealth: 'cmStealth',
@@ -179,6 +179,7 @@ export default class extends BaseComponent {
         this._setAddSectionLocked(state.course.sectionlist.length > state.course.maxsections);
     }
 
+
     /**
      * Handle a move section request.
      *
@@ -251,6 +252,13 @@ export default class extends BaseComponent {
         });
 
         pendingModalReady.resolve();
+    }
+
+    async _requestSectionSetChapter(target, event) {
+        this.reactive.dispatch('sectionSetChapter', target, event);
+    }
+    async _requestSectionUnsetChapter(target, event) {
+        this.reactive.dispatch('sectionUnsetChapter', target, event);
     }
 
     /**

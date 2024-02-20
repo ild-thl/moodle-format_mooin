@@ -77,7 +77,7 @@ class controlmenu extends controlmenu_base {
         unset($parentcontrols['movesection']);
         unset($parentcontrols['delete']);
 
-        if ($section->section && has_capability('moodle/course:setcurrentsection', $coursecontext)) {
+        if ($section->section && $section->section > 1 && has_capability('moodle/course:setcurrentsection', $coursecontext)) {
             //Add the chapter set/unset controlls
             if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $section->id))) {
                 //$url = new moodle_url('/course/view.php');
