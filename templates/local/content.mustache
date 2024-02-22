@@ -169,9 +169,25 @@
     {{> format_moointopics/local/content/coursefrontpage}}
     {{/frontpage}}
     
-        
+    {{^frontpage}}
+    {{#editing}}
+    <ul class="{{format}}" data-for="course_sectionlist">
+        {{#initialsection}}
+            {{$ core_courseformat/local/content/section }}
+                {{> core_courseformat/local/content/section }}
+            {{/ core_courseformat/local/content/section }}
+        {{/initialsection}}
+        {{#sections}}
+            {{$ core_courseformat/local/content/section }}
+                {{> core_courseformat/local/content/section }}
+            {{/ core_courseformat/local/content/section }}
+        {{/sections}}
     </ul>
+    {{/editing}}
+    {{/frontpage}}
+    
     {{#hasnavigation}}
+    
     <div class="single-section">
         {{#sectionnavigation}}
             {{$ core_courseformat/local/content/sectionnavigation }}

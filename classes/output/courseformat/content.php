@@ -80,6 +80,7 @@ class content extends content_base {
 
         // The single section format has extra navigation.
         $singlesection = $this->format->get_section_number();
+        $data->editing = $format->show_editor();
         if ($singlesection) {
             
                 $sectionnavigation = new $this->sectionnavigationclass($format, $singlesection);

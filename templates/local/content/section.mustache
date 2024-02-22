@@ -89,7 +89,7 @@
 
 {{^editing}}
 {{#is_first_section_of_chapter}}
-    <div id="chapter-{{{parent_chapter}}}" class="collapse">
+    <div id="chapter-{{{parent_chapter}}}" class="collapse {{#containsActiveSection}} show {{/containsActiveSection}}">
 {{/is_first_section_of_chapter}}
 {{/editing}}
 
@@ -97,7 +97,7 @@
 
 <li id="section-{{num}}"
     class="section {{#isChapter}} chapter {{/isChapter}} course-section main {{#onlysummary}} section-summary {{/onlysummary}} clearfix
-            {{#ishidden}} hidden {{/ishidden}} {{#iscurrent}} current {{/iscurrent}} {{#isstealth}} orphaned {{/isstealth}}"
+            {{#ishidden}} hidden {{/ishidden}} {{#iscurrent}} current {{/iscurrent}} {{#isstealth}} orphaned {{/isstealth}} {{#isActiveSection}} active {{/isActiveSection}}"
     data-sectionid="{{num}}"
     data-sectionreturnid="{{sectionreturnid}}"
     data-for="section"

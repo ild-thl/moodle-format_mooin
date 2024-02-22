@@ -13,13 +13,14 @@
     <h2>{{#str}} topicoutline, format_moointopics {{/str}}</h2>
     <ul class="{{format}}" data-for="course_sectionlist">
     {{#initialsection}}
-            {{$ core_courseformat/local/content/section }}
-                {{> format_moointopics/local/content/section }}
-            {{/ core_courseformat/local/content/section }}
-        {{/initialsection}}
+        {{$ core_courseformat/local/content/section }}
+            {{> format_moointopics/local/content/section }}
+        {{/ core_courseformat/local/content/section }}
+    {{/initialsection}}
     {{#sections}}
         {{$ core_courseformat/local/content/section }} 
             {{> format_moointopics/local/content/section }}
         {{/ core_courseformat/local/content/section }}
     {{/sections}} 
+    </ul>
 </div>

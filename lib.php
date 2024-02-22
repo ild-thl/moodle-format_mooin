@@ -391,7 +391,6 @@ class format_moointopics extends core_courseformat\base {
                 if ($section1 = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => 1))) {
                     if (!$DB->get_record('format_moointopics_chapter', array('courseid' => $this->courseid, 'sectionid' => $section1->id))) {
                         // add new section
-                        //print_object($section1);die();
                         $sectionnumber = $DB->count_records('course_sections', array('course' => $this->courseid));
                         if ($sectionnumber > 0) {
                             $chaptertitle = get_string('chapter', 'format_moointopics').' 1';
@@ -414,10 +413,6 @@ class format_moointopics extends core_courseformat\base {
                                     $newchapter->sectionid = $newsectionid;
                                     $newchapter->chapter = 1;
                                     $DB->insert_record('format_moointopics_chapter', $newchapter);
-                                    // sort chapters
-                                    //require_once('locallib.php');
-                                    //$chaperlib = new chapterlib();
-                                    //$chaperlib->sort_course_chapters($this->courseid);
                                     \format_moointopics\local\chapterlib::sort_course_chapters($this->courseid);
                                 }
                             }
@@ -430,6 +425,7 @@ class format_moointopics extends core_courseformat\base {
         if ($course = $DB->get_record('course', array('id' => $this->courseid))) {
             $course->enablecompletion = 1;
             $course->showcompletionconditions = 0;
+            $course->newsitems = 1;
             $DB->update_record('course', $course);
         }
 

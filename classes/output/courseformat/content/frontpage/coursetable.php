@@ -14,8 +14,7 @@ use renderable;
  */
 class coursetable implements renderable {
 
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
 
         $headerimageurl = "http://localhost:8888/moodle401/theme/image.php?theme=mooin4&component=theme&image=.%2Fheader_placeholder_desktop";
 
