@@ -11,5 +11,31 @@
 
 <div class="coursefrontpage__badges-certificates">
     <h2>{{#str}} badges_certificates, format_moointopics {{/str}}</h2>
-   
+    {{#badges}}
+    <div class="badges-container">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-trophy-fill mr-1"></i>
+            <span class="caption">{{#str}} badges, format_moointopics{{/str}}</span>
+            {{#manage_badges_url}}
+                <a href="{{{manage_badges_url}}}" class="ml-auto"><i class="bi bi-gear-fill"></i></a>
+            {{/manage_badges_url}}
+        </div>
+        <div class="d-flex align-items-center mt-3 mb-3">
+            {{{badgesList}}}
+            {{#otherBadges}}
+                <span class="text-nowrap pr-1">+{{otherBadges}}</span>
+            {{/otherBadges}}
+        </div>
+        <div class="all-badges-link">
+            <a href="{{{badgesUrl}}}" class="ml-auto">{{#str}} show_all_infos, format_moointopics{{/str}}</a>
+        </div>
+    </div>
+    {{/badges}}
+
+    <div class="certificates-container">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-award-fill"></i>
+            <span class="caption">{{#str}} certificates, format_moointopics{{/str}}</span>
+        </div>
+    </div>
 </div>

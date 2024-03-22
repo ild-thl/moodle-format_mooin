@@ -54,6 +54,7 @@ const directMutations = {
     cmStealth: 'cmStealth',
     cmMoveRight: 'cmMoveRight',
     cmMoveLeft: 'cmMoveLeft',
+    //completeSection: 'completeSection'
 };
 
 export default class extends BaseComponent {
@@ -76,6 +77,7 @@ export default class extends BaseComponent {
             CONTENTTREE: `#destination-selector`,
             ACTIONMENU: `.action-menu`,
             ACTIONMENUTOGGLER: `[data-toggle="dropdown"]`,
+            //COMPLETESECTION: `[data-for='complete-section']`,
         };
         // Component css classes.
         this.classes = {
@@ -96,6 +98,7 @@ export default class extends BaseComponent {
             }
             directMutations[action] = mutationReference;
         }
+        
     }
 
     /**
@@ -179,6 +182,7 @@ export default class extends BaseComponent {
         this._setAddSectionLocked(state.course.sectionlist.length > state.course.maxsections);
     }
 
+    
 
     /**
      * Handle a move section request.
@@ -252,6 +256,10 @@ export default class extends BaseComponent {
         });
 
         pendingModalReady.resolve();
+    }
+    async _requestCompleteSection(target, event) {
+        const sectionId = target.dataset.id;
+        this.reactive.dispatch('completeSection', target, event)
     }
 
     async _requestSectionSetChapter(target, event) {

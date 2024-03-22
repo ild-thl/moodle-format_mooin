@@ -36,9 +36,9 @@ import * as CourseEvents from "core_course/events";
 import jQuery from "jquery";
 import Pending from "core/pending";
 import log from "core/log";
+import {get_string as getString} from 'core/str';
 
 import CustomMutations from "format_moointopics/local/courseeditor/custommutations";
-
 
 export default class Component extends BaseComponent {
   /**
@@ -64,6 +64,13 @@ export default class Component extends BaseComponent {
       ACTIVITYTAG: "li",
       SECTIONTAG: "li",
       INDEXNUMBER: `[data-for='index_number']`,
+      NAVIGATIONWRAPPER: `[data-for='navigation_wrapper']`,
+      NAVIGATIONTITLE: `[data-for='navigationtitle']`,
+      BREADCRUMB: `[data-for='breadcrumb']`,
+      PROGRESSBAR: `[data-for='progressbar_container']`,
+      PROGRESSBARINNER: `[data-for='progressbar_inner']`,
+      COMPLETIONBUTTON: `[data-for='complete-section']`,
+      SECTIONPROGRESS: `[data-for='section-progress']`
     };
     // Default classes to toggle on refresh.
     this.classes = {
@@ -72,6 +79,8 @@ export default class Component extends BaseComponent {
       ACTIVITY: `activity`,
       STATEDREADY: `stateready`,
       SECTION: `section`,
+      SCROLLUP: `scroll-up`,
+      SCROLLDOWN: `scroll-down`,
     };
     // Array to save dettached elements during element resorting.
     this.dettachedCms = {};
@@ -82,6 +91,9 @@ export default class Component extends BaseComponent {
     // The page section return.
     this.sectionReturn = descriptor.sectionReturn ?? 0;
     this.debouncedReloads = new Map();
+
+    //Last Scrollposition
+    this.lastScroll = 0;
   }
 
   /**
@@ -133,18 +145,26 @@ export default class Component extends BaseComponent {
 
     if (this.reactive.supportComponents) {
       // Actions are only available in edit mode.
+      DispatchActions.addActions({
+        completeSection: "completeSection",
+      });
+      const mutations = new CustomMutations();
       if (this.reactive.isEditing) {
         DispatchActions.addActions({
-            sectionSetChapter: 'sectionSetChapter',
-            sectionUnsetChapter: 'sectionUnsetChapter',
+          sectionSetChapter: "sectionSetChapter",
+          sectionUnsetChapter: "sectionUnsetChapter",
         });
-        new DispatchActions(this);
-        const mutations = new CustomMutations();
+
         this.reactive.addMutations({
           sectionSetChapter: mutations.sectionSetChapter,
           sectionUnsetChapter: mutations.sectionUnsetChapter,
+          completeSection: mutations.completeSection,
         });
       }
+      new DispatchActions(this);
+      this.reactive.addMutations({
+        completeSection: mutations.completeSection,
+      });
 
       // Mark content as state ready.
       this.element.classList.add(this.classes.STATEDREADY);
@@ -264,6 +284,10 @@ export default class Component extends BaseComponent {
       // State changes thaty require to reload course modules.
       { watch: `cm.visible:updated`, handler: this._reloadCm },
       { watch: `cm.sectionid:updated`, handler: this._reloadCm },
+      {
+        watch: `section.sectionprogress:updated`,
+        handler: this._updateSectionProgress,
+      },
     ];
   }
 
@@ -366,6 +390,7 @@ export default class Component extends BaseComponent {
    */
   _scrollHandler() {
     const pageOffset = document.querySelector(this.selectors.PAGE).scrollTop;
+    this._dynamicHeader(pageOffset);
     const items = this.reactive
       .getExporter()
       .allItemsArray(this.reactive.state);
@@ -390,6 +415,56 @@ export default class Component extends BaseComponent {
     }
   }
 
+  _dynamicHeader(pageOffset) {
+    const navigationHeader = this.getElement(this.selectors.NAVIGATIONWRAPPER);
+    const title = this.getElement(this.selectors.NAVIGATIONTITLE);
+    const progressbarContainer = this.getElement(this.selectors.PROGRESSBAR);
+    const breadcrumb = this.getElement(this.selectors.BREADCRUMB);
+    if (title) {
+      var titleHeight = title.offsetHeight + 20;
+      var progressbarContainerHeight = progressbarContainer.offsetHeight;
+      var removeOffset;
+      var screenHeight = window.innerHeight;
+
+      if (screenHeight <= 600) {
+        removeOffset = titleHeight + progressbarContainerHeight;
+      } else {
+        removeOffset = titleHeight;
+      }
+
+      if (pageOffset <= 0) {
+        navigationHeader.classList.remove(this.classes.SCROLLUP);
+        return;
+      }
+
+      if (
+        pageOffset > this.lastScroll &&
+        !navigationHeader.classList.contains(this.classes.SCROLLDOWN)
+      ) {
+        // down
+        navigationHeader.classList.remove(this.classes.SCROLLUP);
+        navigationHeader.classList.add(this.classes.SCROLLDOWN);
+        navigationHeader.style.transform =
+          "translateY(-" + removeOffset + "px)";
+        breadcrumb.style.transform = "translateY(" + removeOffset + "px)";
+        title.style.transform = "translateY(" + removeOffset + "px)";
+        //progressbarContainer.style.transform = "translateY(" + removeOffset + "px)";
+      } else if (
+        pageOffset < this.lastScroll &&
+        navigationHeader.classList.contains(this.classes.SCROLLDOWN)
+      ) {
+        // up
+        navigationHeader.classList.remove(this.classes.SCROLLDOWN);
+        navigationHeader.classList.add(this.classes.SCROLLUP);
+        navigationHeader.style.transform = "translateY(0px)";
+        breadcrumb.style.transform = "translateY(0px)";
+        title.style.transform = "translateY(0px)";
+        progressbarContainer.style.transform = "translateY(0px)";
+      }
+      this.lastScroll = pageOffset;
+    }
+  }
+
   /**
    * Update a course section when the section number changes.
    *
@@ -400,10 +475,11 @@ export default class Component extends BaseComponent {
    * Course formats can override the section title rendering so the frontend depends heavily on backend
    * rendering. Luckily in edit mode we can trigger a title update using the inplace_editable module.
    *
-   * @param {Object} param
+   *
+   * @param {Object} state
    * @param {Object} param.element details the update details.
    */
-  _refreshSectionNumber({state, element }) {
+  _refreshSectionNumber({ state, element }) {
     // Find the element.
     const target = this.getElement(this.selectors.SECTION, element.id);
     if (!target) {
@@ -641,49 +717,47 @@ export default class Component extends BaseComponent {
     }
   }
 
-  _reloadSectionNames({state, element}) {
-    state.section.forEach(section => {
+  _reloadSectionNames({ state, element }) {
+    state.section.forEach((section) => {
       if (section.number >= element.number) {
-        
         const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
         if (section.isChapter) {
           number.innerHTML = section.isChapter;
         } else {
-          number.innerHTML = section.parentChapter + "." + section.innerChapterNumber;
+          number.innerHTML =
+            section.parentChapter + "." + section.innerChapterNumber;
+        }
+      }
+    });
+  }
+
+  _updateChapters({ state, element }) {
+    this._reloadSection({ element });
+    state.section.forEach((section) => {
+      if (section.number >= element.number) {
+        const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
+        if (section.isChapter) {
+          number.innerHTML = section.isChapter;
+        } else {
+          number.innerHTML =
+            section.parentChapter + "." + section.innerChapterNumber;
         }
         //window.console.log(number);
       }
     });
   }
-
-  _updateChapters({state, element}) {
-    this._reloadSection({element});
-    state.section.forEach(section => {
-      if (section.number >= element.number) {
-        
-        const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
-        if (section.isChapter) {
-          number.innerHTML = section.isChapter;
-        } else {
-          number.innerHTML = section.parentChapter + "." + section.innerChapterNumber;
-        }
-        //window.console.log(number);
-      }
-    });
-  }
-
 
   //_reloadSectionNames({state, element}) {
-    // this._reloadSection({element});
-    // state.section.forEach(section => {
-    //   if (section.number > element.number) {
-    //     this._reloadSection({element: section});
-    //   }
-    // });
-    // const elements = this.getElements(this.selectors.INDEXNUMBER);
-    // elements.forEach(element => {
-    //   element.innerHTML = "&nbsp3000:&nbsp";
-    // });
+  // this._reloadSection({element});
+  // state.section.forEach(section => {
+  //   if (section.number > element.number) {
+  //     this._reloadSection({element: section});
+  //   }
+  // });
+  // const elements = this.getElements(this.selectors.INDEXNUMBER);
+  // elements.forEach(element => {
+  //   element.innerHTML = "&nbsp3000:&nbsp";
+  // });
   //}
 
   /**
@@ -804,5 +878,26 @@ export default class Component extends BaseComponent {
     if (dndFakeActivity) {
       container.append(dndFakeActivity);
     }
+  }
+
+  async _updateSectionProgress({ state, element }) {
+    const progressbar = this.getElement(this.selectors.PROGRESSBARINNER);
+    progressbar.style.width = element.sectionprogress+"%";
+
+    const sectionprogress = this.getElement(this.selectors.SECTIONPROGRESS);
+    sectionprogress.innerText = element.sectionprogress;
+
+    const completionbutton = this.getElement(this.selectors.COMPLETIONBUTTON);
+    if (completionbutton) {
+      completionbutton.disabled = true;
+
+      const text = await(getString("page_read", "format_moointopics"));
+      const checkMark = document.createElement("i");
+      checkMark.classList.add("bi", "bi-check");
+      //text.appendChild(checkMark);
+      completionbutton.innerText = text;
+      completionbutton.appendChild(checkMark);
+    }
+    
   }
 }

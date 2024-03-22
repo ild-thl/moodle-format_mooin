@@ -1,0 +1,29 @@
+
+<div id ="moointopics-breadcrumb-container" class="moointopics-breadcrumb-container" data-for="breadcrumb">
+<nav aria-label="{{#str}}breadcrumb, access{{/str}}">
+    <ol class="breadcrumb custom-navbar d-none d-md-flex">
+        {{#get_items}}
+            {{#has_action}}
+                <li class="breadcrumb-item {{#classes}}{{.}} {{/classes}} {{#is_hidden}} dimmed_text{{/is_hidden}}">
+                    <a href="{{{action}}}" {{#is_last}}aria-current="page"{{/is_last}} {{#get_title}}title="{{get_title}}"{{/get_title}}>{{{get_content}}}</a>
+                </li>
+            {{/has_action}}
+            {{^has_action}}
+                <li class="breadcrumb-item {{#classes}}{{.}} {{/classes}}{{#is_hidden}} dimmed_text{{/is_hidden}}">{{{text}}}</li>
+            {{/has_action}}
+        {{/get_items}}
+    </ol>
+    <ol class="breadcrumb custom-navbar d-flex d-md-none">
+        {{#get_items}}
+            {{#has_action}}
+                <li class="breadcrumb-item {{#classes}}{{.}} {{/classes}} {{#is_hidden}} dimmed_text{{/is_hidden}}">
+                    <a href="{{{action}}}" {{#is_last}}aria-current="page"{{/is_last}} {{#get_title}}title="{{get_title}}"{{/get_title}}>{{{get_content}}}</a>
+                </li>
+            {{/has_action}}
+            {{^has_action}}
+                <li class="breadcrumb-item {{#classes}}{{.}} {{/classes}}{{#is_hidden}} dimmed_text{{/is_hidden}}">{{{shorttext}}}</li>
+            {{/has_action}}
+        {{/get_items}}
+    </ol>
+</nav>
+</div>

@@ -57,7 +57,7 @@ class section extends section_base {
     /** @var parent_chapter if this section is the last section of a chapter */
     protected $parent_chapter;
 
-    
+
 
     public function __construct(course_format $format, section_info $section) {
         parent::__construct($format, $section);
@@ -69,7 +69,8 @@ class section extends section_base {
     }
 
     public function export_for_template(\renderer_base $output): stdClass {
-        global $USER;
+        global $USER, $DB;
+
         $format = $this->format;
 
         $data = parent::export_for_template($output);
@@ -79,6 +80,8 @@ class section extends section_base {
         if ($sectionnumber > 0) {
             set_user_preference('format_moointopics_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
         }
+
+
 
         if (!$this->format->get_section_number()) {
             $addsectionclass = $format->get_output_classname('content\\addsection');
@@ -92,8 +95,24 @@ class section extends section_base {
             $data->parent_chapter = $this->parent_chapter ? $this->parent_chapter->chapter : null;
             $data->isActiveSection = $this->is_active_section();
             $data->containsActiveSection = $this->containsActiveSection;
-            
         }
+
+        // $section_progress = format_moointopics\local\progresslib::get_section_progress($course->id, $this->section, $USER->id);
+        // $data->sectionprogress = $section_progress;
+
+        if (!$DB->get_records('course_modules', array(
+            'course' => $course->id,
+            'deletioninprogress' => 0,
+            'section' => $this->section->id,
+            'completion' => 2
+        ))) {
+
+            $data->showCompletionButton = true;
+            if (format_moointopics\local\progresslib::get_section_progress($course->id, $this->section->id, $USER->id) == 100) {
+                $data->showCompletionButtonDone = true;
+            }
+        }
+
 
         return $data;
     }
@@ -133,12 +152,17 @@ class section extends section_base {
         global $DB;
         global $USER;
         $course = $this->format->get_course();
-
+        //TODO eigene Function für Vergleich der Chapter
         if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $this->section->id))) {
             $this->chapter = $chapter;
-            
-
-        } 
+            $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+            if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
+                $last_sections_parent_chapter = format_moointopics\local\chapterlib::get_parent_chapter($continuesection);
+                if ($last_sections_parent_chapter == $this->chapter) {
+                    $this->containsActiveSection = true;
+                }
+            }
+        }
         if (empty($this->chapter)) {
             if (format_moointopics\local\chapterlib::is_first_section_of_chapter($this->section->id)) {
                 $this->is_first_section_of_chapter = true;
@@ -146,7 +170,7 @@ class section extends section_base {
             if (format_moointopics\local\chapterlib::is_last_section_of_chapter($this->section->id)) {
                 $this->is_last_section_of_chapter = true;
             }
-            
+
             $this->parent_chapter = format_moointopics\local\chapterlib::get_parent_chapter($this->section);
             $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
             if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
@@ -154,10 +178,7 @@ class section extends section_base {
                 if ($last_sections_parent_chapter == $this->parent_chapter) {
                     $this->containsActiveSection = true;
                 }
-
             }
         }
-        
-       
     }
 }

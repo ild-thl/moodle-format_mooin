@@ -14,8 +14,10 @@
     <h2>{{#str}} progress, format_moointopics {{/str}}</h2>
     <div class="d-flex course-progress-inner">
         <div class="progress-container">
-            <div class="progressbar"></div>
-            <span>0% des Kurses bearbeitet</span>
+            <div class="progressbar">
+                <div class="progressbar-inner" style="width: {{courseprogress}}%"></div>
+            </div>
+            <span>{{{courseprogress}}}% des Kurses bearbeitet</span>
         </div>
         {{#is_course_started}}
             <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary">{{#str}} continue, format_moointopics, {{continue_section}}{{/str}}</a>

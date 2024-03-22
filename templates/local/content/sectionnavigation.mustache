@@ -1,0 +1,64 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template core_courseformat/local/course_format/sectionnavigation
+
+    Displays the course section navigation.
+
+    Example context (json):
+    {
+        "hasprevious": true,
+        "previousurl": "#",
+        "larrow": "&#x25C4;",
+        "previousname": "Section 3",
+        "hasnext": true,
+        "rarrow": "&#x25BA;",
+        "nexturl": "#",
+        "nextname": "Section 5"
+    }
+}}
+
+<div class="navigation-wrapper" data-for="navigation_wrapper">
+    {{{coursebreadcrumb}}}
+    <div id="navigationtitle" class="section-navigation navigationtitle d-flex justify-content-between" data-for="navigationtitle">
+        
+        <div class="prevsection">
+            {{#hasprevious}}
+            <a href="{{{previousurl}}}" class="{{#previoushidden}} dimmed_text {{/previoushidden}}">
+                <span class="larrow"><i class="bi bi-caret-left"></i></span>
+            </a>
+            {{/hasprevious}}
+        </div>
+        <h3 class="sectionname">{{{title_without_link}}}</h3>
+        <div class="nextsection">
+            {{#hasnext}}
+            <a href="{{{nexturl}}}" class="{{#nexthidden}} dimmed_text {{/nexthidden}}">
+                <span class="rarrow"><i class="bi bi-caret-right-fill"></i></span>
+            </a>
+            {{/hasnext}}
+        </div>
+    </div>
+    <div id="progressbar-container" class="progress-container" data-for="progressbar_container">
+            <div class="progressbar">
+                <div class="progressbar-inner"  data-for="progressbar_inner" style="width: {{sectionprogress}}%"></div>
+            </div>
+            <span class="progress-text">
+                <span data-for="section-progress">{{sectionprogress}}</span>
+                % der Lektion bearbeitet
+            </span>
+        </div>
+</div>

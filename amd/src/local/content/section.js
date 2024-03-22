@@ -46,6 +46,7 @@ export default class extends DndSection {
             UNSETCHAPTER: `[data-action="sectionUnsetChapter"]`,
             ACTIONTEXT: `.menu-action-text`,
             ICON: `.icon`,
+            
         };
         // Most classes will be loaded later by DndCmItem.
         this.classes = {
@@ -91,6 +92,7 @@ export default class extends DndSection {
     getWatchers() {
         return [
             {watch: `section[${this.id}]:updated`, handler: this._refreshSection},
+            // {watch: `section[${this.id}].sectionprogress:updated`, handler: this._updateSectionProgress}
         ];
     }
 
@@ -206,4 +208,11 @@ export default class extends DndSection {
             }
         }
     }
+
+    // async _updateSectionProgress({state, element}) {
+    //     const progressbar = this.getElement(this.selectors.PROGRESSBAR);
+    //     progressbar.style.width = element.sectionprogress;
+        
+        
+    // }
 }

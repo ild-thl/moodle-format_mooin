@@ -35,16 +35,19 @@
 <div class="section-navigation mdl-bottom d-flex justify-content-between">
     <div class="prevsection">
         {{#hasprevious}}
-        <a href="{{{previousurl}}}" class="{{#previoushidden}} dimmed_text {{/previoushidden}}">
-            <span class="larrow">{{{larrow}}}</span>{{{previousname}}}
+        <a href="{{{previousurl}}}" class="{{#previoushidden}} dimmed_text {{/previoushidden}} moointopics-btn">
+
+
+
+            <span class="larrow"><i class="bi bi-caret-left-fill"></i></span>{{{previousname}}}
         </a>
         {{/hasprevious}}
     </div>
     
     <div class="nextsection">
         {{#hasnext}}
-        <a href="{{{nexturl}}}" class="{{#nexthidden}} dimmed_text {{/nexthidden}}">
-            <span class="rarrow">{{{rarrow}}}</span>{{{nextname}}}
+        <a href="{{{nexturl}}}" class="{{#nexthidden}} dimmed_text {{/nexthidden}} moointopics-btn moointopics-btn--primary">
+            {{{nextname}}}<span class="rarrow"><i class="bi bi-caret-right-fill"></i></span>
         </a>
         {{/hasnext}}
     </div>

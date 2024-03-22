@@ -3,7 +3,8 @@
 namespace format_moointopics\output\courseformat\content\frontpage;
 
 use renderable;
-
+use core_courseformat\base as course_format;
+use moodle_url;
 
 /**
  * Base class to render the course news section.
@@ -14,13 +15,41 @@ use renderable;
  */
 class news_section implements renderable {
 
-    public function export_for_template(\renderer_base $output)
-    {
+    /** @var course_format the course format class */
+    private $format;
 
+
+    public function __construct(course_format $format) {
+        $this->format = $format;
+    }
+
+    public function export_for_template(\renderer_base $output) {
+        global $DB;
+
+        $course = $this->format->get_course();
+
+        if ($forum = $DB->get_record('forum', array('course' => $course->id, 'type' => 'news'))) {
+            if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
+                if($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance'=>$forum->id))){
+                   $newsforumUrl = new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
+
+                }
+            }
+        }
+
+        $last_post = \format_moointopics\local\forumlib::get_last_news($course->id, 'news');
         
+
         $data = (object)[
-            
+            'newsforumUrl' => $newsforumUrl,
+            'previewPost' => $last_post,
         ];
+
+        if ($last_post['unread_news_number'] == 0) {
+            $data->no_new_news = true;
+        } else if ($last_post['unread_news_number'] == 1) {
+            $data->one_new_news = true;
+        }
 
         return $data;
     }

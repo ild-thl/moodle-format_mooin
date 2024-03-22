@@ -11,5 +11,40 @@
 
 <div class="coursefrontpage__news-section">
     <h2>News</h2>
-    <a href="#"><span class="notification-badge mr-1">2</span>ungelesene Beiträge im Newsforum</a>
+    <span class="unread-info mb-3 d-inline-block">
+    {{#no_new_news}}
+        0 {{#str}} unread_news, format_moointopics {{/str}} <a href="{{{newsforumUrl}}}"> {{#str}} all_news, format_moointopics {{/str}}</a>
+    {{/no_new_news}}
+    {{^no_new_news}}
+        {{#one_new_news}}
+            <a href="{{{newsforumUrl}}}"><span class="notification-badge mr-1">{{{unread_news_number}}}</span>{{#str}} unread_news_single, format_moointopics {{/str}} {{#str}} all_news, format_moointopics {{/str}}</a>
+        {{/one_new_news}}
+        {{^one_new_news}}
+            <a href="{{{newsforumUrl}}}"><span class="notification-badge mr-1">{{{unread_news_number}}}</span>{{#str}} unread_news, format_moointopics {{/str}} {{#str}} all_news, format_moointopics {{/str}}</a>
+        {{/one_new_news}}
+    {{/no_new_news}}
+    </span>
+
+    {{#previewPost}}
+        <div class="news-preview">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-newspaper mr-1"></i>
+                <a href="{{{discussion_url}}}" class="caption caption--sm">{{#str}} latest_post, format_moointopics {{/str}}</a>
+                {{#str}} by, format_moointopics {{/str}}
+                {{{user_firstname}}} - {{{created_news}}}
+            </div>
+            <div class="news-post-preview">
+                <div>
+                    {{{user_picture}}}
+                </div>
+                <div class="text-truncate">
+                    <span class="news-title">{{{news_title}}}</span>
+                    <span class="news-text">{{{news_text}}}</span>
+                </div>
+            </div>
+            <div class="discussion-link">
+                <a href="{{{discussion_url}}}">{{#str}} discussion_news, format_moointopics {{/str}}</a>
+            </div>
+        </div>
+    {{/previewPost}}
 </div>

@@ -41,8 +41,9 @@ class section extends section_base {
      * @return array data context for a mustache template
      */
     public function export_for_template(\renderer_base $output): stdClass {
-        global $DB;
+        global $DB, $USER;
         $isChapter = false;
+        $course = $this->format->get_course();
 
         if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $this->section->id))) {
             $isChapter = $chapter->chapter;
@@ -56,10 +57,11 @@ class section extends section_base {
 
             if ($parentchapterAsSection = $DB->get_record('course_sections', array('id' => $parentchapter->sectionid))) {
                 $data->innerChapterNumber = $this->section->section - $parentchapterAsSection->section;
-            }
-
-            
+            }   
         }
+
+        $section_progress = \format_moointopics\local\progresslib::get_section_progress($course->id, $this->section->id, $USER->id);
+        $data->sectionprogress = $section_progress;
 
         return $data;
     }

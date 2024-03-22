@@ -49,10 +49,10 @@
     <h3 id="sectionid-{{id}}-title" class="sectionname">
         {{^editing}}
         {{#chapter}}
-            <a data-toggle="collapse" href="#chapter-{{{chapter_num}}}" class="collapsed" role="button" aria-expanded="false" aria-controls="chapter-{{{chapter_num}}}"><i class="bi bi-caret-right-fill"></i> {{#str}}chapter, format_moointopics{{/str}} {{{prefix}}}: {{{title}}}</a>
+            <a data-toggle="collapse" href="#chapter-{{{chapter_num}}}" class="{{^containsActiveSection}} collapsed {{/containsActiveSection}}" role="button" aria-expanded="false" aria-controls="chapter-{{{chapter_num}}}"><i class="bi bi-caret-right-fill"></i> {{#str}}chapter, format_moointopics{{/str}} {{{prefix}}}: {{{title}}}</a>
         {{/chapter}}
         {{^chapter}}
-            <a href="{{{url}}}">{{#str}}lesson, format_moointopics{{/str}}{{{prefix}}}: {{{title_without_link}}}</a>
+            <a href="{{{url}}}">{{^singleheader}}{{#str}}lesson, format_moointopics{{/str}}{{{prefix}}}: {{/singleheader}}{{{title_without_link}}}</a>
         {{/chapter}}
         {{/editing}}
     </h3>

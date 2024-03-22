@@ -1,0 +1,19 @@
+
+
+<div class="subpage">
+    {{{breadcrumb}}}
+    <div class="subpage--badges d-flex flex-column">
+        <h2>{{#str}} badges, format_moointopics {{/str}}</h2>
+        <p>{{#str}} badge_overview_description, format_moointopics {{/str}}</p>
+        <a href="{{{userBadges}}}">{{#str}} profile_badges, format_moointopics {{/str}}</a>
+        <a href="{{{badgeOptions}}}">{{#str}} badge_options, format_moointopics {{/str}}</a>
+        <h2 class="mt-3">{{#str}} overview, format_moointopics {{/str}}</h2>
+        {{#badges}}
+        <div class="border-card">
+            {{{badges}}}
+        </div>
+        {{/badges}}
+        
+    </div>
+    
+</div>

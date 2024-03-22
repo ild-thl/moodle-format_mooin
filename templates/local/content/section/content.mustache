@@ -83,11 +83,11 @@
         "highlightedlabel" : "Highlighted"
     }
 }}
-{{#singleheader}}
+<!-- {{#singleheader}}
 {{$ core_courseformat/local/content/section/header }}
-    {{> core_courseformat/local/content/section/header }}
+    {{> format_moointopics/local/content/section/header }}
 {{/ core_courseformat/local/content/section/header }}
-{{/singleheader}}
+{{/singleheader}} -->
 {{#header}}
 {{$ core_courseformat/local/content/section/header }}
     {{> format_moointopics/local/content/section/header }}
@@ -153,6 +153,8 @@
     {{/ core_courseformat/local/content/section/cmlist }}
 {{/cmlist}}
 
+
+
 {{{cmcontrols}}}
 {{#insertafter}}
     {{#numsections}}
@@ -161,4 +163,17 @@
         {{/ core_courseformat/local/content/addsection}}
     {{/numsections}}
 {{/insertafter}}
+
+{{#showCompletionButton}}
+    <button {{#showCompletionButtonDone}} disabled {{/showCompletionButtonDone}} class="moointopics-btn comp_btn" type="button" data-action="completeSection" data-for="complete-section" data-id="{{{id}}}">
+        {{#showCompletionButtonDone}}
+            {{#str}} page_read, format_moointopics {{/str}}
+            <i class="bi bi-check"></i>
+        {{/showCompletionButtonDone}}
+        {{^showCompletionButtonDone}}
+            {{#str}} mark_page_as_read, format_moointopics {{/str}}
+        {{/showCompletionButtonDone}}
+    </button>
+{{/showCompletionButton}}
+
 {{/singlesection}}
