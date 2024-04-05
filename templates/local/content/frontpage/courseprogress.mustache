@@ -20,10 +20,14 @@
             <span>{{{courseprogress}}}% des Kurses bearbeitet</span>
         </div>
         {{#is_course_started}}
-            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary">{{#str}} continue, format_moointopics, {{continue_section}}{{/str}}</a>
+            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary d-none d-sm-flex">{{#str}} continue, format_moointopics, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
+            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary d-flex d-sm-none">{{#str}} continue_no_lesson, format_moointopics, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
         {{/is_course_started}}
         {{^is_course_started}}
-            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary">{{#str}} start, format_moointopics, {{continue_section}}{{/str}}</a>
+            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary d-none d-sm-flex">{{#str}} start, format_moointopics, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
+            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary d-flex d-sm-none">{{#str}} start, format_moointopics, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
         {{/is_course_started}}
+        
+
     </div>
 </div>

@@ -20,18 +20,25 @@ Example context (json):
             {{#header}}
                 {{> format_moointopics/local/content/frontpage/header }}
             {{/header}}
-            {{#news_section}}
+            <div class="mobile-bg">
+                {{#news_section}}
                 {{> format_moointopics/local/content/frontpage/news_section }}
-            {{/news_section}}
-            <div class="seperator"></div>
-            {{#courseprogress}}
-                {{> format_moointopics/local/content/frontpage/courseprogress }}
-            {{/courseprogress}}
-            {{> format_moointopics/local/content/frontpage/coursetable }}
+                {{/news_section}}
+                <div class="seperator"></div>
+                {{#courseprogress}}
+                    {{> format_moointopics/local/content/frontpage/courseprogress }}
+                {{/courseprogress}}
+                <div class="seperator"></div>
+                {{> format_moointopics/local/content/frontpage/mobileTiles }}
+                {{> format_moointopics/local/content/frontpage/coursetable }}
+            </div>
+            
         </div>
-        <div class="coursefrontpage__side">
+        <div class="coursefrontpage__side d-none d-lg-flex">
             {{> format_moointopics/local/content/frontpage/badges_and_certificates }}
             {{> format_moointopics/local/content/frontpage/community }}
         </div> 
     </div>
+
+    
 

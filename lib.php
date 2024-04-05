@@ -259,23 +259,32 @@ class format_moointopics extends core_courseformat\base {
         );
 
 
-        // $node->add(
-        //     get_string('certificates', 'format_moointopics'),
-        //     new moodle_url('/course/format/moointopics/certificates.php', array('id' => $courseid)),
-        //     navigation_node::TYPE_CUSTOM,
-        //     null,
-        //     'format_moointopics_certificates',
-        //     new pix_icon('t/award', '')
-        // );
+        $node->add(
+            get_string('certificates', 'format_moointopics'),
+            new moodle_url('/course/format/moointopics/certificates.php', array('id' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_moointopics_certificates',
+            new pix_icon('t/award', '')
+        );
 
-        // $node->add(
-        //     get_string('forums', 'format_moointopics'),
-        //     new moodle_url('/course/format/moointopics/alle_forums.php', array('id' => $courseid)),
-        //     navigation_node::TYPE_CUSTOM,
-        //     null,
-        //     'format_moointopics_discussions',
-        //     new pix_icon('t/messages', '')
-        // );
+        $node->add(
+            get_string('forums', 'format_moointopics'),
+            new moodle_url('/course/format/moointopics/all_discussionforums.php', array('id' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_moointopics_discussions',
+            new pix_icon('t/messages', '')
+        );
+
+        $node->add(
+            get_string('participants', 'format_moointopics'),
+            new moodle_url('/course/format/moointopics/participants.php', array('id' => $courseid)),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'format_moointopics_participants',
+            new pix_icon('t/messages', '')
+        );
 
         // $participantsnode = $node->get('participants', navigation_node::TYPE_CONTAINER);
         // if ($participantsnode) {

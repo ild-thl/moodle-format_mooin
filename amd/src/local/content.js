@@ -70,7 +70,8 @@ export default class Component extends BaseComponent {
       PROGRESSBAR: `[data-for='progressbar_container']`,
       PROGRESSBARINNER: `[data-for='progressbar_inner']`,
       COMPLETIONBUTTON: `[data-for='complete-section']`,
-      SECTIONPROGRESS: `[data-for='section-progress']`
+      SECTIONPROGRESS: `[data-for='section-progress']`,
+      TITLEOVERLAY: `[data-for='title-overlay']`
     };
     // Default classes to toggle on refresh.
     this.classes = {
@@ -81,6 +82,7 @@ export default class Component extends BaseComponent {
       SECTION: `section`,
       SCROLLUP: `scroll-up`,
       SCROLLDOWN: `scroll-down`,
+      FADEOUT: `fade-out`,
     };
     // Array to save dettached elements during element resorting.
     this.dettachedCms = {};
@@ -390,6 +392,7 @@ export default class Component extends BaseComponent {
    */
   _scrollHandler() {
     const pageOffset = document.querySelector(this.selectors.PAGE).scrollTop;
+    this._titleoverlay(pageOffset);
     this._dynamicHeader(pageOffset);
     const items = this.reactive
       .getExporter()
@@ -464,6 +467,19 @@ export default class Component extends BaseComponent {
       this.lastScroll = pageOffset;
     }
   }
+
+  _titleoverlay(pageOffset) {
+    const titleOverlay = this.getElement(this.selectors.TITLEOVERLAY);
+    if (titleOverlay) {
+      if (pageOffset > 130) {
+        titleOverlay.classList.add(this.classes.FADEOUT);
+      } else {
+        titleOverlay.classList.remove(this.classes.FADEOUT);
+      }
+    }
+  }
+
+  
 
   /**
    * Update a course section when the section number changes.

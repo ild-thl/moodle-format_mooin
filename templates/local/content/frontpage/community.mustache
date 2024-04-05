@@ -9,7 +9,68 @@
     }
 }}
 
-<div class="coursefrontpage__community">
+<div class="coursefrontpage__community d-flex flex-column">
     <h2>{{#str}} community, format_moointopics {{/str}}</h2>
-   
+    {{#discussions}}
+        <span class="mb-3">
+            0 {{#str}} unread_news, format_moointopics {{/str}} <a href="{{{all_discussions_url}}}"> {{#str}} discussion_forum, format_moointopics {{/str}}</a>
+        </span>
+
+        
+            {{#previewPost}}
+                <div class="discussion-preview d-flex flex-column mb-3">
+                    <div class="d-flex align-items-start">
+                        <span class="chat-icon pr-2">
+                            <i class="bi bi-chat-left"></i>
+                            <i class="bi bi-chat-right-text-fill"></i>
+                        </span>
+                        <span class="caption--sm">
+                            <a href="{{{discussion_url}}}" class="caption caption--sm">{{#str}} latest_post, format_moointopics {{/str}}</a>
+                            {{#str}} by, format_moointopics {{/str}}
+                            {{{user_firstname}}} - {{{created_news}}}
+                        </span>
+                        
+                    </div>
+                    <div class="news-post-preview">
+                        <div class="pr-1">
+                            {{{user_picture}}}
+                        </div>
+                        <div class="text-truncate">
+                            <span class="news-title">{{{news_title}}}</span>
+                            <span class="news-text">{{{news_text}}}</span>
+                        </div>
+                    </div>
+                    <div class="discussion-link">
+                        <a class="" href="{{{discussion_url}}}">{{#str}} discussion_news, format_moointopics {{/str}}</a>
+                    </div>
+                </div>
+            {{/previewPost}}
+        
+    {{/discussions}}
+    {{#participants}}
+        <div class="participants-container d-flex flex-column">
+            {{#userCardList}}
+                <span>
+                    <i class="bi bi-people-fill"></i>
+                    <a href="{{{participantsUrl}}}" class="caption">{{#str}} user_card_title, format_moointopics {{/str}}</a>  
+                </span>
+                    <div class="d-flex flex-column ml-4">
+                        <span>
+                            <span class="font-weight-bold">
+                                {{{user_count}}} {{#str}} user, format_moointopics {{/str}}
+                            </span>
+                            {{#str}} in_course, format_moointopics {{/str}}
+                        </span>
+                        <span class="font-weight-bold caption--sm"> {{#str}} new_user, format_moointopics {{/str}} </span>
+                        <span class="caption--sm">
+                            {{{user_list}}}
+                        </span>
+                    </div>
+                    <div class="participants-link">
+                        <a href="{{{participantsUrl}}}">{{#str}} show_all_infos, format_moointopics {{/str}}</a>
+                    </div>
+            {{/userCardList}}
+        </div>
+    {{/participants}}
+
 </div>

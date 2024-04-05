@@ -30,7 +30,7 @@ $string['deletesection'] = 'Delete section';
 $string['news'] = 'News';
 $string['newsectionname'] = 'New name for section {$a}';
 $string['sectionname'] = 'Section';
-$string['pluginname'] = 'Mooin 4.0 4000';
+$string['pluginname'] = 'Mooin 4.0 course format';
 $string['section0name'] = 'General';
 $string['page-course-view-mooin4'] = 'Any course main page in Mooin 4.0 format';
 $string['page-course-view-mooin4-x'] = 'Any course page in Mooin 4.0 format';
@@ -75,6 +75,7 @@ $string['owner'] = 'Owner';
 $string['no_badges_awarded'] = 'No badges have been issued in this course yet.';
 $string['badge_overview_description'] = 'With course badges you can show other participants on this platform and on the web what progress you have already made. For more information, see <a href="https://en.wikipedia.org/wiki/Open_Badges" target="_blank">Wikipedia</a> and <a href="http://openbadges.org" target="_blank">OpenBadges.org</a>';
 $string['all_forums'] = 'All discussion forums';
+$string['show_all_forums'] = 'Show all discussion forums';
 $string['course_groups'] = 'Course groups';
 $string['course_groups_descr'] = 'Here you can see which groups there are in this course and decide which one you want to join:';
 $string['profile_city_descr'] = 'Please enter your location in your profile to ensure that the participant map is displayed as accurately as possible.';
@@ -120,6 +121,7 @@ $string['participant_map'] = 'Participant map';
 $string['no_badges_image_text'] = 'No badges available';
 $string['no_certificates_image_text'] = 'No certificates available';
 $string['no_forums_available'] = 'No forums available';
+$string['no_contributions_available'] = 'No posts available yet';
 
 $string['modal_course_complete'] = 'You have completed all lessons in this course!';
 $string['modal_course_complete_title'] = 'Course completed';
@@ -158,6 +160,7 @@ $string['lesson_progress_text'] = 'of the lesson completed';
 $string['progress_text_short'] = 'completed';
 $string['mark_page_as_read'] = 'Mark page as read';
 $string['page_read'] = 'Page read';
+$string['allparticipants'] = 'All participants';
 
 
 // zu Deutsch neu hinzugefügt

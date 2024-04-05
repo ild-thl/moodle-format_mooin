@@ -437,5 +437,68 @@ class chapterlib {
     
         return false;
     }
+
+    public static function is_course_started($course) {
+        global $DB;
+        global $USER;
+        //$chapterlib = $this->chapterlib;
+        //$course = $this->format->get_course();
+        $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+        if ($last_section) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static function get_continue_section($course) {
+        global $DB;
+        global $USER;
+        //$chapterlib = $this->chapterlib;
+        //$course = $this->format->get_course();
+
+        $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+
+
+        if ($last_section) {
+            if ($last_section == 0 || $last_section == 1) {
+                $last_section = 2;
+            }
+
+            if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
+                return self::get_section_prefix($continuesection);
+            } else {
+                return false;
+            }
+        } else {
+            return 2;
+        }
+    }
+
+    public static function get_continue_url($course) {
+        global $DB;
+        global $USER;
+        //$chapterlib = $this->chapterlib;
+        //$course = $this->format->get_course();
+
+        $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+
+
+        if ($last_section) {
+            if ($last_section == 0 || $last_section == 1) {
+                //return new moodle_url('/course/view.php', array('id' => $course->id, 'section' => 1));
+                $last_section = 2;
+            }
+            if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
+                return new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $continuesection->section));
+                //return $continuesection->section;
+            } else {
+                return new moodle_url('/course/view.php', array('id' => $course->id, 'section' => 2));
+            }
+        } else {
+            //return new moodle_url('/course/view.php', array('id' => $course->id, 'section' => 1));
+            return new moodle_url('/course/view.php', array('id' => $course->id, 'section' => 2));
+        }
+    }
 }
 

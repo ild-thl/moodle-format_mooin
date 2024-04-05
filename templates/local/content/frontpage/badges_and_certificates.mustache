@@ -12,10 +12,10 @@
 <div class="coursefrontpage__badges-certificates">
     <h2>{{#str}} badges_certificates, format_moointopics {{/str}}</h2>
     {{#badges}}
-    <div class="badges-container">
+    <div class="badges-container mb-3">
         <div class="d-flex align-items-center">
             <i class="bi bi-trophy-fill mr-1"></i>
-            <span class="caption">{{#str}} badges, format_moointopics{{/str}}</span>
+            <a href="{{{badgesUrl}}}" class="caption">{{#str}} badges, format_moointopics{{/str}}</a>
             {{#manage_badges_url}}
                 <a href="{{{manage_badges_url}}}" class="ml-auto"><i class="bi bi-gear-fill"></i></a>
             {{/manage_badges_url}}
@@ -32,10 +32,15 @@
     </div>
     {{/badges}}
 
+    {{#certificates}}
     <div class="certificates-container">
         <div class="d-flex align-items-center">
             <i class="bi bi-award-fill"></i>
             <span class="caption">{{#str}} certificates, format_moointopics{{/str}}</span>
         </div>
+         <div class="all-badges-link">
+            <a href="{{{certificatesUrl}}}" class="ml-auto">{{#str}} show_all_infos, format_moointopics{{/str}}</a>
+        </div>
     </div>
+    {{/certificates}}
 </div>

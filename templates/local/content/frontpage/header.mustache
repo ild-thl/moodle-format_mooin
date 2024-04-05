@@ -9,16 +9,29 @@
     }
 }}
 
-<div class="coursefrontpage__header position-relative">
+<div class="coursefrontpage__header">
     {{#headerimageURL}}
         <img src="{{{headerimageURL}}}" alt="" class="header-image">
     {{/headerimageURL}}
     {{^headerimageURL}}
-        <div class="desktop-placeholder"></div>
+        <div class="desktop-placeholder d-none d-sm-block"></div>
     {{/headerimageURL}}
 
-    <div class="title-overlay position-absolute">
+    {{#headerimageURLMobile}}
+        <img src="{{{headerimageURL}}}" alt="" class="header-image">
+    {{/headerimageURLMobile}}
+    {{^headerimageURLMobile}}
+        <div class="mobile-placeholder d-block d-sm-none"></div>
+    {{/headerimageURLMobile}}
+
+    <div class="title-overlay position-absolute" data-for="title-overlay">
         <p> {{#str}}welcome, format_moointopics{{/str}} </p>
         <h2>{{coursename}}</h2>
+        {{#is_course_started}}
+            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary d-flex d-sm-none">{{#str}} continue, format_moointopics, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
+        {{/is_course_started}}
+        {{^is_course_started}}
+            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary d-flex d-sm-none">{{#str}} start, format_moointopics, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
+        {{/is_course_started}}
     </div>
 </div>
