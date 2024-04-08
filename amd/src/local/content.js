@@ -424,7 +424,7 @@ export default class Component extends BaseComponent {
     const progressbarContainer = this.getElement(this.selectors.PROGRESSBAR);
     const breadcrumb = this.getElement(this.selectors.BREADCRUMB);
     if (title) {
-      var titleHeight = title.offsetHeight + 20;
+      var titleHeight = title.offsetHeight;
       var progressbarContainerHeight = progressbarContainer.offsetHeight;
       var removeOffset;
       var screenHeight = window.innerHeight;
@@ -432,7 +432,7 @@ export default class Component extends BaseComponent {
       if (screenHeight <= 600) {
         removeOffset = titleHeight + progressbarContainerHeight;
       } else {
-        removeOffset = titleHeight;
+        removeOffset = titleHeight + 20;
       }
 
       if (pageOffset <= 0) {
