@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import SectionTitle from 'core_courseformat/local/courseindex/sectiontitle';
+import SectionTitle from 'format_moointopics/local/courseindex/sectiontitle';
 import DndSection from 'format_moointopics/local/courseeditor/dndsection';
 
 export default class Component extends DndSection {

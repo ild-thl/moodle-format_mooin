@@ -95,7 +95,7 @@ export default class Component extends BaseComponent {
         try {
             // To render an HTML into our component we just use the regular Templates module.
             const {html, js} = await Templates.renderForPromise(
-                'core_courseformat/local/courseindex/courseindex',
+                'format_moointopics/local/courseindex/courseindex',
                 data,
             );
             Templates.replaceNode(this.element, html, js);

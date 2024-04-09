@@ -6,6 +6,7 @@ require_once('../../../mod/forum/lib.php');
 
 use format_moointopics\local\chapterlib;
 use format_moointopics\local\forumlib;
+use mod_forum\local\factories\url;
 
 
 
@@ -62,7 +63,13 @@ $value = '1';
                 //$oc_link = html_writer::link(new moodle_url('/course/format/mooin4/forums.php?f=' . $oc_forum->id .'&tab='.'1'), $oc_forum->name);
                 $discussion_forum = new stdClass(); 
                 $discussion_forum->name = $oc_forum->name;
-                $discussion_forum->url = new moodle_url('/course/format/moointopics/forums.php?f=' . $oc_forum->id .'&tab='.'1');
+                //$discussion_forum->url = new moodle_url('/course/format/moointopics/forums.php?f=' . $oc_forum->id .'&tab='.'1');
+
+                $urlfactory = mod_forum\local\container::get_url_factory();
+                $url = $urlfactory->get_forum_view_url_from_course_module_id($cm->id);
+
+
+                $discussion_forum->url = $url;
                 $discussion_forum->index = $value++;
 
                 if (intval($oc_cm->visible) === 1) {
