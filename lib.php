@@ -833,26 +833,7 @@ class format_moointopics extends core_courseformat\base {
         }
     }
 
-    /**
- * Implements callback inplace_editable() allowing to edit values in-place.
- *
- * @param string $itemtype
- * @param int $itemid
- * @param mixed $newvalue
- * @return inplace_editable
- */
-public function format_moointopics_inplace_editable($itemtype, $itemid, $newvalue) {
-    global $DB, $CFG;
-    require_once($CFG->dirroot . '/course/lib.php');
-    if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
-        $section = $DB->get_record_sql(
-            'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',
-            [$itemid, 'moointopics'],
-            MUST_EXIST
-        );
-        return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
-    }
-}
+
 
 /**
      * Returns if an specific section is visible to the current user.
@@ -878,4 +859,24 @@ public function format_moointopics_inplace_editable($itemtype, $itemid, $newvalu
     }
 }
 
+/**
+ * Implements callback inplace_editable() allowing to edit values in-place.
+ *
+ * @param string $itemtype
+ * @param int $itemid
+ * @param mixed $newvalue
+ * @return inplace_editable
+ */
+function format_moointopics_inplace_editable($itemtype, $itemid, $newvalue) {
+    global $DB, $CFG;
+    require_once($CFG->dirroot . '/course/lib.php');
+    if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
+        $section = $DB->get_record_sql(
+            'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',
+            [$itemid, 'moointopics'],
+            MUST_EXIST
+        );
+        return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
+    }
+}
 
