@@ -26,12 +26,38 @@
     {}
 }}
 <nav id="courseindex" class="courseindex">
+    <div class="nav-links d-flex flex-column">
+        <h2>{{{coursename}}}</h2>
+        {{#overview}}
+            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-signpost-2-fill"></i> {{#str}} course_overview, format_moointopics {{/str}}</a>
+        {{/overview}}
+        {{#newsforum}}
+            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-newspaper"></i> {{#str}} news, format_moointopics {{/str}}</a>
+        {{/newsforum}}
+        {{#badges}}
+            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-trophy-fill"></i> {{#str}} badges, format_moointopics {{/str}}</a>
+        {{/badges}}
+        {{#certificates}}
+            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-award-fill"></i> {{#str}} certificates, format_moointopics {{/str}}</a>
+        {{/certificates}}
+        {{#discussions}}
+            <a href="{{url}}" class="{{#active}}active{{/active}}"><span class="chat-icon pr-2">
+                <i class="bi bi-chat-left"></i>
+                <i class="bi bi-chat-right-text-fill"></i>
+                </span>{{#str}} forums, format_moointopics {{/str}}
+            </a>
+        {{/discussions}}
+        {{#participants}}
+            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-people-fill"></i> {{#str}} participants, format_moointopics {{/str}}</a>
+        {{/participants}}
+    </div>
+    
     <div id="courseindex-content">
         {{> format_moointopics/local/courseindex/placeholders }}
     </div>
 </nav>
 {{#js}}
-require(['format_moointopics/local/courseindex/drawer'], function(component) {
+require(['core_courseformat/local/courseindex/drawer'], function(component) {
     component.init('courseindex');
 });
 {{/js}}

@@ -867,7 +867,8 @@ public function format_moointopics_inplace_editable($itemtype, $itemid, $newvalu
         // the default logic is the same required for topics and weeks format and still uses
         // a "hiddensections" format setting.
         $course = $this->get_course();
-        $hidesections = false;
+        //$hidesections = false;
+        $hidesections = $course->hiddensections ?? true;
         // Show the section if the user is permitted to access it, OR if it's not available
         // but there is some available info text which explains the reason & should display,
         // OR it is hidden but the course has a setting to display hidden sections as unavailable.

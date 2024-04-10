@@ -30,10 +30,12 @@
         {{#previewPost}}
             <div class="news-preview">
                 <div class="d-flex align-items-center">
-                    <i class="bi bi-newspaper mr-1"></i>
-                    <a href="{{{discussion_url}}}" class="caption caption--sm">{{#str}} latest_post, format_moointopics {{/str}}</a>
-                    {{#str}} by, format_moointopics {{/str}}
-                    {{{user_firstname}}} - {{{created_news}}}
+                    <span>
+                        <i class="bi bi-newspaper mr-1"></i>
+                        <a href="{{{discussion_url}}}" class="caption caption--sm">{{#str}} latest_post, format_moointopics {{/str}}</a>
+                        {{#str}} by, format_moointopics {{/str}}
+                        {{{user_firstname}}} - {{{created_news}}}
+                    </span>
                 </div>
                 <div class="news-post-preview">
                     <div>
@@ -54,10 +56,10 @@
     <div class="news-mobile d-flex d-sm-none">
         <i class="bi bi-newspaper mr-2"></i>
         {{#previewPost}}
-        <div class="d-flex flex-column">
-            <a href="{{{discussion_url}}}" class="caption caption--sm">{{#str}} latest_post, format_moointopics {{/str}}</a>
-            <span class="news-title">{{{news_title}}}</span>
-        </div>
+            <div class="d-flex flex-column">
+                <a href="{{{discussion_url}}}" class="caption caption--sm">{{#str}} latest_post, format_moointopics {{/str}}</a>
+                <span class="news-title">{{{news_title}}}</span>
+            </div>
         {{/previewPost}}
         <a href="{{{newsforumUrl}}}" class="ml-auto">{{#str}} all_news_mobile, format_moointopics {{/str}}</a>
 

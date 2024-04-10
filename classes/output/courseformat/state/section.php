@@ -24,6 +24,8 @@ use renderable;
 use stdClass;
 use context_course;
 use renderer_base;
+use format_moointopics\local\chapterlib;
+use format_moointopics\local\progresslib;
 
 /**
  * Contains the ajax update section structure.
@@ -48,7 +50,7 @@ class section extends section_base {
         if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $this->section->id))) {
             $isChapter = $chapter->chapter;
         } else {
-            $parentchapter = \format_moointopics\local\chapterlib::get_parent_chapter($this->section);
+            $parentchapter = chapterlib::get_parent_chapter($this->section);
         }
         $data = (object)parent::export_for_template($output);
         $data->isChapter = $isChapter;
@@ -60,8 +62,17 @@ class section extends section_base {
             }   
         }
 
-        $section_progress = \format_moointopics\local\progresslib::get_section_progress($course->id, $this->section->id, $USER->id);
+        $section_progress = progresslib::get_section_progress($course->id, $this->section->id, $USER->id);
         $data->sectionprogress = $section_progress;
+
+        // if (!$isChapter) {
+        //     if (chapterlib::is_first_section_of_chapter($this->section->id)) {
+        //         $data->is_first_section_of_chapter = true;
+        //     }
+        //     if (chapterlib::is_last_section_of_chapter($this->section->id)) {
+        //         $data->is_last_section_of_chapter = true;
+        //     }
+        // }
 
         return $data;
     }

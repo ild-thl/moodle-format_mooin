@@ -20,6 +20,7 @@ use core_courseformat\output\section_renderer;
 use moodle_page;
 use core_courseformat\base as course_format;
 use context_course;
+use moodle_url;
 
 /**
  * Basic renderer for topics format.
@@ -78,11 +79,46 @@ class renderer extends section_renderer {
      * @return String the course index HTML.
      */
     public function course_index_drawer(course_format $format): ?String {
+        global $DB;
+
         if ($format->uses_course_index()) {
             include_course_editor($format);
-            return $this->render_from_template('format_moointopics/local/courseindex/drawer', []);
+            $course = $format->get_course();
+
+            $overview = new moodle_url('/course/view.php', array('id' => $course->id));
+            $badgesUrl = new moodle_url('/course/format/moointopics/badges.php', array('id' => $course->id));
+            $certificatesUrl = new moodle_url('/course/format/moointopics/certificates.php', array('id' => $course->id));
+            $discussionsUrl = new moodle_url('/course/format/moointopics/all_discussionforums.php', array('id' => $course->id));
+            $participantsUrl = new moodle_url('/course/format/moointopics/participants.php', array('id' => $course->id));
+
+            if ($forum = $DB->get_record('forum', array('course' => $course->id, 'type' => 'news'))) {
+                if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
+                    if($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance'=>$forum->id))){
+                       $newsforumUrl = new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
+                    }
+                }
+            }
+            $data = [
+                'coursename' => $course->shortname,
+                'overview' => ['url' => $overview, 'active' => $this->check_if_active($overview)],
+                'newsforum' => ['url' => $newsforumUrl, 'active' => $this->check_if_active($newsforumUrl)],
+                'badges' => ['url' => $badgesUrl, 'active' => $this->check_if_active($badgesUrl)],
+                'certificates' => ['url' => $certificatesUrl, 'active' => $this->check_if_active($certificatesUrl)],
+                'discussions' => ['url' => $discussionsUrl, 'active' => $this->check_if_active($discussionsUrl)],
+                'participants' => ['url' => $participantsUrl, 'active' => $this->check_if_active($participantsUrl)],
+            ];
+            return $this->render_from_template('format_moointopics/local/courseindex/drawer', $data);
         }
         return '';
+    }
+
+    function check_if_active($url) {
+        global $PAGE;
+        if ($PAGE->url->compare($url, URL_MATCH_BASE)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = array()) {
