@@ -14,43 +14,42 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Course section header component.
+ * Course index drawer wrap.
  *
- * This component is used to control specific course section interactions like drag and drop.
+ * This component is mostly used to ensure all subcomponents find a parent
+ * compoment with a reactive instance defined.
  *
- * @module     core_courseformat/local/content/section/header
- * @class      core_courseformat/local/content/section/header
+ * @module     core_courseformat/local/courseindex/drawer
+ * @class     core_courseformat/local/courseindex/drawer
  * @copyright  2021 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import DndSectionItem from 'core_courseformat/local/courseeditor/dndsectionitem';
+import {BaseComponent} from 'core/reactive';
+import {getCurrentCourseEditor} from 'core_courseformat/courseeditor';
 
-export default class extends DndSectionItem {
+export default class Component extends BaseComponent {
 
     /**
      * Constructor hook.
-     *
-     * @param {Object} descriptor
      */
-    create(descriptor) {
+    create() {
         // Optional component name for debugging.
-        this.name = 'content_section_header';
-        // We need our id to watch specific events.
-
-        // Get main info from the descriptor.
-        this.id = descriptor.id;
-        this.section = descriptor.section;
-        this.course = descriptor.course;
-        this.fullregion = descriptor.fullregion;
+        this.name = 'courseindex-drawer';
     }
 
     /**
-     * Initial state ready method.
+     * Static method to create a component instance form the mustache template.
      *
-     * @param {Object} state the initial state
+     * @param {element|string} target the DOM main element or its ID
+     * @param {object} selectors optional css selector overrides
+     * @return {Component}
      */
-    stateReady(state) {
-        this.configDragDrop(this.id, state, this.fullregion);
+    static init(target, selectors) {
+        return new Component({
+            element: document.getElementById(target),
+            reactive: getCurrentCourseEditor(),
+            selectors,
+        });
     }
 }

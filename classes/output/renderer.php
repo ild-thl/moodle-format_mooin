@@ -114,7 +114,7 @@ class renderer extends section_renderer {
 
     function check_if_active($url) {
         global $PAGE;
-        if ($PAGE->url->compare($url, URL_MATCH_BASE)) {
+        if ($PAGE->url->compare($url, URL_MATCH_EXACT)) {
             return true;
         } else {
             return false;

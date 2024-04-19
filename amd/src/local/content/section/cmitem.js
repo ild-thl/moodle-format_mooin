@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import DndCmItem from 'format_moointopics/local/courseeditor/dndcmitem';
+import DndCmItem from 'core_courseformat/local/courseeditor/dndcmitem';
 
 export default class extends DndCmItem {
 

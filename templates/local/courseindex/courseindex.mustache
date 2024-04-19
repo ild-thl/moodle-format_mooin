@@ -101,7 +101,13 @@
 }}
 <div id="course-index" class="courseindex {{#editmode}} editing {{/editmode}}" role="tree">
     {{#sections}}
+    {{#isFirstSectionOfChapter}}
+        <div id="chapter-{{{parentChapter}}}" class="collapse {{#containsActiveSection}} show {{/containsActiveSection}}">
+    {{/isFirstSectionOfChapter}}
     {{> format_moointopics/local/courseindex/section }}
+    {{#isLastSectionOfChapter}}
+    </div>
+    {{/isLastSectionOfChapter}}
     {{/sections}}
 </div>
 {{#js}}

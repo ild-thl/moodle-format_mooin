@@ -23,7 +23,7 @@
  */
 
 import Header from 'format_moointopics/local/content/section/header';
-import DndSection from 'format_moointopics/local/courseeditor/dndsection';
+import DndSection from 'core_courseformat/local/courseeditor/dndsection';
 import Templates from 'core/templates';
 
 export default class extends DndSection {

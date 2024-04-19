@@ -34,7 +34,7 @@ import {get_string as getString} from 'core/str';
 import {getList} from 'core/normalise';
 import * as CourseEvents from 'core_course/events';
 import Pending from 'core/pending';
-import ContentTree from 'format_moointopics/local/courseeditor/contenttree';
+import ContentTree from 'core_courseformat/local/courseeditor/contenttree';
 // The jQuery module is only used for interacting with Boostrap 4. It can we removed when MDL-71979 is integrated.
 import jQuery from 'jquery';
 

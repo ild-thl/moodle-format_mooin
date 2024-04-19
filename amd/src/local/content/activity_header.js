@@ -23,7 +23,7 @@
  */
 
 import {BaseComponent} from 'core/reactive';
-import {getCurrentCourseEditor} from 'format_moointopics/courseeditor';
+import {getCurrentCourseEditor} from 'core_courseformat/courseeditor';
 import * as CourseEvents from 'core_course/events';
 
 // Global page selectors.
