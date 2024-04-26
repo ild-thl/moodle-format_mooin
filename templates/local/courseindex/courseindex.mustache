@@ -102,7 +102,7 @@
 <div id="course-index" class="courseindex {{#editmode}} editing {{/editmode}}" role="tree">
     {{#sections}}
     {{#isFirstSectionOfChapter}}
-        <div id="chapter-{{{parentChapter}}}" class="collapse {{#containsActiveSection}} show {{/containsActiveSection}}">
+        <div id="chapter-{{{parentChapter}}}-index" class="collapse {{#containsActiveSection}} show {{/containsActiveSection}}">
     {{/isFirstSectionOfChapter}}
     {{> format_moointopics/local/courseindex/section }}
     {{#isLastSectionOfChapter}}
@@ -111,7 +111,7 @@
     {{/sections}}
 </div>
 {{#js}}
-require(['core_courseformat/local/courseindex/courseindex'], function(component) {
+require(['format_moointopics/local/courseindex/courseindex'], function(component) {
     component.init('course-index');
 });
 {{/js}}

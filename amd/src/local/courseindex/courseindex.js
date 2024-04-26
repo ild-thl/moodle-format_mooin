@@ -205,18 +205,18 @@ export default class Component extends BaseComponent {
      * @param {Object} details.element the course state data.
      */
     _refreshPageItem({element, state}) {
-        if (!element?.pageItem?.isStatic || element.pageItem.type != 'cm') {
-            return;
-        }
-        // Check if we need to uncollapse the section and scroll to the element.
-        const section = state.section.get(element.pageItem.sectionId);
-        if (section.indexcollapsed) {
-            this._expandSectionNode(section, true);
-            setTimeout(
-                () => this.cms[element.pageItem.id]?.scrollIntoView({block: "nearest"}),
-                250
-            );
-        }
+        // if (!element?.pageItem?.isStatic || element.pageItem.type != 'cm') {
+        //     return;
+        // }
+        // // Check if we need to uncollapse the section and scroll to the element.
+        // const section = state.section.get(element.pageItem.sectionId);
+        // if (section.indexcollapsed) {
+        //     this._expandSectionNode(section, true);
+        //     setTimeout(
+        //         () => this.cms[element.pageItem.id]?.scrollIntoView({block: "nearest"}),
+        //         250
+        //     );
+        // }
     }
 
     /**

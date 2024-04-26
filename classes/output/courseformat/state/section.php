@@ -36,7 +36,7 @@ use format_moointopics\local\progresslib;
  */
 class section extends section_base {
 
-    protected $containsActiveSection = false;
+    //protected $containsActiveSection = false;
 
     /**
      * Export this data so it can be used as state object in the course editor.
@@ -63,10 +63,20 @@ class section extends section_base {
                 $data->innerChapterNumber = $this->section->section - $parentchapterAsSection->section;
             }   
         }
-        $data->containsActiveSection = $this->containsActiveSection;
+        //$data->containsActiveSection = $this->containsActiveSection;
 
         $section_progress = progresslib::get_section_progress($course->id, $this->section->id, $USER->id);
         $data->sectionprogress = $section_progress;
+
+        if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $this->section->id))) {
+            $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+            if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
+                $last_sections_parent_chapter = chapterlib::get_parent_chapter($continuesection);
+                if ($last_sections_parent_chapter == $chapter) {
+                    $data->containsActiveSection = true;
+                }
+            }
+        }
 
         if (!$isChapter) {
             if (chapterlib::is_first_section_of_chapter($this->section->id)) {
@@ -81,9 +91,14 @@ class section extends section_base {
             if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
                 $last_sections_parent_chapter = chapterlib::get_parent_chapter($continuesection);
                 if ($last_sections_parent_chapter == $parent_chapter) {
-                    $this->containsActiveSection = true;
+                    $data->containsActiveSection = true;
                 }
             }
+
+            if ($last_section == $this->section->section) {
+                $data->isActiveSection = true;
+            }
+            
         }
 
         return $data;

@@ -144,24 +144,24 @@ export default class Component extends DndSection {
      * @param {Object} details.element the course state data.
      */
     _refreshPageItem({element, state}) {
-        if (!element.pageItem) {
-            return;
-        }
-        if (element.pageItem.sectionId !== this.id && this.isPageItem) {
-            this.pageItem = false;
-            this.getElement(this.selectors.SECTION_ITEM).classList.remove(this.classes.PAGEITEM);
-            return;
-        }
-        const section = state.section.get(this.id);
-        if (section.indexcollapsed && !element.pageItem?.isStatic) {
-            this.pageItem = (element.pageItem?.sectionId == this.id);
-        } else {
-            this.pageItem = (element.pageItem.type == 'section' && element.pageItem.id == this.id);
-        }
-        const sectionItem = this.getElement(this.selectors.SECTION_ITEM);
-        sectionItem.classList.toggle(this.classes.PAGEITEM, this.pageItem ?? false);
-        if (this.pageItem && !this.reactive.isEditing) {
-            this.element.scrollIntoView({block: "nearest"});
-        }
+        // if (!element.pageItem) {
+        //     return;
+        // }
+        // if (element.pageItem.sectionId !== this.id && this.isPageItem) {
+        //     this.pageItem = false;
+        //     this.getElement(this.selectors.SECTION_ITEM).classList.remove(this.classes.PAGEITEM);
+        //     return;
+        // }
+        // const section = state.section.get(this.id);
+        // if (section.indexcollapsed && !element.pageItem?.isStatic) {
+        //     this.pageItem = (element.pageItem?.sectionId == this.id);
+        // } else {
+        //     this.pageItem = (element.pageItem.type == 'section' && element.pageItem.id == this.id);
+        // }
+        // const sectionItem = this.getElement(this.selectors.SECTION_ITEM);
+        // sectionItem.classList.toggle(this.classes.PAGEITEM, this.pageItem ?? false);
+        // if (this.pageItem && !this.reactive.isEditing) {
+        //     this.element.scrollIntoView({block: "nearest"});
+        // }
     }
 }
