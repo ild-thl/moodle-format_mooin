@@ -123,14 +123,16 @@ class chapterlib {
                     break;
                 }
             }
-            if ($coursesections = $DB->get_records('course_sections', array('course' => $chapter->courseid), 'section', 'section, id')) {
+            if ($coursesections = $DB->get_records('course_sections', array('course' => $chapter->courseid), 'section', 'section, id, visible')) {
                 if ($start != 0) {
                     if ($end == 0) {
                         $end = self::get_last_section($chapter->courseid) + 1;
                     }
                     $i = $start + 1;
                     while ($i < $end) {
-                        $result[] = $coursesections[$i]->id;
+                        if ($coursesections[$i]->visible == true) {
+                            $result[] = $coursesections[$i]->id; 
+                        }
                         $i++;
                     }
                 }

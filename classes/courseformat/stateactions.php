@@ -62,11 +62,12 @@ class stateactions extends Base {
         ?int $targetsectionid = null,
         ?int $targetcmid = null
     ): void {
-        // foreach ($ids as $sectionid) {
-        //     format_moointopics\local\chapterlib::set_chapter($sectionid);
-        // }
         format_moointopics\local\chapterlib::set_chapter($targetsectionid);
         $this->section_state($updates, $course, $ids);
+
+        course_modinfo::purge_course_modules_cache($course->id, $ids);
+        rebuild_course_cache($course->id, false, true);
+        
     }
 
     public function section_unsetChapter(
@@ -76,12 +77,17 @@ class stateactions extends Base {
         ?int $targetsectionid = null,
         ?int $targetcmid = null
     ): void {
-        // foreach ($ids as $sectionid) {
-        //     format_moointopics\local\chapterlib::unset_chapter($sectionid);
-        // }
         format_moointopics\local\chapterlib::unset_chapter($targetsectionid);
-        
         $this->section_state($updates, $course, $ids);
+        course_modinfo::purge_course_modules_cache($course->id, $ids);
+        rebuild_course_cache($course->id, false, true);
+    }
+
+    public function getContinuesection(
+        stateupdates $updates,
+        stdClass $course,
+    ): void {
+        $this->course_state($updates, $course);
     }
    
     /**

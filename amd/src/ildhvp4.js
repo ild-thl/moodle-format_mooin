@@ -5,8 +5,6 @@ define([
   "core/str",
   "core/url",
   "core/modal_factory",
-  "format_moointopics/mooin4Modal",
-  "format_moointopics/modalGenerator",
 ], function (
   $,
   ajax,
@@ -14,8 +12,6 @@ define([
   Str,
   Url,
   ModalFactory,
-  Mooin4Modal,
-  generateModal
 ) {
   /** @namespace */
   var ILD = ILD || {};

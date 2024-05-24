@@ -51,6 +51,7 @@ class header extends header_base {
     }
 
     public function export_for_template(\renderer_base $output): stdClass {
+        global $USER;
 
         $format = $this->format;
         $chapter = $this->chapter;
@@ -78,6 +79,9 @@ class header extends header_base {
                     $data->prefix = format_moointopics\local\chapterlib::get_section_prefix($section);
                     $data->title_with_link = $output->section_title($section, $course);
                     $data->title_without_link = $output->section_title_without_link($section, $course);
+                    // if (format_moointopics\local\progresslib::get_section_progress($course->id, $this->section->id, $USER->id) == 100) {
+                    //     $data->isCompleted = true;
+                    // }
                 }
                 
 
@@ -114,6 +118,8 @@ class header extends header_base {
             }
         }
         $data->name = get_section_name($course, $section);
+
+        
 
         return $data;
     }

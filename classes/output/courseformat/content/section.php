@@ -60,7 +60,13 @@ class section extends section_base {
 
 
     public function __construct(course_format $format, section_info $section) {
+        global $USER;
         parent::__construct($format, $section);
+        $course = $format->get_course();
+        $sectionnumber = optional_param('section', 0, PARAM_INT);
+        if ($sectionnumber > 0) {
+            set_user_preference('format_moointopics_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
+        }
         $this->addChapterData();
     }
 
@@ -77,9 +83,9 @@ class section extends section_base {
 
         $course = $this->format->get_course();
         $sectionnumber = optional_param('section', 0, PARAM_INT);
-        if ($sectionnumber > 0) {
-            set_user_preference('format_moointopics_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
-        }
+        // if ($sectionnumber > 0) {
+        //     set_user_preference('format_moointopics_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
+        // }
 
 
 
@@ -109,7 +115,7 @@ class section extends section_base {
 
             $data->showCompletionButton = true;
             if (format_moointopics\local\progresslib::get_section_progress($course->id, $this->section->id, $USER->id) == 100) {
-                $data->showCompletionButtonDone = true;
+                $data->isCompleted = true;
             }
         }
 

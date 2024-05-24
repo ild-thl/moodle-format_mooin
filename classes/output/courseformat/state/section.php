@@ -26,6 +26,7 @@ use context_course;
 use renderer_base;
 use format_moointopics\local\chapterlib;
 use format_moointopics\local\progresslib;
+use moodle_url;
 
 /**
  * Contains the ajax update section structure.
@@ -36,6 +37,24 @@ use format_moointopics\local\progresslib;
  */
 class section extends section_base {
 
+    protected $continuesection;
+
+    /**
+     * Constructor.
+     *
+     * @param course_format $format the course format
+     * @param section_info $section the section info
+     */
+    // public function __construct(course_format $format, section_info $section) {
+    //     global $USER;
+    //     parent::__construct($format, $section);
+    //     $course = $format->get_course();
+    //     $sectionnumber = optional_param('section', 0, PARAM_INT);
+    //     if ($sectionnumber > 0) {
+    //         set_user_preference('format_moointopics_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
+    //     }
+    // }
+
     //protected $containsActiveSection = false;
 
     /**
@@ -45,9 +64,10 @@ class section extends section_base {
      * @return array data context for a mustache template
      */
     public function export_for_template(\renderer_base $output): stdClass {
-        global $DB, $USER;
+        global $DB, $USER, $PAGE;
         $isChapter = false;
         $course = $this->format->get_course();
+
 
         if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $this->section->id))) {
             $isChapter = $chapter->chapter;
@@ -67,6 +87,9 @@ class section extends section_base {
 
         $section_progress = progresslib::get_section_progress($course->id, $this->section->id, $USER->id);
         $data->sectionprogress = $section_progress;
+        if ($section_progress == 100) {
+            $data->isCompleted = true;
+        }
 
         if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $this->section->id))) {
             $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
@@ -84,6 +107,10 @@ class section extends section_base {
             }
             if (chapterlib::is_last_section_of_chapter($this->section->id)) {
                 $data->isLastSectionOfChapter = true;
+                if (!get_user_preferences('format_moointopics_hide_modal_for_section_'.$this->section->id)) {
+                    $data->showLastSectionModal = true;
+                    //set_user_preference('format_moointopics_hide_modal_for_section_'.$this->section->id, 'true');
+                }
             }
 
             $parent_chapter = chapterlib::get_parent_chapter($this->section);

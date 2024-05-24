@@ -36,7 +36,11 @@ import * as CourseEvents from "core_course/events";
 import jQuery from "jquery";
 import Pending from "core/pending";
 import log from "core/log";
-import {get_string as getString} from 'core/str';
+import { get_string as getString } from "core/str";
+import ModalFactory from "core/modal_factory";
+import Templates from "core/templates";
+import ModalEvents from "core/modal_events";
+import Mooin4Modal from "../mooin4modal";
 
 import CustomMutations from "format_moointopics/local/courseeditor/custommutations";
 
@@ -71,7 +75,7 @@ export default class Component extends BaseComponent {
       PROGRESSBARINNER: `[data-for='progressbar_inner']`,
       COMPLETIONBUTTON: `[data-for='complete-section']`,
       SECTIONPROGRESS: `[data-for='section-progress']`,
-      TITLEOVERLAY: `[data-for='title-overlay']`
+      TITLEOVERLAY: `[data-for='title-overlay']`,
     };
     // Default classes to toggle on refresh.
     this.classes = {
@@ -83,6 +87,7 @@ export default class Component extends BaseComponent {
       SCROLLUP: `scroll-up`,
       SCROLLDOWN: `scroll-down`,
       FADEOUT: `fade-out`,
+      ACTIVE: `active`,
     };
     // Array to save dettached elements during element resorting.
     this.dettachedCms = {};
@@ -166,10 +171,21 @@ export default class Component extends BaseComponent {
       new DispatchActions(this);
       this.reactive.addMutations({
         completeSection: mutations.completeSection,
+        setContinueSection: mutations.setContinueSection,
+        getContinueSection: mutations.getContinueSection
       });
 
       // Mark content as state ready.
       this.element.classList.add(this.classes.STATEDREADY);
+      this.reactive.dispatch('getContinueSection', 'section');
+      const sections = this.getElements(this.selectors.SECTION);
+        sections.forEach((section) => {
+            if (section.classList.contains(this.classes.ACTIVE)) {
+              this.reactive.dispatch('setContinueSection', 'section', section.dataset.id);
+              
+            }
+        });
+
     }
 
     // Capture completion events.
@@ -185,6 +201,7 @@ export default class Component extends BaseComponent {
       "scroll",
       this._scrollHandler
     );
+    //this._showLastSectionModal(state);
   }
 
   /**
@@ -279,7 +296,7 @@ export default class Component extends BaseComponent {
       { watch: `section.visible:updated`, handler: this._reloadSection },
       {
         watch: `section.isChapter:updated`,
-        handler: this._updateChapters,
+        handler: this._updateChapters
       },
       // Reindex sections and cms.
       { watch: `state:updated`, handler: this._indexContents },
@@ -393,7 +410,10 @@ export default class Component extends BaseComponent {
   _scrollHandler() {
     const pageOffset = document.querySelector(this.selectors.PAGE).scrollTop;
     this._titleoverlay(pageOffset);
-    this._dynamicHeader(pageOffset);
+    if (!this.reactive.isEditing) {
+      this._dynamicHeader(pageOffset);
+    }
+    
     const items = this.reactive
       .getExporter()
       .allItemsArray(this.reactive.state);
@@ -410,11 +430,14 @@ export default class Component extends BaseComponent {
       if (item.type === "cm" && !item.url && !this.reactive.isEditing) {
         return pageOffset >= element.offsetTop;
       }
+
+      
       pageItem = item;
+      
       return pageOffset >= element.offsetTop;
     });
     if (pageItem) {
-      this.reactive.dispatch("setPageItem", pageItem.type, pageItem.id);
+      //this.reactive.dispatch('setPageItem', pageItem.type, pageItem.id);
     }
   }
 
@@ -478,8 +501,6 @@ export default class Component extends BaseComponent {
       }
     }
   }
-
-  
 
   /**
    * Update a course section when the section number changes.
@@ -898,7 +919,7 @@ export default class Component extends BaseComponent {
 
   async _updateSectionProgress({ state, element }) {
     const progressbar = this.getElement(this.selectors.PROGRESSBARINNER);
-    progressbar.style.width = element.sectionprogress+"%";
+    progressbar.style.width = element.sectionprogress + "%";
 
     const sectionprogress = this.getElement(this.selectors.SECTIONPROGRESS);
     sectionprogress.innerText = element.sectionprogress;
@@ -907,13 +928,55 @@ export default class Component extends BaseComponent {
     if (completionbutton) {
       completionbutton.disabled = true;
 
-      const text = await(getString("page_read", "format_moointopics"));
+      const text = await getString("page_read", "format_moointopics");
       const checkMark = document.createElement("i");
       checkMark.classList.add("bi", "bi-check");
-      //text.appendChild(checkMark);
       completionbutton.innerText = text;
       completionbutton.appendChild(checkMark);
     }
+    //window.console.log(element.id);
+    //window.console.log(element.target.id);
+    const currentSection = state.section.get(element.id);
+    let nextSection = null;
     
+    let completed = true
+    
+    state.section.forEach((section) => {
+      if (section.parentChapter === currentSection.parentChapter && !section.isCompleted) {
+        //window.console.log(section);
+          completed = false;
+          
+      }
+      if (section.parentChapter === currentSection.parentChapter + 1 && section.isFirstSectionOfChapter) {
+        nextSection = section;
+      }
+    });
+
+    if (completed) {
+      window.console.log(nextSection);
+    }
   }
+
+  // async _showLastSectionModal(state) {
+  //   const course = state.course;
+  //   const pageItem = course.pageItem;
+  //   window.console.log(this.element.pageItem.sectionId);
+  //   const section = state.section.get(this.id);
+  //   if (section.showLastSectionModal) {
+  //     const modal = await ModalFactory.create({
+  //       type: Mooin4Modal.TYPE,
+  //       title: await getString(
+  //         "modal_last_section_of_chapter_title",
+  //         "format_moointopics"
+  //       ),
+  //       body: Templates.render(
+  //         "format_moointopics/local/content/modals/lastsection",
+  //         {}
+  //       ),
+  //     });
+  //     modal.show();
+  //   }
+  // }
+
+  
 }

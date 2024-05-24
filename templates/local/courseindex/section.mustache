@@ -75,20 +75,23 @@
         <a data-toggle="collapse"
             href="#chapter-{{{isChapter}}}-index"
             class="{{^containsActiveSection}} collapsed {{/containsActiveSection}}"
-            aria-expanded="{{^containsActiveSection}}true{{/containsActiveSection}}{{#containsActiveSection}}false{{/containsActiveSection}}"
+            aria-expanded="{{#containsActiveSection}}true{{/containsActiveSection}}{{^containsActiveSection}}false{{/containsActiveSection}}"
             aria-controls="courseindexcollapse{{number}}"
             tabindex="-1"
         >
-            <i class="bi bi-caret-right-fill"></i>
-        </a>
+            
+        
         <span 
             class="courseindex-link text-truncate"
             data-action="togglecourseindexsection"
             data-for="section_title"
             tabindex="-1"
         >
+        <i class="bi bi-caret-right-fill" data-for="caret"></i>
+        {{#str}}chapter, format_moointopics{{/str}} <span data-for="index_number" data-id="{{id}}">{{{isChapter}}}</span>:
             {{{title}}}
         </span>
+        </a>
         <span class="current-badge badge badge-primary ml-2 px-2 rounded-pill">
             {{highlighted}}
         </span>
@@ -124,15 +127,22 @@
             data-for="section_title"
             tabindex="-1"
         >
+       
+        {{#str}}lesson, format_moointopics{{/str}}  <span data-for="index_number" data-id="{{id}}">{{{parentChapter}}}.{{{innerChapterNumber}}}</span>: 
             {{{title}}}
+            
         </a>
-        <span class="current-badge badge badge-primary ml-2 px-2 rounded-pill">
-            {{highlighted}}
+        <span class="index-infos">
+            <span class="current-badge badge badge-primary ml-2 px-2 rounded-pill">
+                {{highlighted}}
+            </span>
+            <span class="courseindex-locked ml-1" data-for="cm_name">
+                {{#pix}} t/locked, core {{/pix}}
+            </span>
+            {{#isCompleted}}<i class="bi bi-check"></i>{{/isCompleted}}
+            <span class="dragicon ml-auto">{{#pix}}i/dragdrop{{/pix}}</span>
         </span>
-        <span class="courseindex-locked ml-1" data-for="cm_name">
-            {{#pix}} t/locked, core {{/pix}}
-        </span>
-        <span class="dragicon ml-auto">{{#pix}}i/dragdrop{{/pix}}</span>
+        
     </div>
 </div>
 {{/isChapter}}

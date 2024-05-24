@@ -111,6 +111,6 @@ class content extends content_base {
      *
      * The responsible for the buttons is core_courseformat\output\local\content\section.
      */
-    protected $hasaddsection = false;
+    protected $hasaddsection = true;
 
 }

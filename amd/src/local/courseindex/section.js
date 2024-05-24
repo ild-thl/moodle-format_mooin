@@ -26,6 +26,7 @@
 
 import SectionTitle from 'format_moointopics/local/courseindex/sectiontitle';
 import DndSection from 'core_courseformat/local/courseeditor/dndsection';
+import { get_string as getString } from "core/str";
 
 export default class Component extends DndSection {
 
@@ -40,6 +41,8 @@ export default class Component extends DndSection {
             SECTION_ITEM: `[data-for='section_item']`,
             SECTION_TITLE: `[data-for='section_title']`,
             CM_LAST: `[data-for="cm"]:last-child`,
+            INDEXNUMBER: `[data-for='index_number']`,
+            CARET: `[data-for='caret']`,
         };
         // Default classes to toggle on refresh.
         this.classes = {
@@ -90,7 +93,8 @@ export default class Component extends DndSection {
         // Check if the current url is the section url.
         const section = state.section.get(this.id);
         if (window.location.href == section.sectionurl.replace(/&amp;/g, "&")) {
-            this.reactive.dispatch('setPageItem', 'section', this.id);
+            //this.reactive.dispatch('setPageItem', 'section', this.id);
+            this.reactive.dispatch('setContinueSection', 'section', this.id);
             sectionItem.scrollIntoView();
         }
     }
@@ -105,6 +109,7 @@ export default class Component extends DndSection {
             {watch: `section[${this.id}]:deleted`, handler: this.remove},
             {watch: `section[${this.id}]:updated`, handler: this._refreshSection},
             {watch: `course.pageItem:updated`, handler: this._refreshPageItem},
+            //{watch: `section.isChapter:updated`, handler: this._updateChapters},
         ];
     }
 
@@ -123,7 +128,7 @@ export default class Component extends DndSection {
      * @param {Object} param details the update details.
      * @param {Object} param.element the section element
      */
-    _refreshSection({element}) {
+    _refreshSection({state, element}) {
         // Update classes.
         const sectionItem = this.getElement(this.selectors.SECTION_ITEM);
         sectionItem.classList.toggle(this.classes.SECTIONHIDDEN, !element.visible);
@@ -132,9 +137,53 @@ export default class Component extends DndSection {
         this.element.classList.toggle(this.classes.DRAGGING, element.dragging ?? false);
         this.element.classList.toggle(this.classes.LOCKED, element.locked ?? false);
         this.locked = element.locked;
+
+        //this.getElement(this.selectors.SECTION_TITLE).innerHTML = element.title;
+        this._reloadSectionNames({ element: element });
+
+        //window.console.log(element);
         // Update title.
-        this.getElement(this.selectors.SECTION_TITLE).innerHTML = element.title;
+        // if (element.isChapter) {
+        //     //const caret = this.getElement(this.selectors.CARET);
+        //     //if (!caret) {
+        //         const caret = document.createElement("i");
+        //         caret.classList.add("bi bi-caret-right-fill");
+        //         sectionItem.prepend(caret);
+        //     //}
+        //     this.getElement(this.selectors.SECTION_TITLE).innerHTML = "Kapitel" + element.isChapter + ": " + element.title;
+        // } else {
+        //     const caret = this.getElement(this.selectors.CARET);
+        //     caret.remove();
+        //     this.getElement(this.selectors.SECTION_TITLE).innerHTML = "Lektion" + element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
+        // }
+       
     }
+
+    async _reloadSectionNames({element }) {
+        // state.section.forEach((section) => {
+        //   if (section.number >= element.number) {
+        //     const number = this.getElement(this.selectors.INDEXNUMBER);
+        //     if (section.isChapter) {
+        //       number.innerHTML = section.isChapter;
+        //     } else {
+        //       number.innerHTML =
+        //         section.parentChapter + "." + section.innerChapterNumber;
+        //     }
+        //   }
+        // });
+
+        const title = this.getElement(this.selectors.SECTION_TITLE);
+        //window.console.log(element);
+        if (element.isChapter) {
+            const caret = document.createElement("i");
+            caret.classList.add("bi", "bi-caret-right-fill");
+            title.innerHTML = " " + await getString("chapter", "format_moointopics") + " " + element.isChapter + ": " + element.title;
+            title.prepend(caret);
+        } if (!element.isChapter) {
+            title.innerHTML = await getString("lesson", "format_moointopics") + " " + element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
+
+        }
+      }
 
     /**
      * Handle a page item update.
@@ -144,24 +193,41 @@ export default class Component extends DndSection {
      * @param {Object} details.element the course state data.
      */
     _refreshPageItem({element, state}) {
-        // if (!element.pageItem) {
-        //     return;
-        // }
-        // if (element.pageItem.sectionId !== this.id && this.isPageItem) {
-        //     this.pageItem = false;
-        //     this.getElement(this.selectors.SECTION_ITEM).classList.remove(this.classes.PAGEITEM);
-        //     return;
-        // }
-        // const section = state.section.get(this.id);
-        // if (section.indexcollapsed && !element.pageItem?.isStatic) {
-        //     this.pageItem = (element.pageItem?.sectionId == this.id);
-        // } else {
-        //     this.pageItem = (element.pageItem.type == 'section' && element.pageItem.id == this.id);
-        // }
-        // const sectionItem = this.getElement(this.selectors.SECTION_ITEM);
-        // sectionItem.classList.toggle(this.classes.PAGEITEM, this.pageItem ?? false);
-        // if (this.pageItem && !this.reactive.isEditing) {
-        //     this.element.scrollIntoView({block: "nearest"});
-        // }
+        if (!element.pageItem) {
+            return;
+        }
+        if (element.pageItem.sectionId !== this.id && this.isPageItem) {
+            this.pageItem = false;
+            this.getElement(this.selectors.SECTION_ITEM).classList.remove(this.classes.PAGEITEM);
+            return;
+        }
+        const section = state.section.get(this.id);
+        if (section.indexcollapsed && !element.pageItem?.isStatic) {
+            this.pageItem = (element.pageItem?.sectionId == this.id);
+        } else {
+            this.pageItem = (element.pageItem.type == 'section' && element.pageItem.id == this.id);
+        }
+        const sectionItem = this.getElement(this.selectors.SECTION_ITEM);
+        sectionItem.classList.toggle(this.classes.PAGEITEM, this.pageItem ?? false);
+        if (this.pageItem && !this.reactive.isEditing) {
+            this.element.scrollIntoView({block: "nearest"});
+        }
     }
+
+    _updateChapters({ element, state }) {
+        //window.console.log(element);
+        state.section.forEach((section) => {
+          if (section.number >= element.number) {
+            const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
+            //window.console.log(number);
+            if (section.isChapter) {
+              number.innerHTML = section.isChapter;
+            } else {
+              number.innerHTML =
+                section.parentChapter + "." + section.innerChapterNumber;
+            }
+            //window.console.log(number);
+          }
+        });
+      }
 }

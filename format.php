@@ -41,7 +41,13 @@ if ($topic = optional_param('topic', 0, PARAM_INT)) {
 $format = course_get_format($course);
 $course = $format->get_course();
 $context = context_course::instance($course->id);
-$course->hiddensections = false;
+$course->hiddensections = true;
+
+
+// $sectionnumber = optional_param('section', 0, PARAM_INT);
+// if ($sectionnumber > 0) {
+//     set_user_preference('format_moointopics_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
+// }
 
 if (($marker >= 0) && has_capability('moodle/course:setcurrentsection', $context) && confirm_sesskey()) {
     $course->marker = $marker;
@@ -55,7 +61,10 @@ course_create_sections_if_missing($course, 0);
 
 $renderer = $PAGE->get_renderer('format_moointopics');
 
-$sectionnumber = optional_param('section', 0, PARAM_INT);
+//$sectionnumber = optional_param('section', 0, PARAM_INT);
+// if ($sectionnumber > 0) {
+//     set_user_preference('format_moointopics_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
+// }
 
 
 if (!empty($displaysection)) {

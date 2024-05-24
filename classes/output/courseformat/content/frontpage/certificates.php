@@ -6,9 +6,10 @@ use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
 use context_course;
+use format_moointopics\local\certificateslib;
 
 /**
- * Base class to render the course news section.
+ * Base class to render the course certificates section.
  *
  * @package   format_moointopics
  * @copyright 2023 ISy
@@ -28,11 +29,21 @@ class certificates implements renderable {
         global $DB, $USER;
 
         $course = $this->format->get_course();
+        $certificates = certificateslib::show_certificat($course->id);
+        $course_certificates = certificateslib::get_course_certificates($course->id, $USER->id);
+        $cert_count = count($course_certificates);
+        if ($cert_count > 3) {
+            $other_certificates = $cert_count - 3;
+        } else {
+            $other_certificates = false;
+        }
 
-       
+
 
         $data = (object)[
+            'coursecertificates' => $certificates,
             'certificatesUrl' => new moodle_url('/course/format/moointopics/certificates.php', array('id' => $course->id)),
+            'othercertificates' => $other_certificates
         ];
         return $data;
     }

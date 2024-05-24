@@ -92,18 +92,18 @@
 {{$ core_courseformat/local/content/section/header }}
     {{> format_moointopics/local/content/section/header }}
 {{/ core_courseformat/local/content/section/header }}
-{{/header}}
-{{#restrictionlock}}
-    <div class="align-self-center ml-2">
-        {{#pix}}t/unlock, core{{/pix}}
-    </div>
-{{/restrictionlock}}
+
+
 
 <div data-region="sectionbadges" class="sectionbadges d-flex align-items-center">
+{{#restrictionlock}}
+        {{#pix}}t/unlock, core{{/pix}}
+{{/restrictionlock}}
     {{$ core_courseformat/local/content/section/badges }}
-        {{> core_courseformat/local/content/section/badges }}
+        {{> format_moointopics/local/content/section/badges }}
     {{/ core_courseformat/local/content/section/badges }}
 </div>
+{{/header}}
 {{#collapsemenu}}
 <div class="flex-fill d-flex justify-content-end mr-2 align-self-start mt-2">
     <a
@@ -121,7 +121,7 @@
 {{/collapsemenu}}
 {{#controlmenu}}
     {{$ core_courseformat/local/content/section/controlmenu }}
-        {{> core_courseformat/local/content/section/controlmenu }}
+        {{> format_moointopics/local/content/section/controlmenu }}
     {{/ core_courseformat/local/content/section/controlmenu }}
 {{/controlmenu}}
 {{#singlesection}}
@@ -165,14 +165,14 @@
 {{/insertafter}}
 
 {{#showCompletionButton}}
-    <button {{#showCompletionButtonDone}} disabled {{/showCompletionButtonDone}} class="moointopics-btn comp_btn" type="button" data-action="completeSection" data-for="complete-section" data-id="{{{id}}}">
-        {{#showCompletionButtonDone}}
+    <button {{#isCompleted}} disabled {{/isCompleted}} class="moointopics-btn comp_btn" type="button" data-action="completeSection" data-for="complete-section" data-id="{{{id}}}">
+        {{#isCompleted}}
             {{#str}} page_read, format_moointopics {{/str}}
             <i class="bi bi-check"></i>
-        {{/showCompletionButtonDone}}
-        {{^showCompletionButtonDone}}
+        {{/isCompleted}}
+        {{^isCompleted}}
             {{#str}} mark_page_as_read, format_moointopics {{/str}}
-        {{/showCompletionButtonDone}}
+        {{/isCompleted}}
     </button>
 {{/showCompletionButton}}
 

@@ -43,6 +43,8 @@ export default class Component extends BaseComponent {
             TOGGLER: `[data-action="togglecourseindexsection"]`,
             COLLAPSE: `[data-toggle="collapse"]`,
             DRAWER: `.drawer`,
+            CHAPTERCONTAINER: `[data-for="chapter-container"]`,
+            INDEXNUMBER: `[data-for='index_number']`,
         };
         // Default classes to toggle on refresh.
         this.classes = {
@@ -51,6 +53,7 @@ export default class Component extends BaseComponent {
             SECTIONCURRENT: 'current',
             COLLAPSED: `collapsed`,
             SHOW: `show`,
+            CONTINUESECTION: `continueSection`,
         };
         // Arrays to keep cms and sections elements.
         this.sections = {};
@@ -91,6 +94,11 @@ export default class Component extends BaseComponent {
             this.cms[cm.dataset.id] = cm;
         });
 
+        state.section.forEach((section) => {
+            if (section.isActiveSection) {
+                this.reactive.dispatch('setPageItem', 'section', section.id);
+            }
+        });
         // Set the page item if any.
         this._refreshPageItem({element: state.course, state});
 
@@ -108,8 +116,10 @@ export default class Component extends BaseComponent {
             {watch: `course.pageItem:created`, handler: this._refreshPageItem},
             {watch: `course.pageItem:updated`, handler: this._refreshPageItem},
             // Sections and cm sorting.
+            
             {watch: `course.sectionlist:updated`, handler: this._refreshCourseSectionlist},
             {watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist},
+            //{watch: `section.isChapter:updated`, handler: this._updateChapters},
         ];
     }
 
@@ -205,18 +215,18 @@ export default class Component extends BaseComponent {
      * @param {Object} details.element the course state data.
      */
     _refreshPageItem({element, state}) {
-        // if (!element?.pageItem?.isStatic || element.pageItem.type != 'cm') {
-        //     return;
-        // }
-        // // Check if we need to uncollapse the section and scroll to the element.
-        // const section = state.section.get(element.pageItem.sectionId);
-        // if (section.indexcollapsed) {
-        //     this._expandSectionNode(section, true);
-        //     setTimeout(
-        //         () => this.cms[element.pageItem.id]?.scrollIntoView({block: "nearest"}),
-        //         250
-        //     );
-        // }
+        if (!element?.pageItem?.isStatic || element.pageItem.type != 'cm') {
+            return;
+        }
+        // Check if we need to uncollapse the section and scroll to the element.
+        const section = state.section.get(element.pageItem.sectionId);
+        if (section.indexcollapsed) {
+            this._expandSectionNode(section, true);
+            setTimeout(
+                () => this.cms[element.pageItem.id]?.scrollIntoView({block: "nearest"}),
+                250
+            );
+        }
     }
 
     /**
@@ -361,4 +371,21 @@ export default class Component extends BaseComponent {
     _deleteSection({element}) {
         delete this.sections[element.id];
     }
+
+    _updateChapters({ state, element }) {
+        //window.console.log(element);
+        state.section.forEach((section) => {
+          if (section.number >= element.number) {
+            //window.console.log(section.id)
+            //const number = this.getElement(this.selectors.INDEXNUMBER, element.id);
+           
+            if (section.isChapter) {
+              //number.innerHTML = section.isChapter;
+            } else {
+             // number.innerHTML =
+               // section.parentChapter + "." + section.innerChapterNumber;
+            }
+          }
+        });
+      }
 }

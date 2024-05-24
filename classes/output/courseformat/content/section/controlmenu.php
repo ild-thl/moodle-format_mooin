@@ -123,7 +123,7 @@ class controlmenu extends controlmenu_base {
                 } else {
                     $strdelete = get_string('deletesection');
                 }
-                $url = new moodle_url('/course/format/moointopics/editsection.php', array(
+                $url = new moodle_url('/course/editsection.php', array(
                     'id' => $section->id,
                     'sr' => $sectionreturn,
                     'delete' => 1,
