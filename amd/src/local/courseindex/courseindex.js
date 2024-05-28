@@ -372,20 +372,5 @@ export default class Component extends BaseComponent {
         delete this.sections[element.id];
     }
 
-    _updateChapters({ state, element }) {
-        //window.console.log(element);
-        state.section.forEach((section) => {
-          if (section.number >= element.number) {
-            //window.console.log(section.id)
-            //const number = this.getElement(this.selectors.INDEXNUMBER, element.id);
-           
-            if (section.isChapter) {
-              //number.innerHTML = section.isChapter;
-            } else {
-             // number.innerHTML =
-               // section.parentChapter + "." + section.innerChapterNumber;
-            }
-          }
-        });
-      }
+    
 }

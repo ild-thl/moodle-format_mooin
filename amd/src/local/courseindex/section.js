@@ -214,20 +214,20 @@ export default class Component extends DndSection {
         }
     }
 
-    _updateChapters({ element, state }) {
-        //window.console.log(element);
-        state.section.forEach((section) => {
-          if (section.number >= element.number) {
-            const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
-            //window.console.log(number);
-            if (section.isChapter) {
-              number.innerHTML = section.isChapter;
-            } else {
-              number.innerHTML =
-                section.parentChapter + "." + section.innerChapterNumber;
-            }
-            //window.console.log(number);
-          }
-        });
-      }
+    // _updateChapters({ element, state }) {
+    //     //window.console.log(element);
+    //     state.section.forEach((section) => {
+    //       if (section.number >= element.number) {
+    //         const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
+    //         //window.console.log(number);
+    //         if (section.isChapter) {
+    //           number.innerHTML = section.isChapter;
+    //         } else {
+    //           number.innerHTML =
+    //             section.parentChapter + "." + section.innerChapterNumber;
+    //         }
+    //         //window.console.log(number);
+    //       }
+    //     });
+    //   }
 }

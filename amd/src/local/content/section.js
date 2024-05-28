@@ -29,6 +29,8 @@ import ModalFactory from "core/modal_factory";
 import Mooin4Modal from "../../mooin4modal";
 import { get_string as getString } from "core/str";
 
+
+
 export default class extends DndSection {
   /**
    * Constructor hook.
@@ -48,6 +50,7 @@ export default class extends DndSection {
       UNSETCHAPTER: `[data-action="sectionUnsetChapter"]`,
       ACTIONTEXT: `.menu-action-text`,
       ICON: `.icon`,
+      H5P: `.parent-iframe`,
     };
     // Most classes will be loaded later by DndCmItem.
     this.classes = {
@@ -84,7 +87,7 @@ export default class extends DndSection {
       }
     }
     this._showLastSectionModal(state);
-    //this._checkCompletionModal(state);
+    this._hvpListener();
   }
 
   /**
@@ -246,7 +249,7 @@ export default class extends DndSection {
         ),
         footer: Templates.render(
           "format_moointopics/local/content/modals/modalfooterclose",
-           {}
+          {}
         ),
         scrollable: false,
       });
@@ -255,14 +258,38 @@ export default class extends DndSection {
     }
   }
 
-  // async _checkCompletionModal(state) {
-  //   const section = state.section.get(this.id);
+  _hvpListener() {
+    var parentIFrames = this.getElements(this.selectors.H5P);
+    if (parentIFrames.length > 0) {
+        parentIFrames.forEach((parentIFrame) => {
+            if (parentIFrame.contentDocument) {
+                var parentIFrameContent = parentIFrame.contentDocument || parentIFrame.contentWindow.document;
 
-  // }
+                var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
 
-  // async _updateSectionProgress({state, element}) {
-  //     const progressbar = this.getElement(this.selectors.PROGRESSBAR);
-  //     progressbar.style.width = element.sectionprogress;
+                if (nestedIFrame) {
+                    var H5P = nestedIFrame.contentWindow.H5P;
+                    H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
+                } else {
+                    setTimeout(this._hvpListener.bind(this), 100);
+                }
+            } else {
+                setTimeout(this._hvpListener.bind(this), 100); 
+            }
+        });
+    }
+  }
 
-  // }
+  _hvpprogress(event) {
+    window.console.log(event);
+    this.reactive.dispatch('updateSectionprogress', this.id);
+    //const progress = this.getElement(this.selectors.PROGRESSBARINNER);
+    //let computedStyle = window.getComputedStyle(progress);
+    //let width = computedStyle.width;
+    if (event.getVerb() === "completed") {
+      console.log("completed")
+      
+      
+    }
+  }
 }

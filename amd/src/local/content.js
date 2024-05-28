@@ -76,6 +76,7 @@ export default class Component extends BaseComponent {
       COMPLETIONBUTTON: `[data-for='complete-section']`,
       SECTIONPROGRESS: `[data-for='section-progress']`,
       TITLEOVERLAY: `[data-for='title-overlay']`,
+      //H5P: `.parent-iframe`,
     };
     // Default classes to toggle on refresh.
     this.classes = {
@@ -165,27 +166,30 @@ export default class Component extends BaseComponent {
         this.reactive.addMutations({
           sectionSetChapter: mutations.sectionSetChapter,
           sectionUnsetChapter: mutations.sectionUnsetChapter,
-          completeSection: mutations.completeSection,
+          //completeSection: mutations.completeSection,
         });
       }
       new DispatchActions(this);
       this.reactive.addMutations({
         completeSection: mutations.completeSection,
         setContinueSection: mutations.setContinueSection,
-        getContinueSection: mutations.getContinueSection
+        getContinueSection: mutations.getContinueSection,
+        updateSectionprogress: mutations.updateSectionprogress,
       });
 
       // Mark content as state ready.
       this.element.classList.add(this.classes.STATEDREADY);
-      this.reactive.dispatch('getContinueSection', 'section');
+      this.reactive.dispatch("getContinueSection", "section");
       const sections = this.getElements(this.selectors.SECTION);
-        sections.forEach((section) => {
-            if (section.classList.contains(this.classes.ACTIVE)) {
-              this.reactive.dispatch('setContinueSection', 'section', section.dataset.id);
-              
-            }
-        });
-
+      sections.forEach((section) => {
+        if (section.classList.contains(this.classes.ACTIVE)) {
+          this.reactive.dispatch(
+            "setContinueSection",
+            "section",
+            section.dataset.id
+          );
+        }
+      });
     }
 
     // Capture completion events.
@@ -202,6 +206,7 @@ export default class Component extends BaseComponent {
       this._scrollHandler
     );
     //this._showLastSectionModal(state);
+    //this._hvpListener();
   }
 
   /**
@@ -296,7 +301,7 @@ export default class Component extends BaseComponent {
       { watch: `section.visible:updated`, handler: this._reloadSection },
       {
         watch: `section.isChapter:updated`,
-        handler: this._updateChapters
+        handler: this._updateChapters,
       },
       // Reindex sections and cms.
       { watch: `state:updated`, handler: this._indexContents },
@@ -413,7 +418,7 @@ export default class Component extends BaseComponent {
     if (!this.reactive.isEditing) {
       this._dynamicHeader(pageOffset);
     }
-    
+
     const items = this.reactive
       .getExporter()
       .allItemsArray(this.reactive.state);
@@ -431,9 +436,8 @@ export default class Component extends BaseComponent {
         return pageOffset >= element.offsetTop;
       }
 
-      
       pageItem = item;
-      
+
       return pageOffset >= element.offsetTop;
     });
     if (pageItem) {
@@ -918,6 +922,7 @@ export default class Component extends BaseComponent {
   }
 
   async _updateSectionProgress({ state, element }) {
+    //window.console.log("Wird ausgeführt");
     const progressbar = this.getElement(this.selectors.PROGRESSBARINNER);
     progressbar.style.width = element.sectionprogress + "%";
 
@@ -938,16 +943,21 @@ export default class Component extends BaseComponent {
     //window.console.log(element.target.id);
     const currentSection = state.section.get(element.id);
     let nextSection = null;
-    
-    let completed = true
-    
+
+    let completed = true;
+
     state.section.forEach((section) => {
-      if (section.parentChapter === currentSection.parentChapter && !section.isCompleted) {
+      if (
+        section.parentChapter === currentSection.parentChapter &&
+        !section.isCompleted
+      ) {
         //window.console.log(section);
-          completed = false;
-          
+        completed = false;
       }
-      if (section.parentChapter === currentSection.parentChapter + 1 && section.isFirstSectionOfChapter) {
+      if (
+        section.parentChapter === currentSection.parentChapter + 1 &&
+        section.isFirstSectionOfChapter
+      ) {
         nextSection = section;
       }
     });
@@ -956,6 +966,48 @@ export default class Component extends BaseComponent {
       window.console.log(nextSection);
     }
   }
+
+  // _hvpListener() {
+  //   var parentIFrames = this.getElements(this.selectors.H5P);
+  //   if (parentIFrames.length > 0) {
+  //       parentIFrames.forEach((parentIFrame) => {
+  //           if (parentIFrame.contentDocument) {
+  //               var parentIFrameContent = parentIFrame.contentDocument || parentIFrame.contentWindow.document;
+
+  //               var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
+
+  //               if (nestedIFrame) {
+  //                   var H5P = nestedIFrame.contentWindow.H5P;
+  //                   H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
+  //               } else {
+  //                   setTimeout(this._hvpListener.bind(this), 100);
+  //               }
+  //           } else {
+  //               setTimeout(this._hvpListener.bind(this), 100); 
+  //           }
+  //       });
+  //   }
+  // }
+
+  // _hvpprogress(event) {
+  //   window.console.log(event);
+  //   this.reactive.dispatch();
+  //   const progress = this.getElement(this.selectors.PROGRESSBARINNER);
+  //   let computedStyle = window.getComputedStyle(progress);
+  //   let width = computedStyle.width;
+  //   if (event.getVerb() === "completed") {
+  //     var score = event.getScore();
+  //     var maxScore = event.getMaxScore();
+  //     var percentage = (score / maxScore) * 100;
+  //     let newPercentage = width + percentage;
+  //     progress.style.width = newPercentage + "%";
+  //     console.log(score);
+  //     console.log(maxScore);
+  //     console.log(percentage);
+  //     console.log(newPercentage);
+  //     console.log(width);
+  //   }
+  // }
 
   // async _showLastSectionModal(state) {
   //   const course = state.course;
@@ -977,6 +1029,4 @@ export default class Component extends BaseComponent {
   //     modal.show();
   //   }
   // }
-
-  
 }

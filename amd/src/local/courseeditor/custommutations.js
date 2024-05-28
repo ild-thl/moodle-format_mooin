@@ -20,6 +20,24 @@ export default class {
         stateManager.processUpdates(JSON.parse(updates));
     }
 
+    async updateSectionprogress(stateManager, sectionId) {
+        window.console.log(sectionId);
+        const course = stateManager.get('course');
+        let ids = [];
+        ids.push(sectionId);
+        const args = {
+            action: 'update_sectionprogress',
+            courseid: course.id,
+            ids: ids,
+            targetsectionid: sectionId,
+        };
+        let updates = await ajax.call([{
+            methodname: 'core_courseformat_update_course',
+            args,
+        }])[0];
+        stateManager.processUpdates(JSON.parse(updates));
+    }
+
     async sectionSetChapter(stateManager, target) {
         const course = stateManager.get('course');
         let ids = [];

@@ -54,6 +54,17 @@ class stateactions extends Base {
         $this->section_state($updates, $course, $ids);
     }
 
+    public function update_sectionprogress(
+        stateupdates $updates,
+        stdClass $course,
+        array $ids = [],
+        ?int $targetsectionid = null,
+        ?int $targetcmid = null
+    ): void {
+        //format_moointopics\local\progresslib::complete_section($targetsectionid);
+        $this->section_state($updates, $course, $ids);
+    }
+
 
     public function section_setChapter(
         stateupdates $updates,
