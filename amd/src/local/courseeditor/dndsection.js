@@ -111,6 +111,7 @@ export default class extends BaseComponent {
         }
         // We accept any section but the section 0 or ourself
         if (dropdata?.type === 'section') {
+            window.console.log("VALITETE");
             const sectionzeroid = this.course.sectionlist[0];
             const chapterone = this.course.sectionlist[1];
             return dropdata?.id != this.id && dropdata?.id != sectionzeroid && this.id != sectionzeroid

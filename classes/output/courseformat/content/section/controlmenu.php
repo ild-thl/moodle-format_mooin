@@ -129,13 +129,17 @@ class controlmenu extends controlmenu_base {
                     'delete' => 1,
                     'sesskey' => sesskey()
                 ));
-                $controls['delete'] = array(
+                $controls['delete'] = [
                     'url' => $url,
                     'icon' => 'i/delete',
                     'name' => $strdelete,
-                    'pixattr' => array('class' => ''),
-                    'attr' => array('class' => 'icon editing_delete')
-                );
+                    'pixattr' => ['class' => ''],
+                    'attr' => [
+                        'class' => 'icon editing_delete',
+                        'data-action' => 'deleteSection',
+                        'data-id' => $section->id,
+                    ],
+                ];
             }
         }
 

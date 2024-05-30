@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import DndSectionItem from 'core_courseformat/local/courseeditor/dndsectionitem';
+import DndSectionItem from 'format_moointopics/local/courseeditor/dndsectionitem';
 
 export default class Component extends DndSectionItem {
 
@@ -43,9 +43,10 @@ export default class Component extends DndSectionItem {
         this.fullregion = descriptor.fullregion;
 
         // Prevent topic zero from being draggable.
-        if (this.section.number > 0) {
+        if (this.section.number > 1) {
             this.getDraggableData = this._getDraggableData;
         }
+        
     }
 
     /**

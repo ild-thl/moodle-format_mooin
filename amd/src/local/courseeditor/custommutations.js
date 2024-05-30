@@ -86,15 +86,15 @@ export default class {
         
     }
 
-    async setLastSectionModal(stateManager, target) {
+    async setLastSectionModal(stateManager, id) {
         const course = stateManager.get('course');
         let ids = [];
-        ids.push(target.dataset.id);
+        ids.push(id);
         const args = {
             action: 'set_last_section_modal',
             courseid: course.id,
             ids: ids,
-            targetsectionid: target.dataset.id,
+            targetsectionid: id,
         };
         let updates = await ajax.call([{
             methodname: 'core_courseformat_update_course',

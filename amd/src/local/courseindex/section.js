@@ -25,7 +25,7 @@
  */
 
 import SectionTitle from 'format_moointopics/local/courseindex/sectiontitle';
-import DndSection from 'core_courseformat/local/courseeditor/dndsection';
+import DndSection from 'format_moointopics/local/courseeditor/dndsection';
 import { get_string as getString } from "core/str";
 
 export default class Component extends DndSection {
@@ -43,6 +43,8 @@ export default class Component extends DndSection {
             CM_LAST: `[data-for="cm"]:last-child`,
             INDEXNUMBER: `[data-for='index_number']`,
             CARET: `[data-for='caret']`,
+            INDEXINFOS: `[data-for='index_infos']`,
+            //CHECKMARK: `[data-for='checkmark']`,
         };
         // Default classes to toggle on refresh.
         this.classes = {
@@ -109,6 +111,7 @@ export default class Component extends DndSection {
             {watch: `section[${this.id}]:deleted`, handler: this.remove},
             {watch: `section[${this.id}]:updated`, handler: this._refreshSection},
             {watch: `course.pageItem:updated`, handler: this._refreshPageItem},
+            {watch: `section[${this.id}].sectionprogress:updated`, handler: this._updateSectionProgress},
             //{watch: `section.isChapter:updated`, handler: this._updateChapters},
         ];
     }
@@ -212,6 +215,21 @@ export default class Component extends DndSection {
         if (this.pageItem && !this.reactive.isEditing) {
             this.element.scrollIntoView({block: "nearest"});
         }
+    }
+
+
+    async _updateSectionProgress({ state, element }) {
+        if (element.isCompleted) {
+            const infos = this.getElement(this.selectors.INDEXINFOS);
+            const checkMark = document.createElement("i");
+            checkMark.classList.add("bi", "bi-check");
+            infos.appendChild(checkMark);
+        } else {
+            //const checkmark = this.getElement(this.selectors.CHECKMARK);
+            //checkmark.remove();
+        }
+        
+        
     }
 
     // _updateChapters({ element, state }) {

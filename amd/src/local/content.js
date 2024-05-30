@@ -175,6 +175,7 @@ export default class Component extends BaseComponent {
         setContinueSection: mutations.setContinueSection,
         getContinueSection: mutations.getContinueSection,
         updateSectionprogress: mutations.updateSectionprogress,
+        setLastSectionModal: mutations.setLastSectionModal,
       });
 
       // Mark content as state ready.
@@ -296,7 +297,7 @@ export default class Component extends BaseComponent {
         watch: `course.sectionlist:updated`,
         handler: this._refreshCourseSectionlist,
       },
-      //{watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist},
+      {watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist},
       // Section visibility.
       { watch: `section.visible:updated`, handler: this._reloadSection },
       {

@@ -109,8 +109,8 @@ export default class Component extends BaseComponent {
     getWatchers() {
         return [
             {watch: `section.indexcollapsed:updated`, handler: this._refreshSectionCollapsed},
-            {watch: `cm:created`, handler: this._createCm},
-            {watch: `cm:deleted`, handler: this._deleteCm},
+            //{watch: `cm:created`, handler: this._createCm},
+            //{watch: `cm:deleted`, handler: this._deleteCm},
             {watch: `section:created`, handler: this._createSection},
             {watch: `section:deleted`, handler: this._deleteSection},
             {watch: `course.pageItem:created`, handler: this._refreshPageItem},
@@ -118,7 +118,8 @@ export default class Component extends BaseComponent {
             // Sections and cm sorting.
             
             {watch: `course.sectionlist:updated`, handler: this._refreshCourseSectionlist},
-            {watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist},
+            //{watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist},
+            
             //{watch: `section.isChapter:updated`, handler: this._updateChapters},
         ];
     }
@@ -280,7 +281,7 @@ export default class Component extends BaseComponent {
         const exporter = this.reactive.getExporter();
         const data = exporter.section(state, element);
         // Create the new content.
-        const newcomponent = await this.renderComponent(fakeelement, 'core_courseformat/local/courseindex/section', data);
+        const newcomponent = await this.renderComponent(fakeelement, 'format_moointopics/local/courseindex/section', data);
         // Replace the fake node with the real content.
         const newelement = newcomponent.getElement();
         this.sections[element.id] = newelement;

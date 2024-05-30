@@ -255,6 +255,7 @@ export default class extends DndSection {
       });
       modal.show();
       modal.showFooter();
+      this.reactive.dispatch('setLastSectionModal', this.id);
     }
   }
 

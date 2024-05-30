@@ -65,6 +65,16 @@ class stateactions extends Base {
         $this->section_state($updates, $course, $ids);
     }
 
+    public function set_last_section_modal(
+        stateupdates $updates,
+        stdClass $course,
+        array $ids = [],
+        ?int $targetsectionid = null,
+        ?int $targetcmid = null
+    ): void {
+        set_user_preference('format_moointopics_hide_modal_for_section_'.$targetsectionid, 'true');
+        $this->section_state($updates, $course, $ids);
+    }
 
     public function section_setChapter(
         stateupdates $updates,
@@ -78,7 +88,6 @@ class stateactions extends Base {
 
         course_modinfo::purge_course_modules_cache($course->id, $ids);
         rebuild_course_cache($course->id, false, true);
-        
     }
 
     public function section_unsetChapter(
@@ -100,7 +109,7 @@ class stateactions extends Base {
     ): void {
         $this->course_state($updates, $course);
     }
-   
+
     /**
      * Show course sections.
      *
@@ -128,7 +137,7 @@ class stateactions extends Base {
      * @param int[] $ids section ids
      * @param int $visible the new visible value
      */
-    protected function set_section_visibility (
+    protected function set_section_visibility(
         stateupdates $updates,
         stdClass $course,
         array $ids,
@@ -201,7 +210,5 @@ class stateactions extends Base {
         }
         // The section order is at a course level.
         $updates->add_course_put();
-        
     }
-    
 }
