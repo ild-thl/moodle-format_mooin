@@ -42,7 +42,9 @@
             </div>
             <div class="mt-3 mb-3 d-flex align-items-center">
                 {{{coursecertificates}}}
+                {{#othercertificates}}
                 <span class="text-nowrap pr-1">+{{{othercertificates}}}</span>
+                {{/othercertificates}}
             </div>
             <div class="all-badges-link">
                 <a href="{{{certificatesUrl}}}" class="ml-auto">{{#str}} show_all_infos, format_moointopics{{/str}}</a>
