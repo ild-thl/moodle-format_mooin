@@ -152,11 +152,12 @@ export default class Component extends BaseComponent {
     }
 
     if (this.reactive.supportComponents) {
-      // Actions are only available in edit mode.
+      
       DispatchActions.addActions({
         completeSection: "completeSection",
       });
       const mutations = new CustomMutations();
+      // Actions are only available in edit mode.
       if (this.reactive.isEditing) {
         DispatchActions.addActions({
           sectionSetChapter: "sectionSetChapter",
@@ -923,7 +924,7 @@ export default class Component extends BaseComponent {
   }
 
   async _updateSectionProgress({ state, element }) {
-    //window.console.log("Wird ausgeführt");
+    window.console.log("Wird ausgeführt");
     const progressbar = this.getElement(this.selectors.PROGRESSBARINNER);
     progressbar.style.width = element.sectionprogress + "%";
 

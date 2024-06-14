@@ -1,17 +1,28 @@
 
 
-<div class="subpage">
+<div id="allforums" class="subpage">
     {{{breadcrumb}}}
     <div class="subpage--discussions d-flex flex-column">
         <h2>{{#str}} all_forums, format_moointopics {{/str}}</h2>
         <div class="border-card mb-3">
+        <ul>
             {{#forumslist}}
-                <ul>
-                    <li>{{{index}}} <a href={{{url}}}>{{{name}}}</a></li>
-                </ul>
+                
+                    <li class="d-inline-flex w-100 text-nowrap">{{{index}}} <a class="ml-1" href={{{url}}}>{{{name}}}</a>
+                    {{#unreadposts}}
+                    <span class="w-100 d-flex align-items-center justify-content-between" data-for="mark_as_read_container">
+                    <span class=" ml-1 notification-badge mr-1">{{{unreadposts}}}</span><a type="button" data-id="{{{id}}}" data-for="unread_link">{{#str}} mark_all_as_read, format_moointopics {{/str}}</a>
+                    </span>
+                    {{/unreadposts}} </li>
+                
             {{/forumslist}}
+            </ul>
         </div>
     </div>
-    
-    
 </div>
+
+{{#js}}
+require(['format_moointopics/local/forum/alldiscussionforums'], function(component) {
+    component.init('allforums');
+});
+{{/js}}

@@ -15,14 +15,14 @@
     <div class="d-none d-sm-block">
         <span class="unread-info mb-3 d-inline-block">
         {{#no_new_news}}
-            0 {{#str}} unread_news, format_moointopics {{/str}} <a href="{{{newsforumUrl}}}"> {{#str}} all_news, format_moointopics {{/str}}</a>
+           0 {{#str}} unread_news, format_moointopics {{/str}} <a href="{{{newsforumUrl}}}"> {{#str}} all_news, format_moointopics {{/str}}</a>
         {{/no_new_news}}
         {{^no_new_news}}
             {{#one_new_news}}
-                <a href="{{{newsforumUrl}}}"><span class="notification-badge mr-1">{{{unread_news_number}}}</span>{{#str}} unread_news_single, format_moointopics {{/str}} {{#str}} all_news, format_moointopics {{/str}}</a>
+                <a href="{{{newsforumUrl}}}"><span class="notification-badge mr-1">{{{unreadNewsNumber}}}</span>{{#str}} unread_news_single, format_moointopics {{/str}} {{#str}} all_news, format_moointopics {{/str}}</a>
             {{/one_new_news}}
             {{^one_new_news}}
-                <a href="{{{newsforumUrl}}}"><span class="notification-badge mr-1">{{{unread_news_number}}}</span>{{#str}} unread_news, format_moointopics {{/str}} {{#str}} all_news, format_moointopics {{/str}}</a>
+                <a href="{{{newsforumUrl}}}"><span class="notification-badge mr-1">{{{unreadNewsNumber}}}</span>{{#str}} unread_news, format_moointopics {{/str}} {{#str}} all_news, format_moointopics {{/str}}</a>
             {{/one_new_news}}
         {{/no_new_news}}
         </span>

@@ -282,15 +282,8 @@ export default class extends DndSection {
   }
 
   _hvpprogress(event) {
-    window.console.log(event);
-    this.reactive.dispatch('updateSectionprogress', this.id);
-    //const progress = this.getElement(this.selectors.PROGRESSBARINNER);
-    //let computedStyle = window.getComputedStyle(progress);
-    //let width = computedStyle.width;
     if (event.getVerb() === "completed") {
-      console.log("completed")
-      
-      
+      this.reactive.dispatch('updateSectionprogress', this.id);
     }
   }
 }

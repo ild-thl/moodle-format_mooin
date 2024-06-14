@@ -110,6 +110,20 @@ class stateactions extends Base {
         $this->course_state($updates, $course);
     }
 
+    public function readAllForumDiscussions(
+        stateupdates $updates,
+        stdClass $course,
+        array $ids = [],
+    ): void {
+        global $DB, $USER;
+        $forumid = $ids[0];
+        if ($discussions = $DB->get_records('forum_discussions', array('forum' => $forumid))) {
+            foreach ($discussions as $discussion) {
+                format_moointopics\local\forumlib::set_discussion_viewed($USER->id, $forumid, $discussion->id);
+            }
+        }
+    }
+
     /**
      * Show course sections.
      *

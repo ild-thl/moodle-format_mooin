@@ -204,9 +204,9 @@ class forumlib {
                         //$out .= html_writer::link($url_disc, get_string('all_forums', 'format_mooin4'), array('title' => get_string('all_forums', 'format_mooin4'))); // newsurl
                     }
 
-                    
 
-                    
+
+
                     // Get the user id for the one who created the news or forum
                     $user_news = self::user_print_forum($courseid);
 
@@ -218,7 +218,7 @@ class forumlib {
                         'news_title' => $value->subject,
                         'news_text' => $value->message,
                         'discussion_url' => $forum_discussion_url,
-                        'neue_forum_number' => $unread_forum_number,
+                        'unread_news_number' => $unread_forum_number,
                         'new_news' => $new_news,
                         'small_countcontainer' => $small_countcontainer
                     ];
@@ -226,7 +226,7 @@ class forumlib {
             }
         } else {
             $templatecontext = [
-                'neue_forum_number' => 0,
+                'unread_news_number' => 0,
                 'no_discussions_available' => true,
                 'no_news' => false,
                 'new_news' => false
@@ -236,31 +236,52 @@ class forumlib {
     }
 
     /**
- * Get the right user picture for creating forum
- * @param int courseid
- * @return object of user
- */
-public static function user_print_forum($courseid) {
-    global $DB, $USER;
+     * Get the right user picture for creating forum
+     * @param int courseid
+     * @return object of user
+     */
+    public static function user_print_forum($courseid) {
+        global $DB, $USER;
 
-    $sql = 'SELECT * FROM mdl_forum WHERE course = :cid ORDER BY ID DESC ' ; // LIMIT 1
-    $param = ['cid' => $courseid];
+        $sql = 'SELECT * FROM mdl_forum WHERE course = :cid ORDER BY ID DESC '; // LIMIT 1
+        $param = ['cid' => $courseid];
 
-    $forum_in_course = $DB->get_records_sql($sql, $param, IGNORE_MISSING);
-    // var_dump($forum_in_course);
-    // get the forum_discussion data
-    $sql_in_forum = 'SELECT * FROM mdl_forum_discussions ORDER BY ID DESC LIMIT 1'; // WHERE forum = :id
-    // $param_in_forum = ['id'=> $forum_in_course->id];
-    $discuss_forum_in_course = $DB->get_record_sql($sql_in_forum,  [],IGNORE_MISSING);
+        $forum_in_course = $DB->get_records_sql($sql, $param, IGNORE_MISSING);
+        // var_dump($forum_in_course);
+        // get the forum_discussion data
+        $sql_in_forum = 'SELECT * FROM mdl_forum_discussions ORDER BY ID DESC LIMIT 1'; // WHERE forum = :id
+        // $param_in_forum = ['id'=> $forum_in_course->id];
+        $discuss_forum_in_course = $DB->get_record_sql($sql_in_forum,  [], IGNORE_MISSING);
 
-    $result = new stdClass;
-    if ($discuss_forum_in_course->userid == $discuss_forum_in_course->usermodified) {
-        $result = $DB->get_record('user',['id'=>$discuss_forum_in_course->userid]);
-    } else {
-        $result = $DB->get_record('user',['id'=>$discuss_forum_in_course->usermodified]);
+        $result = new stdClass;
+        if ($discuss_forum_in_course->userid == $discuss_forum_in_course->usermodified) {
+            $result = $DB->get_record('user', ['id' => $discuss_forum_in_course->userid]);
+        } else {
+            $result = $DB->get_record('user', ['id' => $discuss_forum_in_course->usermodified]);
+        }
+
+
+        return $result;
     }
 
-
-    return $result;
-}
+    public static function set_discussion_viewed($userid, $forumid, $discussionid) {
+        global $DB;
+    
+        $posts = $DB->get_records('forum_posts', array('discussion' => $discussionid));
+        foreach ($posts as $post) {
+            if (!$read = $DB->get_record('forum_read', array('userid' => $userid,
+                                                             'forumid' => $forumid,
+                                                             'discussionid' => $discussionid,
+                                                             'postid' => $post->id))) {
+                $read = new stdClass();
+                $read->userid = $userid;
+                $read->forumid = $forumid;
+                $read->discussionid = $discussionid;
+                $read->postid = $post->id;
+                $read->firstread = time();
+                $read->lastread = $read->firstread;
+                $DB->insert_record('forum_read', $read);
+            }
+        }
+    }
 }

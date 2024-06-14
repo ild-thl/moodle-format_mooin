@@ -43,6 +43,7 @@ class news_section implements renderable {
         $data = (object)[
             'newsforumUrl' => $newsforumUrl,
             'previewPost' => $last_post,
+            'unreadNewsNumber' => $last_post['unread_news_number'],
         ];
 
         if ($last_post['unread_news_number'] == 0) {

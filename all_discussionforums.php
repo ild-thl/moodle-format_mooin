@@ -15,7 +15,7 @@ global $USER, $PAGE, $CFG, $DB;
 $courseid = optional_param('id', 0, PARAM_INT);
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
-$context = context_course::instance(SITEID); // $course->id, MUST_EXIST
+$context = context_course::instance($course->id); // $course->id, MUST_EXIST
 
 require_login($course);
 
@@ -24,7 +24,7 @@ $systemcontext = context_system::instance();
 $PAGE->set_course($course);
 $PAGE->set_pagelayout('course');
 $PAGE->set_context(\context_course::instance($course->id));
-$PAGE->set_title("$course->shortname: " . get_string('my_certificate', 'format_moointopics'));
+$PAGE->set_title("$course->shortname: " . get_string('forums', 'format_moointopics'));
 $PAGE->set_heading($course->fullname);
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
 $PAGE->set_url('/course/format/moointopics/all_discussionforums.php', array('id' => $course->id));
@@ -71,13 +71,25 @@ $value = '1';
 
                 $discussion_forum->url = $url;
                 $discussion_forum->index = $value++;
+                $discussion_forum->id = $forum->id;
+                
+                if ($unreadposts >= 1) {
+                    $discussion_forum->unreadposts = $unreadposts;
+                    
+                    //$discussion_forum->markasunreadlink = new moodle_url($url.'&markasread=1&redirect=1');
+                    //$discussion_forum->mark_as_read_url = new moodle_url('/mod/forum/markposts.php', array('f' => $oc_forum->id, 'mark' => 'read'));
+                    //$redirect_url = new moodle_url('/course/format/moointopics/all_discussionforums.php', array('id' => $course->id));
+                    //$discussion_forum->mark_as_read_url = new moodle_url('/mod/forum/markposts.php', array('f' => $oc_forum->id, 'mark' => 'read', 'sesskey' => sesskey(), 'returnto' => $redirect_url->out_as_local_url(false)));
+                    //$discussion_forum->markasunreadlink = $urlfactory->get_mark_all_discussions_as_read_url(new mod_forum\local\entities\forum($forum));
+                }
+
 
                 if (intval($oc_cm->visible) === 1) {
                     //$forum_element =  html_writer::div($value++  . ' ' .$oc_link, 'forum_title');
                     
                     array_push($forumslist, $discussion_forum);
                     if ($unreadposts >= 1) {
-                        $discussion_forum->markasunreadlink = new moodle_url('/course/format/moointopics/forums.php?f='.$oc_forum->id.'&markasread=1&redirect=1');
+                        //$discussion_forum->markasunreadlink = new moodle_url('/course/format/moointopics/forums.php?f='.$oc_forum->id.'&markasread=1&redirect=1');
                         //$markasunreadlink = html_writer::div($markasunreadlink, 'markasunreadlink d-none d-md-flex');
                         //$markasunreadlink_mobile = html_writer::link(new moodle_url('/course/format/mooin4/forums.php?f='.$oc_forum->id.'&markasread=1&redirect=1'),'', array('class'=>'markasunreadlink-mobile mooin4-btn d-flex d-md-none'));
                         //$markasunreadlink_mobile = html_writer::div($markasunreadlink_mobile, 'markasunreadlink-mobile mooin4-btn d-flex d-md-none');

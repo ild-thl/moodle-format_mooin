@@ -37,8 +37,14 @@ class discussions implements renderable {
         $data = (object)[
             'all_discussions_url' => new moodle_url('/course/format/moointopics/all_discussionforums.php', array('id' => $course->id)),
             'previewPost' => $previewPost,
+            'unreadNewsNumber' => $previewPost['unread_news_number'],
         ];
 
+        if ($previewPost['unread_news_number'] == 0) {
+            $data->no_new_news = true;
+        } else if ($previewPost['unread_news_number'] == 1) {
+            $data->one_new_news = true;
+        }
         
 
         return $data;

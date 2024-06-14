@@ -21,7 +21,7 @@ export default class {
     }
 
     async updateSectionprogress(stateManager, sectionId) {
-        window.console.log(sectionId);
+        window.console.log("MUSTATION WIRD AUSGEFÜHRT");
         const course = stateManager.get('course');
         let ids = [];
         ids.push(sectionId);
@@ -132,6 +132,23 @@ export default class {
             action: 'getContinuesection',
             courseid: course.id,
         };
+        let updates = await ajax.call([{
+            methodname: 'core_courseformat_update_course',
+            args,
+        }])[0];
+        stateManager.processUpdates(JSON.parse(updates));
+    }
+
+    async readAllForumDiscussions(stateManager, forumid) {
+        const state = stateManager.state;
+        const course = state.course;
+        let ids = [];
+        ids.push(forumid);
+        const args = {
+            action: 'readAllForumDiscussions',
+            courseid: course.id,
+            ids: ids,
+        }
         let updates = await ajax.call([{
             methodname: 'core_courseformat_update_course',
             args,
