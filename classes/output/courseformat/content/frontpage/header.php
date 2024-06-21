@@ -6,6 +6,7 @@ use renderable;
 use format_moointopics\local\chapterlib;
 use core_courseformat\base as course_format;
 use format_moointopics;
+use moodle_url;
 
 
 /**
@@ -17,8 +18,8 @@ use format_moointopics;
  */
 class header implements renderable {
 
-     /** @var course_format the course format class */
-     private $format;
+    /** @var course_format the course format class */
+    private $format;
 
     /**
      * Constructor.
@@ -31,14 +32,18 @@ class header implements renderable {
         //$this->continue_section = $this->get_continue_section();
     }
 
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
         $course = $this->format->get_course();
 
-        $headerimageurl = "http://localhost:8888/moodle401/theme/image.php?theme=mooin4&component=theme&image=.%2Fheader_placeholder_desktop";
+        $editheaderlink = new moodle_url('/course/format/moointopics/edit_header.php', array('course' => $course->id));
+
+        $headerimageurl = chapterlib::get_headerimage_url($course->id, false);
+        $headerimageURLMobile =  chapterlib::get_headerimage_url($course->id, true);
 
         $data = (object)[
-            //'headerimageURL' => $headerimageurl,
+            'headerimageURL' => $headerimageurl,
+            'headerimageURLMobile' => $headerimageURLMobile,
+            'editheaderlink' => $editheaderlink,
             'is_course_started' => chapterlib::is_course_started($course),
             'continue_section' => chapterlib::get_continue_section($course),
             'continue_url' => chapterlib::get_continue_url($course),

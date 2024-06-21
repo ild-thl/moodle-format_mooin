@@ -174,7 +174,7 @@ $isseparategroups = ($course->groupmode == SEPARATEGROUPS and !has_capability('m
 
 $PAGE->set_title("$course->shortname: ".get_string('participants'));
 $PAGE->set_heading($course->fullname);
-$PAGE->set_pagetype('course-view-' . $course->format);
+//$PAGE->set_pagetype('course-view-' . $course->format);
 $PAGE->add_body_class('path-user');                     // So we can style it independently.
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
 // $PAGE->navbar->add('Participants');
@@ -652,9 +652,9 @@ if ($roleid > 0) {
         $strallparticipants = get_string('allparticipants', 'format_moointopics');
     }
     if ($matchcount < $totalcount) {
-        echo $OUTPUT->heading($strallparticipants.get_string('labelsep', 'langconfig').$matchcount.'/'.$totalcount . $editlink, 3);
+        echo $OUTPUT->heading($strallparticipants.get_string('labelsep', 'langconfig').$matchcount.'/'.$totalcount . $editlink, 2);
     } else {
-        echo $OUTPUT->heading($strallparticipants.get_string('labelsep', 'langconfig').$matchcount . $editlink, 3);
+        echo $OUTPUT->heading($strallparticipants.get_string('labelsep', 'langconfig').$matchcount . $editlink, 2);
     }
 }
 

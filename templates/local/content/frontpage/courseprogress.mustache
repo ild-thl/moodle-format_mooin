@@ -17,7 +17,9 @@
             <div class="progressbar">
                 <div class="progressbar-inner" style="width: {{courseprogress}}%"></div>
             </div>
-            <span>{{{courseprogress}}}% des Kurses bearbeitet</span>
+            <span class="font-weight-bold">{{{courseprogress}}}%</span>
+            <span class="d-none d-sm-inline-block"> {{#str}} course_progress_text, format_moointopics {{/str}}</span>
+            <span class="d-inline-block d-sm-none"> {{#str}} progress_text_short, format_moointopics {{/str}}</span>
         </div>
         {{#is_course_started}}
             <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary d-none d-sm-flex">{{#str}} continue, format_moointopics, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>

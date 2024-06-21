@@ -10,6 +10,7 @@
 }}
 
 <div class="coursefrontpage__header">
+    <a href="{{{editheaderlink}}}" class="edit-header-img"><i class="bi bi-gear-fill"></i></a>
     {{#headerimageURL}}
         <img src="{{{headerimageURL}}}" alt="" class="header-image">
     {{/headerimageURL}}
@@ -18,7 +19,7 @@
     {{/headerimageURL}}
 
     {{#headerimageURLMobile}}
-        <img src="{{{headerimageURL}}}" alt="" class="header-image">
+        <img src="{{{headerimageURLMobile}}}" alt="" class="header-image">
     {{/headerimageURLMobile}}
     {{^headerimageURLMobile}}
         <div class="mobile-placeholder d-block d-sm-none"></div>

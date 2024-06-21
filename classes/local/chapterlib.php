@@ -502,5 +502,47 @@ class chapterlib {
             return new moodle_url('/course/view.php', array('id' => $course->id, 'section' => 2));
         }
     }
+
+    /**
+     * Returns url for headerimage
+     *
+     * @param int courseid
+     * @param bool true if mobile header image is required or false for desktop image
+     * @return string|bool String with url or false if no image exists
+     */
+    static function get_headerimage_url($courseid, $mobile = true) {
+        global $DB;
+        $context = context_course::instance($courseid);
+        $filearea = 'headerimagemobile';
+        if (!$mobile) {
+            $filearea = 'headerimagedesktop';
+        }
+        $filename = '';
+        $sql = 'select 0, filename
+                  from {files}
+                 where contextid = :contextid
+                   and component = :component
+                   and filearea = :filearea
+                   and itemid = :courseid
+                   and mimetype like :mimetype';
+    
+        $params = array('contextid' => $context->id,
+            'component' => 'format_moointopics',
+            'filearea' => $filearea,
+            'courseid' => $courseid,
+                        'mimetype' => 'image/%');
+    
+        $records = $DB->get_records_sql($sql, $params);
+    
+        if (count($records) == 1) {
+            $filename = $records[0]->filename;
+        }
+        else {
+            return false;
+        }
+    
+        $url = new moodle_url('/pluginfile.php/'.$context->id.'/format_moointopics/'.$filearea.'/'.$courseid.'/0/'.$filename);
+        return $url;
+    }
 }
 

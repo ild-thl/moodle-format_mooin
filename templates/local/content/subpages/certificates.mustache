@@ -2,8 +2,15 @@
 
 <div class="subpage">
     {{{breadcrumb}}}
-    <div class="subpage--badges d-flex flex-column">
+    <div class="subpage--certificates d-flex flex-column">
         <h2>{{#str}} certificates, format_moointopics {{/str}}</h2>
+        <p>{{#str}} cert_descr, format_moointopics {{/str}}</p>
+
+        {{#certificates}}
+            <div class="border-card">
+                {{{certificates}}}
+            </div>
+        {{/certificates}}
     </div>
     
 </div>

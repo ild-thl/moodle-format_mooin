@@ -880,3 +880,31 @@ function format_moointopics_inplace_editable($itemtype, $itemid, $newvalue) {
     }
 }
 
+function format_moointopics_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+    require_login($course, true);
+
+    if ($filearea != 'headerimagemobile' and $filearea != 'headerimagedesktop') {
+        return false;
+    }
+
+    $itemid = (int)array_shift($args); // The first item in the $args array.
+
+    // Extract the filename / filepath from the $args array.
+    $filename = array_pop($args); // The last item in the $args array.
+    if (!$args) {
+        $filepath = '/'; // Array $args is empty => the path is '/'.
+    } else {
+        $filepath = '/' . implode('/', $args) . '/'; // Array $args contains elements of the filepath.
+    }
+
+    // Retrieve the file from the Files API.
+    $fs = get_file_storage();
+    $file = $fs->get_file($context->id, 'format_moointopics', $filearea, $itemid, '/', $filename);
+    if (!$file) {
+        return false; // The file does not exist.
+    }
+
+    // Finally send the file - in this case with a cache lifetime of 0 seconds and no filtering.
+    send_stored_file($file, 0, 0, $forcedownload, $options);
+}
+
