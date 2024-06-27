@@ -74,7 +74,7 @@
     >
         <a data-toggle="collapse"
             href="#chapter-{{{isChapter}}}-index"
-            class="{{^containsActiveSection}} collapsed {{/containsActiveSection}}"
+            class="{{^containsActiveSection}} collapsed {{/containsActiveSection}} chapter"
             aria-expanded="{{#containsActiveSection}}true{{/containsActiveSection}}{{^containsActiveSection}}false{{/containsActiveSection}}"
             aria-controls="courseindexcollapse{{number}}"
             tabindex="-1"
@@ -128,7 +128,7 @@
             tabindex="-1"
         >
        
-        {{#str}}lesson, format_moointopics{{/str}}  <span data-for="index_number" data-id="{{id}}">{{{parentChapter}}}.{{{innerChapterNumber}}}</span>: 
+          <span data-for="index_number" data-id="{{id}}">{{{parentChapter}}}.{{{innerChapterNumber}}}</span>: 
             {{{title}}}
             
         </a>

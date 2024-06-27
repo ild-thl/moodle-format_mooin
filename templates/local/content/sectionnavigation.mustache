@@ -57,8 +57,10 @@
                 <div class="progressbar-inner"  data-for="progressbar_inner" style="width: {{sectionprogress}}%"></div>
             </div>
             <span class="progress-text">
-                <span data-for="section-progress">{{sectionprogress}}</span>
-                % der Lektion bearbeitet
+            <span class="font-weight-bold">
+                <span data-for="section-progress">{{sectionprogress}}</span>%
+            </span>
+                {{#str}}lesson_progress_text, format_moointopics{{/str}}
             </span>
         </div>
 </div>
