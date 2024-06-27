@@ -27,7 +27,9 @@
             <span class="chat-icon pr-2 position-relative">
                 <i class="bi bi-chat-left"></i>
                 <i class="bi bi-chat-right-text-fill"></i>
+                {{^no_new_news}}
                 <span class="notification-badge notification-badge--mobile position-absolute">{{{unreadNewsNumber}}}</span>
+                {{/no_new_news}}
             </span>
             
             {{#str}} forums, format_moointopics{{/str}}

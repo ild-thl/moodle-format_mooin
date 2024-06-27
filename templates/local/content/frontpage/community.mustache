@@ -26,7 +26,6 @@
         {{/no_new_news}}
     </span>
     <div class="tiles-wrapper">
-        
             {{#previewPost}}
             {{#discussion_url}}
                 <div class="discussion-preview d-flex flex-column">
@@ -56,6 +55,25 @@
                 </div>
                 {{/discussion_url}}
             {{/previewPost}}
+            {{^discussion_url}}
+                <div class="discussion-preview d-flex flex-column d-md-flex d-lg-none justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-newspaper mr-2"></i>
+                        <span>
+                            <a href="{{{all_discussions_url}}}" class="caption"> {{#str}} discussion_forum, format_moointopics {{/str}}</a>
+                        </span>
+                    </div>
+                    <div class="d-flex">
+                        <div class="no-discussion-img"></div>
+                        <span class="blue-info-text">{{#str}} no_contributions_available, format_moointopics {{/str}}</span>
+                    </div>
+                    
+                    
+                    <div class="discussion-link">
+                        <a class="" href="{{{all_discussions_url}}}">{{#str}} show_all_forums, format_moointopics {{/str}}</a>
+                    </div>
+                </div>
+            {{/discussion_url}}
         {{/discussions}}
         {{#participants}}
             <div class="participants-container d-flex flex-column">
