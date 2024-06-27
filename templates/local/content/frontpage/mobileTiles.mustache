@@ -1,13 +1,4 @@
-{{!
-    @template format_moointopics/local/content/frontpage/courseprogress
 
-    Displays the frontpage courseprogress.
-
-    Example context (json):
-    {
-       TODO
-    }
-}}
 
 <div class="mobile-tiles d-flex d-sm-none flex-column">
     <h2>{{#str}} badges_certificates, format_moointopics {{/str}}</h2>
@@ -33,12 +24,15 @@
     <div class="d-flex badges-certificates-mobile mb-4">
     {{#discussions}}
         <a href="{{{all_discussions_url}}}" class="moointopics-btn">
-            <span class="chat-icon pr-2">
+            <span class="chat-icon pr-2 position-relative">
                 <i class="bi bi-chat-left"></i>
                 <i class="bi bi-chat-right-text-fill"></i>
+                <span class="notification-badge notification-badge--mobile position-absolute">{{{unreadNewsNumber}}}</span>
             </span>
+            
             {{#str}} forums, format_moointopics{{/str}}
         </a>
+        
     {{/discussions}}
     
     {{#participants}}

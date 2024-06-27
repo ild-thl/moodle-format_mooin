@@ -54,7 +54,13 @@
     </div>
 
     <div class="news-mobile d-flex d-sm-none">
+    <div class="position-relative">
         <i class="bi bi-newspaper mr-2"></i>
+        {{^no_new_news}}
+        <span class="notification-badge notification-badge--mobile position-absolute">{{{unreadNewsNumber}}}</span>
+        {{/no_new_news}}
+    </div>
+       
         {{#previewPost}}
             <div class="d-flex flex-column">
                 <a href="{{{discussion_url}}}" class="caption caption--sm">{{#str}} latest_post, format_moointopics {{/str}}</a>
