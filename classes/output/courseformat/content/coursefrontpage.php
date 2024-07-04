@@ -12,6 +12,7 @@ use format_moointopics\output\courseformat\content\frontpage\badges;
 use format_moointopics\output\courseformat\content\frontpage\certificates;
 use format_moointopics\output\courseformat\content\frontpage\discussions;
 use format_moointopics\output\courseformat\content\frontpage\participants;
+use context_course;
 
 
 
@@ -69,6 +70,8 @@ class coursefrontpage implements renderable {
         $participants = $this->participants;
         $course = $format->get_course();
 
+        
+
         $data = (object)[
             'header' => $header->export_for_template($output),
             'coursename' => $course->fullname,
@@ -79,6 +82,11 @@ class coursefrontpage implements renderable {
             'discussions' => $discussions->export_for_template($output),
             'participants' => $participants->export_for_template($output),
         ];
+
+        $coursecontext = context_course::instance($course->id);
+        if (has_capability('moodle/course:update', $coursecontext)) {
+            $data->has_capability = true;
+        }
 
         return $data;
     }

@@ -152,7 +152,6 @@ export default class Component extends BaseComponent {
     }
 
     if (this.reactive.supportComponents) {
-      
       DispatchActions.addActions({
         completeSection: "completeSection",
       });
@@ -298,7 +297,7 @@ export default class Component extends BaseComponent {
         watch: `course.sectionlist:updated`,
         handler: this._refreshCourseSectionlist,
       },
-      {watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist},
+      { watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist },
       // Section visibility.
       { watch: `section.visible:updated`, handler: this._reloadSection },
       {
@@ -924,7 +923,6 @@ export default class Component extends BaseComponent {
   }
 
   async _updateSectionProgress({ state, element }) {
-    window.console.log("Wird ausgeführt");
     const progressbar = this.getElement(this.selectors.PROGRESSBARINNER);
     progressbar.style.width = element.sectionprogress + "%";
 
@@ -941,32 +939,82 @@ export default class Component extends BaseComponent {
       completionbutton.innerText = text;
       completionbutton.appendChild(checkMark);
     }
-    //window.console.log(element.id);
-    //window.console.log(element.target.id);
+
     const currentSection = state.section.get(element.id);
     let nextSection = null;
 
     let completed = true;
+    let allCompleted = true;
+
+    state.section.forEach((section) => {
+      if (!section.isCompleted && section.number != 0 && !section.isChapter) {
+        allCompleted = false;
+      }
+    });
 
     state.section.forEach((section) => {
       if (
         section.parentChapter === currentSection.parentChapter &&
         !section.isCompleted
       ) {
-        //window.console.log(section);
         completed = false;
       }
       if (
-        section.parentChapter === currentSection.parentChapter + 1 &&
+        Number(section.parentChapter) ===
+          Number(currentSection.parentChapter) + 1 &&
         section.isFirstSectionOfChapter
       ) {
         nextSection = section;
       }
     });
 
-    if (completed) {
-      window.console.log(nextSection);
+    if (allCompleted) {
+      this._showCourseCompletedModal(state, nextSection);
+    } else if (completed) {
+      this._showChapterCompletedModal(state, nextSection);
     }
+  }
+
+  async _showChapterCompletedModal(state, nextSection) {
+    const modal = await ModalFactory.create({
+      type: Mooin4Modal.TYPE,
+      title: await getString(
+        "modal_chapter_complete_title",
+        "format_moointopics"
+      ),
+      body: Templates.render(
+        "format_moointopics/local/content/modals/chaptercomplete",
+        {}
+      ),
+      footer: Templates.render(
+        "format_moointopics/local/content/modals/completechapterfooter",
+        { nextSection }
+      ),
+      scrollable: false,
+    });
+    modal.show();
+    modal.showFooter();
+  }
+
+  async _showCourseCompletedModal(state) {
+    const modal = await ModalFactory.create({
+      type: Mooin4Modal.TYPE,
+      title: await getString(
+        "modal_course_complete_title",
+        "format_moointopics"
+      ),
+      body: Templates.render(
+        "format_moointopics/local/content/modals/coursecomplete",
+        {}
+      ),
+      footer: Templates.render(
+        "format_moointopics/local/content/modals/modalfooterclose",
+        {}
+      ),
+      scrollable: false,
+    });
+    modal.show();
+    modal.showFooter();
   }
 
   // _hvpListener() {
@@ -985,7 +1033,7 @@ export default class Component extends BaseComponent {
   //                   setTimeout(this._hvpListener.bind(this), 100);
   //               }
   //           } else {
-  //               setTimeout(this._hvpListener.bind(this), 100); 
+  //               setTimeout(this._hvpListener.bind(this), 100);
   //           }
   //       });
   //   }

@@ -61,7 +61,6 @@ class stateactions extends Base {
         ?int $targetsectionid = null,
         ?int $targetcmid = null
     ): void {
-        //format_moointopics\local\progresslib::complete_section($targetsectionid);
         $this->section_state($updates, $course, $ids);
     }
 

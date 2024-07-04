@@ -14,7 +14,7 @@
     
     <div class="tiles-wrapper">
         {{#badges}}
-        <div class="badges-container">
+        <div class="badges-container d-flex flex-column">
             <div class="d-flex align-items-center">
                 <i class="bi bi-trophy-fill mr-1"></i>
                 <a href="{{{badgesUrl}}}" class="caption">{{#str}} badges, format_moointopics{{/str}}</a>
@@ -28,7 +28,7 @@
                     <span class="text-nowrap pr-1">+{{otherBadges}}</span>
                 {{/otherBadges}}
             </div>
-            <div class="all-badges-link">
+            <div class="all-badges-link mt-auto">
                 <a href="{{{badgesUrl}}}" class="ml-auto">{{#str}} show_all_infos, format_moointopics{{/str}}</a>
             </div>
         </div>
@@ -39,6 +39,12 @@
             <div class="d-flex align-items-center">
                 <i class="bi bi-award-fill"></i>
                 <a href="{{{certificatesUrl}}}" class="caption">{{#str}} certificates, format_moointopics{{/str}}</a>
+                {{#has_capability}}
+                <button type="button" class="btn info-tip ml-auto p-0" data-toggle="tooltip" data-placement="top"
+                    title=" {{#str}} certificates_tooltip, format_moointopics {{/str}}">
+                    <span class="bi bi-info-circle-fill"></span>
+                </button>
+                {{/has_capability}}
             </div>
             <div class="mt-3 mb-3 d-flex align-items-center">
                 {{{coursecertificates}}}
