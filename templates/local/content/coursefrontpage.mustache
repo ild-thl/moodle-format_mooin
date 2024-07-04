@@ -32,6 +32,9 @@ Example context (json):
                 {{> format_moointopics/local/content/frontpage/tabletTiles }}
                 {{> format_moointopics/local/content/frontpage/mobileTiles }}
                 {{> format_moointopics/local/content/frontpage/coursetable }}
+                {{#unenrolurl}}
+                    <a href="{{{unenrolurl}}}" class="unenrol-btn">{{#str}}unenrol, format_moointopics{{/str}}</a>
+                {{/unenrolurl}}
             </div>
             
         </div>
