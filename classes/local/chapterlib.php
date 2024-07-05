@@ -159,14 +159,22 @@ class chapterlib {
 
     public static function is_first_section_of_chapter($sectionid) {
         global $DB;
-        $chapter = null;
-        if ($section = $DB->get_record('course_sections', array('id' => $sectionid))) {
     
+        if ($section = $DB->get_record('course_sections', array('id' => $sectionid))) {
+            
             $chapters = self::get_course_chapters($section->course);
     
             foreach ($chapters as $c) {
-                if ($section->section == $c->section +1) {
-                   return true;
+                
+                $next_section = $DB->get_record_sql(
+                    "SELECT * FROM {course_sections}
+                     WHERE course = :courseid AND section > :chaptersection AND visible = 1
+                     ORDER BY section ASC",
+                    array('courseid' => $section->course, 'chaptersection' => $c->section)
+                );
+    
+                if ($next_section && $next_section->id == $sectionid) {
+                    return true;
                 }
             }
         }
