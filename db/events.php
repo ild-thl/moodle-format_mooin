@@ -71,6 +71,6 @@ $observers = array(
     // Sections
     array(
         'eventname' => '\core\event\course_section_created',
-        'callback' => 'format_mooin4_observer::section_created'
+        'callback' => 'format_mooin4_observer::course_section_created',
     )
 );

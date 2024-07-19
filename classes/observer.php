@@ -25,14 +25,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-class format_mooin4_observer
-{
+class format_mooin4_observer {
     public static function badge_awarded(\core\event\badge_awarded $event) {
         // event parameters:
         // int expiredate: Badge expire timestamp.
         // int badgeissuedid: Badge issued ID.
         global $CFG;
-        require_once($CFG->dirroot. '/course/format/mooin4/locallib.php');
+        require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $awardedtoid = $event->relateduserid;
         $badgeissuedid = $event->other['badgeissuedid'];
         set_new_badge($awardedtoid, $badgeissuedid);
@@ -43,7 +42,7 @@ class format_mooin4_observer
         // int badgeid: the ID of the badge.
         // int badgehash: The UID of the awarded badge.
         global $CFG;
-        require_once($CFG->dirroot. '/course/format/mooin4/locallib.php');
+        require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $viewedbyuserid = $event->userid;
         $badgehash = $event->other['badgehash'];
         unset_new_badge($viewedbyuserid, $badgehash);
@@ -51,7 +50,7 @@ class format_mooin4_observer
 
     public static function ilddigital_certificate_issued(\mod_ilddigitalcert\event\certificate_issued $event) {
         global $CFG;
-        require_once($CFG->dirroot. '/course/format/mooin4/locallib.php');
+        require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $awardedtoid = $event->relateduserid;
         $issuedid = $event->objectid;
         set_new_certificate($awardedtoid, $issuedid, 'ilddigitalcert');
@@ -59,7 +58,7 @@ class format_mooin4_observer
 
     public static function ilddigital_certificate_viewed(\mod_ilddigitalcert\event\certificate_viewed $event) {
         global $CFG;
-        require_once($CFG->dirroot. '/course/format/mooin4/locallib.php');
+        require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $viewedbyuserid = $event->userid;
         $issuedid = $event->objectid;
         unset_new_certificate($viewedbyuserid, $issuedid, 'ilddigitalcert');
@@ -67,7 +66,7 @@ class format_mooin4_observer
 
     public static function course_certificate_issued(\tool_certificate\event\certificate_issued $event) {
         global $CFG;
-        require_once($CFG->dirroot. '/course/format/mooin4/locallib.php');
+        require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $awardedtoid = $event->relateduserid;
         $issuedid = $event->objectid;
         set_new_certificate($awardedtoid, $issuedid, 'coursecertificate');
@@ -75,14 +74,18 @@ class format_mooin4_observer
 
     public static function course_certificate_viewed(\mod_coursecertificate\event\course_module_viewed $event) {
         global $CFG, $DB;
-        require_once($CFG->dirroot. '/course/format/mooin4/locallib.php');
+        require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $viewedbyuserid = $event->userid;
         $coursecertificateid = $event->objectid;
         if ($coursecertificate = $DB->get_record('coursecertificate', array('id' => $coursecertificateid))) {
-            if ($coursecertificateissue = $DB->get_record('tool_certificate_issues', 
-                                                           array('userid' => $viewedbyuserid,
-                                                                 'templateid' => $coursecertificate->template,
-                                                                 'courseid' => $coursecertificate->course))) {
+            if ($coursecertificateissue = $DB->get_record(
+                'tool_certificate_issues',
+                array(
+                    'userid' => $viewedbyuserid,
+                    'templateid' => $coursecertificate->template,
+                    'courseid' => $coursecertificate->course
+                )
+            )) {
                 unset_new_certificate($viewedbyuserid, $coursecertificateissue->id, 'coursecertificate');
             }
         }
@@ -90,7 +93,7 @@ class format_mooin4_observer
 
     public static function discussion_viewed(\mod_forum\event\discussion_viewed $event) {
         global $CFG;
-        require_once($CFG->dirroot. '/course/format/mooin4/locallib.php');
+        require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $forumid = $event->contextinstanceid;
         $userid = $event->userid;
         $discussionid = $event->objectid;
@@ -99,7 +102,7 @@ class format_mooin4_observer
 
     public static function user_updated(\core\event\user_updated $event) {
         global $CFG, $DB;
-        require_once($CFG->dirroot. '/course/format/mooin4/locallib.php');
+        require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $userid = $event->objectid;
         if ($user = $DB->get_record('user', array('id' => $userid))) {
             if ($coordinates = get_user_coordinates($user)) {
@@ -110,7 +113,7 @@ class format_mooin4_observer
 
     public static function user_created(\core\event\user_created $event) {
         global $CFG, $DB;
-        require_once($CFG->dirroot. '/course/format/mooin4/locallib.php');
+        require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $userid = $event->objectid;
         if ($user = $DB->get_record('user', array('id' => $userid))) {
             if ($coordinates = get_user_coordinates($user)) {
@@ -119,18 +122,27 @@ class format_mooin4_observer
         }
     }
 
-    public static function section_created(\core\event\course_section_created $event) {
+    public static function course_section_created(\core\event\course_section_created $event) {
+        
         global $DB;
-        $newsection = new stdClass();
-        $newsection->id = $event->objectid;
-        $newsection->name = get_string('new_lesson', 'format_mooin4');
 
-        if ($createdsection = $DB->get_record('course_sections', array('id' => $event->objectid))) {
-            if ($createdsection->section == 0) {
-                $newsection->name = get_string('lesson', 'format_mooin4').' 0';
+        $courseid = $event->courseid;
+
+        $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+
+        if ($course->format == 'mooin4') {
+            $newsection = new stdClass();
+            $newsection->id = $event->objectid;
+            $newsection->name = get_string('new_lesson', 'format_mooin4');
+
+            if ($createdsection = $DB->get_record('course_sections', array('id' => $event->objectid))) {
+                if ($createdsection->section == 0) {
+                    $newsection->name = get_string('lesson', 'format_mooin4') . ' 0';
+                }
             }
-        }
 
-        $DB->update_record('course_sections', $newsection);
+            $DB->update_record('course_sections', $newsection);
+        }
     }
+    
 }
