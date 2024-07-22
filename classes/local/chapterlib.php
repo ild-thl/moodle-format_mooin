@@ -123,16 +123,16 @@ class chapterlib {
                     break;
                 }
             }
-            if ($coursesections = $DB->get_records('course_sections', array('course' => $chapter->courseid), 'section', 'section, id, visible')) {
+            if ($coursesections = $DB->get_records('course_sections', array('course' => $chapter->courseid), 'section', 'section, id')) {
                 if ($start != 0) {
                     if ($end == 0) {
                         $end = self::get_last_section($chapter->courseid) + 1;
                     }
                     $i = $start + 1;
                     while ($i < $end) {
-                        if ($coursesections[$i]->visible == true) {
+                        
                             $result[] = $coursesections[$i]->id; 
-                        }
+                        
                         $i++;
                     }
                 }
@@ -160,26 +160,40 @@ class chapterlib {
     public static function is_first_section_of_chapter($sectionid) {
         global $DB;
     
+        // Hole die Abschnittsdaten basierend auf der gegebenen Abschnitts-ID
         if ($section = $DB->get_record('course_sections', array('id' => $sectionid))) {
-            
+            // Hole die Kurskapitel
             $chapters = self::get_course_chapters($section->course);
+
+            $course = get_course($section->course);
+            $format = course_get_format($course);
     
+            // Iteriere durch die Kapitel
             foreach ($chapters as $c) {
-                
-                $next_section = $DB->get_record_sql(
+                // Hole die nächsten Abschnitte, sortiert nach der Abschnittsnummer
+                $next_sections = $DB->get_records_sql(
                     "SELECT * FROM {course_sections}
-                     WHERE course = :courseid AND section > :chaptersection AND visible = 1
+                     WHERE course = :courseid AND section > :chaptersection
                      ORDER BY section ASC",
                     array('courseid' => $section->course, 'chaptersection' => $c->section)
                 );
     
-                if ($next_section && $next_section->id == $sectionid) {
-                    return true;
+                // Finde den ersten sichtbaren Abschnitt
+                foreach ($next_sections as $next_section) {
+                    $section_info = get_fast_modinfo($course)->get_section_info($next_section->section);
+                    if ($format->is_section_visible($section_info)) {
+                        // Überprüfe, ob der erste sichtbare Abschnitt der gesuchte Abschnitt ist
+                        if ($next_section->id == $sectionid) {
+                            return true;
+                        }
+                        break; // Stoppe nach dem Finden des ersten sichtbaren Abschnitts
+                    }
                 }
             }
         }
         return false;
     }
+    
     
     // public static function is_last_section_of_chapter($sectionid) {
     //     global $DB;

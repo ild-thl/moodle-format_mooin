@@ -5,6 +5,7 @@ namespace format_moointopics\output\courseformat\content\frontpage;
 use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
+use format_moointopics\local\utils as utils;
 
 /**
  * Base class to render the course news section.
@@ -37,7 +38,7 @@ class news_section implements renderable {
             }
         }
 
-        $last_post = \format_moointopics\local\forumlib::get_last_news($course->id, 'news');
+        $last_post = utils::get_last_news($course->id, 'news');
         
 
         $data = (object)[

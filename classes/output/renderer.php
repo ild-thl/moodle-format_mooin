@@ -21,7 +21,7 @@ use moodle_page;
 use core_courseformat\base as course_format;
 use context_course;
 use moodle_url;
-use format_moointopics\local\chapterlib;
+use format_moointopics\local\utils as utils;
 
 /**
  * Basic renderer for topics format.
@@ -107,7 +107,7 @@ class renderer extends section_renderer {
                 'certificates' => ['url' => $certificatesUrl, 'active' => $this->check_if_active($certificatesUrl)],
                 'discussions' => ['url' => $discussionsUrl, 'active' => $this->check_if_active($discussionsUrl)],
                 'participants' => ['url' => $participantsUrl, 'active' => $this->check_if_active($participantsUrl)],
-                'unenrolurl' => chapterlib::get_unenrol_url($course->id),
+                'unenrolurl' => utils::get_unenrol_url($course->id),
 
             ];
             return $this->render_from_template('format_moointopics/local/courseindex/drawer', $data);

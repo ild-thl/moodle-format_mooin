@@ -4,8 +4,7 @@ require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/completionlib.php');
 require_once('../../../mod/forum/lib.php');
 
-use format_moointopics\local\chapterlib;
-use format_moointopics\local\forumlib;
+use format_moointopics\local\utils as utils;
 use mod_forum\local\factories\url;
 
 
@@ -31,7 +30,7 @@ $PAGE->set_url('/course/format/moointopics/all_discussionforums.php', array('id'
 
 echo $OUTPUT->header();
 
-$breadcrumb = chapterlib::subpage_navbar();
+$breadcrumb = utils::subpage_navbar();
 $oc_m = $DB->get_record('modules', array('name' => 'forum'));
 
 $sql = 'SELECT * FROM mdl_forum WHERE course = :cid AND type != :tid ORDER BY ID DESC';
@@ -56,7 +55,7 @@ $value = '1';
                     $forum->unreadpostscount = forum_tp_count_forum_unread_posts($cm, $course);
                 }
 
-                $unreadposts = forumlib::count_unread_posts($USER->id, $course->id, false, $oc_forum->id);
+                $unreadposts = utils::count_unread_posts($USER->id, $course->id, false, $oc_forum->id);
 
                 $oc_cm = $DB->get_record('course_modules', array('instance' => $oc_forum->id, 'course' => $course->id, 'module' => $oc_m->id), '*', $strictness=IGNORE_MISSING);
 

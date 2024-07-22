@@ -29,8 +29,6 @@ import ModalFactory from "core/modal_factory";
 import Mooin4Modal from "../../mooin4modal";
 import { get_string as getString } from "core/str";
 
-
-
 export default class extends DndSection {
   /**
    * Constructor hook.
@@ -163,6 +161,20 @@ export default class extends DndSection {
     // Update section badges and menus.
     this._updateBadges(element);
     this._updateActionsMenu(element);
+
+    if (this.reactive.isEditing) {
+      //this._reloadSectionNames({ element: element });
+    }
+  }
+
+  async _reloadSectionNames({element}) {
+    const title = this.getElement(this.selectors.SECTION_ITEM);
+    //window.console.log(element);
+    if (!element.isChapter) {
+        //title.innerHTML = element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
+        title.innerHTML = element.prefix;
+        window.console.log("Bin in der richtigen section function");
+    }
   }
 
   /**
@@ -255,35 +267,36 @@ export default class extends DndSection {
       });
       modal.show();
       modal.showFooter();
-      this.reactive.dispatch('setLastSectionModal', this.id);
+      this.reactive.dispatch("setLastSectionModal", this.id);
     }
   }
 
   _hvpListener() {
     var parentIFrames = this.getElements(this.selectors.H5P);
     if (parentIFrames.length > 0) {
-        parentIFrames.forEach((parentIFrame) => {
-            if (parentIFrame.contentDocument) {
-                var parentIFrameContent = parentIFrame.contentDocument || parentIFrame.contentWindow.document;
+      parentIFrames.forEach((parentIFrame) => {
+        if (parentIFrame.contentDocument) {
+          var parentIFrameContent =
+            parentIFrame.contentDocument || parentIFrame.contentWindow.document;
 
-                var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
+          var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
 
-                if (nestedIFrame) {
-                    var H5P = nestedIFrame.contentWindow.H5P;
-                    H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
-                } else {
-                    setTimeout(this._hvpListener.bind(this), 100);
-                }
-            } else {
-                setTimeout(this._hvpListener.bind(this), 100); 
-            }
-        });
+          if (nestedIFrame) {
+            var H5P = nestedIFrame.contentWindow.H5P;
+            H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
+          } else {
+            setTimeout(this._hvpListener.bind(this), 100);
+          }
+        } else {
+          setTimeout(this._hvpListener.bind(this), 100);
+        }
+      });
     }
   }
 
   _hvpprogress(event) {
     if (event.getVerb() === "completed") {
-      this.reactive.dispatch('updateSectionprogress', this.id);
+      this.reactive.dispatch("updateSectionprogress", this.id);
     }
   }
 }

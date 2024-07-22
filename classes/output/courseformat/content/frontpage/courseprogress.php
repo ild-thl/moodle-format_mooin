@@ -4,8 +4,7 @@ namespace format_moointopics\output\courseformat\content\frontpage;
 
 use renderable;
 use moodle_url;
-use format_moointopics\local\chapterlib;
-use format_moointopics\local\progresslib;
+use format_moointopics\local\utils as utils;
 use core_courseformat\base as course_format;
 
 
@@ -41,12 +40,12 @@ class courseprogress implements renderable {
     public function export_for_template(\renderer_base $output) {
         global $USER;
         $course = $this->format->get_course();
-        $courseprogress = progresslib::get_course_progress($course->id, $USER->id);
+        $courseprogress = utils::get_course_progress($course->id, $USER->id);
 
         $data = (object)[
-            'is_course_started' => chapterlib::is_course_started($course),
-            'continue_section' => chapterlib::get_continue_section($course),
-            'continue_url' => chapterlib::get_continue_url($course),
+            'is_course_started' => utils::is_course_started($course),
+            'continue_section' => utils::get_continue_section($course),
+            'continue_url' => utils::get_continue_url($course),
             'courseprogress' => $courseprogress
         ];
         return $data;

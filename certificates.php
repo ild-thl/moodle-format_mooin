@@ -3,9 +3,7 @@ require_once('../../../config.php');
 require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/completionlib.php');
 
-use format_moointopics\local\badgeslib;
-use format_moointopics\local\chapterlib;
-use format_moointopics\local\certificateslib;
+use format_moointopics\local\utils as utils;
 
 
 
@@ -30,8 +28,8 @@ $PAGE->set_url('/course/format/moointopics/certificates.php', array('id' => $cou
 
 echo $OUTPUT->header();
 
-$breadcrumb = chapterlib::subpage_navbar();
-$certificates = certificateslib::show_certificat($course->id);
+$breadcrumb = utils::subpage_navbar();
+$certificates = utils::show_certificat($course->id);
 
 $data = [
     'breadcrumb' => $breadcrumb,

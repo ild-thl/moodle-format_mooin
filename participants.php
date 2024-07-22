@@ -30,9 +30,7 @@ require_once($CFG->libdir.'/filelib.php');
 require_once('../moointopics/lib.php');
 //require_once('locallib.php');
 
-use format_moointopics\local\chapterlib;
-use format_moointopics\local\participantslib;
-use format_moointopics\local\badgeslib;
+use format_moointopics\local\utils as utils;
 
 define('USER_SMALL_CLASS', 20);   // Below this is considered small.
 define('USER_LARGE_CLASS', 200);  // Above this is considered large.
@@ -181,7 +179,7 @@ $PAGE->set_other_editing_capability('moodle/course:manageactivities');
 
 echo $OUTPUT->header();
 
-echo html_writer::div(chapterlib::subpage_navbar(), 'sticky-container');
+echo html_writer::div(utils::subpage_navbar(), 'sticky-container');
 echo html_writer::start_div('moointopics-subpage-bg');
 echo '<div class="userlist">';
 //echo '<div class="mooin4-md-container">';
@@ -593,7 +591,7 @@ $userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table
 $usermarkers = array();
 foreach ($userlist as $lu) {
     //if ($coord = get_user_coordinates($lu)) {
-    if ($coord = participantslib::get_user_coordinates_from_pref($lu->id)) {
+    if ($coord = utils::get_user_coordinates_from_pref($lu->id)) {
         $usermarkers[] = $lu->city.'|'.$lu->country.'|'.$coord->lat.'|'.$coord->lng;
     }
 }
@@ -1004,7 +1002,7 @@ echo html_writer::tag('h2', $out);
 // display_badges(0, $courseid, 24 * 60 * 60);
 //echo html_writer::tag('div', get_string('lastweek', 'format_mooin4'), array('class' => 'oc_badges_text'));
 ob_start();
-badgeslib::get_badges_html(0, $courseid, 12 * 31 * 7 * 24 * 60 * 60);
+utils::get_badges_html(0, $courseid, 12 * 31 * 7 * 24 * 60 * 60);
 $out = ob_get_contents();
 ob_end_clean();
 if ($out != '') {

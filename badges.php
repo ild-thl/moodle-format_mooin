@@ -3,8 +3,7 @@ require_once('../../../config.php');
 require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/completionlib.php');
 
-use format_moointopics\local\badgeslib;
-use format_moointopics\local\chapterlib;
+use format_moointopics\local\utils as utils;
 
 
 
@@ -29,10 +28,10 @@ $PAGE->set_url('/course/format/moointopics/badges.php', array('id' => $course->i
 
 echo $OUTPUT->header();
 
-$breadcrumb = chapterlib::subpage_navbar();
+$breadcrumb = utils::subpage_navbar();
 
 ob_start();
-badgeslib::get_user_and_availbale_badges($USER->id, $courseid);
+utils::get_user_and_availbale_badges($USER->id, $courseid);
 $badges = ob_get_contents();
 ob_end_clean();
 

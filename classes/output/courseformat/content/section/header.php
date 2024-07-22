@@ -29,6 +29,7 @@ use stdClass;
 use core_courseformat\base as course_format;
 use format_moointopics;
 use section_info;
+use format_moointopics\local\utils as utils;
 
 /**
  * Base class to render a section header.
@@ -76,7 +77,7 @@ class header extends header_base {
                     $data->title = $output->section_title_without_link($section, $course);
                 } else {
                     $data->chapter = false;
-                    $data->prefix = format_moointopics\local\chapterlib::get_section_prefix($section);
+                    $data->prefix = utils::get_section_prefix($section);
                     $data->title_with_link = $output->section_title($section, $course);
                     $data->title_without_link = $output->section_title_without_link($section, $course);
                     // if (format_moointopics\local\progresslib::get_section_progress($course->id, $this->section->id, $USER->id) == 100) {
@@ -118,9 +119,6 @@ class header extends header_base {
             }
         }
         $data->name = get_section_name($course, $section);
-
-        
-
         return $data;
     }
 }

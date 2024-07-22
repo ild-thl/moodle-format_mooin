@@ -6,7 +6,7 @@ use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
 use context_course;
-use format_moointopics\local\certificateslib;
+use format_moointopics\local\utils as utils;
 
 /**
  * Base class to render the course certificates section.
@@ -29,8 +29,8 @@ class certificates implements renderable {
         global $DB, $USER;
 
         $course = $this->format->get_course();
-        $certificates = certificateslib::show_certificat($course->id);
-        $course_certificates = certificateslib::get_course_certificates($course->id, $USER->id);
+        $certificates = utils::show_certificat($course->id);
+        $course_certificates = utils::get_course_certificates($course->id, $USER->id);
         $cert_count = count($course_certificates);
         if ($cert_count > 3) {
             $other_certificates = $cert_count - 3;

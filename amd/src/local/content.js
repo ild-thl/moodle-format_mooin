@@ -176,6 +176,7 @@ export default class Component extends BaseComponent {
         getContinueSection: mutations.getContinueSection,
         updateSectionprogress: mutations.updateSectionprogress,
         setLastSectionModal: mutations.setLastSectionModal,
+        reloadAllSectionPrefixes: mutations.reloadAllSectionPrefixes,
       });
 
       // Mark content as state ready.
@@ -536,7 +537,10 @@ export default class Component extends BaseComponent {
     target.dataset.sectionid = element.number;
     // The data-number is the attribute used by components to store the section number.
     target.dataset.number = element.number;
+    
     this._reloadSectionNames({ state: state, element: element });
+    window.console.log("HIIIIIER");
+    
     // Update title and title inplace editable, if any.
     const inplace = inplaceeditable.getInplaceEditable(
       target.querySelector(this.selectors.SECTION_ITEM)
@@ -734,7 +738,7 @@ export default class Component extends BaseComponent {
    * @param {details} param0 the watcher details
    * @param {object} param0.element the state object
    */
-  _reloadSection({ element }) {
+  _reloadSection({ state, element }) {
     const pendingReload = new Pending(
       `courseformat/content:reloadSection_${element.id}`
     );
@@ -744,10 +748,13 @@ export default class Component extends BaseComponent {
       for (const cmId of element.cmlist) {
         this._cancelDebouncedReloadCm(cmId);
       }
+      this.reactive.dispatch('reloadAllSectionPrefixes', element);
       const promise = courseActions.refreshSection(sectionitem, element.id);
+      
       promise
         .then(() => {
           this._indexContents();
+          this._reloadSectionNames({state, element});
           return true;
         })
         .catch((error) => {
@@ -755,6 +762,7 @@ export default class Component extends BaseComponent {
         })
         .finally(() => {
           pendingReload.resolve();
+          
         });
     }
   }
@@ -766,8 +774,14 @@ export default class Component extends BaseComponent {
         if (section.isChapter) {
           number.innerHTML = section.isChapter;
         } else {
-          number.innerHTML =
-            section.parentChapter + "." + section.innerChapterNumber;
+          // if (!section.visible) {
+          //   number.innerHTML = "ausgeblendet"
+          // } else {
+          //   //this.reactive.dispatch('reloadAllSectionPrefixes', element);
+          //   number.innerHTML = state.section.get(section.id).prefix;
+          // }
+          number.innerHTML = state.section.get(section.id).prefix;
+            //section.parentChapter + "." + section.innerChapterNumber;
         }
       }
     });

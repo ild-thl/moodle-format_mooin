@@ -24,8 +24,7 @@ use renderable;
 use stdClass;
 use context_course;
 use renderer_base;
-use format_moointopics\local\chapterlib;
-use format_moointopics\local\progresslib;
+use format_moointopics\local\utils as utils;
 use moodle_url;
 
 /**
@@ -72,7 +71,7 @@ class section extends section_base {
         if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $this->section->id))) {
             $isChapter = $chapter->chapter;
         } else {
-            $parentchapter = chapterlib::get_parent_chapter($this->section);
+            $parentchapter = utils::get_parent_chapter($this->section);
         }
         $data = (object)parent::export_for_template($output);
         $data->isChapter = $isChapter;
@@ -82,10 +81,10 @@ class section extends section_base {
             if ($parentchapterAsSection = $DB->get_record('course_sections', array('id' => $parentchapter->sectionid))) {
                 $data->innerChapterNumber = $this->section->section - $parentchapterAsSection->section;
             }   
+            $data->prefix = utils::get_section_prefix($this->section);
         }
-        //$data->containsActiveSection = $this->containsActiveSection;
 
-        $section_progress = progresslib::get_section_progress($course->id, $this->section->id, $USER->id);
+        $section_progress = utils::get_section_progress($course->id, $this->section->id, $USER->id);
         $data->sectionprogress = $section_progress;
         if ($section_progress == 100) {
             $data->isCompleted = true;
@@ -94,7 +93,7 @@ class section extends section_base {
         if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $this->section->id))) {
             $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
             if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                $last_sections_parent_chapter = chapterlib::get_parent_chapter($continuesection);
+                $last_sections_parent_chapter = utils::get_parent_chapter($continuesection);
                 if ($last_sections_parent_chapter == $chapter) {
                     $data->containsActiveSection = true;
                 }
@@ -102,10 +101,10 @@ class section extends section_base {
         }
 
         if (!$isChapter) {
-            if (chapterlib::is_first_section_of_chapter($this->section->id)) {
+            if (utils::is_first_section_of_chapter($this->section->id)) {
                 $data->isFirstSectionOfChapter = true;
             }
-            if (chapterlib::is_last_section_of_chapter($this->section->id)) {
+            if (utils::is_last_section_of_chapter($this->section->id)) {
                 $data->isLastSectionOfChapter = true;
                 if (!get_user_preferences('format_moointopics_hide_modal_for_section_'.$this->section->id)) {
                     $data->showLastSectionModal = true;
@@ -113,10 +112,10 @@ class section extends section_base {
                 }
             }
 
-            $parent_chapter = chapterlib::get_parent_chapter($this->section);
+            $parent_chapter = utils::get_parent_chapter($this->section);
             $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
             if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                $last_sections_parent_chapter = chapterlib::get_parent_chapter($continuesection);
+                $last_sections_parent_chapter = utils::get_parent_chapter($continuesection);
                 if ($last_sections_parent_chapter == $parent_chapter) {
                     $data->containsActiveSection = true;
                 }

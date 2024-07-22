@@ -6,6 +6,7 @@ use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
 use context_course;
+use format_moointopics\local\utils as utils;
 
 /**
  * Base class to render the course news section.
@@ -31,12 +32,12 @@ class badges implements renderable {
 
         $badges = null;
         ob_start();
-        $badges .= \format_moointopics\local\badgeslib::get_user_and_availbale_badges($USER->id, $course->id);
+        $badges .= utils::get_user_and_availbale_badges($USER->id, $course->id);
         $badges .= ob_get_contents();
         ob_end_clean();
 
-        if(count(\format_moointopics\local\badgeslib::get_badge_records($course->id, null, null, null))  > 3) {
-            $other_badges = count(\format_moointopics\local\badgeslib::get_badge_records($course->id, null, null, null)) - 3;
+        if(count(utils::get_badge_records($course->id, null, null, null))  > 3) {
+            $other_badges = count(utils::get_badge_records($course->id, null, null, null)) - 3;
         } else {
             $other_badges = false;
         }

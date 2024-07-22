@@ -3,7 +3,7 @@
 namespace format_moointopics\output\courseformat\content\frontpage;
 
 use renderable;
-use format_moointopics\local\chapterlib;
+use format_moointopics\local\utils as utils;
 use core_courseformat\base as course_format;
 use format_moointopics;
 use moodle_url;
@@ -37,16 +37,16 @@ class header implements renderable {
 
         $editheaderlink = new moodle_url('/course/format/moointopics/edit_header.php', array('course' => $course->id));
 
-        $headerimageurl = chapterlib::get_headerimage_url($course->id, false);
-        $headerimageURLMobile =  chapterlib::get_headerimage_url($course->id, true);
+        $headerimageurl = utils::get_headerimage_url($course->id, false);
+        $headerimageURLMobile =  utils::get_headerimage_url($course->id, true);
 
         $data = (object)[
             'headerimageURL' => $headerimageurl,
             'headerimageURLMobile' => $headerimageURLMobile,
             'editheaderlink' => $editheaderlink,
-            'is_course_started' => chapterlib::is_course_started($course),
-            'continue_section' => chapterlib::get_continue_section($course),
-            'continue_url' => chapterlib::get_continue_url($course),
+            'is_course_started' => utils::is_course_started($course),
+            'continue_section' => utils::get_continue_section($course),
+            'continue_url' => utils::get_continue_url($course),
         ];
 
         return $data;

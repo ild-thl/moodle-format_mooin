@@ -27,6 +27,7 @@ use context_module;
 use context_course;
 use core_courseformat\stateactions as Base;
 use format_moointopics;
+use format_moointopics\local\utils as utils;
 
 /**
  * Contains the core course state actions.
@@ -43,6 +44,16 @@ use format_moointopics;
  */
 class stateactions extends Base {
 
+    public function reload_all_section_prefixes(
+        stateupdates $updates,
+        stdClass $course,
+        array $ids = [],
+        ?int $targetsectionid = null,
+        ?int $targetcmid = null
+    ): void {
+        $this->section_state($updates, $course, $ids);
+    }
+
     public function complete_section(
         stateupdates $updates,
         stdClass $course,
@@ -50,7 +61,7 @@ class stateactions extends Base {
         ?int $targetsectionid = null,
         ?int $targetcmid = null
     ): void {
-        format_moointopics\local\progresslib::complete_section($targetsectionid);
+        utils::complete_section($targetsectionid);
         $this->section_state($updates, $course, $ids);
     }
 
@@ -82,7 +93,7 @@ class stateactions extends Base {
         ?int $targetsectionid = null,
         ?int $targetcmid = null
     ): void {
-        format_moointopics\local\chapterlib::set_chapter($targetsectionid);
+        utils::set_chapter($targetsectionid);
         $this->section_state($updates, $course, $ids);
 
         course_modinfo::purge_course_modules_cache($course->id, $ids);
@@ -96,7 +107,7 @@ class stateactions extends Base {
         ?int $targetsectionid = null,
         ?int $targetcmid = null
     ): void {
-        format_moointopics\local\chapterlib::unset_chapter($targetsectionid);
+        utils::unset_chapter($targetsectionid);
         $this->section_state($updates, $course, $ids);
         course_modinfo::purge_course_modules_cache($course->id, $ids);
         rebuild_course_cache($course->id, false, true);
@@ -118,7 +129,7 @@ class stateactions extends Base {
         $forumid = $ids[0];
         if ($discussions = $DB->get_records('forum_discussions', array('forum' => $forumid))) {
             foreach ($discussions as $discussion) {
-                format_moointopics\local\forumlib::set_discussion_viewed($USER->id, $forumid, $discussion->id);
+                utils::set_discussion_viewed($USER->id, $forumid, $discussion->id);
             }
         }
     }
@@ -208,7 +219,7 @@ class stateactions extends Base {
             $affectedsections[$section->section] = true;
             move_section_to($course, $section->section, $targetsection->section);
         }
-        format_moointopics\local\chapterlib::sort_course_chapters($course->id);
+        utils::sort_course_chapters($course->id);
         // Use section_state to return the section and activities updated state.
         $this->section_state($updates, $course, $ids, $targetsectionid);
 

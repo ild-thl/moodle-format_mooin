@@ -155,4 +155,25 @@ export default class {
         }])[0];
         stateManager.processUpdates(JSON.parse(updates));
     }
+
+    async reloadAllSectionPrefixes(stateManager, target) {
+        const state = stateManager.state;
+        const course = state.course;
+        let ids = [];
+        stateManager.state.section.forEach(section => {
+            // if (section.number >= target.number) {
+                ids.push(section.id);
+            // }
+        });
+        const args = {
+            action: 'reload_all_section_prefixes',
+            courseid: course.id,
+            ids: ids,
+        }
+        let updates = await ajax.call([{
+            methodname: 'core_courseformat_update_course',
+            args,
+        }])[0];
+        stateManager.processUpdates(JSON.parse(updates));
+    }
 }

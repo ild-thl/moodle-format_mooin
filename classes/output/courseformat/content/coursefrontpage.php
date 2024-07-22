@@ -13,7 +13,7 @@ use format_moointopics\output\courseformat\content\frontpage\certificates;
 use format_moointopics\output\courseformat\content\frontpage\discussions;
 use format_moointopics\output\courseformat\content\frontpage\participants;
 use context_course;
-use format_moointopics\local\chapterlib;
+use format_moointopics\local\utils as utils;
 
 
 
@@ -82,7 +82,7 @@ class coursefrontpage implements renderable {
             'certificates' => $certificates->export_for_template($output),
             'discussions' => $discussions->export_for_template($output),
             'participants' => $participants->export_for_template($output),
-            'unenrolurl' => chapterlib::get_unenrol_url($course->id),
+            'unenrolurl' => utils::get_unenrol_url($course->id),
         ];
 
         $coursecontext = context_course::instance($course->id);

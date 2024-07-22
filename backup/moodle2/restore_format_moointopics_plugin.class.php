@@ -14,31 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Specialised restore for Topics course format.
- *
- * @package   format_moointopics
- * @category  backup
- * @copyright 2017 Marina Glancy
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Specialised restore for Topics course format.
+ * Specialised restore for moointopics course format.
  *
  * Processes 'numsections' from the old backup files and hides sections that used to be "orphaned".
  *
  * @package   format_moointopics
  * @category  backup
- * @copyright 2017 Marina Glancy
+ * @copyright 2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_format_moointopics_plugin extends restore_format_plugin {
 
     /** @var int */
     protected $originalnumsections = 0;
+
+    var $chapters = null;
 
     /**
      * Checks if backup file was made on Moodle before 3.3 and we should respect the 'numsections'
@@ -58,21 +52,40 @@ class restore_format_moointopics_plugin extends restore_format_plugin {
      * @return restore_path_element[]
      */
     public function define_course_plugin_structure() {
+        $paths = array();
+
+        $elepath = $this->get_pathfor('/format_moointopics_chapter');
+
+        //Dummy path element is needed in order for after_restore_course() to be called.
+        return [new restore_path_element('dummy_course', $this->get_pathfor('/dummycourse')), new restore_path_element('chapter', $elepath)];
+    }
+
+    function after_execute_course() {
         global $DB;
 
-        // Since this method is executed before the restore we can do some pre-checks here.
-        // In case of merging backup into existing course find the current number of sections.
-        $target = $this->step->get_task()->get_target();
-        if (($target == backup::TARGET_CURRENT_ADDING || $target == backup::TARGET_EXISTING_ADDING) &&
-                $this->need_restore_numsections()) {
-            $maxsection = $DB->get_field_sql(
-                'SELECT max(section) FROM {course_sections} WHERE course = ?',
-                [$this->step->get_task()->get_courseid()]);
-            $this->originalnumsections = (int)$maxsection;
-        }
+        $this->add_related_files('format_moointopics', 'headerimagedesktop', null);
+        $this->add_related_files('format_moointopics', 'headerimagemobile', null);
+    }
 
-        // Dummy path element is needed in order for after_restore_course() to be called.
-        return [new restore_path_element('dummy_course', $this->get_pathfor('/dummycourse'))];
+    public function process_chapter($data) {
+        global $DB;
+        $data = (object)$data;
+
+        $data->courseid = $this->task->get_courseid();
+        $this->chapters[] = $data;
+        //$DB->insert_record('format_moointopics_chapter', $data);
+    }
+
+    public function restore_files($area) {
+        $courseid = $this->task->get_courseid();
+        $fs = get_file_storage();
+
+        $files = $fs->get_area_files($this->task->get_contextid(), 'format_moointopics', $area);
+        foreach ($files as $file) {
+            $newfilerecord = new stdClass();
+            $newfilerecord->itemid = $courseid;
+            $fs->create_file_from_storedfile($newfilerecord, $file);
+        }
     }
 
     /**
@@ -80,8 +93,7 @@ class restore_format_moointopics_plugin extends restore_format_plugin {
      *
      * @return void
      */
-    public function process_dummy_course() {
-
+    public function process_dummy_course($data) {
     }
 
     /**
@@ -94,14 +106,46 @@ class restore_format_moointopics_plugin extends restore_format_plugin {
     public function after_restore_course() {
         global $DB;
 
+        $backupinfo = $this->step->get_task()->get_info();
+        $contextid = $this->task->get_contextid();
+
+        $this->restore_files('headerimagedesktop');
+        $this->restore_files('headerimagemobile');
+
+        $DB->delete_records('files', array('contextid' => $contextid, 'itemid' => $backupinfo->original_course_id));
+
+
+        foreach ($backupinfo->sections as $section) {
+            $id = $this->get_mappingid('course_section', $section->sectionid);
+            $DB->execute(
+                "UPDATE {course_sections} SET name = ? WHERE course = ? AND id = ?",
+                [$section->title, $this->step->get_task()->get_courseid(), $id]
+            );
+        }
+
+        $DB->delete_records('format_moointopics_chapter', array('chapter' => 1, 'courseid' => $this->step->get_task()->get_courseid()));
+
+        foreach ($this->chapters as $chapter) {
+            $id = $this->get_mappingid('course_section', $chapter->sectionid);
+            $chapter->sectionid = $id;
+            $DB->insert_record('format_moointopics_chapter', $chapter);
+        }
+
+
+
+
+
+
         if (!$this->need_restore_numsections()) {
             // Backup file was made in Moodle 3.3 or later, we don't need to process 'numsecitons'.
             return;
         }
 
-        $data = $this->connectionpoint->get_data();
-        $backupinfo = $this->step->get_task()->get_info();
-        if ($backupinfo->original_course_format !== 'topics' || !isset($data['tags']['numsections'])) {
+
+
+
+
+        if ($backupinfo->original_course_format !== 'moointopics' || !isset($data['tags']['numsections'])) {
             // Backup from another course format or backup file does not even have 'numsections'.
             return;
         }
@@ -116,8 +160,10 @@ class restore_format_moointopics_plugin extends restore_format_plugin {
             if ($this->step->get_task()->get_setting_value($key . '_included')) {
                 $sectionnum = (int)$section->title;
                 if ($sectionnum > $numsections && $sectionnum > $this->originalnumsections) {
-                    $DB->execute("UPDATE {course_sections} SET visible = 0 WHERE course = ? AND section = ?",
-                        [$this->step->get_task()->get_courseid(), $sectionnum]);
+                    $DB->execute(
+                        "UPDATE {course_sections} SET visible = 0 WHERE course = ? AND section = ?",
+                        [$this->step->get_task()->get_courseid(), $sectionnum]
+                    );
                 }
             }
         }

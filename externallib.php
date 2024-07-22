@@ -3,7 +3,7 @@
 require_once($CFG->libdir . "/externallib.php");
 require_once($CFG->dirroot . '/course/lib.php');
 
-
+use format_moointopics\local\utils as utils;
 
 class format_moointopics_external extends external_api
 {
@@ -62,15 +62,15 @@ class format_moointopics_external extends external_api
     self::validate_context($context);
 
     if (!$isActivity) {
-      format_moointopics\local\progresslib::complete_section($section_id, $USER->id);
+      utils::complete_section($section_id, $USER->id);
     }
 
     $section = $DB->get_record('course_sections', array('id' => $params['section_id']));
     $course_id = $section->course;
-    $parent_chapter = format_moointopics\local\chapterlib::get_parent_chapter($section);
-    $info = format_moointopics\local\chapterlib::get_chapter_info($parent_chapter);
+    $parent_chapter = utils::get_parent_chapter($section);
+    $info = utils::get_chapter_info($parent_chapter);
 
-    $is_course_completed = format_moointopics\local\progresslib::is_course_completed($course_id);
+    $is_course_completed = utils::is_course_completed($course_id);
 
     // $is_course_completed = false;
     // if ($course_chapters = $DB->get_records('format_mooin4_chapter', array('courseid' => $course_id))) {
@@ -186,12 +186,12 @@ class format_moointopics_external extends external_api
       self::validate_context($context);
 
       $courseid = $cm->course;
-      $course_already_completed = format_moointopics\local\progresslib::is_course_completed($courseid);
+      $course_already_completed = utils::is_course_completed($courseid);
 
       $section_id = $cm->section;
       $section = $DB->get_record('course_sections', array('id' => $section_id));
-      $parent_chapter = format_moointopics\local\chapterlib::get_parent_chapter($section);
-      $info = format_moointopics\local\chapterlib::get_chapter_info($parent_chapter);
+      $parent_chapter = utils::get_parent_chapter($section);
+      $info = utils::get_chapter_info($parent_chapter);
       $chapter_already_completed = false;
       if ($info['completed']) {
         $chapter_already_completed = true;
@@ -202,7 +202,7 @@ class format_moointopics_external extends external_api
       //   $chapter_already_completed = true;
       // }
 
-      $progress = format_moointopics\local\progresslib::setgrade($contentid, $score, $maxscore);
+      $progress = utils::setgrade($contentid, $score, $maxscore);
       //$section = $DB->get_record('course_sections', array('id' => $progress['sectionid']));
       //$courseid = $section->course;
       //$course_already_completed = is_course_completed($courseid);

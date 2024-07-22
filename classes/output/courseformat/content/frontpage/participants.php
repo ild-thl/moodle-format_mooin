@@ -5,7 +5,7 @@ namespace format_moointopics\output\courseformat\content\frontpage;
 use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
-use format_moointopics\local\participantslib;
+use format_moointopics\local\utils as utils;
 
 
 /**
@@ -30,8 +30,8 @@ class participants implements renderable {
 
         $course = $this->format->get_course();
         
-        if (participantslib::get_user_in_course($course->id) != null) {
-            $user_card_list = participantslib::get_user_in_course($course->id);
+        if (utils::get_user_in_course($course->id) != null) {
+            $user_card_list = utils::get_user_in_course($course->id);
         }
 
         $data = (object)[

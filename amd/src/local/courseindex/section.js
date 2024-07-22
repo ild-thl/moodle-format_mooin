@@ -146,7 +146,7 @@ export default class Component extends DndSection {
         
     }
 
-    async _reloadSectionNames({element }) {
+    async _reloadSectionNames({element}) {
         const title = this.getElement(this.selectors.SECTION_TITLE);
         //window.console.log(element);
         if (element.isChapter) {
@@ -155,8 +155,9 @@ export default class Component extends DndSection {
             title.innerHTML = " " + await getString("chapter", "format_moointopics") + " " + element.isChapter + ": " + element.title;
             title.prepend(caret);
         } if (!element.isChapter) {
-            title.innerHTML = await getString("lesson", "format_moointopics") + " " + element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
-
+            //title.innerHTML = element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
+            title.innerHTML = element.prefix + ": " + element.title;
+            window.console.log("Andere reloadnMesfunctionaufgerufen" + element.prefix);
         }
       }
 

@@ -29,6 +29,7 @@ use core_courseformat\output\local\content\sectionnavigation as sectionnavigatio
 use format_moointopics;
 use stdClass;
 use renderer_base;
+use format_moointopics\local\utils as utils;
 
 
 /**
@@ -72,10 +73,10 @@ class sectionnavigation extends sectionnavigation_base {
             //'rarrow' => $output->rarrow(),
             'currentsection' => $this->sectionno,
             'title_without_link' => $output->section_title_without_link($section, $course),
-            'coursebreadcrumb' => format_moointopics\local\chapterlib::course_navbar()
+            'coursebreadcrumb' => utils::course_navbar()
         ];
 
-        $section_progress = format_moointopics\local\progresslib::get_section_progress($course->id, $section->id, $USER->id);
+        $section_progress = utils::get_section_progress($course->id, $section->id, $USER->id);
         $data->sectionprogress = $section_progress;
 
 

@@ -30,7 +30,7 @@ use format_moointopics;
 use stdClass;
 use section_info;
 use renderer_base;
-use format_moointopics\local\chapterlib;
+use format_moointopics\local\utils as utils;
 
 /**
  * Base class to render a course section.
@@ -115,13 +115,13 @@ class section extends section_base {
         ))) {
 
             $data->showCompletionButton = true;
-            if (format_moointopics\local\progresslib::get_section_progress($course->id, $this->section->id, $USER->id) == 100) {
+            if (utils::get_section_progress($course->id, $this->section->id, $USER->id) == 100) {
                 $data->isCompleted = true;
             }
         }
 
         if ($chapter = $this->chapter) {
-            $info = chapterlib::get_chapter_info($chapter);
+            $info = utils::get_chapter_info($chapter);
             if ($info['completed']) {
                 $data->isCompleted = true;
             }
@@ -171,24 +171,24 @@ class section extends section_base {
             $this->chapter = $chapter;
             $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
             if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                $last_sections_parent_chapter = chapterlib::get_parent_chapter($continuesection);
+                $last_sections_parent_chapter = utils::get_parent_chapter($continuesection);
                 if ($last_sections_parent_chapter == $this->chapter) {
                     $this->containsActiveSection = true;
                 }
             }
         }
         if (empty($this->chapter)) {
-            if (chapterlib::is_first_section_of_chapter($this->section->id)) {
+            if (utils::is_first_section_of_chapter($this->section->id)) {
                 $this->is_first_section_of_chapter = true;
             }
-            if (chapterlib::is_last_section_of_chapter($this->section->id)) {
+            if (utils::is_last_section_of_chapter($this->section->id)) {
                 $this->is_last_section_of_chapter = true;
             }
 
-            $this->parent_chapter = chapterlib::get_parent_chapter($this->section);
+            $this->parent_chapter = utils::get_parent_chapter($this->section);
             $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
             if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                $last_sections_parent_chapter = chapterlib::get_parent_chapter($continuesection);
+                $last_sections_parent_chapter = utils::get_parent_chapter($continuesection);
                 if ($last_sections_parent_chapter == $this->parent_chapter) {
                     $this->containsActiveSection = true;
                 }

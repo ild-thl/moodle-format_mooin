@@ -5,7 +5,7 @@ namespace format_moointopics\output\courseformat\content\frontpage;
 use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
-use format_moointopics\local\forumlib;
+use format_moointopics\local\utils as utils;
 
 /**
  * Base class to render the course news section.
@@ -29,8 +29,8 @@ class discussions implements renderable {
 
         $course = $this->format->get_course();
 
-        if (forumlib::get_last_forum_discussion($course->id, 'news') != null) {
-            $previewPost = forumlib::get_last_forum_discussion($course->id, 'news');
+        if (utils::get_last_forum_discussion($course->id, 'news') != null) {
+            $previewPost = utils::get_last_forum_discussion($course->id, 'news');
         }
         
 
