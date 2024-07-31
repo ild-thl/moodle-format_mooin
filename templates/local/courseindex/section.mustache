@@ -65,7 +65,7 @@
     role="treeitem"
     aria-owns="courseindexcollapse{{number}}"
 >
-    <div class="courseindex-item d-flex
+    <div class="courseindex-item chapter-item d-flex
             {{^visible}}dimmed{{/visible}}
             {{#hasrestrictions}}restrictions{{/hasrestrictions}}
             courseindex-section-title"
@@ -82,14 +82,16 @@
             
         
         <span 
-            class="courseindex-link text-truncate"
+            class="courseindex-link"
             data-action="togglecourseindexsection"
             data-for="section_title"
             tabindex="-1"
         >
         <i class="bi bi-caret-right-fill" data-for="caret"></i>
+        <span>
         {{#str}}chapter, format_moointopics{{/str}} <span data-for="index_number" data-id="{{id}}">{{{isChapter}}}</span>:
             {{{title}}}
+        </span>
         </span>
         </a>
         <span class="current-badge badge badge-primary ml-2 px-2 rounded-pill">

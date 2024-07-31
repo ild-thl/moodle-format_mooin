@@ -157,7 +157,6 @@ export default class Component extends DndSection {
         } if (!element.isChapter) {
             //title.innerHTML = element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
             title.innerHTML = element.prefix + ": " + element.title;
-            window.console.log("Andere reloadnMesfunctionaufgerufen" + element.prefix);
         }
       }
 

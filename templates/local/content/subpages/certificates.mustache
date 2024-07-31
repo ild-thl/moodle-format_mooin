@@ -4,11 +4,16 @@
     {{{breadcrumb}}}
     <div class="subpage--certificates d-flex flex-column">
         <h2>{{#str}} certificates, format_moointopics {{/str}}</h2>
-        <p>{{#str}} cert_descr, format_moointopics {{/str}}</p>
-
         {{#certificates}}
+        <p>{{#str}} certificate_overview_description, format_moointopics {{/str}}</p>
             <div class="border-card">
                 {{{certificates}}}
+            </div>
+        {{/certificates}}
+        {{^certificates}}
+             <div class="no-certificates-container">
+                <div class="no-certificates-img"></div>
+                <span class="blue-info-text">{{#str}} no_certificates_image_text, format_moointopics{{/str}}</span>
             </div>
         {{/certificates}}
     </div>

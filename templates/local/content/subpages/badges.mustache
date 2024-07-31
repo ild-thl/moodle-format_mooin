@@ -13,7 +13,12 @@
             {{{badges}}}
         </div>
         {{/badges}}
-        
+        {{^badges}}
+            <div class="no-badges-container">
+                <div class="no-badges-img"></div>
+                <span class="blue-info-text">{{#str}} no_badges_image_text, format_moointopics{{/str}}</span>
+            </div>
+        {{/badges}}
     </div>
     
 </div>

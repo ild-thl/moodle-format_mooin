@@ -23,16 +23,25 @@
                 {{/manage_badges_url}}
             </div>
             <div class="d-flex align-items-center mt-3 mb-3">
+            {{#badgesList}}
                 {{{badgesList}}}
                 {{#otherBadges}}
                     <span class="text-nowrap pr-1">+{{otherBadges}}</span>
                 {{/otherBadges}}
+            {{/badgesList}}
+            {{^badgesList}}
+            <div class="no-badges-container">
+                <div class="no-badges-img"></div>
+                <span class="blue-info-text">{{#str}} no_badges_image_text, format_moointopics{{/str}}</span>
+            </div>
+            {{/badgesList}}
             </div>
             <div class="all-badges-link mt-auto">
                 <a href="{{{badgesUrl}}}" class="ml-auto">{{#str}} show_all_infos, format_moointopics{{/str}}</a>
             </div>
         </div>
         {{/badges}}
+        
 
         {{#certificates}}
         <div class="certificates-container">
@@ -47,10 +56,18 @@
                 {{/has_capability}}
             </div>
             <div class="mt-3 mb-3 d-flex align-items-center">
+            {{#coursecertificates}}
                 {{{coursecertificates}}}
                 {{#othercertificates}}
                 <span class="text-nowrap pr-1">+{{{othercertificates}}}</span>
                 {{/othercertificates}}
+            {{/coursecertificates}}
+            {{^coursecertificates}}
+                <div class="no-certificates-container">
+                    <div class="no-certificates-img"></div>
+                    <span class="blue-info-text">{{#str}} no_certificates_image_text, format_moointopics{{/str}}</span>
+                </div>
+            {{/coursecertificates}}
             </div>
             <div class="all-badges-link">
                 <a href="{{{certificatesUrl}}}" class="ml-auto">{{#str}} show_all_infos, format_moointopics{{/str}}</a>

@@ -4,8 +4,9 @@
     {{{breadcrumb}}}
     <div class="subpage--discussions d-flex flex-column pb-5">
         <h2>{{#str}} all_forums, format_moointopics {{/str}}</h2>
+        <div class="border-card mb-3">
         {{#forumslist}}
-            <div class="border-card mb-3">
+            
                 <ul>    
                     <li class="d-inline-flex w-100 text-nowrap">
                         {{{index}}} 
@@ -18,8 +19,9 @@
                         {{/unreadposts}} 
                     </li> 
                 </ul>
-            </div>
+            
         {{/forumslist}}
+        </div>
         {{^forumslist}}
             <div class="d-flex justify-content-center align-items-center">
                 <div class="no-forums-img"></div>
