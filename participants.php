@@ -32,6 +32,9 @@ require_once('../moointopics/lib.php');
 
 use format_moointopics\local\utils as utils;
 
+$courseid = optional_param('id', 0, PARAM_INT);
+$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+
 define('USER_SMALL_CLASS', 20);   // Below this is considered small.
 define('USER_LARGE_CLASS', 200);  // Above this is considered large.
 define('DEFAULT_PAGE_SIZE', 20);
@@ -46,7 +49,7 @@ $accesssince  = optional_param('accesssince', 0, PARAM_INT); // Filter by last a
 $search       = optional_param('search', '', PARAM_RAW); // Make sure it is processed with p() or s() when sending to output!
 $roleid       = optional_param('roleid', 0, PARAM_INT); // Optional roleid, 0 means all enrolled participants (or all on the frontpage).
 $contextid    = optional_param('contextid', 0, PARAM_INT); // One of this or.
-$courseid     = optional_param('id', 0, PARAM_INT); // This are required.
+//$courseid     = optional_param('id', 0, PARAM_INT); // This are required.
 
 $PAGE->set_url('/course/format/moointopics/participants.php', array(
 		'id' => $courseid,
@@ -59,14 +62,16 @@ $PAGE->set_url('/course/format/moointopics/participants.php', array(
         'contextid' => $contextid
         ));
 
+$PAGE->set_url('/course/format/moointopics/participants.php', array('id' => $course->id));
+
 if ($contextid) {
     $context = context::instance_by_id($contextid, MUST_EXIST);
     if ($context->contextlevel != CONTEXT_COURSE) {
         print_error('invalidcontext');
     }
-    $course = $DB->get_record('course', array('id' => $context->instanceid), '*', MUST_EXIST);
+    //$course = $DB->get_record('course', array('id' => $context->instanceid), '*', MUST_EXIST);
 } else {
-    $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+    //$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
     $context = context_course::instance($course->id, MUST_EXIST);
 }
 // Not needed anymore.
