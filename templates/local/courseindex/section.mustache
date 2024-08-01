@@ -74,7 +74,7 @@
     >
         <a data-toggle="collapse"
             href="#chapter-{{{isChapter}}}-index"
-            class="{{^containsActiveSection}} collapsed {{/containsActiveSection}} chapter"
+            class="{{^editmode}}{{^containsActiveSection}} collapsed {{/containsActiveSection}} {{/editmode}} chapter"
             aria-expanded="{{#containsActiveSection}}true{{/containsActiveSection}}{{^containsActiveSection}}false{{/containsActiveSection}}"
             aria-controls="courseindexcollapse{{number}}"
             tabindex="-1"
