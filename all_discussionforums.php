@@ -108,11 +108,14 @@ $value = '1';
         
         // No Forum image
     }
-    
-   
+    $forums = false;
+    if (!empty($forumslist)) {
+        $forums = true;
+    }
 
 $data = [
     'breadcrumb' => $breadcrumb,
+    'forums' => $forums,
     'forumslist' => $forumslist
 ];
 

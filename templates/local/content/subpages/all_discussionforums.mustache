@@ -4,31 +4,32 @@
     {{{breadcrumb}}}
     <div class="subpage--discussions d-flex flex-column pb-5">
         <h2>{{#str}} all_forums, format_moointopics {{/str}}</h2>
+        {{#forums}}
         <div class="border-card mb-3">
-        {{#forumslist}}
-            
-                <ul>    
-                    <li class="d-inline-flex w-100 text-nowrap">
-                        {{{index}}} 
-                        <a class="ml-1" href={{{url}}}>{{{name}}}</a>
-                        {{#unreadposts}}
-                            <span class="w-100 d-flex align-items-center justify-content-between" data-for="mark_as_read_container">
-                                <span class=" ml-1 notification-badge mr-1">{{{unreadposts}}}</span>
-                                <a type="button" data-id="{{{id}}}" data-for="unread_link">{{#str}} mark_all_as_read, format_moointopics {{/str}}</a>
-                            </span>
-                        {{/unreadposts}} 
-                    </li> 
-                </ul>
-            
-        {{/forumslist}}
+            <ul>    
+            {{#forumslist}}
+                <li class="d-inline-flex w-100 text-nowrap align-items-center">
+                    {{{index}}} 
+                    <a class="ml-1" href={{{url}}}>{{{name}}}</a>
+                    {{#unreadposts}}
+                        <span class="w-100 d-flex align-items-center justify-content-between" data-for="mark_as_read_container">
+                            <span class=" ml-1 notification-badge mr-1">{{{unreadposts}}}</span>
+                            <a class="d-none d-md-flex" type="button" data-id="{{{id}}}" data-for="unread_link">{{#str}} mark_all_as_read, format_moointopics {{/str}}</a>
+                            <a class="d-flex d-md-none unread-btn-mobile" type="button" data-id="{{{id}}}" data-for="unread_link"></a>
+                        </span>
+                    {{/unreadposts}} 
+                </li> 
+                {{/forumslist}}
+            </ul>
         </div>
-        {{^forumslist}}
-            <div class="d-flex justify-content-center align-items-center">
+        {{/forums}}
+       
+        {{^forums}}
+            <div class="d-flex justify-content-center align-items-center mt-5">
                 <div class="no-forums-img"></div>
                 <span class="blue-info-text">{{#str}} no_forums_available, format_moointopics {{/str}}</span>
             </div>
-            
-        {{/forumslist}}
+        {{/forums}}
     </div>
 </div>
 
