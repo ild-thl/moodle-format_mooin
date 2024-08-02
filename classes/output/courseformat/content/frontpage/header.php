@@ -7,6 +7,7 @@ use format_moointopics\local\utils as utils;
 use core_courseformat\base as course_format;
 use format_moointopics;
 use moodle_url;
+use context_course;
 
 
 /**
@@ -35,7 +36,8 @@ class header implements renderable {
     public function export_for_template(\renderer_base $output) {
         $course = $this->format->get_course();
 
-        $editheaderlink = new moodle_url('/course/format/moointopics/edit_header.php', array('course' => $course->id));
+        
+        
 
         $headerimageurl = utils::get_headerimage_url($course->id, false);
         $headerimageURLMobile =  utils::get_headerimage_url($course->id, true);
@@ -43,11 +45,15 @@ class header implements renderable {
         $data = (object)[
             'headerimageURL' => $headerimageurl,
             'headerimageURLMobile' => $headerimageURLMobile,
-            'editheaderlink' => $editheaderlink,
             'is_course_started' => utils::is_course_started($course),
             'continue_section' => utils::get_continue_section($course),
             'continue_url' => utils::get_continue_url($course),
         ];
+        $coursecontext = context_course::instance($course->id);
+        if (has_capability('moodle/course:update', $coursecontext)) {
+            $editheaderlink = new moodle_url('/course/format/moointopics/edit_header.php', array('course' => $course->id));
+            $data->editheaderlink = $editheaderlink;
+        }
 
         return $data;
     }
