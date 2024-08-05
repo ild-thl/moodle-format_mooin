@@ -1674,6 +1674,67 @@ class utils {
         }
     }
 
+    static function get_user_coordinates($user) {
+        if ($user->city != '') {
+            $coordinates = new stdClass();
+    
+            $url = get_config('format_moointopics', 'geonamesapi_url');
+            $apiusername = get_config('format_moointopics', 'geonamesapi_username');
+    
+            $response = self::get_url_content($url, "/search?username=".$apiusername."&maxRows=1&q=".urlencode($user->city)."&country=".urlencode($user->country));
+    
+            if($response != "" && $xml = simplexml_load_string($response)) {
+                if (isset($xml->geoname->lat)) {
+                    $coordinates->lat = floatval($xml->geoname->lat);
+                    $coordinates->lng = floatval($xml->geoname->lng);
+                }
+            }
+    
+            return $coordinates;
+        }
+        return false;
+    }
+
+    /**
+ * Gets the content of a url request
+ * @uses $CFG
+ * @return String body of the returned request
+ */
+static function get_url_content($domain, $path){
+
+	global $CFG;
+
+	$message = "GET $domain$path HTTP/1.0\r\n";
+	$msgaddress = str_replace("http://","",$domain);
+	$message .= "Host: $msgaddress\r\n";
+    $message .= "Connection: Close\r\n";
+    $message .= "\r\n";
+
+	if($CFG->proxyhost != "" && $CFG->proxyport != 0){
+    	$address = $CFG->proxyhost;
+    	$port = $CFG->proxyport;
+	} else {
+		$address = str_replace("http://","",$domain);
+    	$port = 80;
+	}
+
+    /* Attempt to connect to the proxy server to retrieve the remote page */
+    if(!$socket = fsockopen($address, $port, $errno, $errstring, 20)){
+        echo "Couldn't connect to host $address: $errno: $errstring\n";
+        return "";
+    }
+
+    fwrite($socket, $message);
+    $content = "";
+    while (!feof($socket)){
+            $content .= fgets($socket, 1024);
+    }
+
+    fclose($socket);
+    $retStr = extract_body($content);
+    return $retStr;
+}
+
     public static function set_new_badge($awardedtoid, $badgeissuedid) {
         set_user_preference('format_mooin4_new_badge_'.$badgeissuedid, true, $awardedtoid);
     }
