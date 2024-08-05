@@ -21,6 +21,8 @@
     </span>
     
     {{#discussions}}
+    {{#previewPost}}
+    {{#discussion_url}}
     <span class="unread-info mb-3 d-inline-block">
         {{#no_new_news}}
             0 {{#str}} unread_discussions, format_moointopics {{/str}} <a href="{{{all_discussions_url}}}"> {{#str}} discussion_forum, format_moointopics {{/str}}</a>
@@ -34,6 +36,9 @@
             {{/one_new_news}}
         {{/no_new_news}}
     </span>
+    {{/discussion_url}}
+     {{/previewPost}}
+    
     <div class="tiles-wrapper">
             {{#previewPost}}
             {{#discussion_url}}
@@ -69,9 +74,8 @@
                     </div>
                 </div>
                 {{/discussion_url}}
-            {{/previewPost}}
-            {{^previewPost}}
-            {{^discussion_url}}
+            
+            {{#no_discussions_available}}
                 <div class="discussion-preview d-flex flex-column d-md-flex d-lg-none justify-content-between">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-newspaper mr-2"></i>
@@ -95,7 +99,7 @@
                         <a class="" href="{{{all_discussions_url}}}">{{#str}} show_all_forums, format_moointopics {{/str}}</a>
                     </div>
                 </div>
-            {{/discussion_url}}
+            {{/no_discussions_available}}
             {{/previewPost}}
         {{/discussions}}
         {{#participants}}
