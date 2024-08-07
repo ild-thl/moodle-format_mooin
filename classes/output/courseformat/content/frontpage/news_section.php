@@ -6,6 +6,7 @@ use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
 use format_moointopics\local\utils as utils;
+use context_course;
 
 /**
  * Base class to render the course news section.
@@ -51,6 +52,11 @@ class news_section implements renderable {
             $data->no_new_news = true;
         } else if ($last_post['unread_news_number'] == 1) {
             $data->one_new_news = true;
+        }
+
+        $coursecontext = context_course::instance($course->id);
+        if (has_capability('moodle/course:update', $coursecontext)) {
+            $data->showGear = true;
         }
 
         return $data;
