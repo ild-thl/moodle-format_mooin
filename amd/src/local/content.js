@@ -459,7 +459,7 @@ export default class Component extends BaseComponent {
       var screenHeight = window.innerHeight;
 
       if (screenHeight <= 600) {
-        removeOffset = titleHeight + progressbarContainerHeight;
+        removeOffset = titleHeight + progressbarContainerHeight + 20;
       } else {
         removeOffset = titleHeight + 20;
       }
