@@ -363,19 +363,18 @@ class utils {
     }
 
     public static function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
-        global $DB;
-
-        $sql = 'SELECT fp.*
-                  FROM {forum_posts} as fp,
-                       {forum_discussions} as fd,
-                       {forum} as f,
-                       {course_modules} as cm
-                 WHERE fp.discussion = fd.id
-                   AND fd.forum = f.id
-                   AND f.course = :courseid
-                   AND cm.instance = f.id
-                   AND cm.visible = 1
-                   AND (fp.mailnow = 1 OR fp.created < :wait) ';
+        global $DB, $USER;
+    
+        // SQL query to get all unread posts
+        $sql = 'SELECT fp.*, f.id as forumid, fd.groupid, fd.id as discussionid, cm.id as cmid
+                FROM {forum_posts} as fp
+                JOIN {forum_discussions} as fd ON fp.discussion = fd.id
+                JOIN {forum} as f ON fd.forum = f.id
+                JOIN {course_modules} as cm ON cm.instance = f.id
+                WHERE f.course = :courseid
+                AND cm.visible = 1
+                AND (fp.mailnow = 1 OR fp.created < :wait) ';
+        
         if ($forumid > 0) {
             $sql .= 'AND f.id = :forumid ';
         } else if ($news) {
@@ -383,11 +382,9 @@ class utils {
         } else {
             $sql .= 'AND f.type != :news ';
         }
-
-        $sql .= '  AND fp.id not in (SELECT postid
-                                      FROM {forum_read}
-                                     WHERE userid = :userid) ';
-
+    
+        $sql .= 'AND fp.id NOT IN (SELECT postid FROM {forum_read} WHERE userid = :userid)';
+    
         $params = array(
             'courseid' => $courseid,
             'news' => 'news',
@@ -395,10 +392,24 @@ class utils {
             'forumid' => $forumid,
             'wait' => time() - 1800
         );
-
+    
         $unreadposts = $DB->get_records_sql($sql, $params);
-        return count($unreadposts);
+        $visible_unread_posts = 0;
+    
+        // Check visibility of each post
+        foreach ($unreadposts as $post) {
+            $forum = $DB->get_record('forum', array('id' => $post->forumid));
+            $discussion = $DB->get_record('forum_discussions', array('id' => $post->discussionid));
+            $cm = get_coursemodule_from_instance('forum', $forum->id, $courseid);
+    
+            if (forum_user_can_see_post($forum, $discussion, $post, $USER, $cm)) {
+                $visible_unread_posts++;
+            }
+        }
+    
+        return $visible_unread_posts;
     }
+    
 
     /**
      * Get the last forum discussion in the course
@@ -408,103 +419,67 @@ class utils {
      */
     public static function get_last_forum_discussion($courseid, $forum_type) {
         global $DB, $OUTPUT, $USER;
-
-        $sql = 'SELECT fp.*, f.id as forumid
-                FROM {forum_posts} as fp,
-                    {forum_discussions} as fd,
-                    {forum} as f
-                WHERE fp.discussion = fd.id
-                AND fd.forum = f.id
-                AND f.course = :courseid
+    
+        $sql = 'SELECT fp.*, f.id as forumid, fd.groupid, fd.id as discussionid, cm.id as cmid
+                FROM {forum_posts} as fp
+                JOIN {forum_discussions} as fd ON fp.discussion = fd.id
+                JOIN {forum} as f ON fd.forum = f.id
+                JOIN {course_modules} as cm ON cm.instance = f.id
+                WHERE f.course = :courseid
                 AND (fp.mailnow = 1 OR fp.created < :wait)
-                AND f.type != :news ';
-        $sql .= 'ORDER BY fp.created DESC LIMIT 1 ';
-
+                AND f.type != :news
+                AND cm.module = (SELECT id FROM {modules} WHERE name = "forum")
+                ORDER BY fp.created DESC';
+    
         $params = array(
             'courseid' => $courseid,
             'news' => 'news',
             'wait' => time() - 1800
         );
-
-        if ($latestpost = $DB->get_records_sql($sql, $params)) {
-            $new_in_course = $latestpost;
-        }
-        //*/
-        // Some test to fetch the forum with discussion within it
-        // get the news annoucement & forum discussion for a specific news or forum
-        // var_dump($new_in_course);
-        if (!empty($new_in_course) && count($new_in_course) > 0) {
-            $out = null;
-            foreach ($new_in_course as $key => $value) {
-                if (!empty($value->userid)) {
-
-                    $user = $DB->get_record('user', ['id' => $value->userid], '*');
-
-                    // Get the right date for new creation
-                    $created_news = date("d.m.Y, G:i", date((int)$value->created));
-
-                    $sql = 'SELECT * FROM mdl_forum WHERE course = :cid AND type != :tid ORDER BY ID ASC';
-                    $param = array('cid' => $courseid, 'tid' => 'news');
-                    $oc_foren = $DB->get_records_sql($sql, $param);
-                    $cond_in_forum_posts = 'SELECT * FROM mdl_forum_discussions WHERE course = :id ORDER BY ID DESC LIMIT 1';
-                    $param =  array('id' => $courseid);
-                    $oc_f = $DB->get_record_sql($cond_in_forum_posts, $param);
-                    $ar_for = (array)$oc_foren;
-                    $new_news = false;
-                    $small_countcontainer = false;
-
-                    if (count($ar_for) > 1 || count((array)$oc_f) != 0) {
-                        $unread_forum_number = self::count_unread_posts($USER->id, $courseid, false);
-
-                        // if ($unread_forum_number == 1) {
-                        //     $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
-                        //     $new_news .= html_writer::link($url_disc, get_string('unread_discussions_single', 'format_mooin4') . get_string('discussion_forum', 'format_mooin4'), array('title' => get_string('discussion_forum', 'format_mooin4'), 'class' => 'primary-link'));
-                        // }
-                        // if ($unread_forum_number > 1) {
-                        //     $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_forum_number . html_writer::end_span();
-                        //     $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin4') . get_string('discussion_forum', 'format_mooin4'), array('title' => get_string('discussion_forum', 'format_mooin4'), 'class' => 'primary-link'));
-                        // }
-                        // if ($unread_forum_number >= 99) {
-                        //     $small_countcontainer = true;
-                        //     $new_news = html_writer::start_span('count-container count-container-small d-inline-flex inline-badge fw-700 mr-1') . "99+" . html_writer::end_span();
-                        //     $new_news .= html_writer::link($url_disc, get_string('unread_discussions', 'format_mooin4') . get_string('discussion_forum', 'format_mooin4'), array('title' => get_string('discussion_forum', 'format_mooin4'), 'class' => 'primary-link'));
-                        // }
-
-                    } else {
-                        $new_news = false;
-                        //$out .= html_writer::link($url_disc, get_string('all_forums', 'format_mooin4'), array('title' => get_string('all_forums', 'format_mooin4'))); // newsurl
-                    }
-
-
-
-
-                    // Get the user id for the one who created the news or forum
-                    $user_news = self::user_print_forum($courseid);
-
-                    $forum_discussion_url = new moodle_url('/mod/forum/discuss.php', array('d' => $value->discussion));
+    
+        $latestposts = $DB->get_records_sql($sql, $params);
+    
+        if (!empty($latestposts)) {
+            foreach ($latestposts as $post) {
+                $forum = $DB->get_record('forum', array('id' => $post->forumid));
+                $discussion = $DB->get_record('forum_discussions', array('id' => $post->discussionid));
+                $cm = get_coursemodule_from_instance('forum', $forum->id, $courseid);
+    
+                if (forum_user_can_see_post($forum, $discussion, $post, $USER, $cm)) {
+                    $user = $DB->get_record('user', ['id' => $post->userid], '*');
+                    $created_news = date("d.m.Y, G:i", date((int)$post->created));
+                    $unread_forum_number = self::count_unread_posts($USER->id, $courseid, false);
+    
+                    $forum_discussion_url = new moodle_url('/mod/forum/discuss.php', array('d' => $post->discussion));
                     $templatecontext = [
                         'user_firstname' =>  $user->firstname,
                         'created_news' => $created_news,
                         'user_picture' => $OUTPUT->user_picture($user, array('courseid' => $courseid)),
-                        'news_title' => $value->subject,
-                        'news_text' => $value->message,
+                        'news_title' => $post->subject,
+                        'news_text' => $post->message,
                         'discussion_url' => $forum_discussion_url,
                         'unread_news_number' => $unread_forum_number,
-                        'new_news' => $new_news,
-                        'small_countcontainer' => $small_countcontainer
+                        'new_news' => false,
+                        'small_countcontainer' => false
                     ];
+                    return $templatecontext;
                 }
             }
-        } else {
-            $templatecontext = [
-                'unread_news_number' => 0,
-                'no_discussions_available' => true,
-                'no_news' => false,
-                'new_news' => false
-            ];
         }
+    
+        // Default context if no posts are found or accessible
+        $templatecontext = [
+            'unread_news_number' => 0,
+            'no_discussions_available' => true,
+            'no_news' => false,
+            'new_news' => false
+        ];
+    
         return $templatecontext;
     }
+    
+    
+    
 
     /**
      * Get the right user picture for creating forum
