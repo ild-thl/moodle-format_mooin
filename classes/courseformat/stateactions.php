@@ -51,7 +51,11 @@ class stateactions extends Base {
         ?int $targetsectionid = null,
         ?int $targetcmid = null
     ): void {
-        $this->section_state($updates, $course, $ids);
+        foreach($ids as $id) {
+            $updates->add_section_put($id);
+        }
+        
+        //$this->section_state($updates, $course, $ids);
     }
 
     public function complete_section(
@@ -96,8 +100,8 @@ class stateactions extends Base {
         utils::set_chapter($targetsectionid);
         $this->section_state($updates, $course, $ids);
 
-        course_modinfo::purge_course_modules_cache($course->id, $ids);
-        rebuild_course_cache($course->id, false, true);
+        // course_modinfo::purge_course_modules_cache($course->id, $ids);
+        // rebuild_course_cache($course->id, false, true);
     }
 
     public function section_unsetChapter(
@@ -109,8 +113,8 @@ class stateactions extends Base {
     ): void {
         utils::unset_chapter($targetsectionid);
         $this->section_state($updates, $course, $ids);
-        course_modinfo::purge_course_modules_cache($course->id, $ids);
-        rebuild_course_cache($course->id, false, true);
+        // course_modinfo::purge_course_modules_cache($course->id, $ids);
+        // rebuild_course_cache($course->id, false, true);
     }
 
     public function getContinuesection(

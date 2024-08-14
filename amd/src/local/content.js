@@ -539,7 +539,7 @@ export default class Component extends BaseComponent {
     target.dataset.number = element.number;
     
     this._reloadSectionNames({ state: state, element: element });
-    window.console.log("HIIIIIER");
+ 
     
     // Update title and title inplace editable, if any.
     const inplace = inplaceeditable.getInplaceEditable(
@@ -748,13 +748,13 @@ export default class Component extends BaseComponent {
       for (const cmId of element.cmlist) {
         this._cancelDebouncedReloadCm(cmId);
       }
-      this.reactive.dispatch('reloadAllSectionPrefixes', element);
+      //this.reactive.dispatch('reloadAllSectionPrefixes', element);
       const promise = courseActions.refreshSection(sectionitem, element.id);
       
       promise
         .then(() => {
           this._indexContents();
-          this._reloadSectionNames({state, element});
+          this._reloadSectionNames({ state: state, element: element });
           return true;
         })
         .catch((error) => {
@@ -788,19 +788,27 @@ export default class Component extends BaseComponent {
   }
 
   _updateChapters({ state, element }) {
-    this._reloadSection({ element });
-    state.section.forEach((section) => {
-      if (section.number >= element.number) {
-        const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
-        if (section.isChapter) {
-          number.innerHTML = section.isChapter;
-        } else {
-          number.innerHTML =
-            section.parentChapter + "." + section.innerChapterNumber;
-        }
+    //this.reactive.dispatch('reloadAllSectionPrefixes', element);
+    //this._reloadSection({ element });
+    window.console.log("chapter updated");
+    this._reloadSection({
+            state: state, element: element,
+          });
+    // state.section.forEach((section) => {
+    //   if (section.number >= element.number) {
+    //     this._reloadSection({
+    //       element: section,
+    //     });
+        // const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
+        // if (section.isChapter) {
+        //   number.innerHTML = section.isChapter;
+        // } else {
+        //   number.innerHTML =
+        //     section.parentChapter + "." + section.innerChapterNumber;
+        // }
         //window.console.log(number);
-      }
-    });
+     // }
+    //});
   }
 
   //_reloadSectionNames({state, element}) {

@@ -80,6 +80,7 @@ class section extends section_base {
 
             if ($parentchapterAsSection = $DB->get_record('course_sections', array('id' => $parentchapter->sectionid))) {
                 $data->innerChapterNumber = $this->section->section - $parentchapterAsSection->section;
+                $data->parentChapterId = $parentchapterAsSection->id;
             }   
             $data->prefix = utils::get_section_prefix($this->section);
         }
