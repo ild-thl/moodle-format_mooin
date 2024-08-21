@@ -274,25 +274,30 @@ export default class extends DndSection {
   _hvpListener() {
     var parentIFrames = this.getElements(this.selectors.H5P);
     if (parentIFrames.length > 0) {
-      parentIFrames.forEach((parentIFrame) => {
-        if (parentIFrame.contentDocument) {
-          var parentIFrameContent =
-            parentIFrame.contentDocument || parentIFrame.contentWindow.document;
+        parentIFrames.forEach((parentIFrame) => {
+            if (parentIFrame.contentDocument) {
+                var parentIFrameContent =
+                    parentIFrame.contentDocument || parentIFrame.contentWindow.document;
 
-          var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
+                var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
 
-          if (nestedIFrame) {
-            var H5P = nestedIFrame.contentWindow.H5P;
-            H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
-          } else {
-            setTimeout(this._hvpListener.bind(this), 100);
-          }
-        } else {
-          setTimeout(this._hvpListener.bind(this), 100);
-        }
-      });
+                if (nestedIFrame) {
+                    var H5P = nestedIFrame.contentWindow.H5P;
+                    if (H5P && H5P.externalDispatcher) {
+                        H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
+                    } else {
+                        setTimeout(this._hvpListener.bind(this), 200);
+                    }
+                } else {
+                    setTimeout(this._hvpListener.bind(this), 200);
+                }
+            } else {
+                setTimeout(this._hvpListener.bind(this), 200);
+            }
+        });
     }
-  }
+}
+
 
   _hvpprogress(event) {
     if (event.getVerb() === "completed") {

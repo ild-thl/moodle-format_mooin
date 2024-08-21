@@ -421,30 +421,30 @@ export default class Component extends BaseComponent {
       this._dynamicHeader(pageOffset);
     }
 
-    const items = this.reactive
-      .getExporter()
-      .allItemsArray(this.reactive.state);
-    // Check what is the active element now.
-    let pageItem = null;
-    items.every((item) => {
-      const index = item.type === "section" ? this.sections : this.cms;
-      if (index[item.id] === undefined) {
-        return true;
-      }
+    // const items = this.reactive
+    //   .getExporter()
+    //   .allItemsArray(this.reactive.state);
+    // // Check what is the active element now.
+    // let pageItem = null;
+    // items.every((item) => {
+    //   const index = item.type === "section" ? this.sections : this.cms;
+    //   if (index[item.id] === undefined) {
+    //     return true;
+    //   }
 
-      const element = index[item.id].element;
-      // Activities without url can only be page items in edit mode.
-      if (item.type === "cm" && !item.url && !this.reactive.isEditing) {
-        return pageOffset >= element.offsetTop;
-      }
+    //   const element = index[item.id].element;
+    //   // Activities without url can only be page items in edit mode.
+    //   if (item.type === "cm" && !item.url && !this.reactive.isEditing) {
+    //     return pageOffset >= element.offsetTop;
+    //   }
 
-      pageItem = item;
+    //   pageItem = item;
 
-      return pageOffset >= element.offsetTop;
-    });
-    if (pageItem) {
-      //this.reactive.dispatch('setPageItem', pageItem.type, pageItem.id);
-    }
+    //   return pageOffset >= element.offsetTop;
+    // });
+    // if (pageItem) {
+    //   //this.reactive.dispatch('setPageItem', pageItem.type, pageItem.id);
+    // }
   }
 
   _dynamicHeader(pageOffset) {
@@ -538,7 +538,7 @@ export default class Component extends BaseComponent {
     // The data-number is the attribute used by components to store the section number.
     target.dataset.number = element.number;
     
-    this._reloadSectionNames({ state: state, element: element });
+    //this._reloadSectionNames({ state: state, element: element });
  
     
     // Update title and title inplace editable, if any.
@@ -748,7 +748,7 @@ export default class Component extends BaseComponent {
       for (const cmId of element.cmlist) {
         this._cancelDebouncedReloadCm(cmId);
       }
-      //this.reactive.dispatch('reloadAllSectionPrefixes', element);
+      this.reactive.dispatch('reloadAllSectionPrefixes', element);
       const promise = courseActions.refreshSection(sectionitem, element.id);
       
       promise

@@ -58,7 +58,7 @@ class cm extends cm_base {
         $data = parent::export_for_template($output);
 
         if ($this->mod->modname == 'hvp' && $USER->editing != 1) {
-            $link = '<iframe src="' . $CFG->httpswwwroot . '/mod/hvp/embed.php?id=' . $this->mod->id . '"class="parent-iframe" width="800px" height="511px" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="' . $CFG->httpswwwroot . '/mod/hvp/library/js/h5p-resizer.js" charset="UTF-8"></script>';
+            $link = '<iframe src="' . $CFG->httpswwwroot . '/mod/hvp/embed.php?id=' . $this->mod->id . '"class="parent-iframe"" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="' . $CFG->httpswwwroot . '/mod/hvp/library/js/h5p-resizer.js" charset="UTF-8"></script>';
             $this->mod->set_content($link);
             $data->hvpcontent = $this->mod->content;
         }
