@@ -62,7 +62,7 @@ $string['lastweek'] = 'За останні 7 днів';
 $string['discussion_link'] = 'ID для загального форуму обговорення';
 $string['my_threads'] = 'Мої повідомлення';
 $string['chapter_config'] = 'Розділ';
-$string['name'] = 'Ім'я';
+$string['name'] = "Ім 'я";
 $string['enabled'] = 'Видимий';
 $string['lections'] = 'Кількість уроків';
 $string['configtext'] = 'Параметри розділу';
@@ -88,8 +88,8 @@ $string['cert_addtext'] = 'Lorem ipsum';
 $string['required_questions'] = 'Необхідна кількість правильних відповідей у %';
 $string['only_for_trainers'] = 'Тільки для адміністраторів та тренерів';
 $string['my_certificate'] = 'Сертифікати курсу';
-$string['certificate_overview_description'] = 'Вітаємо! Ви успішно пройшли самотестування, яке було включено до курсу. Ви можете завантажити сертифікат про проходження курсу тут»;
-$string['certificate_overview'] = 'Для цього курсу ще немає сертифікату!
+$string['certificate_overview_description'] = 'Вітаємо! Ви успішно пройшли самотестування, яке було включено до курсу. Ви можете завантажити сертифікат про проходження курсу тут»';
+$string['certificate_overview'] = 'Для цього курсу ще немає сертифікату!';
 
 $string['start'] = 'Старт';
 $string['startlesson'] = 'Почати з уроку 1.1';
@@ -106,11 +106,11 @@ $string['mark_all_as_read'] = 'Позначити все як прочитане
 $string['mark_all_as_read_mobile'] = 'Читати повністю';
 $string['configlabel_geonamesapi_url'] = 'GeoNames API-URL';
 $string['configdesc_geonamesapi_url'] = 'Цей сервіс використовується для відображення координат учасників на карті учасників.';
-$string['configlabel_geonamesapi_username'] = 'Ім'я користувача GeoNames';
+$string['configlabel_geonamesapi_username'] = 'Ім\'я користувача GeoNames';
 
 $string['configdesc_geonamesapi_username'] = 'Для використання цього сервісу потрібен обліковий запис GeoNames. Його можна створити <a href=«https://www.geonames.org/»>hier</a> та активувати. Наш Mooin 4.0 демо-рахунок слід використовувати лише для тестування.';
 $string['configlabel_forcecompletiondefault'] = 'Не відображати завершення операції за замовчуванням';
-$string['configdesc_forcecompletiondefault'] = 'Коли до курсу додаються нові вправи, відстеження виконання за замовчуванням не відображається. Якщо для вправи ввімкнено відстеження завершення роботи, індикатор прогресу в цьому уроці залежить від того, чи вона завершена. В іншому випадку в нижньому колонтитулі (футері) уроку відображається кнопка, за допомогою якої урок можна позначити як завершений.;
+$string['configdesc_forcecompletiondefault'] = 'Коли до курсу додаються нові вправи, відстеження виконання за замовчуванням не відображається. Якщо для вправи ввімкнено відстеження завершення роботи, індикатор прогресу в цьому уроці залежить від того, чи вона завершена. В іншому випадку в нижньому колонтитулі (футері) уроку відображається кнопка, за допомогою якої урок можна позначити як завершений.';
 
 $string['unread_news'] = 'непрочитаних повідомлень у розділі';
 $string['all_news_mobile'] = 'Всі внески';
@@ -125,11 +125,11 @@ $string['no_certificates_image_text'] = 'Сертифікатів немає';
 $string['no_forums_available'] = 'Немає доступних форумів';
 $string['no_contributions_available'] = 'Внески ще не доступні';
 
-$string['modal_course_complete'] = 'Ви пройшли всі уроки цього курсу!
+$string['modal_course_complete'] = 'Ви пройшли всі уроки цього курсу!';
 $string['modal_course_complete_title'] = 'Курс завершено';
 $string['modal_chapter_complete'] = 'Ви пройшли всі уроки цього розділу';
 $string['modal_chapter_complete_title'] = 'Розділ завершено';
-$string['modal_last_section_of_chapter'] = 'Ви дійшли до останнього уроку цього розділу!
+$string['modal_last_section_of_chapter'] = 'Ви дійшли до останнього уроку цього розділу!';
 $string['modal_last_section_of_chapter_title'] = 'Досягнуто кінця розділу';
 $string['close'] = 'Закрити';
 
@@ -171,7 +171,7 @@ $string['user_card_title'] = 'Учасники курсу';
 $string['user'] = 'Люди';
 $string['in_course'] = 'беруть участь';
 $string['new_user'] = 'Нещодавно доданий: ';
-$string['no_user'] = 'Учасників не додано!
+$string['no_user'] = 'Учасників не додано!';
 $string['welcome'] = 'Ласкаво просимо на курс';
 $string['forum_unread'] = 'Непрочитані форуми';
 $string['discussions'] = 'Всі обговорення';
