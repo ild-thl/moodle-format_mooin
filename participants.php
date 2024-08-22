@@ -1020,13 +1020,13 @@ if ($out != '') {
 }
 // Link zum Abmelden aus dem Kurs anzeigen,
 // wenn der User �ber Autoenrol eingeschrieben ist
-if ($enrol = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'autoenrol', 'status' => 0))) {// manual || autoenrol
-	if ($user_enrolment = $DB->get_record('user_enrolments', array('enrolid' => $enrol->id, 'userid' => $USER->id))) {
-		$unenrolurl = new moodle_url("$CFG->wwwroot/enrol/autoenrol/unenrolself.php?enrolid=$enrol->id");
-		echo html_writer::tag('div', html_writer::link($unenrolurl, get_string('unenrol', 'format_moointopics') )); // , array('class' => 'oc-kurs-abmeldung'
+// if ($enrol = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'autoenrol', 'status' => 0))) {// manual || autoenrol
+// 	if ($user_enrolment = $DB->get_record('user_enrolments', array('enrolid' => $enrol->id, 'userid' => $USER->id))) {
+// 		$unenrolurl = new moodle_url("$CFG->wwwroot/enrol/autoenrol/unenrolself.php?enrolid=$enrol->id");
+// 		echo html_writer::tag('div', html_writer::link($unenrolurl, get_string('unenrol', 'format_moointopics') )); // , array('class' => 'oc-kurs-abmeldung'
 
-	}
-}
+// 	}
+// }
 //echo '</div>';  // md-container.
 echo '</div>';  // Userlist.
 echo '</div>';
