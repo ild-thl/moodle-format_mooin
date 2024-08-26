@@ -31,9 +31,12 @@
             <div class="d-flex align-items-center">
                 <span>
                     <i class="bi bi-newspaper mr-1"></i>
-                    <a href="{{{discussion_url}}}" class="caption caption--sm">{{#str}} latest_post, format_moointopics {{/str}}</a>
-                    {{#str}} by, format_moointopics {{/str}}
-                    {{{user_firstname}}} - {{{created_news}}}
+                    <span class="caption--sm">
+                        <a href="{{{discussion_url}}}" class="caption caption--sm">{{#str}} latest_post, format_moointopics {{/str}}</a>
+                        {{#str}} by, format_moointopics {{/str}}
+                        {{{user_firstname}}} - {{{created_news}}}
+                    </span>
+                    
                 </span>
             </div>
             <div class="news-post-preview">
