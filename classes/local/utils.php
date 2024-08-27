@@ -890,6 +890,7 @@ class utils {
          }
     
          $course_items[0]->add_class('course-title');
+         $course_items[0]->text = $COURSE->fullname;
          $section_node = $course_items[array_key_last($course_items)];
          $section_node->action = null;
          $text = $section_node->text;
@@ -916,6 +917,7 @@ class utils {
                 $course_items = array_splice($items, intval(array_search($item, $items)));
             }
          }
+         $course_items[0]->text = $COURSE->fullname;
     
          //$course_items[0]->add_class('course-title');
          $last_node = $course_items[array_key_last($course_items)];
