@@ -271,58 +271,109 @@ export default class extends DndSection {
     }
   }
 
-  
-
-
   _hvpListener() {
     var parentIFrames = this.getElements(this.selectors.H5P);
+    console.log("Anzahl der parentIFrames gefunden:", parentIFrames.length);
     if (parentIFrames.length > 0) {
-        parentIFrames.forEach(async (parentIFrame) => {
-            if (parentIFrame.contentDocument) {
-                var parentIFrameContent =
-                    parentIFrame.contentDocument || parentIFrame.contentWindow.document;
+      parentIFrames.forEach((parentIFrame) => {
+        if (parentIFrame.contentDocument) {
+          var parentIFrameContent =
+            parentIFrame.contentDocument || parentIFrame.contentWindow.document;
+          console.log("parentIFrameContent gefunden:", parentIFrameContent);
 
-                var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
+          const checkForNestedIFrame = () => {
+            var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
+            console.log("nestedIFrame gefunden:", nestedIFrame);
 
-                if (nestedIFrame) {
-                    var H5P = nestedIFrame.contentWindow.H5P;
-                    if (H5P && H5P.externalDispatcher) {
-                      H5P.setFinished = function (contentId, score, maxScore, time) {
-                                     //hvp Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
-                                    };
-                                    H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
-                        // Warte auf das resize Event
-                        await this._triggerResizeAndWait(H5P, H5P.instances[0]);
+            if (nestedIFrame) {
+              const adjustParentIFrameHeight = () => {
+                const nestedIFrameHeight =
+                  nestedIFrame.contentWindow.document.body.scrollHeight;
+                parentIFrame.style.height = nestedIFrameHeight + "px";
+                console.log(
+                  "ParentIFrame-Höhe angepasst:",
+                  nestedIFrameHeight + "px"
+                );
+              };
 
-                        // Danach die Höhe anpassen
-                        var nestedIFrameHeight = nestedIFrame.contentWindow.document.body.scrollHeight;
-                        parentIFrame.style.height = nestedIFrameHeight + "px";
-                    } else {
-                        setTimeout(this._hvpListener.bind(this), 50);
-                    }
-                } else {
-                    setTimeout(this._hvpListener.bind(this), 50);
+              // Starte den MutationObserver
+              var observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                  if (mutation.addedNodes.length > 0) {
+                    console.log(
+                      "DOM-Änderung erkannt im .h5p-iframe: ",
+                      mutation.addedNodes
+                    );
+                    adjustParentIFrameHeight(); // Passe die Höhe nach der Mutation an
+                    observer.disconnect(); // Stoppe das Beobachten, nachdem eine Änderung erkannt wurde
+                  }
+                });
+              });
+              var H5P = nestedIFrame.contentWindow.H5P;
+              H5P.setFinished = function (contentId, score, maxScore, time) {
+                //hvp Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
+              };
+              H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
+
+              observer.observe(nestedIFrame.contentDocument, {
+                childList: true,
+                subtree: true,
+              });
+              console.log(
+                "MutationObserver wurde gestartet, um Änderungen im .h5p-iframe zu überwachen."
+              );
+
+              // Fallback: Regelmäßige Überprüfung des Inhalts (Polling)
+              var checkInterval = setInterval(function () {
+                if (
+                  nestedIFrame.contentDocument.body &&
+                  nestedIFrame.contentDocument.body.children.length > 0
+                ) {
+                  console.log(".h5p-iframe hat nun Inhalt.");
+                  adjustParentIFrameHeight(); // Passe die Höhe an, sobald Inhalt erkannt wird
+                  clearInterval(checkInterval); // Stoppe das Intervall
                 }
-            } else {
-                setTimeout(this._hvpListener.bind(this), 50);
+              }, 500); // Überprüft alle 500ms
+
+              return true; // nestedIFrame wurde gefunden, keine weitere Aktion erforderlich
             }
-        });
+            return false; // nestedIFrame wurde noch nicht gefunden
+          };
+
+          // Initialer Versuch, nestedIFrame zu finden
+          if (!checkForNestedIFrame()) {
+            console.log(
+              "nestedIFrame wurde nicht gefunden, starte Beobachtung des parentIFrame."
+            );
+
+            // Beobachte den parentIFrame für das Erscheinen des nestedIFrame
+            var observer = new MutationObserver(function (mutations) {
+              mutations.forEach(function (mutation) {
+                if (mutation.addedNodes.length > 0) {
+                  console.log(
+                    "Eine neue Node wurde hinzugefügt:",
+                    mutation.addedNodes
+                  );
+                  if (checkForNestedIFrame()) {
+                    observer.disconnect(); // Stoppe das Beobachten, nachdem nestedIFrame gefunden wurde
+                  }
+                }
+              });
+            });
+
+            observer.observe(parentIFrameContent, {
+              childList: true,
+              subtree: true,
+            });
+          }
+        } else {
+          console.error("Kein Dokument im parentIFrame gefunden.");
+        }
+      });
+    } else {
+      console.error("Keine parentIFrames gefunden.");
     }
-}
-
-_triggerResizeAndWait(H5P, instance) {
-    return new Promise((resolve) => {
-        // Setze einen einmaligen Listener für das resize Event
-        H5P.on(instance, 'resize', function() {
-            resolve();
-        });
-
-        // Löst das resize Event aus
-        H5P.trigger(instance, 'resize');
-    });
-}
-
-  
+  }
 
   // _hvpListener() {
   //   var parentIFrames = this.getElements(this.selectors.H5P);
@@ -337,22 +388,22 @@ _triggerResizeAndWait(H5P, instance) {
   //         if (nestedIFrame) {
   //           var H5P = nestedIFrame.contentWindow.H5P;
   //           if (H5P && H5P.externalDispatcher) {
-              
+
   //             // var nestedIFrameHeight =
   //             // nestedIFrame.contentWindow.document.body.scrollHeight;
   //             // parentIFrame.style.height = nestedIFrameHeight + "px";
   //             //ILD.init(H5P);
   //             window.console.log(H5P);
-              
+
   //             H5P.setFinished = function (contentId, score, maxScore, time) {
   //              //hvp Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
   //             };
   //             H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
   //             var instance = H5P.instances[0];
   //             H5P.trigger(instance, 'resize');
-  //             var nestedIFrameHeight =
-  //             nestedIFrame.contentWindow.document.body.scrollHeight;
-  //             parentIFrame.style.height = nestedIFrameHeight + "px";
+  // var nestedIFrameHeight =
+  // nestedIFrame.contentWindow.document.body.scrollHeight;
+  // parentIFrame.style.height = nestedIFrameHeight + "px";
   //           } else {
   //             setTimeout(this._hvpListener.bind(this), 50);
   //           }
@@ -368,7 +419,7 @@ _triggerResizeAndWait(H5P, instance) {
 
   _hvpprogress(event) {
     window.console.log(event);
-  
+
     if (event.getVerb() === "completed" || event.getVerb() === "answered") {
       var contentId = event.getVerifiedStatementValue([
         "object",
@@ -379,14 +430,21 @@ _triggerResizeAndWait(H5P, instance) {
       var score = event.getScore();
       var maxScore = event.getMaxScore();
       var statement = event.data.statement;
-      var isChild = statement.context && statement.context.contextActivities &&
-                statement.context.contextActivities.parent &&
-                statement.context.contextActivities.parent[0] &&
-                statement.context.contextActivities.parent[0].id;
+      var isChild =
+        statement.context &&
+        statement.context.contextActivities &&
+        statement.context.contextActivities.parent &&
+        statement.context.contextActivities.parent[0] &&
+        statement.context.contextActivities.parent[0].id;
 
       if (!isChild) {
-        this.reactive.dispatch("updateSectionprogress", this.id, contentId, score, maxScore);
-
+        this.reactive.dispatch(
+          "updateSectionprogress",
+          this.id,
+          contentId,
+          score,
+          maxScore
+        );
       }
     }
   }
