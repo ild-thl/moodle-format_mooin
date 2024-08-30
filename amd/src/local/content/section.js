@@ -281,7 +281,6 @@ export default class extends DndSection {
                     parentIFrame.contentDocument || parentIFrame.contentWindow.document;
                 console.log("parentIFrameContent gefunden:", parentIFrameContent);
 
-                // Deklariere nestedIFrame hier, damit es im gesamten Scope der Funktion verfügbar ist
                 let nestedIFrame = null;
 
                 const adjustParentIFrameHeight = () => {
@@ -289,7 +288,7 @@ export default class extends DndSection {
                         if (nestedIFrame && nestedIFrame.contentWindow.document.body) {
                             const nestedIFrameHeight =
                                 nestedIFrame.contentWindow.document.body.scrollHeight;
-                            if (nestedIFrameHeight > 1) { // Sicherstellen, dass die Höhe sinnvoll ist
+                            if (nestedIFrameHeight > 1) {
                                 parentIFrame.style.height = nestedIFrameHeight + "px";
                                 console.log(
                                     "ParentIFrame-Höhe angepasst:",
@@ -301,7 +300,19 @@ export default class extends DndSection {
                         } else {
                             console.log("Body ist noch nicht verfügbar.");
                         }
-                    }, 100); // Warte 100ms, um sicherzustellen, dass das Rendering abgeschlossen ist
+                    }, 100);
+                };
+
+                const monitorElementLoads = () => {
+                    // Überwache das Laden von Bildern, Videos und anderen Medien im iframe
+                    const elementsToWatch = ['img', 'video', 'iframe', 'embed', 'object'];
+                    elementsToWatch.forEach(tag => {
+                        const elements = nestedIFrame.contentDocument.getElementsByTagName(tag);
+                        for (let element of elements) {
+                            element.addEventListener('load', adjustParentIFrameHeight);
+                            element.addEventListener('resize', adjustParentIFrameHeight);
+                        }
+                    });
                 };
 
                 const checkForH5P = () => {
@@ -321,13 +332,12 @@ export default class extends DndSection {
                             // Starte den MutationObserver
                             var observer = new MutationObserver(function (mutations) {
                                 mutations.forEach(function (mutation) {
-                                    if (mutation.addedNodes.length > 0) {
+                                    if (mutation.addedNodes.length > 0 || mutation.attributeName === 'src') {
                                         console.log(
-                                            "DOM-Änderung erkannt im .h5p-iframe: ",
-                                            mutation.addedNodes
+                                            "DOM-Änderung oder Attributänderung erkannt im .h5p-iframe: ",
+                                            mutation
                                         );
-                                        adjustParentIFrameHeight(); // Passe die Höhe nach der Mutation an
-                                        observer.disconnect(); // Stoppe das Beobachten, nachdem eine Änderung erkannt wurde
+                                        adjustParentIFrameHeight(); // Passe die Höhe nach der Mutation oder Attributänderung an
                                     }
                                 });
                             });
@@ -335,6 +345,7 @@ export default class extends DndSection {
                             observer.observe(nestedIFrame.contentDocument, {
                                 childList: true,
                                 subtree: true,
+                                attributes: true, // Überwacht Änderungen an Attributen wie `src`
                             });
                             console.log(
                                 "MutationObserver wurde gestartet, um Änderungen im .h5p-iframe zu überwachen."
@@ -356,6 +367,7 @@ export default class extends DndSection {
                             console.log('.h5p-iframe vollständig geladen.');
                             adjustParentIFrameHeight(); // Passe die Höhe an, wenn das iframe vollständig geladen ist
                             checkForH5P(); // Prüfe H5P erneut nach dem Laden
+                            monitorElementLoads(); // Überwache das Laden von Elementen
                         });
 
                         // Fallback: Sofortiger Versuch, H5P zu finden
@@ -409,6 +421,7 @@ export default class extends DndSection {
         console.error("Keine parentIFrames gefunden.");
     }
 }
+
 
 
 
