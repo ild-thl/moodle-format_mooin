@@ -667,6 +667,25 @@ class format_mooin4_renderer extends format_section_renderer_base {
         // $PAGE->navbar->add('/ Kap.'.$displaysection);
         // Copy activity clipboard..
 
+        // ADDED tina john 20240830. Optional hidden h5p access links
+        $css = '';
+        if (!$this->page->user_is_editing() && !$course->displayh5picons) {
+            $css .=
+            '.h5pactivity .activity-instance {
+              display: none !important;
+            }';
+            $css .= 
+                '.description .course-description-item {
+                background-color: #fff;
+                 padding-left: 0rem;
+                 padding-right: 0rem;
+            }';
+        }
+        if ($css) {
+            echo html_writer::tag('style', $css);
+        }
+        // End.
+
 
         $thissection = $modinfo->get_section_info(0);
         if ($this->page->user_is_editing()) {
@@ -678,6 +697,7 @@ class format_mooin4_renderer extends format_section_renderer_base {
             echo $this->end_section_list();
         }
 
+        
 
 
         // Start single-section div

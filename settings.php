@@ -49,4 +49,11 @@ if ($ADMIN->fulltree) {
         get_string('configdesc_geonamesapi_username', 'format_mooin4'), 
         'mooin4'
     ));
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/displayh5picons',
+        get_string('configlabel_displayh5picons', 'format_mooin4'),
+        get_string('configgdesc_displayh5picons', 'format_mooin4', $CFG->wwwroot),
+        0)
+    );
+
 }

@@ -509,46 +509,64 @@ class format_mooin4 extends core_courseformat\base {
         if ($courseformatoptions === false) {
             $courseconfig = get_config('moodlecourse');
             $courseformatoptions = [
-                'hiddensections' => [
-                    'default' => 0, // mooin4: show hint
+                // 'hiddensections' => [
+                //     'default' => 0, // mooin4: show hint
+                //     'type' => PARAM_INT,
+                // ],
+                // 'coursedisplay' => [
+                //     'default' => 1, // mooin4: only one section per page
+                //     'type' => PARAM_INT,
+                // ],
+               'displayh5picons' => [
+                    'default' => get_config('format_mooin4', 'displayh5picons'),
                     'type' => PARAM_INT,
-                ],
-                'coursedisplay' => [
-                    'default' => 1, // mooin4: only one section per page
-                    'type' => PARAM_INT,
-                ],
+               ],
+    
             ];
         }
         if ($foreditform && !isset($courseformatoptions['coursedisplay']['label'])) {
             $courseformatoptionsedit = [
-                'hiddensections' => [
-                    'label' => new lang_string('hiddensections'),
-                    'help' => 'hiddensections',
-                    'help_component' => 'moodle',
+                // 'hiddensections' => [
+                //     'label' => new lang_string('hiddensections'),
+                //     'help' => 'hiddensections',
+                //     'help_component' => 'moodle',
+                //     'element_type' => 'select',
+                //     'element_attributes' => [
+                //         [
+                //             0 => new lang_string('hiddensectionscollapsed'),
+                //             1 => new lang_string('hiddensectionsinvisible')
+                //         ],
+                //     ],
+                // ],
+                // 'coursedisplay' => [
+                //     'label' => new lang_string('coursedisplay'),
+                //     'element_type' => 'select',
+                //     'element_attributes' => [
+                //         [
+                //             COURSE_DISPLAY_SINGLEPAGE => new lang_string('coursedisplay_single'),
+                //             COURSE_DISPLAY_MULTIPAGE => new lang_string('coursedisplay_multi'),
+                //         ],
+                //     ],
+                //     'help' => 'coursedisplay',
+                //     'help_component' => 'moodle',
+                // ],
+                'displayh5picons' => [
+                    'label' => get_string('displayh5picons', 'format_mooin4'),
+                    'help' => get_string('displayh5picons_help', 'format_mooin4'),
+                    'help_component' => 'format_mooin4',
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            0 => new lang_string('hiddensectionscollapsed'),
-                            1 => new lang_string('hiddensectionsinvisible')
+                            0 => get_string('no', 'format_mooin4'),
+                            1 => get_string('yes', 'format_mooin4'),
                         ],
                     ],
                 ],
-                'coursedisplay' => [
-                    'label' => new lang_string('coursedisplay'),
-                    'element_type' => 'select',
-                    'element_attributes' => [
-                        [
-                            COURSE_DISPLAY_SINGLEPAGE => new lang_string('coursedisplay_single'),
-                            COURSE_DISPLAY_MULTIPAGE => new lang_string('coursedisplay_multi'),
-                        ],
-                    ],
-                    'help' => 'coursedisplay',
-                    'help_component' => 'moodle',
-                ],
+        
             ];
             $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
         }
-        return array();
+        //return array();
         return $courseformatoptions;
     }
 

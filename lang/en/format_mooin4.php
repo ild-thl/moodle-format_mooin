@@ -183,3 +183,11 @@ $string['old_news'] = 'Old news';
 $string['all_news'] = 'news forum';
 $string['latest_post'] = 'Latest post';
 $string['discussion_news'] = 'View post';
+
+// Added by tinjohn for native h5p.
+$string['yes'] = "yes";
+$string['no'] = "no";
+$string['configlabel_displayh5picons'] = 'Display h5p access links';
+$string['configgdesc_displayh5picons'] = 'If h5p activities are embedded, there is no need to display the link for access. Per default no, because the embedding is not moodle standard';
+$string['displayh5picons'] = 'Display h5p access links';
+$string['displayh5picons_help'] = 'If h5p activities are embedded, there is no need to display the link for access.';

@@ -182,3 +182,11 @@ $string['old_news'] = 'Ältere News';
 $string['all_news'] = 'Newsforum';
 $string['latest_post'] = 'Neuester Beitrag ';
 $string['discussion_news'] = 'Zur Nachricht';
+
+// Added by tinjohn for native h5p.
+$string['yes'] = "ja";
+$string['no'] = "nein";
+$string['configlabel_displayh5picons'] = 'H5P Zugangslinks anzeigen';
+$string['configgdesc_displayh5picons'] = 'Wenn H5P Elemente eingebettet sind, sind zusätzliche Links überflüssig. Per default ausgeschaltet, da das einbetten kein Standard ist';
+$string['displayh5picons'] = 'H5P Zugangslinks anzeigen';
+$string['displayh5picons_help'] = 'Wenn H5P Elemente eingebettet sind, sind zusätzliche Links überflüssig.';
