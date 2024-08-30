@@ -287,13 +287,18 @@ export default class extends DndSection {
 
                     if (nestedIFrame) {
                         const adjustParentIFrameHeight = () => {
-                            const nestedIFrameHeight =
-                                nestedIFrame.contentWindow.document.body.scrollHeight;
-                            parentIFrame.style.height = nestedIFrameHeight + "px";
-                            console.log(
-                                "ParentIFrame-Höhe angepasst:",
-                                nestedIFrameHeight + "px"
-                            );
+                            // Warte, bis das iframe vollständig geladen ist
+                            if (nestedIFrame.contentWindow.document.body) {
+                                const nestedIFrameHeight =
+                                    nestedIFrame.contentWindow.document.body.scrollHeight;
+                                parentIFrame.style.height = nestedIFrameHeight + "px";
+                                console.log(
+                                    "ParentIFrame-Höhe angepasst:",
+                                    nestedIFrameHeight + "px"
+                                );
+                            } else {
+                                console.log("Body ist noch nicht verfügbar.");
+                            }
                         };
 
                         const checkForH5P = () => {
@@ -348,6 +353,12 @@ export default class extends DndSection {
                             }, 500); // Überprüft alle 500ms
                         }
 
+                        // Füge ein 'load' Event hinzu, um sicherzustellen, dass das iframe vollständig geladen ist
+                        nestedIFrame.addEventListener('load', function() {
+                            console.log('.h5p-iframe vollständig geladen.');
+                            adjustParentIFrameHeight(); // Passe die Höhe an, wenn das iframe vollständig geladen ist
+                        });
+
                         return true; // nestedIFrame wurde gefunden, keine weitere Aktion erforderlich
                     }
                     return false; // nestedIFrame wurde noch nicht gefunden
@@ -387,6 +398,7 @@ export default class extends DndSection {
         console.error("Keine parentIFrames gefunden.");
     }
 }
+
 
 
   // _hvpListener() {
