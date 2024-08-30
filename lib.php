@@ -592,7 +592,7 @@ class format_moointopics extends core_courseformat\base {
             }
         } else { // add new chapter at position 1 if format is changed to moointopics
             // was format of oldcourse not moointopics?
-            if ($oldcourse->format != 'moointopics' && $oldcourse->format != 'mooin4') {
+            if ($oldcourse->format != 'moointopics') {
                 // is there no chapter at position 1?
                 if ($section1 = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => 1))) {
                     if (!$DB->get_record('format_moointopics_chapter', array('courseid' => $this->courseid, 'sectionid' => $section1->id))) {
