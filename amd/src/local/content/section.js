@@ -275,105 +275,119 @@ export default class extends DndSection {
     var parentIFrames = this.getElements(this.selectors.H5P);
     console.log("Anzahl der parentIFrames gefunden:", parentIFrames.length);
     if (parentIFrames.length > 0) {
-      parentIFrames.forEach((parentIFrame) => {
-        if (parentIFrame.contentDocument) {
-          var parentIFrameContent =
-            parentIFrame.contentDocument || parentIFrame.contentWindow.document;
-          console.log("parentIFrameContent gefunden:", parentIFrameContent);
+        parentIFrames.forEach((parentIFrame) => {
+            if (parentIFrame.contentDocument) {
+                var parentIFrameContent =
+                    parentIFrame.contentDocument || parentIFrame.contentWindow.document;
+                console.log("parentIFrameContent gefunden:", parentIFrameContent);
 
-          const checkForNestedIFrame = () => {
-            var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
-            console.log("nestedIFrame gefunden:", nestedIFrame);
+                const checkForNestedIFrame = () => {
+                    var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
+                    console.log("nestedIFrame gefunden:", nestedIFrame);
 
-            if (nestedIFrame) {
-              const adjustParentIFrameHeight = () => {
-                const nestedIFrameHeight =
-                  nestedIFrame.contentWindow.document.body.scrollHeight;
-                parentIFrame.style.height = nestedIFrameHeight + "px";
-                console.log(
-                  "ParentIFrame-Höhe angepasst:",
-                  nestedIFrameHeight + "px"
-                );
-              };
+                    if (nestedIFrame) {
+                        const adjustParentIFrameHeight = () => {
+                            const nestedIFrameHeight =
+                                nestedIFrame.contentWindow.document.body.scrollHeight;
+                            parentIFrame.style.height = nestedIFrameHeight + "px";
+                            console.log(
+                                "ParentIFrame-Höhe angepasst:",
+                                nestedIFrameHeight + "px"
+                            );
+                        };
 
-              // Starte den MutationObserver
-              var observer = new MutationObserver(function (mutations) {
-                mutations.forEach(function (mutation) {
-                  if (mutation.addedNodes.length > 0) {
+                        const checkForH5P = () => {
+                            var H5P = nestedIFrame.contentWindow.H5P;
+                            if (H5P && H5P.externalDispatcher) {
+                                console.log("H5P-Objekt gefunden.");
+
+                                H5P.setFinished = function (contentId, score, maxScore, time) {
+                                    // H5P-Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
+                                };
+
+                                H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
+
+                                adjustParentIFrameHeight(); // Höhe sofort anpassen, wenn H5P gefunden wird
+
+                                // Starte den MutationObserver
+                                var observer = new MutationObserver(function (mutations) {
+                                    mutations.forEach(function (mutation) {
+                                        if (mutation.addedNodes.length > 0) {
+                                            console.log(
+                                                "DOM-Änderung erkannt im .h5p-iframe: ",
+                                                mutation.addedNodes
+                                            );
+                                            adjustParentIFrameHeight(); // Passe die Höhe nach der Mutation an
+                                            observer.disconnect(); // Stoppe das Beobachten, nachdem eine Änderung erkannt wurde
+                                        }
+                                    });
+                                });
+
+                                observer.observe(nestedIFrame.contentDocument, {
+                                    childList: true,
+                                    subtree: true,
+                                });
+                                console.log(
+                                    "MutationObserver wurde gestartet, um Änderungen im .h5p-iframe zu überwachen."
+                                );
+
+                                return true; // H5P wurde gefunden und alles eingerichtet
+                            }
+                            return false; // H5P wurde noch nicht gefunden
+                        };
+
+                        // Initialer Versuch, H5P zu finden
+                        if (!checkForH5P()) {
+                            console.log("H5P wurde nicht gefunden, starte Überwachung.");
+
+                            // Fallback: Regelmäßige Überprüfung des Inhalts (Polling) für H5P
+                            var h5pCheckInterval = setInterval(function () {
+                                if (checkForH5P()) {
+                                    clearInterval(h5pCheckInterval); // Stoppe das Intervall, wenn H5P gefunden wurde
+                                }
+                            }, 500); // Überprüft alle 500ms
+                        }
+
+                        return true; // nestedIFrame wurde gefunden, keine weitere Aktion erforderlich
+                    }
+                    return false; // nestedIFrame wurde noch nicht gefunden
+                };
+
+                // Initialer Versuch, nestedIFrame zu finden
+                if (!checkForNestedIFrame()) {
                     console.log(
-                      "DOM-Änderung erkannt im .h5p-iframe: ",
-                      mutation.addedNodes
+                        "nestedIFrame wurde nicht gefunden, starte Beobachtung des parentIFrame."
                     );
-                    adjustParentIFrameHeight(); // Passe die Höhe nach der Mutation an
-                    observer.disconnect(); // Stoppe das Beobachten, nachdem eine Änderung erkannt wurde
-                  }
-                });
-              });
-              var H5P = nestedIFrame.contentWindow.H5P;
-              H5P.setFinished = function (contentId, score, maxScore, time) {
-                //hvp Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
-              };
-              H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
 
-              observer.observe(nestedIFrame.contentDocument, {
-                childList: true,
-                subtree: true,
-              });
-              console.log(
-                "MutationObserver wurde gestartet, um Änderungen im .h5p-iframe zu überwachen."
-              );
+                    // Beobachte den parentIFrame für das Erscheinen des nestedIFrame
+                    var observer = new MutationObserver(function (mutations) {
+                        mutations.forEach(function (mutation) {
+                            if (mutation.addedNodes.length > 0) {
+                                console.log(
+                                    "Eine neue Node wurde hinzugefügt:",
+                                    mutation.addedNodes
+                                );
+                                if (checkForNestedIFrame()) {
+                                    observer.disconnect(); // Stoppe das Beobachten, nachdem nestedIFrame gefunden wurde
+                                }
+                            }
+                        });
+                    });
 
-              // Fallback: Regelmäßige Überprüfung des Inhalts (Polling)
-              var checkInterval = setInterval(function () {
-                if (
-                  nestedIFrame.contentDocument.body &&
-                  nestedIFrame.contentDocument.body.children.length > 0
-                ) {
-                  console.log(".h5p-iframe hat nun Inhalt.");
-                  adjustParentIFrameHeight(); // Passe die Höhe an, sobald Inhalt erkannt wird
-                  clearInterval(checkInterval); // Stoppe das Intervall
+                    observer.observe(parentIFrameContent, {
+                        childList: true,
+                        subtree: true,
+                    });
                 }
-              }, 500); // Überprüft alle 500ms
-
-              return true; // nestedIFrame wurde gefunden, keine weitere Aktion erforderlich
+            } else {
+                console.error("Kein Dokument im parentIFrame gefunden.");
             }
-            return false; // nestedIFrame wurde noch nicht gefunden
-          };
-
-          // Initialer Versuch, nestedIFrame zu finden
-          if (!checkForNestedIFrame()) {
-            console.log(
-              "nestedIFrame wurde nicht gefunden, starte Beobachtung des parentIFrame."
-            );
-
-            // Beobachte den parentIFrame für das Erscheinen des nestedIFrame
-            var observer = new MutationObserver(function (mutations) {
-              mutations.forEach(function (mutation) {
-                if (mutation.addedNodes.length > 0) {
-                  console.log(
-                    "Eine neue Node wurde hinzugefügt:",
-                    mutation.addedNodes
-                  );
-                  if (checkForNestedIFrame()) {
-                    observer.disconnect(); // Stoppe das Beobachten, nachdem nestedIFrame gefunden wurde
-                  }
-                }
-              });
-            });
-
-            observer.observe(parentIFrameContent, {
-              childList: true,
-              subtree: true,
-            });
-          }
-        } else {
-          console.error("Kein Dokument im parentIFrame gefunden.");
-        }
-      });
+        });
     } else {
-      console.error("Keine parentIFrames gefunden.");
+        console.error("Keine parentIFrames gefunden.");
     }
-  }
+}
+
 
   // _hvpListener() {
   //   var parentIFrames = this.getElements(this.selectors.H5P);
