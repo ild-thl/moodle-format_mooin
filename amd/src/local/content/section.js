@@ -287,9 +287,9 @@ export default class extends DndSection {
             var H5P = nestedIFrame.contentWindow.H5P;
             if (H5P && H5P.externalDispatcher) {
               
-              var nestedIFrameHeight =
-              nestedIFrame.contentWindow.document.body.scrollHeight;
-              parentIFrame.style.height = nestedIFrameHeight + "px";
+              // var nestedIFrameHeight =
+              // nestedIFrame.contentWindow.document.body.scrollHeight;
+              // parentIFrame.style.height = nestedIFrameHeight + "px";
               //ILD.init(H5P);
               window.console.log(H5P);
               
@@ -297,6 +297,11 @@ export default class extends DndSection {
                //hvp Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
               };
               H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
+              var instance = H5P.instances[0];
+              H5P.trigger(instance, 'resize');
+              var nestedIFrameHeight =
+              nestedIFrame.contentWindow.document.body.scrollHeight;
+              parentIFrame.style.height = nestedIFrameHeight + "px";
             } else {
               setTimeout(this._hvpListener.bind(this), 50);
             }
