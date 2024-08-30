@@ -271,26 +271,30 @@ export default class extends DndSection {
     }
   }
 
+  
+
+
   _hvpListener() {
     var parentIFrames = this.getElements(this.selectors.H5P);
     if (parentIFrames.length > 0) {
-        parentIFrames.forEach((parentIFrame) => {
-            parentIFrame.addEventListener('load', () => {
-                var parentIFrameContent = parentIFrame.contentDocument || parentIFrame.contentWindow.document;
+        parentIFrames.forEach(async (parentIFrame) => {
+            if (parentIFrame.contentDocument) {
+                var parentIFrameContent =
+                    parentIFrame.contentDocument || parentIFrame.contentWindow.document;
 
                 var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
 
                 if (nestedIFrame) {
                     var H5P = nestedIFrame.contentWindow.H5P;
-                    if (H5P && H5P.externalDispatcher && H5P.instances && H5P.instances.length > 0) {
-                        window.console.log(H5P);
+                    if (H5P && H5P.externalDispatcher) {
+                      H5P.setFinished = function (contentId, score, maxScore, time) {
+                                     //hvp Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
+                                    };
+                                    H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
+                        // Warte auf das resize Event
+                        await this._triggerResizeAndWait(H5P, H5P.instances[0]);
 
-                        H5P.setFinished = function (contentId, score, maxScore, time) {
-                            // hvp Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
-                        };
-                        H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
-                        var instance = H5P.instances[0];
-                        H5P.trigger(instance, 'resize');
+                        // Danach die Höhe anpassen
                         var nestedIFrameHeight = nestedIFrame.contentWindow.document.body.scrollHeight;
                         parentIFrame.style.height = nestedIFrameHeight + "px";
                     } else {
@@ -299,9 +303,23 @@ export default class extends DndSection {
                 } else {
                     setTimeout(this._hvpListener.bind(this), 50);
                 }
-            });
+            } else {
+                setTimeout(this._hvpListener.bind(this), 50);
+            }
         });
     }
+}
+
+_triggerResizeAndWait(H5P, instance) {
+    return new Promise((resolve) => {
+        // Setze einen einmaligen Listener für das resize Event
+        H5P.on(instance, 'resize', function() {
+            resolve();
+        });
+
+        // Löst das resize Event aus
+        H5P.trigger(instance, 'resize');
+    });
 }
 
   
