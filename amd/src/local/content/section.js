@@ -28,6 +28,7 @@ import Templates from "core/templates";
 import ModalFactory from "core/modal_factory";
 import Mooin4Modal from "../../mooin4modal";
 import { get_string as getString } from "core/str";
+import ILD from "format_moointopics/ildhvp4";
 
 export default class extends DndSection {
   /**
@@ -167,13 +168,12 @@ export default class extends DndSection {
     }
   }
 
-  async _reloadSectionNames({element}) {
+  async _reloadSectionNames({ element }) {
     const title = this.getElement(this.selectors.SECTION_ITEM);
     //window.console.log(element);
     if (!element.isChapter) {
-        //title.innerHTML = element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
-        title.innerHTML = element.prefix;
-        window.console.log("Bin in der richtigen section function");
+      //title.innerHTML = element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
+      title.innerHTML = element.prefix;
     }
   }
 
@@ -271,37 +271,67 @@ export default class extends DndSection {
     }
   }
 
+  
+
   _hvpListener() {
     var parentIFrames = this.getElements(this.selectors.H5P);
     if (parentIFrames.length > 0) {
-        parentIFrames.forEach((parentIFrame) => {
-            if (parentIFrame.contentDocument) {
-                var parentIFrameContent =
-                    parentIFrame.contentDocument || parentIFrame.contentWindow.document;
+      parentIFrames.forEach((parentIFrame) => {
+        if (parentIFrame.contentDocument) {
+          var parentIFrameContent =
+            parentIFrame.contentDocument || parentIFrame.contentWindow.document;
 
-                var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
+          var nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
 
-                if (nestedIFrame) {
-                    var H5P = nestedIFrame.contentWindow.H5P;
-                    if (H5P && H5P.externalDispatcher) {
-                        H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
-                    } else {
-                        setTimeout(this._hvpListener.bind(this), 200);
-                    }
-                } else {
-                    setTimeout(this._hvpListener.bind(this), 200);
-                }
+          if (nestedIFrame) {
+            var H5P = nestedIFrame.contentWindow.H5P;
+            if (H5P && H5P.externalDispatcher) {
+              
+              var nestedIFrameHeight =
+              nestedIFrame.contentWindow.document.body.scrollHeight;
+              parentIFrame.style.height = nestedIFrameHeight + "px";
+              //ILD.init(H5P);
+              window.console.log(H5P);
+              
+              H5P.setFinished = function (contentId, score, maxScore, time) {
+               //hvp Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
+              };
+              H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
             } else {
-                setTimeout(this._hvpListener.bind(this), 200);
+              setTimeout(this._hvpListener.bind(this), 50);
             }
-        });
+          } else {
+            setTimeout(this._hvpListener.bind(this), 50);
+          }
+        } else {
+          setTimeout(this._hvpListener.bind(this), 50);
+        }
+      });
     }
-}
-
+  }
 
   _hvpprogress(event) {
-    if (event.getVerb() === "completed") {
-      this.reactive.dispatch("updateSectionprogress", this.id);
+    window.console.log(event);
+  
+    if (event.getVerb() === "completed" || event.getVerb() === "answered") {
+      var contentId = event.getVerifiedStatementValue([
+        "object",
+        "definition",
+        "extensions",
+        "http://h5p.org/x-api/h5p-local-content-id",
+      ]);
+      var score = event.getScore();
+      var maxScore = event.getMaxScore();
+      var statement = event.data.statement;
+      var isChild = statement.context && statement.context.contextActivities &&
+                statement.context.contextActivities.parent &&
+                statement.context.contextActivities.parent[0] &&
+                statement.context.contextActivities.parent[0].id;
+
+      if (!isChild) {
+        this.reactive.dispatch("updateSectionprogress", this.id, contentId, score, maxScore);
+
+      }
     }
   }
 }

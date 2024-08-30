@@ -186,54 +186,13 @@ define([
    *   The maximum score/points that can be achieved
    */
   ILD.setResult = function (contentid, score, maxScore) {
-    //window.console.log("set result");
+   
     var promises = ajax.call([
       {
         methodname: "format_moointopics_setgrade",
         args: { contentid: contentid, score: score, maxscore: maxScore },
       },
-    ]);
-
-    promises[0]
-      .done(function (data) {
-        var div_id = String("mooin4ection" + data.sectionid); // Oc-progress
-        var text_div_id = String("mooin4ection-text-" + data.sectionid); // Oc-progress-text-
-
-        var percentage = Math.round(data.percentage);
-        var percentage_int = String(percentage + "%");
-        var percentage_text = String(percentage + "%" + " ");
-
-        $("#" + div_id, window.parent.document).css("width", percentage_int);
-        $("#" + text_div_id, window.parent.document).html(percentage_text);
-
-        if (data.percentage === 100) {
-          // var navdrawerSection = window.parent.document.querySelector(
-          //   `[data-key="${data.sectionid}"]`
-          // );
-          //navdrawerSection.classList.add("completed");
-          var promises = ajax.call([
-            {
-              methodname: "format_moointopics_check_completion_status",
-              args: {
-                section_id: Number(data.sectionid),
-                isActivity: true,
-                course_already_completed: data.course_already_completed,
-                chapter_already_completed: data.chapter_already_completed
-              },
-            },
-          ]);
-          promises[0]
-            .done(function (data) {
-              var message = {
-                action: "showModal",
-                modal: { data },
-              };
-              window.top.postMessage(message, "*");
-            })
-            .fail();
-        }
-      })
-      .fail(function () {window.console.log("FAILED")});
+    ]);    
   };
 
   /**
@@ -373,10 +332,9 @@ define([
   };
 
   return {
-    init: function () {
-      //window.console.log("HVP triggered");
+    init: function (H5PInstance) {
       ILD.checkLibrary();
-      H5P.externalDispatcher.on("xAPI", ILD.xAPIAnsweredListener);
+      H5PInstance.externalDispatcher.on("xAPI", ILD.xAPIAnsweredListener);
     },
   };
 });

@@ -26,7 +26,7 @@ class utils {
         if ($course_chapters = $DB->get_records('format_moointopics_chapter', array('courseid' => $course_id))) {
           $is_course_completed = true;
           foreach ($course_chapters as $chapter) {
-            $chapter_info = \format_moointopics\local\chapterlib::get_chapter_info($chapter);
+            $chapter_info = self::get_chapter_info($chapter);
             if ($chapter_info['completed'] == false) {
               $is_course_completed = false;
               return false;
@@ -62,6 +62,8 @@ class utils {
     public static function setgrade($contextid, $score, $maxscore) {
         global $DB, $USER, $CFG;
         require_once($CFG->dirroot . '/mod/hvp/lib.php');
+        
+        
     
         $cm = get_coursemodule_from_instance('hvp', $contextid);
         if (!$cm) {
@@ -96,6 +98,7 @@ class utils {
         }
     
         if ($score >= $user_grade) {
+            
             // Set grade using Gradebook API.
             $hvp->cmidnumber = $cm->idnumber;
             $hvp->name = $cm->name;
@@ -134,6 +137,7 @@ class utils {
     
             return $progress;
         }
+        
         return false;
     }
 

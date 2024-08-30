@@ -20,7 +20,16 @@ export default class {
         stateManager.processUpdates(JSON.parse(updates));
     }
 
-    async updateSectionprogress(stateManager, sectionId) {
+    async updateSectionprogress(stateManager, sectionId, contentid, score, maxscore) {
+
+        await ajax.call([
+            {
+              methodname: "format_moointopics_setgrade",
+              args: { contentid: contentid, score: score, maxscore: maxscore },
+            },
+          ])[0];  
+
+
         const course = stateManager.get('course');
         let ids = [];
         ids.push(sectionId);
@@ -32,8 +41,9 @@ export default class {
         };
         let updates = await ajax.call([{
             methodname: 'core_courseformat_update_course',
-            args,
+            args
         }])[0];
+        window.console.log("MUTAtION PROGRESS");
         stateManager.processUpdates(JSON.parse(updates));
     }
 

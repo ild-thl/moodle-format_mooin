@@ -104,8 +104,8 @@ class section extends section_base {
             $data->containsActiveSection = $this->containsActiveSection;
         }
 
-        // $section_progress = format_moointopics\local\progresslib::get_section_progress($course->id, $this->section, $USER->id);
-        // $data->sectionprogress = $section_progress;
+         $section_progress = utils::get_section_progress($course->id, $this->section->id, $USER->id);
+         $data->sectionprogress = $section_progress;
 
         if (!$DB->get_records('course_modules', array(
             'course' => $course->id,
