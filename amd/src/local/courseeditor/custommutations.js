@@ -24,7 +24,7 @@ export default class {
 
         await ajax.call([
             {
-              methodname: "format_moointopics_setgrade",
+              methodname: "format_mooin4_setgrade",
               args: { contentid: contentid, score: score, maxscore: maxscore },
             },
           ])[0];  

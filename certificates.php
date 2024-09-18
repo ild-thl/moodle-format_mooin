@@ -3,7 +3,7 @@ require_once('../../../config.php');
 require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/completionlib.php');
 
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 
 
 
@@ -21,10 +21,10 @@ $systemcontext = context_system::instance();
 $PAGE->set_course($course);
 $PAGE->set_pagelayout('course');
 $PAGE->set_context(\context_course::instance($course->id));
-$PAGE->set_title("$course->shortname: " . get_string('my_certificate', 'format_moointopics'));
+$PAGE->set_title("$course->shortname: " . get_string('my_certificate', 'format_mooin4'));
 $PAGE->set_heading($course->fullname);
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
-$PAGE->set_url('/course/format/moointopics/certificates.php', array('id' => $course->id));
+$PAGE->set_url('/course/format/mooin4/certificates.php', array('id' => $course->id));
 
 echo $OUTPUT->header();
 
@@ -36,5 +36,5 @@ $data = [
     'certificates' => $certificates
 ];
 
-echo $OUTPUT->render_from_template('format_moointopics/local/content/subpages/certificates', $data);
+echo $OUTPUT->render_from_template('format_mooin4/local/content/subpages/certificates', $data);
 echo $OUTPUT->footer();

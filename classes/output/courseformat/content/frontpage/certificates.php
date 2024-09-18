@@ -1,17 +1,17 @@
 <?php
 
-namespace format_moointopics\output\courseformat\content\frontpage;
+namespace format_mooin4\output\courseformat\content\frontpage;
 
 use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
 use context_course;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 
 /**
  * Base class to render the course certificates section.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2023 ISy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -42,7 +42,7 @@ class certificates implements renderable {
 
         $data = (object)[
             'coursecertificates' => $certificates,
-            'certificatesUrl' => new moodle_url('/course/format/moointopics/certificates.php', array('id' => $course->id)),
+            'certificatesUrl' => new moodle_url('/course/format/mooin4/certificates.php', array('id' => $course->id)),
             'othercertificates' => $other_certificates
         ];
         return $data;

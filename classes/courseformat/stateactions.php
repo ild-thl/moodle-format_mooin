@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace format_moointopics\courseformat;
+namespace format_mooin4\courseformat;
 
 use core_courseformat\stateupdates;
 use core\event\course_module_updated;
@@ -26,8 +26,8 @@ use moodle_exception;
 use context_module;
 use context_course;
 use core_courseformat\stateactions as Base;
-use format_moointopics;
-use format_moointopics\local\utils as utils;
+use format_mooin4;
+use format_mooin4\local\utils as utils;
 
 /**
  * Contains the core course state actions.
@@ -86,7 +86,7 @@ class stateactions extends Base {
         ?int $targetsectionid = null,
         ?int $targetcmid = null
     ): void {
-        set_user_preference('format_moointopics_hide_modal_for_section_'.$targetsectionid, 'true');
+        set_user_preference('format_mooin4_hide_modal_for_section_'.$targetsectionid, 'true');
         $this->section_state($updates, $course, $ids);
     }
 

@@ -1,18 +1,18 @@
 <?php
 
 $functions = array(
-    'format_moointopics_check_completion_status' => array(
-        'classname' => 'format_moointopics_external',
+    'format_mooin4_check_completion_status' => array(
+        'classname' => 'format_mooin4_external',
         'methodname' => 'check_completion_status',
-        'classpath' => 'course/format/moointopics/externallib.php',
+        'classpath' => 'course/format/mooin4/externallib.php',
         'description' => 'check completion status',
         'type' => 'write',
         'ajax' => true
     ),
-    'format_moointopics_setgrade' => array(
-        'classname' => 'format_moointopics_external',
+    'format_mooin4_setgrade' => array(
+        'classname' => 'format_mooin4_external',
         'methodname' => 'setgrade',
-        'classpath' => 'course/format/moointopics/externallib.php',
+        'classpath' => 'course/format/mooin4/externallib.php',
         'description' => 'Set H5P grade',
         'type' => 'write',
         'ajax' => true

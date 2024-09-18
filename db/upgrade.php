@@ -17,7 +17,7 @@
 /**
  * Upgrade scripts for Topics course format.
  *
- * @package    format_moointopics
+ * @package    format_mooin4
  * @copyright  2017 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param int|float $oldversion the version we are upgrading from
  * @return bool result
  */
-function xmldb_format_moointopics_upgrade($oldversion) {
+function xmldb_format_mooin4_upgrade($oldversion) {
     global $CFG, $DB;
 
     $dbman = $DB->get_manager();
@@ -48,35 +48,35 @@ function xmldb_format_moointopics_upgrade($oldversion) {
         // For sites migrating from 4.0.x or 4.1.x where the indentation was removed,
         // we are disabling 'indentation' value by default.
         if ($oldversion >= 2022041900) {
-            set_config('indentation', 0, 'format_moointopics');
+            set_config('indentation', 0, 'format_mooin4');
         } else {
-            set_config('indentation', 1, 'format_moointopics');
+            set_config('indentation', 1, 'format_mooin4');
         }
         upgrade_plugin_savepoint(true, 2022112801, 'format', 'topics');
     }
 
     if ($oldversion < 2023011702) {
 
-        // Define table format_moointopics_chapter to be created.
-        $table = new xmldb_table('format_moointopics_chapter');
+        // Define table format_mooin4_chapter to be created.
+        $table = new xmldb_table('format_mooin4_chapter');
 
-        // Adding fields to table format_moointopics_chapter.
+        // Adding fields to table format_mooin4_chapter.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('title', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
         $table->add_field('sectionid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('chapter', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
-        // Adding keys to table format_moointopics_chapter.
+        // Adding keys to table format_mooin4_chapter.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
-        // Conditionally launch create table for format_moointopics_chapter.
+        // Conditionally launch create table for format_mooin4_chapter.
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
         }
 
-        // moointopics savepoint reached.
-        upgrade_plugin_savepoint(true, 2023011702, 'format', 'moointopics');
+        // mooin4 savepoint reached.
+        upgrade_plugin_savepoint(true, 2023011702, 'format', 'mooin4');
     }
 
     return true;

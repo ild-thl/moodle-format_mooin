@@ -30,7 +30,7 @@ import Prefetch from 'core/prefetch';
 import Config from 'core/config';
 
 // Prefetch the completion icons template.
-const completionTemplate = 'format_moointopics/local/courseindex/cmcompletion';
+const completionTemplate = 'format_mooin4/local/courseindex/cmcompletion';
 Prefetch.prefetchTemplate(completionTemplate);
 
 export default class Component extends DndCmItem {

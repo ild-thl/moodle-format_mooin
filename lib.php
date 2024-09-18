@@ -18,7 +18,7 @@
  * This file contains main class for Topics course format.
  *
  * @since     Moodle 2.0
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2009 Sam Hemelryk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,16 +28,16 @@ require_once($CFG->dirroot . '/course/format/lib.php');
 
 use core\output\inplace_editable;
 use core\plugininfo\format;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 
 /**
  * Main class for the Topics course format.
  *
- * @package    format_moointopics
+ * @package    format_mooin4
  * @copyright  2012 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_moointopics extends core_courseformat\base {
+class format_mooin4 extends core_courseformat\base {
 
     /**
      * Returns true if this course format uses sections.
@@ -90,7 +90,7 @@ class format_moointopics extends core_courseformat\base {
     public function get_default_section_name($section) {
         if ($section->section == 0) {
             // Return the general section.
-            return get_string('section0name', 'format_moointopics');
+            return get_string('section0name', 'format_mooin4');
         } else {
             // Use course_format::get_default_section_name implementation which
             // will display the section name in "Topic n" format.
@@ -223,11 +223,11 @@ class format_moointopics extends core_courseformat\base {
         //     if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
         //         if($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance'=>$forum->id))){
         //             $node->add(
-        //                 get_string('news', 'format_moointopics'),
+        //                 get_string('news', 'format_mooin4'),
         //                 new moodle_url('/mod/forum/view.php', array('id' => $cm->id)),
         //                 navigation_node::TYPE_CUSTOM,
         //                 null,
-        //                 'format_moointopics_newsforum',
+        //                 'format_mooin4_newsforum',
         //                 new pix_icon('i/news', '')
         //             );
 
@@ -238,59 +238,59 @@ class format_moointopics extends core_courseformat\base {
 
         // $overview = $node->add(
         //     $this->get_course()->shortname,
-        //     //get_string('course_overview', 'format_moointopics'),
+        //     //get_string('course_overview', 'format_mooin4'),
         //     null,
         //     //new moodle_url('/course/view.php', array('id' => $courseid)),
         //     navigation_node::TYPE_CUSTOM,
         //     null,
-        //     'format_moointopics_course_overview',
+        //     'format_mooin4_course_overview',
         //     new pix_icon('i/location', '')
         // );
         // $overview->showinflatnavigation=true;
         // //$overview->add_class('overview_node');
 
         $node->add(
-            get_string('badges', 'format_moointopics'),
-            new moodle_url('/course/format/moointopics/badges.php', array('id' => $courseid)),
+            get_string('badges', 'format_mooin4'),
+            new moodle_url('/course/format/mooin4/badges.php', array('id' => $courseid)),
             navigation_node::TYPE_CUSTOM,
             null,
-            'format_moointopics_badges',
+            'format_mooin4_badges',
             new pix_icon('i/badge', '')
         );
 
 
         $node->add(
-            get_string('certificates', 'format_moointopics'),
-            new moodle_url('/course/format/moointopics/certificates.php', array('id' => $courseid)),
+            get_string('certificates', 'format_mooin4'),
+            new moodle_url('/course/format/mooin4/certificates.php', array('id' => $courseid)),
             navigation_node::TYPE_CUSTOM,
             null,
-            'format_moointopics_certificates',
+            'format_mooin4_certificates',
             new pix_icon('t/award', '')
         );
 
         $node->add(
-            get_string('forums', 'format_moointopics'),
-            new moodle_url('/course/format/moointopics/all_discussionforums.php', array('id' => $courseid)),
+            get_string('forums', 'format_mooin4'),
+            new moodle_url('/course/format/mooin4/all_discussionforums.php', array('id' => $courseid)),
             navigation_node::TYPE_CUSTOM,
             null,
-            'format_moointopics_discussions',
+            'format_mooin4_discussions',
             new pix_icon('t/messages', '')
         );
 
         $node->add(
-            get_string('participants', 'format_moointopics'),
-            new moodle_url('/course/format/moointopics/participants.php', array('id' => $courseid)),
+            get_string('participants', 'format_mooin4'),
+            new moodle_url('/course/format/mooin4/participants.php', array('id' => $courseid)),
             navigation_node::TYPE_CUSTOM,
             null,
-            'format_moointopics_participants',
+            'format_mooin4_participants',
             new pix_icon('t/messages', '')
         );
 
         // $participantsnode = $node->get('participants', navigation_node::TYPE_CONTAINER);
         // if ($participantsnode) {
         //     $participantsnode->remove();
-        //     $participantsnode->action = $url = new moodle_url('/course/format/moointopics/participants.php', array('id' => $courseid));
-        //     $participantsnode->text = get_string('participants', 'format_moointopics');
+        //     $participantsnode->action = $url = new moodle_url('/course/format/mooin4/participants.php', array('id' => $courseid));
+        //     $participantsnode->text = get_string('participants', 'format_mooin4');
         // $node->add_node($participantsnode);
         // }
 
@@ -323,9 +323,9 @@ class format_moointopics extends core_courseformat\base {
                     $completed = '';
                     $lastvisitedsection = '';
 
-                    if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $section->id))) {
+                    if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
 
-                        $pre = get_string('chapter', 'format_moointopics') . ' ' . $chapter->chapter . ': ';
+                        $pre = get_string('chapter', 'format_mooin4') . ' ' . $chapter->chapter . ': ';
                         $title = $pre . get_section_name($this->get_course(), $section);
                         if (count(utils::get_sectionids_for_chapter($chapter->id)) > 0) {
                             $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
@@ -341,7 +341,7 @@ class format_moointopics extends core_courseformat\base {
                             $title,
                             null,
                             navigation_node::TYPE_SECTION,
-                            get_string('chapter_short', 'format_moointopics') . ' ' . $chapter->chapter,
+                            get_string('chapter_short', 'format_mooin4') . ' ' . $chapter->chapter,
                             $chapter->sectionid,
                             $icon
                         );
@@ -361,7 +361,7 @@ class format_moointopics extends core_courseformat\base {
                         $chapter_node->add_class('chapter' . $completed . $lastvisitedsection);
                         // $chapter_node->add_class('collapsed');
                     } else {
-                        $pre = get_string('lesson', 'format_moointopics') . ' ' . utils::get_section_prefix($section) . ': ';
+                        $pre = get_string('lesson', 'format_mooin4') . ' ' . utils::get_section_prefix($section) . ': ';
                         if ($section->name) {
                             $title = $pre . get_section_name($this->get_course(), $section);
                         } else {
@@ -389,7 +389,7 @@ class format_moointopics extends core_courseformat\base {
                                 $title,
                                 $url,
                                 navigation_node::TYPE_SECTION,
-                                get_string('lesson_short', 'format_moointopics') . ' ' . utils::get_section_prefix($section) . ': ',
+                                get_string('lesson_short', 'format_mooin4') . ' ' . utils::get_section_prefix($section) . ': ',
                                 $section->id,
                                 $icon
                             );
@@ -400,7 +400,7 @@ class format_moointopics extends core_courseformat\base {
                             // highlight as last visited section only if we are not in a section
                             $urlparams = $PAGE->url->params();
                             if (!isset($urlparams['section'])) {
-                                if (get_user_preferences('format_moointopics_last_section_in_course_' . $courseid, 0, $USER->id) == $section->section) {
+                                if (get_user_preferences('format_mooin4_last_section_in_course_' . $courseid, 0, $USER->id) == $section->section) {
                                     $section_node->add_Class('lastvisitedsection');
                                     //$section_node->make_active();
                                     //$section_node->parent->isexpandable = true;
@@ -433,11 +433,11 @@ class format_moointopics extends core_courseformat\base {
         // unenrol from course
         if ($unenrolurl = utils::get_unenrol_url($courseid)) {
             $unenrol_node = $node->add(
-                get_string('unenrol', 'format_moointopics'),
+                get_string('unenrol', 'format_mooin4'),
                 $unenrolurl,
                 navigation_node::TYPE_CUSTOM,
                 null,
-                'format_moointopics_unenrol',
+                'format_mooin4_unenrol',
                 new pix_icon('i/user', '')
             );
             $unenrol_node->add_class("unenrol-btn");
@@ -497,13 +497,13 @@ class format_moointopics extends core_courseformat\base {
     //     if ($renderer && ($sections = $modinfo->get_section_info_all())) {
     //         foreach ($sections as $number => $section) {
 
-    //             if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $section->id))) {
-    //                 \format_moointopics\local\chapterlib::sort_course_chapters($course->id);
+    //             if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
+    //                 \format_mooin4\local\chapterlib::sort_course_chapters($course->id);
     //                 //$section->name = $chapter->title;
-    //                 $titles[$number] = get_string('chapter', 'format_moointopics').' '.$chapter->chapter.' '.$renderer->section_title_without_link($section, $course);
+    //                 $titles[$number] = get_string('chapter', 'format_mooin4').' '.$chapter->chapter.' '.$renderer->section_title_without_link($section, $course);
     //             }
     //             else {
-    //                 $titles[$number] = get_string('lesson', 'format_moointopics').' '.\format_moointopics\local\chapterlib::get_section_prefix($section).' '.$renderer->section_title($section, $course);
+    //                 $titles[$number] = get_string('lesson', 'format_mooin4').' '.\format_mooin4\local\chapterlib::get_section_prefix($section).' '.$renderer->section_title($section, $course);
     //             }
     //         }
     //     }
@@ -572,7 +572,7 @@ class format_moointopics extends core_courseformat\base {
 
         if (!$oldcourse) {
             // Add first chapter, there must be no sections without parent chapter
-            $chaptertitle = get_string('chapter', 'format_moointopics') . ' 1';
+            $chaptertitle = get_string('chapter', 'format_mooin4') . ' 1';
 
             $newsection = new stdClass();
             $newsection->course = $this->courseid;
@@ -588,18 +588,18 @@ class format_moointopics extends core_courseformat\base {
                 $newchapter->title = $chaptertitle;
                 $newchapter->sectionid = $newsectionid;
                 $newchapter->chapter = 1;
-                $DB->insert_record('format_moointopics_chapter', $newchapter);
+                $DB->insert_record('format_mooin4_chapter', $newchapter);
             }
-        } else { // add new chapter at position 1 if format is changed to moointopics
-            // was format of oldcourse not moointopics?
-            if ($oldcourse->format != 'moointopics') {
+        } else { // add new chapter at position 1 if format is changed to mooin4
+            // was format of oldcourse not mooin4?
+            if ($oldcourse->format != 'mooin4') {
                 // is there no chapter at position 1?
                 if ($section1 = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => 1))) {
-                    if (!$DB->get_record('format_moointopics_chapter', array('courseid' => $this->courseid, 'sectionid' => $section1->id))) {
+                    if (!$DB->get_record('format_mooin4_chapter', array('courseid' => $this->courseid, 'sectionid' => $section1->id))) {
                         // add new section
                         $sectionnumber = $DB->count_records('course_sections', array('course' => $this->courseid));
                         if ($sectionnumber > 0) {
-                            $chaptertitle = get_string('chapter', 'format_moointopics') . ' 1';
+                            $chaptertitle = get_string('chapter', 'format_mooin4') . ' 1';
                             $newsection = new stdClass();
                             $newsection->course = $this->courseid;
                             $newsection->section = $sectionnumber;
@@ -618,7 +618,7 @@ class format_moointopics extends core_courseformat\base {
                                     $newchapter->title = $chaptertitle;
                                     $newchapter->sectionid = $newsectionid;
                                     $newchapter->chapter = 1;
-                                    $DB->insert_record('format_moointopics_chapter', $newchapter);
+                                    $DB->insert_record('format_mooin4_chapter', $newchapter);
                                     utils::sort_course_chapters($this->courseid);
                                 }
                             }
@@ -668,11 +668,11 @@ class format_moointopics extends core_courseformat\base {
         $editlabel = null
     ) {
         if (empty($edithint)) {
-            $edithint = new lang_string('editsectionname', 'format_moointopics');
+            $edithint = new lang_string('editsectionname', 'format_mooin4');
         }
         if (empty($editlabel)) {
             $title = get_section_name($section->course, $section);
-            $editlabel = new lang_string('newsectionname', 'format_moointopics', $title);
+            $editlabel = new lang_string('newsectionname', 'format_mooin4', $title);
         }
         return parent::inplace_editable_render_section_name($section, $linkifneeded, $editable, $edithint, $editlabel);
     }
@@ -722,11 +722,11 @@ class format_moointopics extends core_courseformat\base {
     //         return null;
     //     }
 
-    //     \format_moointopics\local\chapterlib::sort_course_chapters($section->course);
+    //     \format_mooin4\local\chapterlib::sort_course_chapters($section->course);
 
     //     // For show/hide actions call the parent method and return the new content for .section_availability element.
     //     $rv = parent::section_action($section, $action, $sr);
-    //     $renderer = $PAGE->get_renderer('format_moointopics');
+    //     $renderer = $PAGE->get_renderer('format_mooin4');
 
     //     if (!($section instanceof section_info)) {
     //         $modinfo = course_modinfo::instance($this->courseid);
@@ -771,12 +771,12 @@ class format_moointopics extends core_courseformat\base {
                 break;
             case 'sectionSetChapter':
                 //TODO: Add capability
-                //format_moointopics\local\chapterlib::set_chapter($section->id);
+                //format_mooin4\local\chapterlib::set_chapter($section->id);
                 //course_update_section($course, $section, array('chapterstatus' => true));
                 break;
             case 'sectionUnsetChapter':
                 //TODO: Add capability
-                //format_moointopics\local\chapterlib::unset_chapter($section->id);
+                //format_mooin4\local\chapterlib::unset_chapter($section->id);
                 //course_update_section($course, $section, array('chapterstatus' => false));
                 break;
             case 'refresh':
@@ -799,7 +799,7 @@ class format_moointopics extends core_courseformat\base {
     public function get_config_for_external() {
         // Return everything (nothing to hide).
         $formatoptions = $this->get_format_options();
-        $formatoptions['indentation'] = get_config('format_moointopics', 'indentation');
+        $formatoptions['indentation'] = get_config('format_mooin4', 'indentation');
         return $formatoptions;
     }
 
@@ -825,9 +825,9 @@ class format_moointopics extends core_courseformat\base {
             if (strval($section->name) !== strval($newtitle)) {
                 course_update_section($section->course, $section, array('name' => $newtitle));
             }
-            if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $section->id))) {
+            if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
                 $chapter->title = $newtitle;
-                $DB->update_record('format_moointopics_chapter', $chapter);
+                $DB->update_record('format_mooin4_chapter', $chapter);
             }
             return $this->inplace_editable_render_section_name($section, ($itemtype === 'sectionname'), true);
         }
@@ -867,20 +867,20 @@ class format_moointopics extends core_courseformat\base {
  * @param mixed $newvalue
  * @return inplace_editable
  */
-function format_moointopics_inplace_editable($itemtype, $itemid, $newvalue) {
+function format_mooin4_inplace_editable($itemtype, $itemid, $newvalue) {
     global $DB, $CFG;
     require_once($CFG->dirroot . '/course/lib.php');
     if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
         $section = $DB->get_record_sql(
             'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',
-            [$itemid, 'moointopics'],
+            [$itemid, 'mooin4'],
             MUST_EXIST
         );
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
 }
 
-function format_moointopics_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+function format_mooin4_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
     require_login($course, true);
 
     if ($filearea != 'headerimagemobile' and $filearea != 'headerimagedesktop') {
@@ -899,7 +899,7 @@ function format_moointopics_pluginfile($course, $cm, $context, $filearea, $args,
 
     // Retrieve the file from the Files API.
     $fs = get_file_storage();
-    $file = $fs->get_file($context->id, 'format_moointopics', $filearea, $itemid, '/', $filename);
+    $file = $fs->get_file($context->id, 'format_mooin4', $filearea, $itemid, '/', $filename);
     if (!$file) {
         return false; // The file does not exist.
     }

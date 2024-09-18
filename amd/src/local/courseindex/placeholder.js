@@ -49,7 +49,7 @@ export default class Component extends BaseComponent {
      */
     create() {
         // Add a pending operation waiting for the initial content.
-        this.pendingContent = new Pending(`format_moointopics/placeholder:loadcourseindex`);
+        this.pendingContent = new Pending(`format_mooin4/placeholder:loadcourseindex`);
     }
 
     /**
@@ -95,7 +95,7 @@ export default class Component extends BaseComponent {
         try {
             // To render an HTML into our component we just use the regular Templates module.
             const {html, js} = await Templates.renderForPromise(
-                'format_moointopics/local/courseindex/courseindex',
+                'format_mooin4/local/courseindex/courseindex',
                 data,
             );
             Templates.replaceNode(this.element, html, js);

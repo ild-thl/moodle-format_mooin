@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace format_moointopics\output\courseformat\state;
+namespace format_mooin4\output\courseformat\state;
 
 use core_courseformat\base as course_format;
 use core_courseformat\output\local\state\course as course_base;
@@ -44,7 +44,7 @@ class course extends course_base {
     //     global $USER, $DB;
     //     $data = parent::export_for_template($output);
     //     $course = $this->format->get_course();
-    //     $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+    //     $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
     //     if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
     //         $data->continueSection = $continuesection->id;
     //     }

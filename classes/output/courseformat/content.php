@@ -17,22 +17,22 @@
 /**
  * Contains the default content output class.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2020 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace format_moointopics\output\courseformat;
+namespace format_mooin4\output\courseformat;
 
 use core_courseformat\output\local\content as content_base;
 use core_courseformat\base as course_format;
-use format_moointopics\output\courseformat\content\coursefrontpage as coursefrontpage;
+use format_mooin4\output\courseformat\content\coursefrontpage as coursefrontpage;
 use renderer_base;
 
 /**
  * Base class to render a course content.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2020 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -47,7 +47,7 @@ class content extends content_base {
     }
 
     public function get_template_name(\renderer_base $renderer): string {
-        return 'format_moointopics/local/content';
+        return 'format_mooin4/local/content';
     }
 
 

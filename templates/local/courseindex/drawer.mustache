@@ -29,35 +29,35 @@
     <div class="nav-links d-flex flex-column">
         
         {{#overview}}
-            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-signpost-2-fill"></i> {{#str}} course_overview, format_moointopics {{/str}}</a>
+            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-signpost-2-fill"></i> {{#str}} course_overview, format_mooin4 {{/str}}</a>
         {{/overview}}
         {{#newsforum}}
-            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-newspaper"></i> {{#str}} news, format_moointopics {{/str}}</a>
+            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-newspaper"></i> {{#str}} news, format_mooin4 {{/str}}</a>
         {{/newsforum}}
         {{#badges}}
-            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-trophy-fill"></i> {{#str}} badges, format_moointopics {{/str}}</a>
+            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-trophy-fill"></i> {{#str}} badges, format_mooin4 {{/str}}</a>
         {{/badges}}
         {{#certificates}}
-            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-award-fill"></i> {{#str}} certificates, format_moointopics {{/str}}</a>
+            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-award-fill"></i> {{#str}} certificates, format_mooin4 {{/str}}</a>
         {{/certificates}}
         {{#discussions}}
             <a href="{{url}}" class="{{#active}}active{{/active}}"><span class="chat-icon pr-2">
                 <i class="bi bi-chat-left"></i>
                 <i class="bi bi-chat-right-text-fill"></i>
-                </span>{{#str}} forums, format_moointopics {{/str}}
+                </span>{{#str}} forums, format_mooin4 {{/str}}
             </a>
         {{/discussions}}
         {{#participants}}
-            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-people-fill"></i> {{#str}} participants, format_moointopics {{/str}}</a>
+            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-people-fill"></i> {{#str}} participants, format_mooin4 {{/str}}</a>
         {{/participants}}
     </div>
     
     <div id="courseindex-content">
-        {{> format_moointopics/local/courseindex/placeholders }}
+        {{> format_mooin4/local/courseindex/placeholders }}
     </div>
 
     {{#unenrolurl}}
-        <a href="{{{unenrolurl}}}" class="moointopics-btn unenrol-btn">{{#str}}unenrol, format_moointopics{{/str}}<i class="bi bi-box-arrow-right"></i></a>
+        <a href="{{{unenrolurl}}}" class="mooin4-btn unenrol-btn">{{#str}}unenrol, format_mooin4{{/str}}<i class="bi bi-box-arrow-right"></i></a>
     {{/unenrolurl}}
 </nav>
 {{#js}}

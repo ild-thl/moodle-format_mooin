@@ -22,14 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace format_moointopics\output\courseformat\content;
+namespace format_mooin4\output\courseformat\content;
 
 use context_course;
 use core_courseformat\output\local\content\sectionnavigation as sectionnavigation_base;
-use format_moointopics;
+use format_mooin4;
 use stdClass;
 use renderer_base;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 
 
 /**
@@ -44,7 +44,7 @@ class sectionnavigation extends sectionnavigation_base {
     private $data = null;
 
     public function get_template_name(\renderer_base $renderer): string {
-        return 'format_moointopics/local/content/sectionnavigation';
+        return 'format_mooin4/local/content/sectionnavigation';
     }
 
     public function export_for_template(\renderer_base $output): stdClass {
@@ -87,15 +87,15 @@ class sectionnavigation extends sectionnavigation_base {
 
 
         while ($back > 0 and empty($data->previousurl)) {
-            if ($DB->get_record('format_moointopics_chapter', array('sectionid' => $sections[$back]->id))) {
-                $data->previousname = get_string('previous_chapter', 'format_moointopics');
+            if ($DB->get_record('format_mooin4_chapter', array('sectionid' => $sections[$back]->id))) {
+                $data->previousname = get_string('previous_chapter', 'format_mooin4');
             } else {
                 if ($canviewhidden || $sections[$back]->uservisible) {
                     if (!$sections[$back]->visible) {
                         $data->previoushidden = true;
                     }
                     if (empty($data->previousname)) {
-                        $data->previousname = get_string('previous_lesson', 'format_moointopics');
+                        $data->previousname = get_string('previous_lesson', 'format_mooin4');
                     }
                     
 
@@ -113,15 +113,15 @@ class sectionnavigation extends sectionnavigation_base {
         $forward = $this->sectionno + 1;
         $numsections = course_get_format($course)->get_last_section_number();
         while ($forward <= $numsections and empty($data->nexturl)) {
-            if ($DB->get_record('format_moointopics_chapter', array('sectionid' => $sections[$forward]->id))) {
-                $data->nextname = get_string('next_chapter', 'format_moointopics'); 
+            if ($DB->get_record('format_mooin4_chapter', array('sectionid' => $sections[$forward]->id))) {
+                $data->nextname = get_string('next_chapter', 'format_mooin4'); 
             } else {
                 if ($canviewhidden || $sections[$forward]->uservisible) {
                     if (!$sections[$forward]->visible) {
                         $data->nexthidden = true;
                     }
                     if (empty($data->nextname)) {
-                        $data->nextname = get_string('next_lesson', 'format_moointopics');
+                        $data->nextname = get_string('next_lesson', 'format_mooin4');
                     }
                     
                     $data->nexturl = course_get_url($course, $forward);

@@ -3,9 +3,9 @@
 require_once($CFG->libdir . "/externallib.php");
 require_once($CFG->dirroot . '/course/lib.php');
 
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 
-class format_moointopics_external extends external_api
+class format_mooin4_external extends external_api
 {
 
   // public static function execute_parameters()
@@ -86,7 +86,7 @@ class format_moointopics_external extends external_api
 
     // Get the Section for the next Chapter
     $chapter_forward = null;
-    if ($next_chapter = $DB->get_record('format_moointopics_chapter', array('courseid' => $course_id, 'chapter' => ($parent_chapter->chapter) + 1))) {
+    if ($next_chapter = $DB->get_record('format_mooin4_chapter', array('courseid' => $course_id, 'chapter' => ($parent_chapter->chapter) + 1))) {
       $next_chapter_section = $DB->get_record('course_sections', array('id' => $next_chapter->sectionid));
       $chapter_forward = $next_chapter_section->section + 1;
       //$chapter_forward = $chapter_forward +1;

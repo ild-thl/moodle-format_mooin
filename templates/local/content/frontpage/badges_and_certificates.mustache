@@ -1,5 +1,5 @@
 {{!
-    @template format_moointopics/local/content/frontpage/courseprogress
+    @template format_mooin4/local/content/frontpage/courseprogress
 
     Displays the frontpage courseprogress.
 
@@ -10,14 +10,14 @@
 }}
 
 <div class="coursefrontpage__badges-certificates">
-    <h2>{{#str}} badges_certificates, format_moointopics {{/str}}</h2>
+    <h2>{{#str}} badges_certificates, format_mooin4 {{/str}}</h2>
     
     <div class="tiles-wrapper">
         {{#badges}}
         <div class="badges-container d-flex flex-column">
             <div class="d-flex align-items-center">
                 <i class="bi bi-trophy-fill mr-1"></i>
-                <a href="{{{badgesUrl}}}" class="caption">{{#str}} badges, format_moointopics{{/str}}</a>
+                <a href="{{{badgesUrl}}}" class="caption">{{#str}} badges, format_mooin4{{/str}}</a>
                 {{#manage_badges_url}}
                     <a href="{{{manage_badges_url}}}" class="ml-auto"><i class="bi bi-gear-fill"></i></a>
                 {{/manage_badges_url}}
@@ -32,12 +32,12 @@
             {{^badgesList}}
             <div class="no-badges-container">
                 <div class="no-badges-img"></div>
-                <span class="blue-info-text">{{#str}} no_badges_image_text, format_moointopics{{/str}}</span>
+                <span class="blue-info-text">{{#str}} no_badges_image_text, format_mooin4{{/str}}</span>
             </div>
             {{/badgesList}}
             </div>
             <div class="all-badges-link mt-auto">
-                <a href="{{{badgesUrl}}}" class="ml-auto">{{#str}} show_all_infos, format_moointopics{{/str}}</a>
+                <a href="{{{badgesUrl}}}" class="ml-auto">{{#str}} show_all_infos, format_mooin4{{/str}}</a>
             </div>
         </div>
         {{/badges}}
@@ -47,10 +47,10 @@
         <div class="certificates-container">
             <div class="d-flex align-items-center">
                 <i class="bi bi-award-fill"></i>
-                <a href="{{{certificatesUrl}}}" class="caption">{{#str}} certificates, format_moointopics{{/str}}</a>
+                <a href="{{{certificatesUrl}}}" class="caption">{{#str}} certificates, format_mooin4{{/str}}</a>
                 {{#has_capability}}
                 <button type="button" class="btn info-tip ml-auto p-0" data-toggle="tooltip" data-placement="top"
-                    title=" {{#str}} certificates_tooltip, format_moointopics {{/str}}">
+                    title=" {{#str}} certificates_tooltip, format_mooin4 {{/str}}">
                     <span class="bi bi-info-circle-fill"></span>
                 </button>
                 {{/has_capability}}
@@ -65,12 +65,12 @@
             {{^coursecertificates}}
                 <div class="no-certificates-container">
                     <div class="no-certificates-img"></div>
-                    <span class="blue-info-text">{{#str}} no_certificates_image_text, format_moointopics{{/str}}</span>
+                    <span class="blue-info-text">{{#str}} no_certificates_image_text, format_mooin4{{/str}}</span>
                 </div>
             {{/coursecertificates}}
             </div>
             <div class="all-badges-link">
-                <a href="{{{certificatesUrl}}}" class="ml-auto">{{#str}} show_all_infos, format_moointopics{{/str}}</a>
+                <a href="{{{certificatesUrl}}}" class="ml-auto">{{#str}} show_all_infos, format_mooin4{{/str}}</a>
             </div>
         </div>
         {{/certificates}}

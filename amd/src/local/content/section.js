@@ -22,13 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import Header from "format_moointopics/local/content/section/header";
-import DndSection from "format_moointopics/local/courseeditor/dndsection";
+import Header from "format_mooin4/local/content/section/header";
+import DndSection from "format_mooin4/local/courseeditor/dndsection";
 import Templates from "core/templates";
 import ModalFactory from "core/modal_factory";
 import Mooin4Modal from "../../mooin4modal";
 import { get_string as getString } from "core/str";
-import ILD from "format_moointopics/ildhvp4";
+import ILD from "format_mooin4/ildhvp4";
 
 export default class extends DndSection {
   /**
@@ -253,14 +253,14 @@ export default class extends DndSection {
         type: Mooin4Modal.TYPE,
         title: await getString(
           "modal_last_section_of_chapter_title",
-          "format_moointopics"
+          "format_mooin4"
         ),
         body: Templates.render(
-          "format_moointopics/local/content/modals/lastsection",
+          "format_mooin4/local/content/modals/lastsection",
           {}
         ),
         footer: Templates.render(
-          "format_moointopics/local/content/modals/modalfooterclose",
+          "format_mooin4/local/content/modals/modalfooterclose",
           {}
         ),
         scrollable: false,

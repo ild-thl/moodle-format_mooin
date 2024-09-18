@@ -1,6 +1,6 @@
 <?php
 
-namespace format_moointopics\local;
+namespace format_mooin4\local;
 
 use html_writer;
 use context_course;
@@ -17,13 +17,13 @@ class utils {
    
     public static function complete_section($section) {
         global $USER;
-        set_user_preference('format_moointopics_section_completed_'.$section, 1, $USER->id);
+        set_user_preference('format_mooin4_section_completed_'.$section, 1, $USER->id);
     }
 
     public static function is_course_completed($course_id) {
         global $DB;
         $is_course_completed = false;
-        if ($course_chapters = $DB->get_records('format_moointopics_chapter', array('courseid' => $course_id))) {
+        if ($course_chapters = $DB->get_records('format_mooin4_chapter', array('courseid' => $course_id))) {
           $is_course_completed = true;
           foreach ($course_chapters as $chapter) {
             $chapter_info = self::get_chapter_info($chapter);
@@ -43,7 +43,7 @@ class utils {
         $i = 0;
         if ($sections = $DB->get_records('course_sections', array('course' => $courseid))) {
             foreach ($sections as $section) {
-                if (!$DB->get_record('format_moointopics_chapter', array('sectionid' => $section->id)) &&
+                if (!$DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id)) &&
                         $section->section != 0) {
                     $i++;
                     $percentage += self::get_section_progress($courseid, $section->id, $userid);
@@ -192,7 +192,7 @@ class utils {
     
         // no activities with completion activated?
         if ($activities == 0) {
-            if (get_user_preferences('format_moointopics_section_completed_'.$sectionid, 0, $userid) == 1) {
+            if (get_user_preferences('format_mooin4_section_completed_'.$sectionid, 0, $userid) == 1) {
                 return 100;
             }
             else {
@@ -339,10 +339,10 @@ class utils {
 
                 // if ($unread_news_number == 1) {
                 //     $new_news = html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_news_number . html_writer::end_span();
-                //     $new_news .= html_writer::link($newsurl, get_string('unread_news_single', 'format_moointopics') . get_string('all_news', 'format_moointopics'), array('title' => get_string('all_news', 'format_mooin4'), 'class' => 'primary-link'));
+                //     $new_news .= html_writer::link($newsurl, get_string('unread_news_single', 'format_mooin4') . get_string('all_news', 'format_mooin4'), array('title' => get_string('all_news', 'format_mooin4'), 'class' => 'primary-link'));
                 // } else if ($unread_news_number > 1) {
                 //     $new_news .= html_writer::start_span('count-container d-inline-flex inline-badge fw-700 mr-1') . $unread_news_number . html_writer::end_span(); //Notification Counter
-                //     $new_news .= html_writer::link($newsurl, get_string('unread_news', 'format_moointopics') . get_string('all_news', 'format_moointopics'), array('title' => get_string('all_news', 'format_mooin4'), 'class' => 'primary-link'));
+                //     $new_news .= html_writer::link($newsurl, get_string('unread_news', 'format_mooin4') . get_string('all_news', 'format_mooin4'), array('title' => get_string('all_news', 'format_mooin4'), 'class' => 'primary-link'));
                 // } else {
                 //     $new_news = false;
                 // }
@@ -538,7 +538,7 @@ class utils {
     public static function set_chapter($sectionid) {
         global $DB;
     
-        if ($DB->get_record('format_moointopics_chapter', array('sectionid' => $sectionid))) {
+        if ($DB->get_record('format_mooin4_chapter', array('sectionid' => $sectionid))) {
             return;
         }
     
@@ -550,7 +550,7 @@ class utils {
         }
     
         if (!$csectiontitle) {
-            $csectiontitle = get_string('new_chapter', 'format_moointopics');
+            $csectiontitle = get_string('new_chapter', 'format_mooin4');
         }
     
         $chapter = new stdClass();
@@ -558,7 +558,7 @@ class utils {
         $chapter->title = $csectiontitle;
         $chapter->sectionid = $sectionid;
         $chapter->chapter = 0;
-        $DB->insert_record('format_moointopics_chapter', $chapter);
+        $DB->insert_record('format_mooin4_chapter', $chapter);
     
         self::sort_course_chapters($csection->course);
     }
@@ -566,7 +566,7 @@ class utils {
     public static function unset_chapter($sectionid) {
         global $DB;
     
-        $DB->delete_records('format_moointopics_chapter', array('sectionid' => $sectionid));
+        $DB->delete_records('format_mooin4_chapter', array('sectionid' => $sectionid));
         if ($csection = $DB->get_record('course_sections', array('id' => $sectionid))) {
             self::sort_course_chapters($csection->course);
         }
@@ -578,9 +578,9 @@ class utils {
         $number = 0;
         foreach ($coursechapters as $coursechapter) {
             $number++;
-            if ($existingcoursechapter = $DB->get_record('format_moointopics_chapter', array('id' => $coursechapter->id))) {
+            if ($existingcoursechapter = $DB->get_record('format_mooin4_chapter', array('id' => $coursechapter->id))) {
                 $existingcoursechapter->chapter = $number;
-                $DB->update_record('format_moointopics_chapter', $existingcoursechapter);
+                $DB->update_record('format_mooin4_chapter', $existingcoursechapter);
             }
         }
     }
@@ -710,7 +710,7 @@ class utils {
     public static function get_parent_chapter($section) {
         global $DB;
     
-        $chapters = $DB->get_records('format_moointopics_chapter', array('courseid' => $section->course));
+        $chapters = $DB->get_records('format_mooin4_chapter', array('courseid' => $section->course));
         foreach ($chapters as $chapter) {
             $sids = self::get_sectionids_for_chapter($chapter->id);
             if (in_array($section->id, $sids)) {
@@ -724,7 +724,7 @@ class utils {
     public static function get_sectionids_for_chapter($chapterid) {
         global $DB;
         $result = array();
-        if ($chapter = $DB->get_record('format_moointopics_chapter', array('id' => $chapterid))) {
+        if ($chapter = $DB->get_record('format_mooin4_chapter', array('id' => $chapterid))) {
             $chapters = self::get_course_chapters($chapter->courseid);
             $start = 0;
             $end = 0;
@@ -760,7 +760,7 @@ class utils {
         global $DB;
     
         $sql = 'SELECT c.*, s.section
-                  FROM {format_moointopics_chapter} as c, {course_sections} as s
+                  FROM {format_mooin4_chapter} as c, {course_sections} as s
                  WHERE s.course = :courseid
                    and s.id = c.sectionid
               order by s.section asc';
@@ -907,7 +907,7 @@ class utils {
             'get_items'=> $course_items
         );
     
-        return $OUTPUT->render_from_template('format_moointopics/custom_navbar', $templatecontext);
+        return $OUTPUT->render_from_template('format_mooin4/custom_navbar', $templatecontext);
     }
 
     public static function subpage_navbar() {
@@ -934,7 +934,7 @@ class utils {
             'get_items'=> $course_items
         );
     
-        return $OUTPUT->render_from_template('format_moointopics/custom_navbar', $templatecontext);
+        return $OUTPUT->render_from_template('format_mooin4/custom_navbar', $templatecontext);
     }
 
     public static function get_chapter_info($chapter) {
@@ -953,7 +953,7 @@ class utils {
                 $completedsections++;
             }
     
-            $last_section = get_user_preferences('format_moointopics_last_section_in_course_'.$chapter->courseid, 0, $USER->id);
+            $last_section = get_user_preferences('format_mooin4_last_section_in_course_'.$chapter->courseid, 0, $USER->id);
             if ($record = $DB->get_record('course_sections', array('course' => $chapter->courseid, 'section' => $last_section))) {
                 if ($record->id == $sectionid) {
                     $lastvisited = true;
@@ -1048,7 +1048,7 @@ class utils {
     
         // no activities with completion activated?
         if ($activities == 0) {
-            if (get_user_preferences('format_moointopics_section_completed_'.$sectionid, 0, $userid) == 1) {
+            if (get_user_preferences('format_mooin4_section_completed_'.$sectionid, 0, $userid) == 1) {
                 return 100;
             }
             else {
@@ -1084,7 +1084,7 @@ class utils {
         global $USER;
         //$chapterlib = $this->chapterlib;
         //$course = $this->format->get_course();
-        $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+        $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
         if ($last_section) {
             return true;
         } else {
@@ -1098,7 +1098,7 @@ class utils {
         //$chapterlib = $this->chapterlib;
         //$course = $this->format->get_course();
 
-        $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+        $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
 
 
         if ($last_section) {
@@ -1122,7 +1122,7 @@ class utils {
         //$chapterlib = $this->chapterlib;
         //$course = $this->format->get_course();
 
-        $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+        $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
 
 
         if ($last_section) {
@@ -1166,7 +1166,7 @@ class utils {
                    and mimetype like :mimetype';
     
         $params = array('contextid' => $context->id,
-            'component' => 'format_moointopics',
+            'component' => 'format_mooin4',
             'filearea' => $filearea,
             'courseid' => $courseid,
                         'mimetype' => 'image/%');
@@ -1180,7 +1180,7 @@ class utils {
             return false;
         }
     
-        $url = new moodle_url('/pluginfile.php/'.$context->id.'/format_moointopics/'.$filearea.'/'.$courseid.'/0/'.$filename);
+        $url = new moodle_url('/pluginfile.php/'.$context->id.'/format_mooin4/'.$filearea.'/'.$courseid.'/0/'.$filename);
         return $url;
     }
 
@@ -1466,8 +1466,8 @@ class utils {
             if (!isset($second->issuedid)) {
                 $second->issuedid = 0;
             }
-            $f = get_user_preferences('format_moointopics_new_badge_' . $first->issuedid, 0, $USER->id);
-            $s = get_user_preferences('format_moointopics_new_badge_' . $second->issuedid, 0, $USER->id);
+            $f = get_user_preferences('format_mooin4_new_badge_' . $first->issuedid, 0, $USER->id);
+            $s = get_user_preferences('format_mooin4_new_badge_' . $second->issuedid, 0, $USER->id);
             if ($f < $s) {
                 return 1;
             }
@@ -1505,7 +1505,7 @@ class utils {
 
             if (isset($record->uniquehash)) {
                 $url = new moodle_url('/badges/badge.php', array('hash' => $record->uniquehash));
-                $badgeisnew = get_user_preferences('format_moointopics_new_badge_' . $record->issuedid, 0, $USER->id);
+                $badgeisnew = get_user_preferences('format_mooin4_new_badge_' . $record->issuedid, 0, $USER->id);
             } else {
                 $url = new moodle_url('/badges/overview.php', array('id' => $record->id));
                 $badgeisnew = 0;
@@ -1610,7 +1610,7 @@ class utils {
                         $new = '';
                         $certmod = $templ[$i]->certmod;
                         $issuedid = $templ[$i]->issuedid;
-                        if (get_user_preferences('format_moointopics_new_certificate_' . $certmod . '_' . $issuedid, 0, $USER->id) == 1) {
+                        if (get_user_preferences('format_mooin4_new_certificate_' . $certmod . '_' . $issuedid, 0, $USER->id) == 1) {
                             $new = ' new-certificate-layer';
                         }
                         $out_certificat .= html_writer::link($templ[$i]->url, ' ' . $templ[$i]->name, array('class' => 'certificate-img' . $new));
@@ -1629,7 +1629,7 @@ class utils {
     }
 
     public static function set_new_certificate($awardedtoid, $issuedid, $modulename) {
-        set_user_preference('format_moointopics_new_certificate_'.$modulename.'_'.$issuedid, true, $awardedtoid);
+        set_user_preference('format_mooin4_new_certificate_'.$modulename.'_'.$issuedid, true, $awardedtoid);
     }
 
     public static function unset_new_certificate($viewedbyuserid, $issuedid, $modulename) {
@@ -1650,7 +1650,7 @@ class utils {
     
         if ($record = $DB->get_record_sql($sql, $params)) {
             if ($record->userid == $viewedbyuserid) {
-                unset_user_preference('format_moointopics_new_certificate_'.$modulename.'_'.$record->id, $viewedbyuserid);
+                unset_user_preference('format_mooin4_new_certificate_'.$modulename.'_'.$record->id, $viewedbyuserid);
             }
         }
     }
@@ -1659,8 +1659,8 @@ class utils {
         if ($user->city != '') {
             $coordinates = new stdClass();
     
-            $url = get_config('format_moointopics', 'geonamesapi_url');
-            $apiusername = get_config('format_moointopics', 'geonamesapi_username');
+            $url = get_config('format_mooin4', 'geonamesapi_url');
+            $apiusername = get_config('format_mooin4', 'geonamesapi_username');
     
             $response = self::get_url_content($url, "/search?username=".$apiusername."&maxRows=1&q=".urlencode($user->city)."&country=".urlencode($user->country));
     

@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import DndSectionItem from 'format_moointopics/local/courseeditor/dndsectionitem';
+import DndSectionItem from 'format_mooin4/local/courseeditor/dndsectionitem';
 
 export default class Component extends DndSectionItem {
 

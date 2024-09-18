@@ -17,13 +17,13 @@
 /**
  * Version details.
  *
- * @package    format_moointopics
+ * @package    format_mooin4
  * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2024082801;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2024091701;        // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2022111800;        // Requires this Moodle version.
-$plugin->component = 'format_moointopics';    // Full name of the plugin (used for diagnostics).
+$plugin->component = 'format_mooin4';    // Full name of the plugin (used for diagnostics).

@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- namespace format_moointopics\output\courseformat\content;
+ namespace format_mooin4\output\courseformat\content;
 
  use core_courseformat\output\local\content\cm as cm_base;
 use cm_info;

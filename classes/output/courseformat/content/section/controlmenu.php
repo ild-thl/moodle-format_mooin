@@ -17,12 +17,12 @@
 /**
  * Contains the default section controls output class.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2020 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace format_moointopics\output\courseformat\content\section;
+namespace format_mooin4\output\courseformat\content\section;
 
 use context_course;
 use core_courseformat\output\local\content\section\controlmenu as controlmenu_base;
@@ -31,7 +31,7 @@ use moodle_url;
 /**
  * Base class to render a course section menu.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2020 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -79,20 +79,20 @@ class controlmenu extends controlmenu_base {
 
         if ($section->section && $section->section > 1 && has_capability('moodle/course:setcurrentsection', $coursecontext)) {
             //Add the chapter set/unset controlls
-            if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $section->id))) {
+            if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
                 //$url = new moodle_url('/course/view.php');
                 $url->param('unsetchapter', $section->section);
                 $controls['chapter'] = array(
                     'url' => $url,
                     'icon' => 'i/settings',
-                    'name' => get_string('unsetchapter', 'format_moointopics'),
+                    'name' => get_string('unsetchapter', 'format_mooin4'),
                     'pixattr' => array('class' => ''),
                     'attr' => [
                         'class' => 'icon editing_showhide',
                         'data-sectionreturn' => $sectionreturn,
                         'data-action' => ($usecomponents) ? 'sectionUnsetChapter' : 'unsetChapter',
                         'data-id' => $section->id,
-                        'data-swapname' => get_string('setchapter', 'format_moointopics'),
+                        'data-swapname' => get_string('setchapter', 'format_mooin4'),
                         'data-swapicon' => 'i/settings',
                     ],
                 );
@@ -102,21 +102,21 @@ class controlmenu extends controlmenu_base {
                 $controls['chapter'] = array(
                     'url' => $url,
                     'icon' => 'i/settings',
-                    'name' => get_string('setchapter', 'format_moointopics'),
+                    'name' => get_string('setchapter', 'format_mooin4'),
                     'pixattr' => array('class' => ''),
                     'attr' => [
                         'class' => 'icon editing_showhide',
                         'data-sectionreturn' => $sectionreturn,
                         'data-action' => ($usecomponents) ? 'sectionSetChapter' : 'setChapter',
                         'data-id' => $section->id,
-                        'data-swapname' => get_string('unsetchapter', 'format_moointopics'),
+                        'data-swapname' => get_string('unsetchapter', 'format_mooin4'),
                         'data-swapicon' => 'i/settings',
                     ],
                 );
             }
         }
         if ($section->section) {
-            $chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $section->id));
+            $chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id));
             if (course_can_delete_section($course, $section) && !$chapter) {
                 if (get_string_manager()->string_exists('deletesection', 'format_' . $course->format)) {
                     $strdelete = get_string('deletesection', 'format_' . $course->format);

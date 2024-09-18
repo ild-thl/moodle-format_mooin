@@ -27,10 +27,10 @@
 require_once('../../../config.php');
 require_once($CFG->libdir.'/tablelib.php');
 require_once($CFG->libdir.'/filelib.php');
-require_once('../moointopics/lib.php');
+require_once('../mooin4/lib.php');
 //require_once('locallib.php');
 
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 
 $courseid = optional_param('id', 0, PARAM_INT);
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
@@ -51,7 +51,7 @@ $roleid       = optional_param('roleid', 0, PARAM_INT); // Optional roleid, 0 me
 $contextid    = optional_param('contextid', 0, PARAM_INT); // One of this or.
 //$courseid     = optional_param('id', 0, PARAM_INT); // This are required.
 
-$PAGE->set_url('/course/format/moointopics/participants.php', array(
+$PAGE->set_url('/course/format/mooin4/participants.php', array(
 		'id' => $courseid,
         'page' => $page,
         'perpage' => $perpage,
@@ -62,7 +62,7 @@ $PAGE->set_url('/course/format/moointopics/participants.php', array(
         'contextid' => $contextid
         ));
 
-$PAGE->set_url('/course/format/moointopics/participants.php', array('id' => $course->id));
+$PAGE->set_url('/course/format/mooin4/participants.php', array('id' => $course->id));
 
 if ($contextid) {
     $context = context::instance_by_id($contextid, MUST_EXIST);
@@ -99,13 +99,13 @@ if ($isfrontpage) {
     require_capability('moodle/course:viewparticipants', $context);
 }
 
-$rolenamesurl = new moodle_url("$CFG->wwwroot/course/format/moointopics/participants.php?contextid=$context->id&sifirst=&silast=");
+$rolenamesurl = new moodle_url("$CFG->wwwroot/course/format/mooin4/participants.php?contextid=$context->id&sifirst=&silast=");
 
 $rolenames = role_fix_names(get_profile_roles($context), $context, ROLENAME_ALIAS, true);
 if ($isfrontpage) {
     $rolenames[0] = get_string('allsiteusers', 'role');
 } else {
-    $rolenames[0] = get_string('allparticipants', 'format_moointopics');
+    $rolenames[0] = get_string('allparticipants', 'format_mooin4');
 }
 
 // Make sure other roles may not be selected by any means.
@@ -185,12 +185,12 @@ $PAGE->set_other_editing_capability('moodle/course:manageactivities');
 echo $OUTPUT->header();
 
 echo html_writer::div(utils::subpage_navbar(), 'sticky-container');
-echo html_writer::start_div('moointopics-subpage-bg');
+echo html_writer::start_div('mooin4-subpage-bg');
 echo '<div class="userlist">';
 //echo '<div class="mooin4-md-container">';
 
 //echo navbar('participants');
-echo '<h2>'.get_string("participants","format_moointopics").'</h2>';
+echo '<h2>'.get_string("participants","format_mooin4").'</h2>';
 
 if ($isseparategroups and (!$currentgroup) ) {
     // The user is not in the group so show message and exit.
@@ -201,7 +201,7 @@ if ($isseparategroups and (!$currentgroup) ) {
 
 
 // Should use this variable so that we don't break stuff every time a variable is added or changed.
-$baseurl = new moodle_url('/course/format/moointopics/participants.php', array(
+$baseurl = new moodle_url('/course/format/mooin4/participants.php', array(
         'contextid' => $context->id,
         'roleid' => $roleid,
         'id' => $course->id,
@@ -244,7 +244,7 @@ $controlstable->data[] = new html_table_row();
 // Print my course menus.
 if ($mycourses = enrol_get_my_courses()) {
     $courselist = array();
-    $popupurl = new moodle_url('/course/format/moointopics/participants.php?roleid='.$roleid.'&sifirst=&silast=');
+    $popupurl = new moodle_url('/course/format/mooin4/participants.php?roleid='.$roleid.'&sifirst=&silast=');
     foreach ($mycourses as $mycourse) {
         $coursecontext = context_course::instance($mycourse->id);
         $courselist[$mycourse->id] = format_string($mycourse->shortname, true, array('context' => $coursecontext));
@@ -383,11 +383,11 @@ if ($mode === MODE_BRIEF) {
     }
 }
 // course/format/mooin4
-if ($mode === MODE_BRIEF && !isset($hiddenfields['city']) && has_capability('format/moointopics:readuserpage', $context)) { // oncampus sprint
+if ($mode === MODE_BRIEF && !isset($hiddenfields['city']) && has_capability('format/mooin4:readuserpage', $context)) { // oncampus sprint
     $tablecolumns[] = 'city';
     $tableheaders[] = get_string('city');
 }
-if ($mode === MODE_BRIEF && !isset($hiddenfields['country']) && has_capability('format/moointopics:readuserpage', $context)) { // oncampus sprint
+if ($mode === MODE_BRIEF && !isset($hiddenfields['country']) && has_capability('format/mooin4:readuserpage', $context)) { // oncampus sprint
     $tablecolumns[] = 'country';
     $tableheaders[] = get_string('country');
 }
@@ -403,7 +403,7 @@ if (!isset($hiddenfields['lastaccess'])) {
 
 // added by oncampus
 // oncampus sprint
-if (has_capability('format/moointopics:readuserpage', $context)) {
+if (has_capability('format/mooin4:readuserpage', $context)) {
 	$tablecolumns[] = 'badges';
 	$tableheaders[] = get_string('badges');
 }
@@ -601,8 +601,8 @@ foreach ($userlist as $lu) {
     }
 }
 
-    $map_title = get_string('map_title', 'format_moointopics');
-        $map_descr = get_string('map_descr', 'format_moointopics');
+    $map_title = get_string('map_title', 'format_mooin4');
+        $map_descr = get_string('map_descr', 'format_mooin4');
         $templatecontext = (object)[
             'title' => $map_title,
             'desc' =>   $map_descr,
@@ -610,7 +610,7 @@ foreach ($userlist as $lu) {
             'usermarkers' => $usermarkers
         ];
         //print_object($templatecontext);
-        echo $OUTPUT->render_from_template('format_moointopics/map_manage', $templatecontext);
+        echo $OUTPUT->render_from_template('format_mooin4/map_manage', $templatecontext);
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 echo('<br>');
 
@@ -652,7 +652,7 @@ if ($roleid > 0) {
         $strallparticipants = get_string('allsiteusers', 'role');
     } else {
 
-        $strallparticipants = get_string('allparticipants', 'format_moointopics');
+        $strallparticipants = get_string('allparticipants', 'format_mooin4');
     }
     if ($matchcount < $totalcount) {
         echo $OUTPUT->heading($strallparticipants.get_string('labelsep', 'langconfig').$matchcount.'/'.$totalcount . $editlink, 2);
@@ -850,7 +850,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 		//echo '<label for="search">' . get_string('search', 'search') . ' </label>';
 		echo '<input type="text" id="search" name="search" value="'.s($search).'" />&nbsp;';
 		echo '<input type="submit" value="'.get_string('search').'" />';
-		echo '&nbsp;'.html_writer::link(new moodle_url('/course/format/moointopics/participants.php', array('id' => $course->id, 'tab' => 1)), get_string('cancel'));
+		echo '&nbsp;'.html_writer::link(new moodle_url('/course/format/mooin4/participants.php', array('id' => $course->id, 'tab' => 1)), get_string('cancel'));
 		echo '</div></form>'."<br />";
 	}
 
@@ -905,15 +905,15 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                 }
             }
             // course/format/mooin4
-            if ($mode === MODE_BRIEF && !isset($hiddenfields['city']) && has_capability('format/moointopics:readuserpage', $context)) { // oncampus sprint && has_capability('course/mooin4:readuserpage', $context)
+            if ($mode === MODE_BRIEF && !isset($hiddenfields['city']) && has_capability('format/mooin4:readuserpage', $context)) { // oncampus sprint && has_capability('course/mooin4:readuserpage', $context)
                 $data[] = $user->city;
             }
             // course/format/mooin4
-            if ($mode === MODE_BRIEF && !isset($hiddenfields['country']) && has_capability('format/moointopics:readuserpage', $context)) { // oncampus sprint && has_capability('course/mooin4:readuserpage', $context)
+            if ($mode === MODE_BRIEF && !isset($hiddenfields['country']) && has_capability('format/mooin4:readuserpage', $context)) { // oncampus sprint && has_capability('course/mooin4:readuserpage', $context)
                 $data[] = $country;
             }
             // course/format/mooin4
-            if (!isset($hiddenfields['lastaccess']) && has_capability('format/moointopics:readuserpage', $context)) { // oncampus sprint  && has_capability('course/mooin4:readuserpage', $context)
+            if (!isset($hiddenfields['lastaccess']) && has_capability('format/mooin4:readuserpage', $context)) { // oncampus sprint  && has_capability('course/mooin4:readuserpage', $context)
                 $data[] = $lastaccess;
             }
             // course/format/mooin4
@@ -933,7 +933,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 
 				$data[] = $badges;
 			} */
-            if ($mode === MODE_BRIEF && !isset($hiddenfields['badges']) && has_capability('format/moointopics:aluhatsoff', $context)) {
+            if ($mode === MODE_BRIEF && !isset($hiddenfields['badges']) && has_capability('format/mooin4:aluhatsoff', $context)) {
 				// oncampus Badges anzeigen
 				$badges = '';
 				// $badges .= get_badges_list($user->id).get_badges_list($user->id, $course->id);
@@ -963,7 +963,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 }
 
 if ($bulkoperations) {
-    echo '<br /><div class="moointopics">';
+    echo '<br /><div class="mooin4">';
     echo '<input type="button" id="checkall" value="'.get_string('selectall').'" /> ';
     echo '<input type="button" id="checknone" value="'.get_string('deselectall').'" /> ';
     $displaylist = array();
@@ -1001,7 +1001,7 @@ if ($perpage == SHOW_ALL_PAGE_SIZE) {
 
 // Kurslich verliehene Badges
 echo('<br>');//echo('<br>');echo('<br>');echo('<br>');
-$out = html_writer::tag('div', get_string('awarded_badges', 'format_moointopics'), array('class' => 'oc_badges_text'));
+$out = html_writer::tag('div', get_string('awarded_badges', 'format_mooin4'), array('class' => 'oc_badges_text'));
 echo html_writer::tag('h2', $out);
 // echo html_writer::tag('div', get_string('lastday', 'format_mooin4'), array('class' => 'oc_badges_text'));
 // display_badges(0, $courseid, 24 * 60 * 60);
@@ -1016,14 +1016,14 @@ if ($out != '') {
 } else {
     //echo html_writer::div($out,'border-card');
     //echo html_writer::div('', 'no-badges-img');
-    echo html_writer::tag('div', get_string('no_badges_awarded', 'format_moointopics'), array('class' => 'oc-no-badges'));
+    echo html_writer::tag('div', get_string('no_badges_awarded', 'format_mooin4'), array('class' => 'oc-no-badges'));
 }
 // Link zum Abmelden aus dem Kurs anzeigen,
 // wenn der User �ber Autoenrol eingeschrieben ist
 // if ($enrol = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'autoenrol', 'status' => 0))) {// manual || autoenrol
 // 	if ($user_enrolment = $DB->get_record('user_enrolments', array('enrolid' => $enrol->id, 'userid' => $USER->id))) {
 // 		$unenrolurl = new moodle_url("$CFG->wwwroot/enrol/autoenrol/unenrolself.php?enrolid=$enrol->id");
-// 		echo html_writer::tag('div', html_writer::link($unenrolurl, get_string('unenrol', 'format_moointopics') )); // , array('class' => 'oc-kurs-abmeldung'
+// 		echo html_writer::tag('div', html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin4') )); // , array('class' => 'oc-kurs-abmeldung'
 
 // 	}
 // }

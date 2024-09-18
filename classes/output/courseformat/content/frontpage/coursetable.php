@@ -1,6 +1,6 @@
 <?php
 
-namespace format_moointopics\output\courseformat\content\frontpage;
+namespace format_mooin4\output\courseformat\content\frontpage;
 
 use renderable;
 
@@ -8,7 +8,7 @@ use renderable;
 /**
  * Base class to render the course frontpage header.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2023 ISy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

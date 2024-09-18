@@ -14,26 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-class backup_format_moointopics_plugin extends backup_format_plugin {
+class backup_format_mooin4_plugin extends backup_format_plugin {
 
     public function define_course_plugin_structure() {
 
-        $plugin = $this->get_plugin_element(null, $this->get_format_condition(), 'moointopics');
+        $plugin = $this->get_plugin_element(null, $this->get_format_condition(), 'mooin4');
         $pluginwrapper = new backup_nested_element($this->get_recommended_name());
         $plugin->add_child($pluginwrapper);
-        $chapter = new backup_nested_element('format_moointopics_chapter', ['id'], ['courseid', 'title', 'sectionid', 'chapter']);
+        $chapter = new backup_nested_element('format_mooin4_chapter', ['id'], ['courseid', 'title', 'sectionid', 'chapter']);
         $pluginwrapper->add_child($chapter);
-        $chapter->set_source_table('format_moointopics_chapter', ['courseid' => backup::VAR_COURSEID]);
-        $pluginwrapper->annotate_files('format_moointopics', 'headerimagedesktop', null);
-        $pluginwrapper->annotate_files('format_moointopics', 'headerimagemobile', null);
+        $chapter->set_source_table('format_mooin4_chapter', ['courseid' => backup::VAR_COURSEID]);
+        $pluginwrapper->annotate_files('format_mooin4', 'headerimagedesktop', null);
+        $pluginwrapper->annotate_files('format_mooin4', 'headerimagemobile', null);
         return $plugin;
 
 
 
         // //$chapters = new backup_nested_element('chapters');
-        // $chapter = new backup_nested_element('format_moointopics_chapter', ['id'], ['courseid', 'title', 'sectionid', 'chapter']);
-        // $chapter->set_source_table('format_moointopics_chapter', ['courseid' => backup::VAR_COURSEID]);
-        // $plugin = $this->get_plugin_element(null, $this->get_format_condition(), 'moointopics');
+        // $chapter = new backup_nested_element('format_mooin4_chapter', ['id'], ['courseid', 'title', 'sectionid', 'chapter']);
+        // $chapter->set_source_table('format_mooin4_chapter', ['courseid' => backup::VAR_COURSEID]);
+        // $plugin = $this->get_plugin_element(null, $this->get_format_condition(), 'mooin4');
         // //$chapters -> add_child($chapter);
         // return $plugin->add_child($chapter);
     }

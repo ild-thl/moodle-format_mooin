@@ -17,7 +17,7 @@
 /**
  * Specialised restore for Topics course format.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @category  backup
  * @copyright 2017 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -30,12 +30,12 @@ defined('MOODLE_INTERNAL') || die();
  *
  * Processes 'numsections' from the old backup files and hides sections that used to be "orphaned".
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @category  backup
  * @copyright 2017 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_format_moointopics_plugin extends restore_format_plugin {
+class restore_format_mooin4_plugin extends restore_format_plugin {
 
     /** @var int */
     protected $originalnumsections = 0;

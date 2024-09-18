@@ -3,7 +3,7 @@
 <div id="allforums" class="subpage">
     {{{breadcrumb}}}
     <div class="subpage--discussions d-flex flex-column pb-5">
-        <h2>{{#str}} all_forums, format_moointopics {{/str}}</h2>
+        <h2>{{#str}} all_forums, format_mooin4 {{/str}}</h2>
         {{#forums}}
         <div class="border-card mb-3">
             <ul>    
@@ -14,7 +14,7 @@
                     {{#unreadposts}}
                         <span class="w-100 d-flex align-items-center justify-content-between" data-for="mark_as_read_container">
                             <span class=" ml-1 notification-badge mr-1">{{{unreadposts}}}</span>
-                            <a class="d-none d-md-flex" type="button" data-id="{{{id}}}" data-for="unread_link">{{#str}} mark_all_as_read, format_moointopics {{/str}}</a>
+                            <a class="d-none d-md-flex" type="button" data-id="{{{id}}}" data-for="unread_link">{{#str}} mark_all_as_read, format_mooin4 {{/str}}</a>
                             <a class="d-flex d-md-none unread-btn-mobile" type="button" data-id="{{{id}}}" data-for="unread_link"></a>
                         </span>
                     {{/unreadposts}} 
@@ -27,14 +27,14 @@
         {{^forums}}
             <div class="d-flex justify-content-center align-items-center mt-5">
                 <div class="no-forums-img"></div>
-                <span class="blue-info-text">{{#str}} no_forums_available, format_moointopics {{/str}}</span>
+                <span class="blue-info-text">{{#str}} no_forums_available, format_mooin4 {{/str}}</span>
             </div>
         {{/forums}}
     </div>
 </div>
 
 {{#js}}
-require(['format_moointopics/local/forum/alldiscussionforums'], function(component) {
+require(['format_mooin4/local/forum/alldiscussionforums'], function(component) {
     component.init('allforums');
 });
 {{/js}}

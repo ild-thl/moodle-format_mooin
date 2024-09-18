@@ -1,26 +1,26 @@
 <?php
 
-namespace format_moointopics\output\courseformat\content;
+namespace format_mooin4\output\courseformat\content;
 
 
 use renderable;
 use core_courseformat\base as course_format;
-use format_moointopics\output\courseformat\content\frontpage\header;
-use format_moointopics\output\courseformat\content\frontpage\news_section;
-use format_moointopics\output\courseformat\content\frontpage\courseprogress;
-use format_moointopics\output\courseformat\content\frontpage\badges;
-use format_moointopics\output\courseformat\content\frontpage\certificates;
-use format_moointopics\output\courseformat\content\frontpage\discussions;
-use format_moointopics\output\courseformat\content\frontpage\participants;
+use format_mooin4\output\courseformat\content\frontpage\header;
+use format_mooin4\output\courseformat\content\frontpage\news_section;
+use format_mooin4\output\courseformat\content\frontpage\courseprogress;
+use format_mooin4\output\courseformat\content\frontpage\badges;
+use format_mooin4\output\courseformat\content\frontpage\certificates;
+use format_mooin4\output\courseformat\content\frontpage\discussions;
+use format_mooin4\output\courseformat\content\frontpage\participants;
 use context_course;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 
 
 
 /**
  * Base class to render the course frontpage.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2023 ISy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

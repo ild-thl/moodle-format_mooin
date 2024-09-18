@@ -24,8 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import SectionTitle from 'format_moointopics/local/courseindex/sectiontitle';
-import DndSection from 'format_moointopics/local/courseeditor/dndsection';
+import SectionTitle from 'format_mooin4/local/courseindex/sectiontitle';
+import DndSection from 'format_mooin4/local/courseeditor/dndsection';
 import { get_string as getString } from "core/str";
 
 export default class Component extends DndSection {
@@ -152,7 +152,7 @@ export default class Component extends DndSection {
         if (element.isChapter) {
             const caret = document.createElement("i");
             caret.classList.add("bi", "bi-caret-right-fill");
-            title.innerHTML = " " + await getString("chapter", "format_moointopics") + " " + element.isChapter + ": " + element.title;
+            title.innerHTML = " " + await getString("chapter", "format_mooin4") + " " + element.isChapter + ": " + element.title;
             title.prepend(caret);
         } if (!element.isChapter) {
             //title.innerHTML = element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;

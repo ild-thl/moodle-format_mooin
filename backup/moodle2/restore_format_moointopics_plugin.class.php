@@ -18,16 +18,16 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Specialised restore for moointopics course format.
+ * Specialised restore for mooin4 course format.
  *
  * Processes 'numsections' from the old backup files and hides sections that used to be "orphaned".
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @category  backup
  * @copyright 2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_format_moointopics_plugin extends restore_format_plugin {
+class restore_format_mooin4_plugin extends restore_format_plugin {
 
     /** @var int */
     protected $originalnumsections = 0;
@@ -54,7 +54,7 @@ class restore_format_moointopics_plugin extends restore_format_plugin {
     public function define_course_plugin_structure() {
         $paths = array();
 
-        $elepath = $this->get_pathfor('/format_moointopics_chapter');
+        $elepath = $this->get_pathfor('/format_mooin4_chapter');
 
         //Dummy path element is needed in order for after_restore_course() to be called.
         return [new restore_path_element('dummy_course', $this->get_pathfor('/dummycourse')), new restore_path_element('chapter', $elepath)];
@@ -63,8 +63,8 @@ class restore_format_moointopics_plugin extends restore_format_plugin {
     function after_execute_course() {
         global $DB;
 
-        $this->add_related_files('format_moointopics', 'headerimagedesktop', null);
-        $this->add_related_files('format_moointopics', 'headerimagemobile', null);
+        $this->add_related_files('format_mooin4', 'headerimagedesktop', null);
+        $this->add_related_files('format_mooin4', 'headerimagemobile', null);
     }
 
     public function process_chapter($data) {
@@ -73,14 +73,14 @@ class restore_format_moointopics_plugin extends restore_format_plugin {
 
         $data->courseid = $this->task->get_courseid();
         $this->chapters[] = $data;
-        //$DB->insert_record('format_moointopics_chapter', $data);
+        //$DB->insert_record('format_mooin4_chapter', $data);
     }
 
     public function restore_files($area) {
         $courseid = $this->task->get_courseid();
         $fs = get_file_storage();
 
-        $files = $fs->get_area_files($this->task->get_contextid(), 'format_moointopics', $area);
+        $files = $fs->get_area_files($this->task->get_contextid(), 'format_mooin4', $area);
         foreach ($files as $file) {
             $newfilerecord = new stdClass();
             $newfilerecord->itemid = $courseid;
@@ -123,12 +123,12 @@ class restore_format_moointopics_plugin extends restore_format_plugin {
             );
         }
 
-        $DB->delete_records('format_moointopics_chapter', array('chapter' => 1, 'courseid' => $this->step->get_task()->get_courseid()));
+        $DB->delete_records('format_mooin4_chapter', array('chapter' => 1, 'courseid' => $this->step->get_task()->get_courseid()));
 
         foreach ($this->chapters as $chapter) {
             $id = $this->get_mappingid('course_section', $chapter->sectionid);
             $chapter->sectionid = $id;
-            $DB->insert_record('format_moointopics_chapter', $chapter);
+            $DB->insert_record('format_mooin4_chapter', $chapter);
         }
 
 
@@ -145,7 +145,7 @@ class restore_format_moointopics_plugin extends restore_format_plugin {
 
 
 
-        if ($backupinfo->original_course_format !== 'moointopics' || !isset($data['tags']['numsections'])) {
+        if ($backupinfo->original_course_format !== 'mooin4' || !isset($data['tags']['numsections'])) {
             // Backup from another course format or backup file does not even have 'numsections'.
             return;
         }

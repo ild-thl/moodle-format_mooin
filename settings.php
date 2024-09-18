@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Settings for format_moointopics
+ * Settings for format_mooin4
  *
- * @package    format_moointopics
+ * @package    format_mooin4
  * @copyright  2020 Amaia Anabitarte <amaia@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,12 +25,12 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $url = new moodle_url('/admin/course/resetindentation.php', ['format' => 'moointopics']);
+    $url = new moodle_url('/admin/course/resetindentation.php', ['format' => 'mooin4']);
     $link = html_writer::link($url, get_string('resetindentation', 'admin'));
     $settings->add(new admin_setting_configcheckbox(
-        'format_moointopics/indentation',
-        new lang_string('indentation', 'format_moointopics'),
-        new lang_string('indentation_help', 'format_moointopics').'<br />'.$link,
+        'format_mooin4/indentation',
+        new lang_string('indentation', 'format_mooin4'),
+        new lang_string('indentation_help', 'format_mooin4').'<br />'.$link,
         1
     ));
 }

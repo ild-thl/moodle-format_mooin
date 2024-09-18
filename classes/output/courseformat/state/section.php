@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace format_moointopics\output\courseformat\state;
+namespace format_mooin4\output\courseformat\state;
 
 use core_courseformat\output\local\state\section as section_base;
 use core_availability\info_section;
@@ -24,7 +24,7 @@ use renderable;
 use stdClass;
 use context_course;
 use renderer_base;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 use moodle_url;
 
 /**
@@ -50,7 +50,7 @@ class section extends section_base {
     //     $course = $format->get_course();
     //     $sectionnumber = optional_param('section', 0, PARAM_INT);
     //     if ($sectionnumber > 0) {
-    //         set_user_preference('format_moointopics_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
+    //         set_user_preference('format_mooin4_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
     //     }
     // }
 
@@ -68,7 +68,7 @@ class section extends section_base {
         $course = $this->format->get_course();
 
 
-        if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $this->section->id))) {
+        if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $this->section->id))) {
             $isChapter = $chapter->chapter;
         } else {
             $parentchapter = utils::get_parent_chapter($this->section);
@@ -91,8 +91,8 @@ class section extends section_base {
             $data->isCompleted = true;
         }
 
-        if ($chapter = $DB->get_record('format_moointopics_chapter', array('sectionid' => $this->section->id))) {
-            $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+        if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $this->section->id))) {
+            $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
             if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
                 $last_sections_parent_chapter = utils::get_parent_chapter($continuesection);
                 if ($last_sections_parent_chapter == $chapter) {
@@ -107,14 +107,14 @@ class section extends section_base {
             }
             if (utils::is_last_section_of_chapter($this->section->id)) {
                 $data->isLastSectionOfChapter = true;
-                if (!get_user_preferences('format_moointopics_hide_modal_for_section_'.$this->section->id)) {
+                if (!get_user_preferences('format_mooin4_hide_modal_for_section_'.$this->section->id)) {
                     $data->showLastSectionModal = true;
-                    //set_user_preference('format_moointopics_hide_modal_for_section_'.$this->section->id, 'true');
+                    //set_user_preference('format_mooin4_hide_modal_for_section_'.$this->section->id, 'true');
                 }
             }
 
             $parent_chapter = utils::get_parent_chapter($this->section);
-            $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+            $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
             if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
                 $last_sections_parent_chapter = utils::get_parent_chapter($continuesection);
                 if ($last_sections_parent_chapter == $parent_chapter) {

@@ -106,7 +106,7 @@
             <div id="chapter-{{{parentChapter}}}-index" class="collapse {{#containsActiveSection}} show {{/containsActiveSection}} {{#editmode}} show {{/editmode}} chapter-container" data-for="chapter-container" data-id="{{{parentChapter}}}">
         {{/isFirstSectionOfChapter}}
     {{/editmode}}
-        {{> format_moointopics/local/courseindex/section }}
+        {{> format_mooin4/local/courseindex/section }}
         {{^editmode}}
         {{#isLastSectionOfChapter}}
             </div>
@@ -115,7 +115,7 @@
     {{/sections}}
 </div>
 {{#js}}
-require(['format_moointopics/local/courseindex/courseindex'], function(component) {
+require(['format_mooin4/local/courseindex/courseindex'], function(component) {
     component.init('course-index');
 });
 {{/js}}

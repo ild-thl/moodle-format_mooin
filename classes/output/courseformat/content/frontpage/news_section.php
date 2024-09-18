@@ -1,17 +1,17 @@
 <?php
 
-namespace format_moointopics\output\courseformat\content\frontpage;
+namespace format_mooin4\output\courseformat\content\frontpage;
 
 use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 use context_course;
 
 /**
  * Base class to render the course news section.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2023 ISy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

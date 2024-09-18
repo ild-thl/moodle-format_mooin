@@ -1,17 +1,17 @@
 <?php
 
-namespace format_moointopics\output\courseformat\content\frontpage;
+namespace format_mooin4\output\courseformat\content\frontpage;
 
 use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 
 
 /**
  * Base class to render the course news section.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2023 ISy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,7 +35,7 @@ class participants implements renderable {
         }
 
         $data = (object)[
-            'participantsUrl' => new moodle_url('/course/format/moointopics/participants.php', array('id' => $course->id)),
+            'participantsUrl' => new moodle_url('/course/format/mooin4/participants.php', array('id' => $course->id)),
             'userCardList' => $user_card_list,
         ];
 

@@ -17,7 +17,7 @@
 /**
  * Page that shows a form to manage and set additional metadata dor a course.
  *
- * @package     format_moointopics
+ * @package     format_mooin4
  * @copyright   2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,7 +37,7 @@ if (!has_capability('moodle/course:update', $coursecontext)) {
 require_login($courseid, false);
 
 //$context = context_system::instance();
-$url = new moodle_url('/course/format/moointopics/edit_header.php', array('course' => $courseid));
+$url = new moodle_url('/course/format/mooin4/edit_header.php', array('course' => $courseid));
 $course = $DB->get_record('course', array('id' => $courseid));
 $coursecontext = context_course::instance($courseid);
 
@@ -45,7 +45,7 @@ $PAGE->set_pagelayout('admin');
 $PAGE->set_context($coursecontext);
 $PAGE->set_url($url);
 $PAGE->set_title(get_string('coursetitle', 'moodle', array('course' => $course->fullname)));
-$PAGE->set_heading(get_string('edit_course_header', 'format_moointopics'));
+$PAGE->set_heading(get_string('edit_course_header', 'format_mooin4'));
 
 $filemanageropts = array(
     'subdirs' => 0,
@@ -70,33 +70,33 @@ else if ($fromform = $mform->get_data()) {
     if (isset($fromform->headerimagedesktop)) {
         file_save_draft_area_files($fromform->headerimagedesktop,
             $coursecontext->id,
-            'format_moointopics',
+            'format_mooin4',
             'headerimagedesktop',
             $courseid,
             array('maxfiles' => 1));
     }
     else {
-        throw new coding_exception(get_string('file_save_error', 'format_moointopics'));
+        throw new coding_exception(get_string('file_save_error', 'format_mooin4'));
     }
     if (isset($fromform->headerimagemobile)) {
         file_save_draft_area_files($fromform->headerimagemobile,
             $coursecontext->id,
-            'format_moointopics',
+            'format_mooin4',
             'headerimagemobile',
             $courseid,
             array('maxfiles' => 1));
     }
     else {
-        throw new coding_exception(get_string('file_save_error', 'format_moointopics'));
+        throw new coding_exception(get_string('file_save_error', 'format_mooin4'));
     }
     redirect($redirectto);
 }
 else {
     // prefill
     $draftitemiddesktop = file_get_submitted_draft_itemid('headerimagedesktop');
-    file_prepare_draft_area($draftitemiddesktop, $coursecontext->id, 'format_moointopics', 'headerimagedesktop', $courseid, array('maxfiles' => 1));
+    file_prepare_draft_area($draftitemiddesktop, $coursecontext->id, 'format_mooin4', 'headerimagedesktop', $courseid, array('maxfiles' => 1));
     $draftitemidmobile = file_get_submitted_draft_itemid('headerimagemobile');
-    file_prepare_draft_area($draftitemidmobile, $coursecontext->id, 'format_moointopics', 'headerimagemobile', $courseid, array('maxfiles' => 1));
+    file_prepare_draft_area($draftitemidmobile, $coursecontext->id, 'format_mooin4', 'headerimagemobile', $courseid, array('maxfiles' => 1));
     
     $toform = new stdClass();
     $toform->headerimagedesktop = $draftitemiddesktop;

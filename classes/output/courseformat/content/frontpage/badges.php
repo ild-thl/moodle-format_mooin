@@ -1,17 +1,17 @@
 <?php
 
-namespace format_moointopics\output\courseformat\content\frontpage;
+namespace format_mooin4\output\courseformat\content\frontpage;
 
 use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
 use context_course;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 
 /**
  * Base class to render the course news section.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2023 ISy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -45,7 +45,7 @@ class badges implements renderable {
         $data = (object)[
             'badgesList' => $badges,
             'otherBadges' => $other_badges,
-            'badgesUrl' => new moodle_url('/course/format/moointopics/badges.php', array('id' => $course->id)),
+            'badgesUrl' => new moodle_url('/course/format/mooin4/badges.php', array('id' => $course->id)),
         ];
 
         $coursecontext = context_course::instance($course->id);

@@ -1,5 +1,5 @@
 {{!
-@template format_moointopics/local/content/coursefrontpage
+@template format_mooin4/local/content/coursefrontpage
 
 Displays the course frontpage.
 
@@ -18,30 +18,30 @@ Example context (json):
     <div class="coursefrontpage">
         <div class="coursefrontpage__main">
             {{#header}}
-                {{> format_moointopics/local/content/frontpage/header }}
+                {{> format_mooin4/local/content/frontpage/header }}
             {{/header}}
             <div class="mobile-bg">
                 {{#news_section}}
-                {{> format_moointopics/local/content/frontpage/news_section }}
+                {{> format_mooin4/local/content/frontpage/news_section }}
                 
                 {{/news_section}}
                 
                 {{#courseprogress}}
-                    {{> format_moointopics/local/content/frontpage/courseprogress }}
+                    {{> format_mooin4/local/content/frontpage/courseprogress }}
                 {{/courseprogress}}
                 <div class="seperator"></div>
-                {{> format_moointopics/local/content/frontpage/tabletTiles }}
-                {{> format_moointopics/local/content/frontpage/mobileTiles }}
-                {{> format_moointopics/local/content/frontpage/coursetable }}
+                {{> format_mooin4/local/content/frontpage/tabletTiles }}
+                {{> format_mooin4/local/content/frontpage/mobileTiles }}
+                {{> format_mooin4/local/content/frontpage/coursetable }}
                 {{#unenrolurl}}
-                    <a href="{{{unenrolurl}}}" class="unenrol-btn">{{#str}}unenrol, format_moointopics{{/str}}</a>
+                    <a href="{{{unenrolurl}}}" class="unenrol-btn">{{#str}}unenrol, format_mooin4{{/str}}</a>
                 {{/unenrolurl}}
             </div>
             
         </div>
         <div class="coursefrontpage__side d-none d-lg-flex">
-            {{> format_moointopics/local/content/frontpage/badges_and_certificates }}
-            {{> format_moointopics/local/content/frontpage/community }}
+            {{> format_mooin4/local/content/frontpage/badges_and_certificates }}
+            {{> format_mooin4/local/content/frontpage/community }}
         </div> 
     </div>
 

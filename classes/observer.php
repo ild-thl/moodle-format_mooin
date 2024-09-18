@@ -25,9 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use format_moointopics\local\utils;
+use format_mooin4\local\utils;
 
-class format_moointopics_observer {
+class format_mooin4_observer {
     public static function badge_awarded(\core\event\badge_awarded $event) {
         // event parameters:
         // int expiredate: Badge expire timestamp.
@@ -131,14 +131,14 @@ class format_moointopics_observer {
 
         $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 
-        if ($course->format == 'moointopics') {
+        if ($course->format == 'mooin4') {
             $newsection = new stdClass();
             $newsection->id = $event->objectid;
-            $newsection->name = get_string('new_lesson', 'format_moointopics');
+            $newsection->name = get_string('new_lesson', 'format_mooin4');
 
             if ($createdsection = $DB->get_record('course_sections', array('id' => $event->objectid))) {
                 if ($createdsection->section == 0) {
-                    $newsection->name = get_string('lesson', 'format_moointopics') . ' 0';
+                    $newsection->name = get_string('lesson', 'format_mooin4') . ' 0';
                 }
             }
 

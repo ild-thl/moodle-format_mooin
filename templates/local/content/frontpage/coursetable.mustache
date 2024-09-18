@@ -1,5 +1,5 @@
 {{!
-    @template format_moointopics/local/content/frontpage/coursetable
+    @template format_mooin4/local/content/frontpage/coursetable
 
     Displays the frontpage coursetable.
 
@@ -10,16 +10,16 @@
 }}
 
 <div class="coursefrontpage__course-table">
-    <h2>{{#str}} topicoutline, format_moointopics {{/str}}</h2>
+    <h2>{{#str}} topicoutline, format_mooin4 {{/str}}</h2>
     <ul class="{{format}}" data-for="course_sectionlist">
     {{#initialsection}}
         {{$ core_courseformat/local/content/section }}
-            {{> format_moointopics/local/content/section }}
+            {{> format_mooin4/local/content/section }}
         {{/ core_courseformat/local/content/section }}
     {{/initialsection}}
     {{#sections}}
         {{$ core_courseformat/local/content/section }} 
-            {{> format_moointopics/local/content/section }}
+            {{> format_mooin4/local/content/section }}
         {{/ core_courseformat/local/content/section }}
     {{/sections}} 
     </ul>

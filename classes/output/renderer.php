@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace format_moointopics\output;
+namespace format_mooin4\output;
 
 use core_courseformat\output\section_renderer;
 use moodle_page;
 use core_courseformat\base as course_format;
 use context_course;
 use moodle_url;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 
 /**
  * Basic renderer for topics format.
@@ -40,7 +40,7 @@ class renderer extends section_renderer {
     public function __construct(moodle_page $page, $target) {
         parent::__construct($page, $target);
 
-        // Since format_moointopics_renderer::section_edit_control_items() only displays the 'Highlight' control
+        // Since format_mooin4_renderer::section_edit_control_items() only displays the 'Highlight' control
         // when editing mode is on we need to be sure that the link 'Turn editing mode on' is available for a user
         // who does not have any other managing capability.
         $page->set_other_editing_capability('moodle/course:setcurrentsection');
@@ -87,10 +87,10 @@ class renderer extends section_renderer {
             $course = $format->get_course();
 
             $overview = new moodle_url('/course/view.php', array('id' => $course->id));
-            $badgesUrl = new moodle_url('/course/format/moointopics/badges.php', array('id' => $course->id));
-            $certificatesUrl = new moodle_url('/course/format/moointopics/certificates.php', array('id' => $course->id));
-            $discussionsUrl = new moodle_url('/course/format/moointopics/all_discussionforums.php', array('id' => $course->id));
-            $participantsUrl = new moodle_url('/course/format/moointopics/participants.php', array('id' => $course->id));
+            $badgesUrl = new moodle_url('/course/format/mooin4/badges.php', array('id' => $course->id));
+            $certificatesUrl = new moodle_url('/course/format/mooin4/certificates.php', array('id' => $course->id));
+            $discussionsUrl = new moodle_url('/course/format/mooin4/all_discussionforums.php', array('id' => $course->id));
+            $participantsUrl = new moodle_url('/course/format/mooin4/participants.php', array('id' => $course->id));
 
             if ($forum = $DB->get_record('forum', array('course' => $course->id, 'type' => 'news'))) {
                 if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
@@ -110,7 +110,7 @@ class renderer extends section_renderer {
                 'unenrolurl' => utils::get_unenrol_url($course->id),
 
             ];
-            return $this->render_from_template('format_moointopics/local/courseindex/drawer', $data);
+            return $this->render_from_template('format_mooin4/local/courseindex/drawer', $data);
         }
         return '';
     }

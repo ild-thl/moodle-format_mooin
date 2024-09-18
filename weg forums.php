@@ -25,7 +25,7 @@ require_once('../../../mod/forum/lib.php');
 require_once($CFG->libdir . '/completionlib.php');
 //require_once('../mooin4/locallib.php');
 
-use format_moointopics\local\forumlib;
+use format_mooin4\local\forumlib;
 
 $id = optional_param('id', 0, PARAM_INT);       // Course ID
 $cmid = optional_param('cmid', 0, PARAM_INT);       // Course module ID
@@ -56,7 +56,7 @@ if ($page) {
 if ($search) {
     $params['search'] = $search;
 }
-$PAGE->set_url('/course/format/moointopics/forums.php', $params);  // /mod/forum/view.php', $params
+$PAGE->set_url('/course/format/mooin4/forums.php', $params);  // /mod/forum/view.php', $params
 
 
 
@@ -177,13 +177,13 @@ if ($markasread) {
         }
     }
     if ($redirect) {
-        redirect($CFG->wwwroot.'/course/format/moointopics/all_discussionforums.php?id='.$course->id);
+        redirect($CFG->wwwroot.'/course/format/mooin4/all_discussionforums.php?id='.$course->id);
     }
 }
 // Show Link/Button to mark all as unread
 if (forumlib::count_unread_posts($USER->id, $course->id, false, $forum->id) > 0) {
     echo '<p>';
-    echo html_writer::link(new moodle_url('/course/format/moointopics/forums.php?f='.$forum->id.'&markasread=1'), get_string('mark_all_as_read', 'format_moointopics'));
+    echo html_writer::link(new moodle_url('/course/format/mooin4/forums.php?f='.$forum->id.'&markasread=1'), get_string('mark_all_as_read', 'format_mooin4'));
     echo '</P>';
 }
 

@@ -166,7 +166,7 @@
     
     
     {{#frontpage}}
-    {{> format_moointopics/local/content/coursefrontpage}}
+    {{> format_mooin4/local/content/coursefrontpage}}
     {{/frontpage}}
     
     {{^frontpage}}
@@ -179,7 +179,7 @@
         {{/initialsection}}
         {{#sections}}
             {{$ core_courseformat/local/content/section }}
-                {{> format_moointopics/local/content/section }}
+                {{> format_mooin4/local/content/section }}
             {{/ core_courseformat/local/content/section }}
         {{/sections}}
     </ul>
@@ -191,19 +191,19 @@
     <div class="single-section">
         {{#sectionnavigation}}
             {{$ core_courseformat/local/content/sectionnavigation }}
-                {{> format_moointopics/local/content/sectionnavigation }}
+                {{> format_mooin4/local/content/sectionnavigation }}
             {{/ core_courseformat/local/content/sectionnavigation }}
         {{/sectionnavigation}}
         <ul class="{{format}}">
         {{#singlesection}}
             {{$ core_courseformat/local/content/section }}
-                {{> format_moointopics/local/content/section }}
+                {{> format_mooin4/local/content/section }}
             {{/ core_courseformat/local/content/section }}
         {{/singlesection}}
         </ul>
         {{#sectionselector}}
             {{$ core_courseformat/local/content/sectionselector }}
-                {{> format_moointopics/local/content/sectionselector }}
+                {{> format_mooin4/local/content/sectionselector }}
             {{/ core_courseformat/local/content/sectionselector }}
         {{/sectionselector}}
     </div>
@@ -215,7 +215,7 @@
     {{/numsections}}
 </div>
 {{#js}}
-require(['format_moointopics/local/content'], function(component) {
+require(['format_mooin4/local/content'], function(component) {
     component.init('course-format-{{uniqid}}', {}, {{sectionreturn}});
 });
 {{/js}}

@@ -26,11 +26,11 @@ import { BaseComponent } from "core/reactive";
 import { debounce } from "core/utils";
 import { getCurrentCourseEditor } from "core_courseformat/courseeditor";
 import inplaceeditable from "core/inplace_editable";
-import Section from "format_moointopics/local/content/section";
-import CmItem from "format_moointopics/local/content/section/cmitem";
+import Section from "format_mooin4/local/content/section";
+import CmItem from "format_mooin4/local/content/section/cmitem";
 // Course actions is needed for actions that are not migrated to components.
 import courseActions from "core_course/actions";
-import DispatchActions from "format_moointopics/local/content/actions";
+import DispatchActions from "format_mooin4/local/content/actions";
 import * as CourseEvents from "core_course/events";
 // The jQuery module is only used for interacting with Boostrap 4. It can we removed when MDL-71979 is integrated.
 import jQuery from "jquery";
@@ -42,7 +42,7 @@ import Templates from "core/templates";
 import ModalEvents from "core/modal_events";
 import Mooin4Modal from "../mooin4modal";
 
-import CustomMutations from "format_moointopics/local/courseeditor/custommutations";
+import CustomMutations from "format_mooin4/local/courseeditor/custommutations";
 
 export default class Component extends BaseComponent {
   /**
@@ -955,7 +955,7 @@ export default class Component extends BaseComponent {
     if (completionbutton) {
       completionbutton.disabled = true;
 
-      const text = await getString("page_read", "format_moointopics");
+      const text = await getString("page_read", "format_mooin4");
       const checkMark = document.createElement("i");
       checkMark.classList.add("bi", "bi-check");
       completionbutton.innerText = text;
@@ -1002,14 +1002,14 @@ export default class Component extends BaseComponent {
       type: Mooin4Modal.TYPE,
       title: await getString(
         "modal_chapter_complete_title",
-        "format_moointopics"
+        "format_mooin4"
       ),
       body: Templates.render(
-        "format_moointopics/local/content/modals/chaptercomplete",
+        "format_mooin4/local/content/modals/chaptercomplete",
         {}
       ),
       footer: Templates.render(
-        "format_moointopics/local/content/modals/completechapterfooter",
+        "format_mooin4/local/content/modals/completechapterfooter",
         { nextSection }
       ),
       scrollable: false,
@@ -1023,14 +1023,14 @@ export default class Component extends BaseComponent {
       type: Mooin4Modal.TYPE,
       title: await getString(
         "modal_course_complete_title",
-        "format_moointopics"
+        "format_mooin4"
       ),
       body: Templates.render(
-        "format_moointopics/local/content/modals/coursecomplete",
+        "format_mooin4/local/content/modals/coursecomplete",
         {}
       ),
       footer: Templates.render(
-        "format_moointopics/local/content/modals/modalfooterclose",
+        "format_mooin4/local/content/modals/modalfooterclose",
         {}
       ),
       scrollable: false,
@@ -1091,10 +1091,10 @@ export default class Component extends BaseComponent {
   //       type: Mooin4Modal.TYPE,
   //       title: await getString(
   //         "modal_last_section_of_chapter_title",
-  //         "format_moointopics"
+  //         "format_mooin4"
   //       ),
   //       body: Templates.render(
-  //         "format_moointopics/local/content/modals/lastsection",
+  //         "format_mooin4/local/content/modals/lastsection",
   //         {}
   //       ),
   //     });

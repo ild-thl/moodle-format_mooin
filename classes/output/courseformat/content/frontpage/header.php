@@ -1,11 +1,11 @@
 <?php
 
-namespace format_moointopics\output\courseformat\content\frontpage;
+namespace format_mooin4\output\courseformat\content\frontpage;
 
 use renderable;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 use core_courseformat\base as course_format;
-use format_moointopics;
+use format_mooin4;
 use moodle_url;
 use context_course;
 
@@ -13,7 +13,7 @@ use context_course;
 /**
  * Base class to render the course frontpage header.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2023 ISy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -51,7 +51,7 @@ class header implements renderable {
         ];
         $coursecontext = context_course::instance($course->id);
         if (has_capability('moodle/course:update', $coursecontext)) {
-            $editheaderlink = new moodle_url('/course/format/moointopics/edit_header.php', array('course' => $course->id));
+            $editheaderlink = new moodle_url('/course/format/mooin4/edit_header.php', array('course' => $course->id));
             $data->editheaderlink = $editheaderlink;
         }
 

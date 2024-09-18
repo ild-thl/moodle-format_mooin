@@ -1,10 +1,10 @@
 <?php
 
-namespace format_moointopics\output\courseformat\content\frontpage;
+namespace format_mooin4\output\courseformat\content\frontpage;
 
 use renderable;
 use moodle_url;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 use core_courseformat\base as course_format;
 
 
@@ -12,7 +12,7 @@ use core_courseformat\base as course_format;
 /**
  * Base class to render the course frontpage courseprogress.
  *
- * @package   format_moointopics
+ * @package   format_mooin4
  * @copyright 2023 ISy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -56,7 +56,7 @@ class courseprogress implements renderable {
     //     global $USER;
     //     $chapterlib = $this->chapterlib;
     //     $course = $this->format->get_course();
-    //     $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+    //     $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
     //     if ($last_section) {
     //         return true;
     //     } else {
@@ -70,7 +70,7 @@ class courseprogress implements renderable {
     //     $chapterlib = $this->chapterlib;
     //     $course = $this->format->get_course();
 
-    //     $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+    //     $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
 
 
     //     if ($last_section) {
@@ -94,7 +94,7 @@ class courseprogress implements renderable {
     //     $chapterlib = $this->chapterlib;
     //     $course = $this->format->get_course();
 
-    //     $last_section = get_user_preferences('format_moointopics_last_section_in_course_' . $course->id, 0, $USER->id);
+    //     $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
 
 
     //     if ($last_section) {

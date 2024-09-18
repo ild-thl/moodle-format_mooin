@@ -281,7 +281,7 @@ export default class Component extends BaseComponent {
         const exporter = this.reactive.getExporter();
         const data = exporter.section(state, element);
         // Create the new content.
-        const newcomponent = await this.renderComponent(fakeelement, 'format_moointopics/local/courseindex/section', data);
+        const newcomponent = await this.renderComponent(fakeelement, 'format_mooin4/local/courseindex/section', data);
         // Replace the fake node with the real content.
         const newelement = newcomponent.getElement();
         this.sections[element.id] = newelement;

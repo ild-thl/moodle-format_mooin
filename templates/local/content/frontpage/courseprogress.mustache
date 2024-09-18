@@ -1,5 +1,5 @@
 {{!
-    @template format_moointopics/local/content/frontpage/courseprogress
+    @template format_mooin4/local/content/frontpage/courseprogress
 
     Displays the frontpage courseprogress.
 
@@ -11,23 +11,23 @@
 }}
 
 <div class="coursefrontpage__course-progress">
-    <h2>{{#str}} progress, format_moointopics {{/str}}</h2>
+    <h2>{{#str}} progress, format_mooin4 {{/str}}</h2>
     <div class="d-flex course-progress-inner">
         <div class="progress-container">
             <div class="progressbar">
                 <div class="progressbar-inner" style="width: {{courseprogress}}%"></div>
             </div>
             <span class="font-weight-bold">{{{courseprogress}}}%</span>
-            <span class="d-none d-sm-inline-block"> {{#str}} course_progress_text, format_moointopics {{/str}}</span>
-            <span class="d-inline-block d-sm-none"> {{#str}} progress_text_short, format_moointopics {{/str}}</span>
+            <span class="d-none d-sm-inline-block"> {{#str}} course_progress_text, format_mooin4 {{/str}}</span>
+            <span class="d-inline-block d-sm-none"> {{#str}} progress_text_short, format_mooin4 {{/str}}</span>
         </div>
         {{#is_course_started}}
-            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary d-none d-sm-flex">{{#str}} continue, format_moointopics, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
-            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary d-flex d-sm-none">{{#str}} continue_no_lesson, format_moointopics, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
+            <a href="{{{continue_url}}}" class="mooin4-btn mooin4-btn--primary d-none d-sm-flex">{{#str}} continue, format_mooin4, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
+            <a href="{{{continue_url}}}" class="mooin4-btn mooin4-btn--primary d-flex d-sm-none">{{#str}} continue_no_lesson, format_mooin4, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
         {{/is_course_started}}
         {{^is_course_started}}
-            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary d-none d-sm-flex">{{#str}} start, format_moointopics, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
-            <a href="{{{continue_url}}}" class="moointopics-btn moointopics-btn--primary d-flex d-sm-none">{{#str}} start, format_moointopics, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
+            <a href="{{{continue_url}}}" class="mooin4-btn mooin4-btn--primary d-none d-sm-flex">{{#str}} start, format_mooin4, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
+            <a href="{{{continue_url}}}" class="mooin4-btn mooin4-btn--primary d-flex d-sm-none">{{#str}} start, format_mooin4, {{continue_section}}{{/str}} <i class="bi bi-caret-right-fill"></i></a>
         {{/is_course_started}}
         
 

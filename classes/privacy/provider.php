@@ -17,12 +17,12 @@
 /**
  * Privacy Subsystem implementation for Topics course format.
  *
- * @package    format_moointopics
+ * @package    format_mooin4
  * @copyright  2018 Carlos Escobedo <carlos@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace format_moointopics\privacy;
+namespace format_mooin4\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 

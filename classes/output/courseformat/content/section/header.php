@@ -22,14 +22,14 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace format_moointopics\output\courseformat\content\section;
+namespace format_mooin4\output\courseformat\content\section;
 
 use core_courseformat\output\local\content\section\header as header_base;
 use stdClass;
 use core_courseformat\base as course_format;
-use format_moointopics;
+use format_mooin4;
 use section_info;
-use format_moointopics\local\utils as utils;
+use format_mooin4\local\utils as utils;
 
 /**
  * Base class to render a section header.
@@ -48,7 +48,7 @@ class header extends header_base {
     }
 
     public function get_template_name(\renderer_base $renderer): string {
-        return 'format_moointopics/local/content/section/header';
+        return 'format_mooin4/local/content/section/header';
     }
 
     public function export_for_template(\renderer_base $output): stdClass {
@@ -80,14 +80,14 @@ class header extends header_base {
                     $data->prefix = utils::get_section_prefix($section);
                     $data->title_with_link = $output->section_title($section, $course);
                     $data->title_without_link = $output->section_title_without_link($section, $course);
-                    // if (format_moointopics\local\progresslib::get_section_progress($course->id, $this->section->id, $USER->id) == 100) {
+                    // if (format_mooin4\local\progresslib::get_section_progress($course->id, $this->section->id, $USER->id) == 100) {
                     //     $data->isCompleted = true;
                     // }
                 }
                 
 
             
-                 //$data->prefix = format_moointopics\local\chapterlib::get_section_prefix($section);
+                 //$data->prefix = format_mooin4\local\chapterlib::get_section_prefix($section);
                 //$url = course_get_url($course, $section->section, array('navigation' => true));
                 //$data->title = $output->section_title_without_link($section, $course);
                  

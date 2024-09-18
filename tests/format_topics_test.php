@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace format_moointopics;
+namespace format_mooin4;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -24,14 +24,14 @@ require_once($CFG->dirroot . '/course/lib.php');
 /**
  * Topics course format related unit tests.
  *
- * @package    format_moointopics
+ * @package    format_mooin4
  * @copyright  2015 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_moointopics_test extends \advanced_testcase {
+class format_mooin4_test extends \advanced_testcase {
 
     /**
-     * Tests for format_moointopics::get_section_name method with default section names.
+     * Tests for format_mooin4::get_section_name method with default section names.
      *
      * @return void
      */
@@ -57,7 +57,7 @@ class format_moointopics_test extends \advanced_testcase {
     }
 
     /**
-     * Tests for format_moointopics::get_section_name method with modified section names.
+     * Tests for format_mooin4::get_section_name method with modified section names.
      *
      * @return void
      */
@@ -91,7 +91,7 @@ class format_moointopics_test extends \advanced_testcase {
     }
 
     /**
-     * Tests for format_moointopics::get_default_section_name.
+     * Tests for format_mooin4::get_default_section_name.
      *
      * @return void
      */
@@ -112,10 +112,10 @@ class format_moointopics_test extends \advanced_testcase {
         $courseformat = course_get_format($course);
         foreach ($coursesections as $section) {
             if ($section->section == 0) {
-                $sectionname = get_string('section0name', 'format_moointopics');
+                $sectionname = get_string('section0name', 'format_mooin4');
                 $this->assertEquals($sectionname, $courseformat->get_default_section_name($section));
             } else {
-                $sectionname = get_string('sectionname', 'format_moointopics') . ' ' . $section->section;
+                $sectionname = get_string('sectionname', 'format_mooin4') . ' ' . $section->section;
                 $this->assertEquals($sectionname, $courseformat->get_default_section_name($section));
             }
         }
@@ -139,7 +139,7 @@ class format_moointopics_test extends \advanced_testcase {
 
         // Call webservice without necessary permissions.
         try {
-            \core_external::update_inplace_editable('format_moointopics', 'sectionname', $section->id, 'New section name');
+            \core_external::update_inplace_editable('format_mooin4', 'sectionname', $section->id, 'New section name');
             $this->fail('Exception expected');
         } catch (\moodle_exception $e) {
             $this->assertEquals('Course or activity not accessible. (Not enrolled)',
@@ -150,7 +150,7 @@ class format_moointopics_test extends \advanced_testcase {
         $teacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
         $this->getDataGenerator()->enrol_user($user->id, $course->id, $teacherrole->id);
 
-        $res = \core_external::update_inplace_editable('format_moointopics', 'sectionname', $section->id, 'New section name');
+        $res = \core_external::update_inplace_editable('format_mooin4', 'sectionname', $section->id, 'New section name');
         $res = \external_api::clean_returnvalue(\core_external::update_inplace_editable_returns(), $res);
         $this->assertEquals('New section name', $res['value']);
         $this->assertEquals('New section name', $DB->get_field('course_sections', 'name', ['id' => $section->id]));
@@ -174,8 +174,8 @@ class format_moointopics_test extends \advanced_testcase {
 
         $section = $DB->get_record('course_sections', ['course' => $course->id, 'section' => 2]);
 
-        // Call callback format_moointopics_inplace_editable() directly.
-        $tmpl = component_callback('format_moointopics', 'inplace_editable', ['sectionname', $section->id, 'Rename me again']);
+        // Call callback format_mooin4_inplace_editable() directly.
+        $tmpl = component_callback('format_mooin4', 'inplace_editable', ['sectionname', $section->id, 'Rename me again']);
         $this->assertInstanceOf('core\output\inplace_editable', $tmpl);
         $res = $tmpl->export_for_template($PAGE->get_renderer('core'));
         $this->assertEquals('Rename me again', $res['value']);
