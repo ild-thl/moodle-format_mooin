@@ -65,8 +65,12 @@ class content extends content_base {
         // Most formats uses section 0 as a separate section so we remove from the list.
         $sections = $this->export_sections($output);
         $initialsection = '';
+
+        // MODIFIED tinjohn.
+        // shift of section results in not displaying sections.
+        $shiftedfirsrtsections = $sections;
         if (!empty($sections)) {
-            $initialsection = array_shift($sections);
+            $initialsection = array_shift($shiftedfirsrtsections);
         }
 
         $data = (object)[
@@ -90,6 +94,7 @@ class content extends content_base {
                 $data->sectionselector = $sectionselector->export_for_template($output);
             
             $data->hasnavigation = true;
+            // QUESTION tinjohn. Another shift???
             $data->singlesection = array_shift($data->sections);
             $data->sectionreturn = $singlesection;
         }
