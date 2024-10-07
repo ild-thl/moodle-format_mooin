@@ -25,10 +25,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/course/format/lib.php');
+//require_once($CFG->dirroot . '/lib/externallib.php');
 
 use core\output\inplace_editable;
 use core\plugininfo\format;
 use format_mooin4\local\utils as utils;
+use core_external\external_api;
+
 
 /**
  * Main class for the Topics course format.
