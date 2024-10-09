@@ -116,12 +116,12 @@ ILD.xAPIAnsweredListener = (event) => {
 ILD.setResult = (contentId, score, maxScore) => {
   window.console.log(score);
   ILD.reactive.dispatch(
-          "updateSectionprogress",
-          ILD.sectionId,
-          contentId,
-          score,
-          maxScore
-        );
+    "updateSectionprogress",
+    ILD.sectionId,
+    contentId,
+    score,
+    maxScore
+  );
   // ajax.call([
   //   {
   //     methodname: 'format_mooin4_setgrade',
@@ -153,13 +153,21 @@ ILD.getVideoInteractions = (contentId, content) => {
   }
 
   if (!interactions || (typeof interactions === 'object' && interactionsCounter === 0)) {
+
+//quick fix
+    /*
     $('.h5p-iframe')[0].contentWindow.onload = () => {
       $('.h5p-iframe')[0].contentWindow.H5P.instances[0].video.on('stateChange', (event) => {
         if (event.data === 0) {
-          ILD.setResult(contentId, 100, 100);
-        }
-      });
-    };
+        */
+    ILD.setResult(contentId, 100, 100);
+
+    //quick fix
+    /*
+  }
+});
+};
+*/
   }
 
   if (summaries.length) {
@@ -203,16 +211,16 @@ ILD.getEssayPercentage = (contentId, content) => {
 
 // Check if library is InteractiveVideo or QuestionSet
 ILD.checkLibrary = (H5PIntegration, H5PInstance) => {
-  
+
   window.console.log(H5PInstance);
   const contentId = H5PInstance.contentId;
- 
+
 
   if (typeof contentId !== 'undefined') {
     const contentData = H5PIntegration.contents[`cid-${contentId}`];
     const content = JSON.parse(contentData.jsonContent);
     const library = contentData.library;
-    
+
 
     if (library.includes('H5P.InteractiveVideo')) {
       ILD.getVideoInteractions(contentId, content);

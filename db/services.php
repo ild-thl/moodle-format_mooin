@@ -19,10 +19,10 @@ $functions = array(
     ),
 );
 
-// $services = array(
-//   'mooin4_check_completion_status' => array(
-//       'functions' => array('format_mooin4_check_completion_status'),
-//       'restrictedusers' => 0,
-//       'enabled' => 1,
-//   )
-// );
+$services = array(
+    'mooin4_check_completion_status' => array(
+        'functions' => array('format_mooin4_check_completion_status', 'format_mooin4_setgrade'),
+        'restrictedusers' => 0,
+        'enabled' => 1,
+    )
+);
