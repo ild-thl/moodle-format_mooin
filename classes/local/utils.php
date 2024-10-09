@@ -361,7 +361,9 @@ class utils {
                 //'new_news' => $new_news
             ];
         } else {
-            $templatecontext = [];
+            $templatecontext = [
+                'unread_news_number' => 0
+            ];
         }
         return $templatecontext;
     }
@@ -850,7 +852,12 @@ class utils {
         if ($section = $DB->get_record('course_sections', array('id' => $sectionid))) {
             $course = get_course($section->course);
             $format = course_get_format($course);
+            // Tinjohn get_parent_chapter returns false if there was no.
             $parentchapter = self::get_parent_chapter($section);
+            // Added  tinjohn.
+            if(!$parentchapter) {
+                return false;
+            }
             $sectionids = self::get_sectionids_for_chapter($parentchapter->id);
             $highestVisibleSection = null;
             foreach ($sectionids as $sectionid) {
