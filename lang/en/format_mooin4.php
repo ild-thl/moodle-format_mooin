@@ -183,3 +183,6 @@ $string['old_news'] = 'Old news';
 $string['all_news'] = 'news forum';
 $string['latest_post'] = 'Latest post';
 $string['discussion_news'] = 'View post';
+
+$string['toggle_section_number_visibility'] = 'Activate section numbers';
+$string['toggle_section_number_visibility_help'] = 'If the option is enabled, "Chapter x.x" or "Lesson x.x" will be displayed before the custom chapter and lesson names.';

@@ -182,3 +182,8 @@ $string['old_news'] = 'Ältere News';
 $string['all_news'] = 'Newsforum';
 $string['latest_post'] = 'Neuester Beitrag ';
 $string['discussion_news'] = 'Zur Nachricht';
+
+$string['toggle_section_number_visibility'] = 'Lektions- und Kapitelnummerierung aktivieren';
+$string['toggle_section_number_visibility_help'] = 'Wenn Option aktiviert ist, werden vor den selbst vergebenen Kapitel- und Lektionsnamen "Kapitel x.x" oder "Lektion x.x" angezeigt';
+
+
