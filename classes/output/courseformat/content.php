@@ -130,7 +130,7 @@ class content extends content_base {
                 \core\notification::warning($message);
             }
     
-            $data->singlesection = array_shift($data->sections); // take the first and leave the rest
+            $data->singlesection = $data->sections; // Tinjohn take the first and leave the rest - but ther 
             $data->sectionreturn = $singlesection;
         }
 
@@ -144,7 +144,7 @@ class content extends content_base {
 
             $data = (object)[
                  'title' => $format->page_title(), // This method should be in the course_format class.
-                 'initialsection' => $initialsection,
+                 'initialsection' => array_shift($sections),
                  'sections' => $sections,
                  'format' => $format->get_format(),
                  'sectionreturn' => 0,            

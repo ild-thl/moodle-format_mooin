@@ -167,15 +167,18 @@
     
     {{#frontpage}}
     <ul class="{{format}}" data-for="course_sectionlist">
+    
         {{#initialsection}}
         {{#editing}}
             <p> post.scss in mooin4 theme darf dann nicht display:none sein  </p>
             {{$ core_courseformat/local/content/section }}
                 {{> core_courseformat/local/content/section }}
             {{/ core_courseformat/local/content/section }}
-            {{/editing}}
+        {{/editing}}
         {{/initialsection}}
+    
     </ul>
+    
     {{> format_mooin4/local/content/coursefrontpage}}
     {{/frontpage}}
     
