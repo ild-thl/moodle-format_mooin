@@ -163,12 +163,45 @@ class format_mooin4 extends core_courseformat\base {
                 $url->param('section', $sectionno);
             } else {
                 if (empty($CFG->linkcoursesections) && !empty($options['navigation'])) {
-                    return null;
+                    // Added tinjohn - return null throws error call on method call out() on null 
+                    // In moodle/course/format/classes/output/local/state/section.php.
+                    // Do not return null;.
+                    // Display section on separate page.
+                    $sectioninfo = $this->get_section($sectionno);
+                    return new moodle_url('/course/section.php', ['id' => $sectioninfo->id]);
                 }
                 $url->set_anchor('section-' . $sectionno);
             }
         }
         return $url;
+    }
+
+    /**
+     * Not in use but raw version for comparison: The URL to use for the specified course (with section).
+     *
+     * @param int|stdClass $section Section object from database or just field course_sections.section
+     *     if omitted the course view page is returned
+     * @param array $options options for view URL. At the moment core uses:
+     *     'navigation' (bool) if true and section has no separate page, the function returns null
+     *     'sr' (int) used by multipage formats to specify to which section to return
+     * @return null|moodle_url
+     */
+    public function get_view_url_raw($section, $options = []) {
+        $course = $this->get_course();
+        if (array_key_exists('sr', $options) && !is_null($options['sr'])) {
+            $sectionno = $options['sr'];
+        } else if (is_object($section)) {
+            $sectionno = $section->section;
+        } else {
+            $sectionno = $section;
+        }
+        if ((!empty($options['navigation']) || array_key_exists('sr', $options)) && $sectionno !== null) {
+            // Display section on separate page.
+            $sectioninfo = $this->get_section($sectionno);
+            return new moodle_url('/course/section.php', ['id' => $sectioninfo->id]);
+        }
+
+        return new moodle_url('/course/view.php', ['id' => $course->id]);
     }
 
     /**
@@ -572,7 +605,8 @@ class format_mooin4 extends core_courseformat\base {
      */
     public function update_course_format_options($data, $oldcourse = null) {
         global $DB;
-
+        
+        // Function update_course_format_options for format_topics_test.php only.
         if (!$oldcourse) {
             // Add first chapter, there must be no sections without parent chapter
             $chaptertitle = get_string('chapter', 'format_mooin4') . ' 1';
