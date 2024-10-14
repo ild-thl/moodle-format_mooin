@@ -73,7 +73,7 @@ export default class {
         stateManager.setReadOnly(false);
 
         let lastChapter = stateManager.state.section.get(target.dataset.id);
-        let invisbleCounter = 0
+        let invisbleCounter = 0;
 
         stateManager.state.section.forEach(section => {
             if (section.number > targetSection.number) {
@@ -81,7 +81,7 @@ export default class {
                 if (section.isChapter) {
                     lastChapter = section;  // Das aktuelle Chapter zwischenspeichern
                     section.isChapter++;
-                    invisbleCounter = 0
+                    invisbleCounter = 0;
                 } else if (section.isChapter == false) {
                     
                         section.parentChapter = lastChapter.isChapter;
@@ -89,16 +89,12 @@ export default class {
                         if (section.visible) {
                             section.prefix = section.parentChapter + "." + section.innerChapterNumber;
                         } else {
-                            invisbleCounter++
+                            invisbleCounter++;
                         }
-                        
-                        
-                    
                 }
             }
         });
         stateManager.setReadOnly(true);
-        
     }
     async sectionUnsetChapter(stateManager, target) {
         const course = stateManager.get('course');
@@ -137,7 +133,7 @@ export default class {
             }
         });
 
-        let invisbleCounter = 0
+        let invisbleCounter = 0;
 
         stateManager.state.section.forEach(section => {
             if (section.number > targetSection.number) {
@@ -145,7 +141,7 @@ export default class {
                 if (section.isChapter && section.isChapter != 1) {
                     lastChapter = section;
                     section.isChapter--;
-                    invisbleCounter = 0
+                    invisbleCounter = 0;
                 } else if (section.isChapter == false) {
                     
                         section.parentChapter = lastChapter.isChapter;
@@ -153,7 +149,7 @@ export default class {
                         if (section.visible) {
                             section.prefix = section.parentChapter + "." + section.innerChapterNumber;
                         } else {
-                            invisbleCounter++
+                            invisbleCounter++;
                         } 
                 }
             }
@@ -225,7 +221,7 @@ export default class {
             action: 'readAllForumDiscussions',
             courseid: course.id,
             ids: ids,
-        }
+        };
         let updates = await ajax.call([{
             methodname: 'core_courseformat_update_course',
             args,
@@ -247,7 +243,7 @@ export default class {
             action: 'reload_all_section_prefixes',
             courseid: course.id,
             ids: ids,
-        }
+        };
         let updates = await ajax.call([{
             methodname: 'core_courseformat_update_course',
             args,
