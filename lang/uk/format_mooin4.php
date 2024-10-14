@@ -183,3 +183,7 @@ $string['old_news'] = 'Старіші новини';
 $string['all_news'] = 'Форум новин';
 $string['latest_post'] = 'Останнє повідомлення';
 $string['discussion_news'] = 'До новин';
+
+// Neue Section 0 Strategie
+$string['youareeditingsectioninfo'] = 'У цьому форматі курсу вміст із цього розділу ніколи не відображається.';
+$string['youareeditingsection'] = 'Увага: Ви редагуєте Розділ 0!';

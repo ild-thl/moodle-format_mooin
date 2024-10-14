@@ -182,3 +182,7 @@ $string['old_news'] = 'Ältere News';
 $string['all_news'] = 'Newsforum';
 $string['latest_post'] = 'Neuester Beitrag ';
 $string['discussion_news'] = 'Zur Nachricht';
+
+// Neue Section 0 Strategie
+$string['youareeditingsectioninfo'] = 'In diesem Kursformat werden Inhalte aus dieser Section nie angezeigt.';
+$string['youareeditingsection'] = 'Achtung: Sie bearbeiten Section 0!';

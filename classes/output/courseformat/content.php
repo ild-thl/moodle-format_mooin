@@ -128,7 +128,6 @@ class content extends content_base {
                  'sections' => $data->sections,
                  'sectionid' =>  $initialsection->id,
                  'sectionreturnid' => 0,
-                   
              ]; 
 
              $data->sectionreturn = $initialsection->num;     

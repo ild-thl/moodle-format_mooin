@@ -183,3 +183,8 @@ $string['old_news'] = 'Old news';
 $string['all_news'] = 'news forum';
 $string['latest_post'] = 'Latest post';
 $string['discussion_news'] = 'View post';
+
+// Neue Section 0 Strategie
+$string['youareeditingsectioninfo'] = 'In this course format, content from this section is never displayed.';
+$string['youareeditingsection'] = 'Warning: You are editing Section 0!';
+
