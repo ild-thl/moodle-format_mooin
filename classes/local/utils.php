@@ -313,13 +313,15 @@ class utils {
         }
         $sql .= 'ORDER BY fp.created DESC LIMIT 1 ';
 
+        // Mod tinjohn - time() - 1800 - not sure why and does not work well with the rest. 
         $params = array(
             'courseid' => $courseid,
             'news' => 'news',
             'wait' => time() - 1800
         );
+        $latestpost = $DB->get_record_sql($sql, $params);
 
-        if ($latestpost = $DB->get_record_sql($sql, $params)) {
+        if (!empty($latestpost = $DB->get_record_sql($sql, $params))) {
             $news_forum_post = $latestpost;
 
             $user = $DB->get_record('user', ['id' => $news_forum_post->userid], '*');
@@ -360,12 +362,8 @@ class utils {
                 'unread_news_number' => $unread_news_number,
                 //'new_news' => $new_news
             ];
-        } else {
-            $templatecontext = [
-                'unread_news_number' => 0
-            ];
-        }
-        return $templatecontext;
+            return $templatecontext;
+        } 
     }
 
     public static function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
