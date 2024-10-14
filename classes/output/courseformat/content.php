@@ -62,7 +62,6 @@ class content extends content_base {
         $format = $this->format;
         $coursefrontpage = $this->coursefrontpage;
 
-        // Most formats uses section 0 as a separate section so we remove from the list.
         $sections = $this->export_sections($output);
         $initialsection = '';
 
@@ -105,51 +104,35 @@ class content extends content_base {
         // The single section format has extra navigation.
         $singlesection = $this->format->get_sectionnum();
         $data->editing = $format->show_editor();
-        $message = "data->editing " . $data->editing;
-        \core\notification::warning($message);
  
         if (!is_null($singlesection)) {
 
-            foreach ($sections as $sec) {
-                $message = "section " . $sec->num;
-                \core\notification::warning($message);
-            }
+            $sectionnavigation = new $this->sectionnavigationclass($format, $singlesection);
+            $data->sectionnavigation = $sectionnavigation->export_for_template($output);
 
-                $sectionnavigation = new $this->sectionnavigationclass($format, $singlesection);
-                $data->sectionnavigation = $sectionnavigation->export_for_template($output);
-
-                $sectionselector = new $this->sectionselectorclass($format, $sectionnavigation);
-                $data->sectionselector = $sectionselector->export_for_template($output);
+            $sectionselector = new $this->sectionselectorclass($format, $sectionnavigation);
+            $data->sectionselector = $sectionselector->export_for_template($output);
             
-            $data->hasnavigation = true;
-            // QUESTION tinjohn. Another shift??? - ja, sonst gibt es 3 mal die sectionen im Edit mode.
-            // weil  section und singlesection im content.mustache sind mit dem shift gibt es dann kein eines nicht mehr
-            // $data->singlesection = array_shift($data->sections);
-            foreach ($sections as $sec) {
-                $message = "in singlesection " . $sec->num;
-                \core\notification::warning($message);
-            }
-    
-            $data->singlesection = $data->sections; // Tinjohn take the first and leave the rest - but ther 
+            $data->hasnavigation = true;    
+            $data->singlesection = $data->sections; // Tinjohn take the first and leave the rest with array_shift -it is only one
             $data->sectionreturn = $singlesection;
         }
 
         if (is_null($singlesection)) {
-            // Nur für die Frontpage gibt es mehrere
-            foreach ($sections as $sec) {
-                if($sec->num === 0) {
-                    $initialsection = $sec;
-                }
-            }
-
+            // Most formats uses section 0 as a separate section so we handle it as additional section.  
+            $initialsection = array_shift($data->sections);
+         
             $data = (object)[
                  'title' => $format->page_title(), // This method should be in the course_format class.
-                 'initialsection' => array_shift($sections),
-                 'sections' => $sections,
-                 'format' => $format->get_format(),
-                 'sectionreturn' => 0,            
-             ];    
-            $data->frontpage = $coursefrontpage->export_for_template($output);
+                 'initialsection' => $initialsection,
+                 'sections' => $data->sections,
+                 'sectionid' =>  $initialsection->id,
+                 'sectionreturnid' => 0,
+                   
+             ]; 
+
+             $data->sectionreturn = $initialsection->num;     
+             $data->frontpage = $coursefrontpage->export_for_template($output);
             //var_dump($output);
         }
 
@@ -157,6 +140,8 @@ class content extends content_base {
             $addsection = new $this->addsectionclass($format);
             $data->numsections = $addsection->export_for_template($output);
         }
+
+
 
         //var_dump($singlesection);
         return $data;
