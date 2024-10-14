@@ -126,7 +126,8 @@ class renderer extends section_renderer {
 
     function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = array()) {
         $singlesection = course_get_format($course)->get_section_number();
-        if ($singlesection) {
+        // Mod tinjohn - not sure why it is permitted for a a course overview. 
+        //if ($singlesection) {
             if (
                 !has_capability('moodle/course:manageactivities', context_course::instance($course->id))
                 || !$this->page->user_is_editing()
@@ -144,6 +145,6 @@ class renderer extends section_renderer {
             $this->course_activitychooser($course->id);
 
             return $ajaxcontrol;
-        }
+        //}
     }
 }

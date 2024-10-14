@@ -163,22 +163,20 @@
 
     <h2 class="accesshide">{{{title}}}</h2>
     {{{completionhelp}}}
-    
-    
-    {{#frontpage}}
-    <ul class="{{format}}" data-for="course_sectionlist">
-    
+
+    {{#frontpage}}    
+    <div class="single-section">
         {{#initialsection}}
-        {{#editing}}
-            <p> post.scss in mooin4 theme darf dann nicht display:none sein  </p>
+        <p> Hier solle es hin</p>
+        <pre>{{sectionid}}</pre>
+<pre>{{sectionreturnid}}</pre>
             {{$ core_courseformat/local/content/section }}
                 {{> core_courseformat/local/content/section }}
             {{/ core_courseformat/local/content/section }}
-        {{/editing}}
         {{/initialsection}}
-    
-    </ul>
-    
+    </div>
+
+
     {{> format_mooin4/local/content/coursefrontpage}}
     {{/frontpage}}
     
@@ -186,7 +184,7 @@
     {{/frontpage}}
     
     {{#hasnavigation}}
-    
+<p> has navigation </p>
     <div class="single-section">
         {{#sectionnavigation}}
             {{$ core_courseformat/local/content/sectionnavigation }}
