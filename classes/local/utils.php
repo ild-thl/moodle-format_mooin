@@ -852,7 +852,8 @@ class utils {
         if ($section = $DB->get_record('course_sections', array('id' => $sectionid))) {
             $course = get_course($section->course);
             $format = course_get_format($course);
-            // Tinjohn get_parent_chapter returns false if there was no.
+            // Tinjohn get_parent_chapter returns false if there was no 
+            // But from lib.php function update_course_format_options sections without parents are not allowed
             $parentchapter = self::get_parent_chapter($section);
             // Added  tinjohn.
             if(!$parentchapter) {
@@ -891,6 +892,12 @@ class utils {
     public static function course_navbar() {
         global $PAGE, $OUTPUT, $COURSE;
          $items = $PAGE->navbar->get_items();
+
+         if(!$items) {
+            $message = "no breadcrumb for section 0 for testing ";
+            \core\notification::warning($message);
+            return;
+         }
          $course_items = [];
     
         //Split the navbar array at coursehome
@@ -899,9 +906,9 @@ class utils {
                 $course_items = array_splice($items, intval(array_search($item, $items)));
             }
          }
-    
-         $course_items[0]->add_class('course-title');
-         $course_items[0]->text = $COURSE->fullname;
+        // Mod for check tinjohn.
+        $course_items[0]->add_class('course-title');
+        $course_items[0]->text = $COURSE->fullname;
          $section_node = $course_items[array_key_last($course_items)];
          $section_node->action = null;
          $text = $section_node->text;
