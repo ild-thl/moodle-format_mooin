@@ -126,7 +126,7 @@ class format_mooin4_observer {
 
     public static function course_section_created(\core\event\course_section_created $event) {
         global $DB;
-
+        
         $courseid = $event->courseid;
 
         $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
@@ -144,5 +144,7 @@ class format_mooin4_observer {
 
             $DB->update_record('course_sections', $newsection);
         }
+       
     }
+
 }
