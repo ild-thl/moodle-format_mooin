@@ -1,7 +1,7 @@
 <?php
-
+require_once($CFG->libdir . "/externallib.php");
 require_once($CFG->dirroot . '/course/lib.php');
-//require_once($CFG->dirroot . '/lib/external/externallib.php');
+
 
 use format_mooin4\local\utils as utils;
 use core_external\external_api;
