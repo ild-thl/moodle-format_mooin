@@ -62,40 +62,77 @@ class content extends content_base {
         $format = $this->format;
         $coursefrontpage = $this->coursefrontpage;
 
-        // Most formats uses section 0 as a separate section so we remove from the list.
         $sections = $this->export_sections($output);
         $initialsection = '';
-        if (!empty($sections)) {
-            $initialsection = array_shift($sections);
-        }
+
+        // MODIFIED tinjohn.
+        // shift of section results in not displaying any sections.
+        // $shiftedfirsrtsections = $sections;
+        // if (!empty($sections)) {
+        //     $initialsection = array_shift($shiftedfirsrtsections);
+        // }
 
         $data = (object)[
             'title' => $format->page_title(), // This method should be in the course_format class.
             'initialsection' => $initialsection,
             'sections' => $sections,
             'format' => $format->get_format(),
-            'sectionreturn' => 0,
-            
+            'sectionreturn' => null,
         ];
 
-        // The single section format has extra navigation.
-        $singlesection = $this->format->get_section_number();
-        $data->editing = $format->show_editor();
-        if ($singlesection) {
-            
-                $sectionnavigation = new $this->sectionnavigationclass($format, $singlesection);
-                $data->sectionnavigation = $sectionnavigation->export_for_template($output);
 
-                $sectionselector = new $this->sectionselectorclass($format, $sectionnavigation);
-                $data->sectionselector = $sectionselector->export_for_template($output);
+
+        // Es gibt nur eine section in den Lektionen
+        // Nur für die Frontpage gibt es mehrere
+/*         foreach ($sections as $sec) {
+            $message = "section nr" . $sec->num . "section cms" . json_encode($sec->cmlist);
+            \core\notification::warning($message);
+        }
+ */
+        /* Es gibt Probleme mit der Lösung oben vielleicht.
+        if (!empty($sections)) {
+            $section = array_shift($sections);
+        }
+        */
+
+        // $data = (object)[
+        //     'title' => $format->page_title(), // This method should be in the course_format class.
+        //     'format' => $format->get_format(),
+        //     'sectionreturn' => 0,            
+        // ];
+
+        // The single section format has extra navigation.
+        $singlesection = $this->format->get_sectionnum();
+        $data->editing = $format->show_editor();
+ 
+        if (!is_null($singlesection)) {
+
+            $sectionnavigation = new $this->sectionnavigationclass($format, $singlesection);
+            $data->sectionnavigation = $sectionnavigation->export_for_template($output);
+
+            $sectionselector = new $this->sectionselectorclass($format, $sectionnavigation);
+            $data->sectionselector = $sectionselector->export_for_template($output);
             
-            $data->hasnavigation = true;
-            $data->singlesection = array_shift($data->sections);
+            $data->hasnavigation = true;    
+            $data->singlesection = $data->sections; // Tinjohn take the first and leave the rest with array_shift -it is only one
             $data->sectionreturn = $singlesection;
         }
 
-        if (empty($singlesection)) {
-            $data->frontpage = $coursefrontpage->export_for_template($output);
+        if (is_null($singlesection)) {
+            // Most formats uses section 0 as a separate section so we handle it as additional section.  
+            $initialsection = array_shift($data->sections);
+         
+            $data = (object)[
+                 'title' => $format->page_title(), // This method should be in the course_format class.
+                 'initialsection' => $initialsection,
+                 'sections' => $data->sections,
+                 'sectionid' =>  $initialsection->id,
+                 'sectionreturnid' => 0,
+             ]; 
+
+             $data->sectionreturn = $initialsection->num;     
+             $data->frontpage = $coursefrontpage->export_for_template($output);
+            //var_dump($output);
         }
 
         if ($this->hasaddsection) {
@@ -103,6 +140,9 @@ class content extends content_base {
             $data->numsections = $addsection->export_for_template($output);
         }
 
+
+
+        //var_dump($singlesection);
         return $data;
     }
 

@@ -313,13 +313,15 @@ class utils {
         }
         $sql .= 'ORDER BY fp.created DESC LIMIT 1 ';
 
+        // Mod tinjohn - time() - 1800 - not sure why and does not work well with the rest. 
         $params = array(
             'courseid' => $courseid,
             'news' => 'news',
             'wait' => time() - 1800
         );
+        $latestpost = $DB->get_record_sql($sql, $params);
 
-        if ($latestpost = $DB->get_record_sql($sql, $params)) {
+        if (!empty($latestpost = $DB->get_record_sql($sql, $params))) {
             $news_forum_post = $latestpost;
 
             $user = $DB->get_record('user', ['id' => $news_forum_post->userid], '*');
@@ -360,10 +362,8 @@ class utils {
                 'unread_news_number' => $unread_news_number,
                 //'new_news' => $new_news
             ];
-        } else {
-            $templatecontext = [];
-        }
-        return $templatecontext;
+            return $templatecontext;
+        } 
     }
 
     public static function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
@@ -850,7 +850,13 @@ class utils {
         if ($section = $DB->get_record('course_sections', array('id' => $sectionid))) {
             $course = get_course($section->course);
             $format = course_get_format($course);
+            // Tinjohn get_parent_chapter returns false if there was no 
+            // But from lib.php function update_course_format_options sections without parents are not allowed
             $parentchapter = self::get_parent_chapter($section);
+            // Added  tinjohn.
+            if(!$parentchapter) {
+                return false;
+            }
             $sectionids = self::get_sectionids_for_chapter($parentchapter->id);
             $highestVisibleSection = null;
             foreach ($sectionids as $sectionid) {
@@ -884,6 +890,12 @@ class utils {
     public static function course_navbar() {
         global $PAGE, $OUTPUT, $COURSE;
          $items = $PAGE->navbar->get_items();
+
+         if(!$items) {
+            $message = "no breadcrumb for section 0 for testing ";
+            \core\notification::warning($message);
+            return;
+         }
          $course_items = [];
     
         //Split the navbar array at coursehome
@@ -892,9 +904,9 @@ class utils {
                 $course_items = array_splice($items, intval(array_search($item, $items)));
             }
          }
-    
-         $course_items[0]->add_class('course-title');
-         $course_items[0]->text = $COURSE->fullname;
+        // Mod for check tinjohn.
+        $course_items[0]->add_class('course-title');
+        $course_items[0]->text = $COURSE->fullname;
          $section_node = $course_items[array_key_last($course_items)];
          $section_node->action = null;
          $text = $section_node->text;

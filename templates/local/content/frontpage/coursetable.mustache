@@ -12,11 +12,14 @@
 <div class="coursefrontpage__course-table">
     <h2>{{#str}} topicoutline, format_mooin4 {{/str}}</h2>
     <ul class="{{format}}" data-for="course_sectionlist">
-    {{#initialsection}}
-        {{$ core_courseformat/local/content/section }}
-            {{> format_mooin4/local/content/section }}
-        {{/ core_courseformat/local/content/section }}
-    {{/initialsection}}
+        {{#initialsection}}
+        {{#editing}}
+            {{$ core_courseformat/local/content/section }}
+                {{> format_mooin4/local/content/frontpage/section }}
+            {{/ core_courseformat/local/content/section }}
+        {{/editing}}
+        {{/initialsection}}
+ 
     {{#sections}}
         {{$ core_courseformat/local/content/section }} 
             {{> format_mooin4/local/content/section }}

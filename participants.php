@@ -371,8 +371,10 @@ if ($bulkoperations && $mode === MODE_BRIEF) {
 $tablecolumns[] = 'userpic';
 $tablecolumns[] = 'fullname';
 
-
-$extrafields = get_extra_user_fields($context); // \core_user\fields::for_identity($context)->get_required_fields();//  \core_user\fields::for_identity($context, false)->get_required_fields();
+// Mod tinjohn.
+//$extrafields = get_extra_user_fields($context); 
+//$extrafields = \core_user\fields::for_identity($context)->get_required_fields(); 
+$extrafields = \core_user\fields::for_identity($context, false)->get_required_fields();
 $tableheaders[] = get_string('userpic');
 $tableheaders[] = get_string('fullnameuser');
 
@@ -453,6 +455,7 @@ $wheres = array();
 $userfields = array('username', 'email', 'city', 'country', 'lang', 'timezone', 'maildisplay');
 $mainuserfields =   user_picture::fields('u', $userfields); ;// \core_user\fields::for_name()->with_identity($context); ||
 // $extrasql = get_extra_user_fields_sql($context, 'u', '', $userfields); // \core_user\fields::for_identity($context)->including('u')->get_required_fields();
+
 $value = \core_user\fields::for_name()->with_identity($context);
 $extrasql = $value->get_sql('u')->selects;
 // $mainuserfields = $mainuserfields_first->get_sql('u')->selects;
