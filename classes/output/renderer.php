@@ -29,7 +29,8 @@ use format_mooin4\local\utils as utils;
  * @copyright 2012 Dan Poltawski
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends section_renderer {
+class renderer extends section_renderer
+{
 
     /**
      * Constructor method, calls the parent constructor.
@@ -37,7 +38,8 @@ class renderer extends section_renderer {
      * @param moodle_page $page
      * @param string $target one of rendering target constants
      */
-    public function __construct(moodle_page $page, $target) {
+    public function __construct(moodle_page $page, $target)
+    {
         parent::__construct($page, $target);
 
         // Since format_mooin4_renderer::section_edit_control_items() only displays the 'Highlight' control
@@ -53,7 +55,8 @@ class renderer extends section_renderer {
      * @param stdClass $course The course entry from DB
      * @return string HTML to output.
      */
-    public function section_title($section, $course) {
+    public function section_title($section, $course)
+    {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section));
     }
 
@@ -64,7 +67,8 @@ class renderer extends section_renderer {
      * @param int|stdClass $course The course entry from DB
      * @return string HTML to output.
      */
-    public function section_title_without_link($section, $course) {
+    public function section_title_without_link($section, $course)
+    {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section, false));
     }
 
@@ -79,7 +83,8 @@ class renderer extends section_renderer {
      * @param course_format $format the course format
      * @return String the course index HTML.
      */
-    public function course_index_drawer(course_format $format): ?String {
+    public function course_index_drawer(course_format $format): ?String
+    {
         global $DB;
 
         if ($format->uses_course_index()) {
@@ -94,8 +99,8 @@ class renderer extends section_renderer {
 
             if ($forum = $DB->get_record('forum', array('course' => $course->id, 'type' => 'news'))) {
                 if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
-                    if($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance'=>$forum->id))){
-                       $newsforumUrl = new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
+                    if ($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance' => $forum->id))) {
+                        $newsforumUrl = new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
                     }
                 }
             }
@@ -115,16 +120,24 @@ class renderer extends section_renderer {
         return '';
     }
 
-    function check_if_active($url) {
+    function check_if_active($url)
+    {
         global $PAGE;
-        if ($PAGE->url->compare($url, URL_MATCH_EXACT)) {
-            return true;
+        if ($url !== null) {
+            if ($PAGE->url->compare($url, URL_MATCH_EXACT)) {
+                //if ($PAGE->url instanceof moodle_url && $url instanceof moodle_url) {
+                return true;
+            }
+            else {
+                return false;
+            }
         } else {
             return false;
         }
     }
 
-    function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = array()) {
+    function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = array())
+    {
         $singlesection = course_get_format($course)->get_section_number();
         // Mod tinjohn - not sure why it is permitted for a a course overview. 
         //if ($singlesection) {
