@@ -65,6 +65,7 @@ class section extends section_base {
     public function export_for_template(\renderer_base $output): stdClass {
         global $DB, $USER, $PAGE;
         $isChapter = false;
+        $parentchapter = null;
         $course = $this->format->get_course();
 
 
@@ -75,7 +76,7 @@ class section extends section_base {
         }
         $data = (object)parent::export_for_template($output);
         $data->isChapter = $isChapter;
-        if ($parentchapter) {
+        if (!is_null($parentchapter)) {
             $data->parentChapter = $parentchapter->chapter;
 
             if ($parentchapterAsSection = $DB->get_record('course_sections', array('id' => $parentchapter->sectionid))) {
