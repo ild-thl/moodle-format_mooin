@@ -89,7 +89,15 @@ class section extends section_base {
         // }
 
 
-
+        //TODO: 
+        require_once(__DIR__ . '/../../../../lib.php');
+        $courseid = $course->id;
+        if (get_toggle_section_number_visibility($courseid) === 1) {
+            $data->sec_numb_visibility = true; 
+        }
+        else {
+            $data->sec_numb_visibility = false; 
+        }
         if (!$this->format->get_section_number()) {
             $addsectionclass = $format->get_output_classname('content\\addsection');
             $addsection = new $addsectionclass($format);

@@ -64,6 +64,15 @@ class header extends header_base {
             'id' => $section->id,
         ];
 
+        //TODO: 
+        require_once(__DIR__ . '/../../../../../lib.php');
+        $courseid = $course->id;
+        if (get_toggle_section_number_visibility($courseid) === 1) {
+            $data->sec_numb_visibility = true; 
+        }
+        else {
+            $data->sec_numb_visibility = false; 
+        }
         $data->title = $output->section_title_without_link($section, $course);
 
         $coursedisplay = $format->get_course_display();
