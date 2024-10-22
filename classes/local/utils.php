@@ -424,7 +424,7 @@ class utils {
     public static function get_last_forum_discussion($courseid, $forum_type) {
         global $DB, $OUTPUT, $USER;
     
-        $sql = 'SELECT fp.*, f.id as forumid, fd.groupid, fd.id as discussionid, cm.id as cmid
+        $sql = "SELECT fp.*, f.id as forumid, fd.groupid, fd.id as discussionid, cm.id as cmid
                 FROM {forum_posts} as fp
                 JOIN {forum_discussions} as fd ON fp.discussion = fd.id
                 JOIN {forum} as f ON fd.forum = f.id
@@ -432,8 +432,8 @@ class utils {
                 WHERE f.course = :courseid
                 AND (fp.mailnow = 1 OR fp.created < :wait)
                 AND f.type != :news
-                AND cm.module = (SELECT id FROM {modules} WHERE name = "forum")
-                ORDER BY fp.created DESC';
+                AND cm.module = (SELECT id FROM {modules} WHERE name = 'forum')
+                ORDER BY fp.created DESC";
     
         $params = array(
             'courseid' => $courseid,
