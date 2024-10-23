@@ -23,7 +23,7 @@ and the **MOOIN 4.0 Design**
     
 After installation, switch to the branch mooin_404 for Moodle 4.4 systems. 
 
-    git git switch mooin_404
+    git switch mooin_404
     
 For a better user experience we recommand to use **H5P** (https://moodle.org/plugins/mod_hvp). 
 
