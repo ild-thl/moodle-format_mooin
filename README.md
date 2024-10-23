@@ -13,7 +13,7 @@ We need to install the **course format**
 
 After installation, switch to the branch mooin_404 for Moodle 4.4 systems. 
 
-    git git switch mooin_404
+    git switch mooin_404
 
 and the **MOOIN 4.0 Design**
 
