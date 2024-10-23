@@ -118,7 +118,7 @@ class format_mooin4_observer {
         //require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $userid = $event->objectid;
         if ($user = $DB->get_record('user', array('id' => $userid))) {
-            if ($coordinates = get_user_coordinates($user)) {
+            if ($coordinates = utils::get_user_coordinates($user)) {
                 utils::set_user_coordinates($userid, $coordinates->lat, $coordinates->lng);
             }
         }
