@@ -625,7 +625,7 @@ class utils {
     
                 if ($sid == $section->id) {
                     if (!$section->visible) {
-                        $sectionprefix = 'ausgeblendet';
+                        $sectionprefix = '∅';
                     } else {
                         $visible_count += 1;
                         $sectionprefix = $parentchapter->chapter . '.' . $visible_count;
