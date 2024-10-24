@@ -96,25 +96,35 @@ class renderer extends section_renderer
             $certificatesUrl = new moodle_url('/course/format/mooin4/certificates.php', array('id' => $course->id));
             $discussionsUrl = new moodle_url('/course/format/mooin4/all_discussionforums.php', array('id' => $course->id));
             $participantsUrl = new moodle_url('/course/format/mooin4/participants.php', array('id' => $course->id));
-
+            
+            
+            $newsforumUrl = null;
+            
             if ($forum = $DB->get_record('forum', array('course' => $course->id, 'type' => 'news'))) {
                 if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
                     if ($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance' => $forum->id))) {
                         $newsforumUrl = new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
-                    }
+                    } 
                 }
-            }
+            } 
+           
             $data = [
                 'coursename' => $course->shortname,
                 'overview' => ['url' => $overview, 'active' => $this->check_if_active($overview)],
-                'newsforum' => ['url' => $newsforumUrl, 'active' => $this->check_if_active($newsforumUrl)],
                 'badges' => ['url' => $badgesUrl, 'active' => $this->check_if_active($badgesUrl)],
                 'certificates' => ['url' => $certificatesUrl, 'active' => $this->check_if_active($certificatesUrl)],
                 'discussions' => ['url' => $discussionsUrl, 'active' => $this->check_if_active($discussionsUrl)],
                 'participants' => ['url' => $participantsUrl, 'active' => $this->check_if_active($participantsUrl)],
                 'unenrolurl' => utils::get_unenrol_url($course->id),
-
             ];
+    
+
+            if (!is_null($newsforumUrl)) {
+                $data['newsforum'] = [
+                    'url' => $newsforumUrl, 
+                    'active' => $this->check_if_active($newsforumUrl),
+                ];
+            }
             return $this->render_from_template('format_mooin4/local/courseindex/drawer', $data);
         }
         return '';
