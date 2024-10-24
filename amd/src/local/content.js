@@ -60,7 +60,7 @@ export default class Component extends BaseComponent {
       SECTION_CMLIST: `[data-for='cmlist']`,
       COURSE_SECTIONLIST: `[data-for='course_sectionlist']`,
       CM: `[data-for='cmitem']`,
-      PAGE: `#page`,
+      PAGE: `#region-main`,
       TOGGLER: `[data-action="togglecoursecontentsection"]`,
       COLLAPSE: `[data-toggle="collapse"]`,
       TOGGLEALL: `[data-toggle="toggleall"]`,
@@ -203,9 +203,9 @@ export default class Component extends BaseComponent {
 
     // Capture page scroll to update page item.
     this.addEventListener(
-      document.querySelector(this.selectors.PAGE),
+      window,
       "scroll",
-      this._scrollHandler
+      this._scrollHandlerTina
     );
     //this._showLastSectionModal(state);
     //this._hvpListener();
@@ -414,10 +414,13 @@ export default class Component extends BaseComponent {
   /**
    * Check the current page scroll and update the active element if necessary.
    */
-  _scrollHandler() {
-    const pageOffset = document.querySelector(this.selectors.PAGE).scrollTop;
+  _scrollHandlerTina() {
+    window.console.log("scrolled");
+    var pageOffset = document.querySelector(this.selectors.PAGE).scrollTop;
+    var pageOffset = window.scrollY;
     this._titleoverlay(pageOffset);
     if (!this.reactive.isEditing) {
+      var pageOffset = window.scrollY;
       this._dynamicHeader(pageOffset);
     }
 
@@ -448,6 +451,7 @@ export default class Component extends BaseComponent {
   }
 
   _dynamicHeader(pageOffset) {
+    window.console.log(pageOffset);
     const navigationHeader = this.getElement(this.selectors.NAVIGATIONWRAPPER);
     const title = this.getElement(this.selectors.NAVIGATIONTITLE);
     const progressbarContainer = this.getElement(this.selectors.PROGRESSBAR);
@@ -457,14 +461,25 @@ export default class Component extends BaseComponent {
       var progressbarContainerHeight = progressbarContainer.offsetHeight;
       var removeOffset;
       var screenHeight = window.innerHeight;
+      var removeOffsetNav = 0;
+      var removeOffsetBreadCrump = 60;
+      var removeOffsetNavUp = 60;
 
       if (screenHeight <= 600) {
         removeOffset = titleHeight + progressbarContainerHeight + 20;
+         removeOffsetNav = removeOffset;
+         removeOffsetBreadCrump = removeOffset;
+         removeOffsetNavUp = removeOffset;
+
       } else {
         removeOffset = titleHeight + 20;
+        removeOffsetNav = 0;
+        removeOffsetBreadCrump = 60;
+        removeOffsetNavUp = 60;
       }
 
       if (pageOffset <= 0) {
+        navigationHeader.style.transform = "translateY(" + 0 + "px)";
         navigationHeader.classList.remove(this.classes.SCROLLUP);
         return;
       }
@@ -477,8 +492,8 @@ export default class Component extends BaseComponent {
         navigationHeader.classList.remove(this.classes.SCROLLUP);
         navigationHeader.classList.add(this.classes.SCROLLDOWN);
         navigationHeader.style.transform =
-          "translateY(-" + removeOffset + "px)";
-        breadcrumb.style.transform = "translateY(" + removeOffset + "px)";
+          "translateY(-" + removeOffsetNav + "px)";
+        breadcrumb.style.transform = "translateY(" + removeOffsetBreadCrump + "px)";
         title.style.transform = "translateY(" + removeOffset + "px)";
         //progressbarContainer.style.transform = "translateY(" + removeOffset + "px)";
       } else if (
@@ -488,11 +503,12 @@ export default class Component extends BaseComponent {
         // up
         navigationHeader.classList.remove(this.classes.SCROLLDOWN);
         navigationHeader.classList.add(this.classes.SCROLLUP);
-        navigationHeader.style.transform = "translateY(0px)";
+        navigationHeader.style.transform = "translateY(" + removeOffsetNavUp + "px)";
         breadcrumb.style.transform = "translateY(0px)";
         title.style.transform = "translateY(0px)";
         progressbarContainer.style.transform = "translateY(0px)";
       }
+
       this.lastScroll = pageOffset;
     }
   }
