@@ -415,7 +415,6 @@ export default class Component extends BaseComponent {
    * Check the current page scroll and update the active element if necessary.
    */
   _scrollHandlerTina() {
-    window.console.log("scrolled");
     var pageOffset = document.querySelector(this.selectors.PAGE).scrollTop;
     var pageOffset = window.scrollY;
     this._titleoverlay(pageOffset);
@@ -451,7 +450,6 @@ export default class Component extends BaseComponent {
   }
 
   _dynamicHeader(pageOffset) {
-    window.console.log(pageOffset);
     const navigationHeader = this.getElement(this.selectors.NAVIGATIONWRAPPER);
     const title = this.getElement(this.selectors.NAVIGATIONTITLE);
     const progressbarContainer = this.getElement(this.selectors.PROGRESSBAR);
@@ -805,7 +803,7 @@ export default class Component extends BaseComponent {
   _updateChapters({ state, element }) {
     //this.reactive.dispatch('reloadAllSectionPrefixes', element);
     //this._reloadSection({ element });
-    window.console.log("chapter updated");
+    //window.console.log("chapter updated");
     this._reloadSection({
             state: state, element: element,
           });
