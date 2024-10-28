@@ -666,8 +666,8 @@ class format_mooin4 extends core_courseformat\base {
         }
 
         if ($course = $DB->get_record('course', array('id' => $this->courseid))) {
-            $course->enablecompletion = 1;
-            $course->showcompletionconditions = 0;
+            // $course->enablecompletion = 1;
+            // $course->showcompletionconditions = 0;
             $course->newsitems = 1;
             $DB->update_record('course', $course);
         }
