@@ -468,9 +468,8 @@ export default class Component extends BaseComponent {
       if (screenHeight <= 600) {
         removeOffset = titleHeight + progressbarContainerHeight + 20;
          removeOffsetNav = removeOffset;
-         removeOffsetBreadCrump = removeOffset;
-         removeOffsetNavUp = removeOffset;
-
+         removeOffsetBreadCrump = 60;
+         removeOffsetNavUp = 60;
       } else {
         removeOffset = titleHeight + 20;
         removeOffsetNav = 0;
