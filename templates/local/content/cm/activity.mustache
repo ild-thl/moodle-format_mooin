@@ -57,7 +57,14 @@
     }
 }}
 {{#moveicon}} {{{moveicon}}} {{/moveicon}}
+
+{{#hvpcontent}}
+<div class="activity-basis d-flex align-items-center">
+{{/hvpcontent}}
+
+{{^hvpcontent}}
 <div class="activity-grid {{^hasname}}noname-grid{{/hasname}}">
+{{/hvpcontent}}
         {{^hasname}}
             {{$ core_courseformat/local/content/cm/badges }}
                 {{> core_courseformat/local/content/cm/badges }}
@@ -79,6 +86,7 @@
 
 
         {{! Completion }}
+        {{^hvpcontent}}
         {{#completion}}
             {{#hascompletion}}
                 <div class="activity-completion align-self-start ml-3">
@@ -88,6 +96,8 @@
                 </div>
             {{/hascompletion}}
         {{/completion}}
+        {{/hvpcontent}}
+
     
 
 
