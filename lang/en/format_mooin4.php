@@ -188,3 +188,5 @@ $string['discussion_news'] = 'View post';
 $string['youareeditingsectioninfo'] = 'In this course format, content from this section is never displayed.';
 $string['youareeditingsection'] = 'Warning: You are editing Section 0!';
 
+// Kurskompetenzen
+$string['mycoursecompetencies'] = 'My course competencies';

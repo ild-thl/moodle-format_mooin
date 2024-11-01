@@ -187,3 +187,6 @@ $string['discussion_news'] = 'До новин';
 // Neue Section 0 Strategie
 $string['youareeditingsectioninfo'] = 'У цьому форматі курсу вміст із цього розділу ніколи не відображається.';
 $string['youareeditingsection'] = 'Увага: Ви редагуєте Розділ 0!';
+
+// Kurskompetenzen
+$string['mycoursecompetencies'] = 'мої компетенції на курсі';

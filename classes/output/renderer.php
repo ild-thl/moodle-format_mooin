@@ -96,7 +96,7 @@ class renderer extends section_renderer
             $certificatesUrl = new moodle_url('/course/format/mooin4/certificates.php', array('id' => $course->id));
             $discussionsUrl = new moodle_url('/course/format/mooin4/all_discussionforums.php', array('id' => $course->id));
             $participantsUrl = new moodle_url('/course/format/mooin4/participants.php', array('id' => $course->id));
-            
+            $coursecompetenciesUrl = new moodle_url('/admin/tool/lp/coursecompetencies.php', array('courseid' => $course->id));
             
             $newsforumUrl = null;
             
@@ -115,6 +115,7 @@ class renderer extends section_renderer
                 'certificates' => ['url' => $certificatesUrl, 'active' => $this->check_if_active($certificatesUrl)],
                 'discussions' => ['url' => $discussionsUrl, 'active' => $this->check_if_active($discussionsUrl)],
                 'participants' => ['url' => $participantsUrl, 'active' => $this->check_if_active($participantsUrl)],
+                'coursecompetencies' => ['url' => $coursecompetenciesUrl, 'active' => $this->check_if_active($coursecompetenciesUrl)],
                 'unenrolurl' => utils::get_unenrol_url($course->id),
             ];
     

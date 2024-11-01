@@ -186,3 +186,6 @@ $string['discussion_news'] = 'Zur Nachricht';
 // Neue Section 0 Strategie
 $string['youareeditingsectioninfo'] = 'In diesem Kursformat werden Inhalte aus dieser Section nie angezeigt.';
 $string['youareeditingsection'] = 'Achtung: Sie bearbeiten Section 0!';
+
+// Kurskompetenzen
+$string['mycoursecompetencies'] = 'Meine Kurskompetenzen';
