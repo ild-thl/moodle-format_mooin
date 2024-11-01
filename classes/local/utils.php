@@ -1412,7 +1412,7 @@ class utils {
                 $params['since'] = $since;
             }
             $sql .= ' ORDER BY bi.dateissued DESC ';
-            $sql .= ' LIMIT 0, 20 ';
+            $sql .= ' LIMIT 20 OFFSET 0 ';
             $badges = $DB->get_records_sql($sql, $params);
         } else {
             $params = array('courseid' => $courseid);
