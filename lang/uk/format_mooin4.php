@@ -185,8 +185,12 @@ $string['latest_post'] = 'Останнє повідомлення';
 $string['discussion_news'] = 'До новин';
 
 // Neue Section 0 Strategie
-$string['youareeditingsectioninfo'] = 'У цьому форматі курсу вміст із цього розділу ніколи не відображається.';
+$string['youareeditingsectioninfo'] = 'У цьому форматі курсу вміст цього розділу обробляється та може використовуватися прихованим. Однак жоден вміст не відображається в самому цьому розділі.';
 $string['youareeditingsection'] = 'Увага: Ви редагуєте Розділ 0!';
 
 // Kurskompetenzen
 $string['mycoursecompetencies'] = 'мої компетенції на курсі';
+
+// indentation
+$string['indentation'] = 'Дозволити відступ на сторінці курсу';
+$string['indentation_help'] = 'Дозволити викладачам та іншим користувачам із правами управління діяльністю робити відступи для елементів на сторінці курсу.';

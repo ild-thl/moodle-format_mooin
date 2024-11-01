@@ -185,7 +185,7 @@ $string['latest_post'] = 'Latest post';
 $string['discussion_news'] = 'View post';
 
 // Neue Section 0 Strategie
-$string['youareeditingsectioninfo'] = 'In this course format, content from this section is never displayed.';
+$string['youareeditingsectioninfo'] = 'In this course format, content from this section is processed and can be used while hidden. However, no content is displayed in this section itself.';
 $string['youareeditingsection'] = 'Warning: You are editing Section 0!';
 
 // Kurskompetenzen
