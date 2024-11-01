@@ -194,3 +194,6 @@ $string['mycoursecompetencies'] = 'мої компетенції на курсі
 // indentation
 $string['indentation'] = 'Дозволити відступ на сторінці курсу';
 $string['indentation_help'] = 'Дозволити викладачам та іншим користувачам із правами управління діяльністю робити відступи для елементів на сторінці курсу.';
+
+// course side bar
+$string['include_in_sidebar'] = 'Показувати в бічній панелі';

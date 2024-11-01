@@ -187,10 +187,12 @@ $string['discussion_news'] = 'Zur Nachricht';
 $string['youareeditingsectioninfo'] = 'In diesem Kursformat werden Inhalte aus dieser Section zwar versteckt verarbeitet und können so genutzt werden. Keinerlei Inhalte werden aber in dieser Section selbst angezeigt.';
 $string['youareeditingsection'] = 'Achtung: Sie bearbeiten Section 0!';
 
-// Kurskompetenzen
+// course competencies
 $string['mycoursecompetencies'] = 'Meine Kurskompetenzen';
 
 // indentation
 $string['indentation'] = 'Einzug auf der Kursseite erlauben';
 $string['indentation_help'] = 'Erlauben Sie Lehrern und anderen Benutzern mit der Berechtigung zur Verwaltung von Aktivitäten, Elemente auf der Kursseite einzurücken.';
 
+// course side bar
+$string['include_in_sidebar'] = "In der Seitenleite anzeigen";

@@ -111,14 +111,30 @@ class renderer extends section_renderer
             $data = [
                 'coursename' => $course->shortname,
                 'overview' => ['url' => $overview, 'active' => $this->check_if_active($overview)],
-                'badges' => ['url' => $badgesUrl, 'active' => $this->check_if_active($badgesUrl)],
-                'certificates' => ['url' => $certificatesUrl, 'active' => $this->check_if_active($certificatesUrl)],
-                'discussions' => ['url' => $discussionsUrl, 'active' => $this->check_if_active($discussionsUrl)],
-                'participants' => ['url' => $participantsUrl, 'active' => $this->check_if_active($participantsUrl)],
-                'coursecompetencies' => ['url' => $coursecompetenciesUrl, 'active' => $this->check_if_active($coursecompetenciesUrl)],
                 'unenrolurl' => utils::get_unenrol_url($course->id),
             ];
     
+            
+            // Define the settings and corresponding URLs.
+            $features = [
+                'badges' => $badgesUrl,
+                'certificates' => $certificatesUrl,
+                'discussions' => $discussionsUrl,
+                'participants' => $participantsUrl,
+                'coursecompetencies' => $coursecompetenciesUrl,
+            ];
+            
+            // Loop through each feature, adding it if the setting is enabled.
+            foreach ($features as $key => $url) {
+                if (get_config('format_mooin4', $key)) {
+                    $data[$key] = [
+                        'url' => $url,
+                        'active' => $this->check_if_active($url)
+                    ];
+                }
+            }
+            
+
 
             if (!is_null($newsforumUrl)) {
                 $data['newsforum'] = [

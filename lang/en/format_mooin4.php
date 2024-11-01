@@ -184,9 +184,13 @@ $string['all_news'] = 'news forum';
 $string['latest_post'] = 'Latest post';
 $string['discussion_news'] = 'View post';
 
-// Neue Section 0 Strategie
+// new Section 0
 $string['youareeditingsectioninfo'] = 'In this course format, content from this section is processed and can be used while hidden. However, no content is displayed in this section itself.';
 $string['youareeditingsection'] = 'Warning: You are editing Section 0!';
 
-// Kurskompetenzen
+// course competencies
 $string['mycoursecompetencies'] = 'My course competencies';
+
+// course side bar
+$string['include_in_sidebar'] = 'Display in sidebar';
+
