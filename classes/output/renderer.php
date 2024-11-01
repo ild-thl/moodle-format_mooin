@@ -96,7 +96,7 @@ class renderer extends section_renderer
             $certificatesUrl = new moodle_url('/course/format/mooin4/certificates.php', array('id' => $course->id));
             $discussionsUrl = new moodle_url('/course/format/mooin4/all_discussionforums.php', array('id' => $course->id));
             $participantsUrl = new moodle_url('/course/format/mooin4/participants.php', array('id' => $course->id));
-            $coursecompetenciesUrl = new moodle_url('/admin/tool/lp/coursecompetencies.php', array('courseid' => $course->id));
+            $coursecompetenciesUrl = new moodle_url('/admin/tool/lp/coursecompetencies.php', array('courseid' => $course->id, 'mod' => 0));
             
             $newsforumUrl = null;
             
