@@ -42,6 +42,11 @@ if ($ADMIN->fulltree) {
     ));
 
     $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/news',
+        new lang_string('news', 'format_mooin4'), "",
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
         'format_mooin4/badges',
         new lang_string('badges', 'format_mooin4'), "",
         1

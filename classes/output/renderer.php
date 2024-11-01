@@ -136,7 +136,7 @@ class renderer extends section_renderer
             
 
 
-            if (!is_null($newsforumUrl)) {
+            if (!is_null($newsforumUrl) && get_config('format_mooin4', 'news') ) {
                 $data['newsforum'] = [
                     'url' => $newsforumUrl, 
                     'active' => $this->check_if_active($newsforumUrl),
