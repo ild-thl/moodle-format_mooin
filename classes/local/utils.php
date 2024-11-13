@@ -723,37 +723,30 @@ class utils {
 
     public static function get_sectionids_for_chapter($chapterid) {
         global $DB;
-        $result = array();
+        $sectionids = array();
         if ($chapter = $DB->get_record('format_mooin4_chapter', array('id' => $chapterid))) {
-            $chapters = self::get_course_chapters($chapter->courseid);
-            $start = 0;
-            $end = 0;
-            foreach ($chapters as $c) {
-                if ($c->id == $chapterid) {
-                    $start = $c->section;
-                    continue;
-                }
-                if ($start != 0) {
-                    $end = $c->section;
-                    break;
-                }
-            }
-            if ($coursesections = $DB->get_records('course_sections', array('course' => $chapter->courseid), 'section', 'section, id')) {
-                if ($start != 0) {
-                    if ($end == 0) {
-                        $end = self::get_last_section($chapter->courseid) + 1;
+            if ($chaptersection = $DB->get_record('course_sections', array('id' => $chapter->sectionid))) {
+                if ($nextchapter = $DB->get_record('format_mooin4_chapter', array('courseid' => $chapter->courseid, 'chapter' => $chapter->chapter + 1))) {
+                    if ($nextchaptersection = $DB->get_record('course_sections', array('id' => $nextchapter->sectionid))) {
+                        $sql = 'SELECT cs.id 
+                                FROM {course_sections} cs
+                                WHERE cs.course = :courseid
+                                AND cs.section > :chaptersection
+                                AND cs.section < :nextchaptersection;';
+                        $params = array('courseid' => $chapter->courseid, 'chaptersection' => $chaptersection->section, 'nextchaptersection' => $nextchaptersection->section);
                     }
-                    $i = $start + 1;
-                    while ($i < $end) {
-                        
-                            $result[] = $coursesections[$i]->id; 
-                        
-                        $i++;
-                    }
+                }   
+                else {
+                    $sql = 'SELECT cs.id 
+                            FROM {course_sections} cs
+                            WHERE cs.course = :courseid
+                            AND cs.section > :chaptersection;';
+                    $params = array('courseid' => $chapter->courseid, 'chaptersection' => $chaptersection->section);
                 }
+                $sectionids = $DB->get_fieldset_sql($sql, $params);
             }
         }
-        return $result;
+        return $sectionids;
     }
 
     public static function get_course_chapters($courseid) {
