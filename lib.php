@@ -37,22 +37,26 @@ use format_mooin4\local\utils as utils;
  * @copyright  2012 Marina Glancy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_mooin4 extends core_courseformat\base {
+class format_mooin4 extends core_courseformat\base
+{
 
     /**
      * Returns true if this course format uses sections.
      *
      * @return bool
      */
-    public function uses_sections() {
+    public function uses_sections()
+    {
         return true;
     }
 
-    public function uses_course_index() {
+    public function uses_course_index()
+    {
         return true;
     }
 
-    public function uses_indentation(): bool {
+    public function uses_indentation(): bool
+    {
         return false;
     }
 
@@ -64,7 +68,8 @@ class format_mooin4 extends core_courseformat\base {
      * @param int|stdClass $section Section object from database or just field section.section
      * @return string Display name that the course format prefers, e.g. "Topic 2"
      */
-    public function get_section_name($section) {
+    public function get_section_name($section)
+    {
         $section = $this->get_section($section);
         if ((string)$section->name !== '') {
             return format_string(
@@ -87,7 +92,8 @@ class format_mooin4 extends core_courseformat\base {
      * @param stdClass $section Section object from database or just field course_sections section
      * @return string The default value for the section name.
      */
-    public function get_default_section_name($section) {
+    public function get_default_section_name($section)
+    {
         if ($section->section == 0) {
             // Return the general section.
             return get_string('section0name', 'format_mooin4');
@@ -103,7 +109,8 @@ class format_mooin4 extends core_courseformat\base {
      *
      * @return string the page title
      */
-    public function page_title(): string {
+    public function page_title(): string
+    {
         return get_string('topicoutline');
     }
 
@@ -117,7 +124,8 @@ class format_mooin4 extends core_courseformat\base {
      *
      * @return int The current value (COURSE_DISPLAY_MULTIPAGE or COURSE_DISPLAY_SINGLEPAGE)
      */
-    public function get_course_display(): int {
+    public function get_course_display(): int
+    {
         return COURSE_DISPLAY_MULTIPAGE;
     }
 
@@ -131,7 +139,8 @@ class format_mooin4 extends core_courseformat\base {
      *     'sr' (int) used by multipage formats to specify to which section to return
      * @return null|moodle_url
      */
-    public function get_view_url($section, $options = []) {
+    public function get_view_url($section, $options = [])
+    {
         global $CFG;
         $course = $this->get_course();
         $url = new moodle_url('/course/view.php', ['id' => $course->id]);
@@ -176,18 +185,21 @@ class format_mooin4 extends core_courseformat\base {
      *
      * @return stdClass
      */
-    public function supports_ajax() {
+    public function supports_ajax()
+    {
         $ajaxsupport = new stdClass();
         $ajaxsupport->capable = true;
         return $ajaxsupport;
     }
 
-    public function supports_components() {
+    public function supports_components()
+    {
         return true;
     }
 
 
-    public function extend_course_navigation($navigation, navigation_node $node) {
+    public function extend_course_navigation($navigation, navigation_node $node)
+    {
         global $PAGE, $DB, $CFG, $USER;
         // If section is specified in course/view.php, make sure it is expanded in navigation.
         if ($navigation->includesectionnum === false) {
@@ -383,7 +395,7 @@ class format_mooin4 extends core_courseformat\base {
                         if ($parentchapter = utils::get_parent_chapter($section)) {
                             $chapter_node = $node->get($parentchapter->sectionid);
                         }
-                      
+
                         if ($parentchapter && $chapter_node) {
                             $section_node = $chapter_node->add(
                                 $title,
@@ -516,14 +528,15 @@ class format_mooin4 extends core_courseformat\base {
      * @return array of default blocks, must contain two keys BLOCK_POS_LEFT and BLOCK_POS_RIGHT
      *     each of values is an array of block names (for left and right side columns)
      */
-    public function get_default_blocks() {
+    public function get_default_blocks()
+    {
         return [
             BLOCK_POS_LEFT => [],
             BLOCK_POS_RIGHT => [],
         ];
     }
 
-    
+
 
     /**
      * Adds format options elements to the course/section edit form.
@@ -534,7 +547,8 @@ class format_mooin4 extends core_courseformat\base {
      * @param bool $forsection 'true' if this is a section edit form, 'false' if this is course edit form.
      * @return array array of references to the added form elements.
      */
-    public function create_edit_form_elements(&$mform, $forsection = false) {
+    public function create_edit_form_elements(&$mform, $forsection = false)
+    {
         global $COURSE;
         $elements = parent::create_edit_form_elements($mform, $forsection);
 
@@ -567,7 +581,8 @@ class format_mooin4 extends core_courseformat\base {
      *     this object contains information about the course before update
      * @return bool whether there were any changes to the options values
      */
-    public function update_course_format_options($data, $oldcourse = null) {
+    public function update_course_format_options($data, $oldcourse = null)
+    {
         global $DB;
 
         if (!$oldcourse) {
@@ -646,7 +661,8 @@ class format_mooin4 extends core_courseformat\base {
      * @param int|stdClass|section_info $section
      * @return bool
      */
-    public function can_delete_section($section) {
+    public function can_delete_section($section)
+    {
         return true;
     }
 
@@ -682,7 +698,8 @@ class format_mooin4 extends core_courseformat\base {
      *
      * @return bool
      */
-    public function supports_news() {
+    public function supports_news()
+    {
         return true;
     }
 
@@ -694,7 +711,8 @@ class format_mooin4 extends core_courseformat\base {
      * @param stdClass|section_info $section section where this module is located or will be added to
      * @return bool
      */
-    public function allow_stealth_module_visibility($cm, $section) {
+    public function allow_stealth_module_visibility($cm, $section)
+    {
         // Allow the third visibility state inside visible sections or in section 0.
         return !$section->section || $section->visible;
     }
@@ -739,7 +757,8 @@ class format_mooin4 extends core_courseformat\base {
     //     return $rv;
     // }
 
-    public function section_action($section, $action, $sr) {
+    public function section_action($section, $action, $sr)
+    {
         global $PAGE;
         if (!$this->uses_sections() || !$section->section) {
             // No section actions are allowed if course format does not support sections.
@@ -796,7 +815,8 @@ class format_mooin4 extends core_courseformat\base {
      * @return array the list of configuration settings
      * @since Moodle 3.5
      */
-    public function get_config_for_external() {
+    public function get_config_for_external()
+    {
         // Return everything (nothing to hide).
         $formatoptions = $this->get_format_options();
         $formatoptions['indentation'] = get_config('format_mooin4', 'indentation');
@@ -814,7 +834,8 @@ class format_mooin4 extends core_courseformat\base {
      * @param mixed $newvalue
      * @return \core\output\inplace_editable
      */
-    public function inplace_editable_update_section_name($section, $itemtype, $newvalue) {
+    public function inplace_editable_update_section_name($section, $itemtype, $newvalue)
+    {
         global $DB;
         if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
             $context = context_course::instance($section->course);
@@ -835,7 +856,7 @@ class format_mooin4 extends core_courseformat\base {
 
 
 
-/**
+    /**
      * Returns if an specific section is visible to the current user.
      *
      * Formats can overrride this method to implement any special section logic.
@@ -843,7 +864,8 @@ class format_mooin4 extends core_courseformat\base {
      * @param section_info $section the section modinfo
      * @return bool;
      */
-    public function is_section_visible(section_info $section): bool {
+    public function is_section_visible(section_info $section): bool
+    {
         // Previous to Moodle 4.0 thas logic was hardcoded. To prevent errors in the contrib plugins
         // the default logic is the same required for topics and weeks format and still uses
         // a "hiddensections" format setting.
@@ -857,6 +879,44 @@ class format_mooin4 extends core_courseformat\base {
             ($section->visible && !$section->available && !empty($section->availableinfo)) ||
             (!$section->visible && !$hidesections);
     }
+
+
+    /**
+     * Returns the course format options, with the possibility to include additional options for the edit form.
+     *
+     * This method defines and retrieves the course format options, allowing formats to include custom settings
+     * and modify their behavior depending on whether they are being used for editing or display purposes.
+     *
+     * @param bool $foreditform Whether to include additional options specific to the edit form.
+     * @return array The course format options, including defaults and edit form specifics.
+     */
+    public function course_format_options($foreditform = false)
+    {
+        static $courseformatoptions = false;
+        if ($courseformatoptions === false) {
+            $courseconfig = get_config('moodlecourse');
+            $courseformatoptions = [
+                'toggle_section_number_visibility' => [
+                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
+                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                ],
+            ];
+        }
+        if ($foreditform) {
+            if (!isset($courseformatoptions['toggle_section_number_visibility']['label'])) {
+                $courseformatoptionsedit = [
+                    'toggle_section_number_visibility' => [
+                        'label' => new lang_string('toggle_section_number_visibility', 'format_mooin4'),
+                        'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                        'help' => 'toggle_section_number_visibility',
+                        'help_component' => 'format_mooin4',
+                    ],
+                ];
+                $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
+            }
+        }
+        return $courseformatoptions;
+    }
 }
 
 /**
@@ -867,7 +927,8 @@ class format_mooin4 extends core_courseformat\base {
  * @param mixed $newvalue
  * @return inplace_editable
  */
-function format_mooin4_inplace_editable($itemtype, $itemid, $newvalue) {
+function format_mooin4_inplace_editable($itemtype, $itemid, $newvalue)
+{
     global $DB, $CFG;
     require_once($CFG->dirroot . '/course/lib.php');
     if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
@@ -880,7 +941,8 @@ function format_mooin4_inplace_editable($itemtype, $itemid, $newvalue) {
     }
 }
 
-function format_mooin4_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+function format_mooin4_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array())
+{
     require_login($course, true);
 
     if ($filearea != 'headerimagemobile' and $filearea != 'headerimagedesktop') {
@@ -908,3 +970,31 @@ function format_mooin4_pluginfile($course, $cm, $context, $filearea, $args, $for
     send_stored_file($file, 0, 0, $forcedownload, $options);
 }
 
+
+
+
+/**
+ * Holt die benutzerdefinierte Einstellung 'toggle_section_number_visibility' eines Kurses.
+ *
+ * @param int $courseid Die ID des Kurses.
+ * @return int Der Wert der Einstellung (1 für sichtbar, 0 für unsichtbar).
+ */
+function get_toggle_section_number_visibility($courseid)
+{
+    // Kursdaten abrufen
+    $course = get_course($courseid);
+
+    // Kursformat abrufen
+    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
+    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
+
+    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    if (isset($formatoptions['toggle_section_number_visibility'])) {
+        // Wenn der Wert gesetzt ist, diesen verwenden
+        return $formatoptions['toggle_section_number_visibility'];
+    } else {
+        // Andernfalls den Standardwert verwenden
+        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        return $courseformatoptions['toggle_section_number_visibility']['default'];
+    }
+}
