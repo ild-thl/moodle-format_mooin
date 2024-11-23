@@ -324,8 +324,12 @@ class format_mooin4 extends core_courseformat\base {
                     $lastvisitedsection = '';
 
                     if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
-
-                        $pre = get_string('chapter', 'format_mooin4') . ' ' . $chapter->chapter . ': ';
+                        //show breadcrump chapter prefix according settings
+                        if (get_toggle_section_number_visibility($courseid)  === 1) {
+                            $pre = get_string('chapter', 'format_mooin4') . ' ' . $chapter->chapter . ': ';
+                        } else {
+                            $pre = '';
+                        }
                         $title = $pre . get_section_name($this->get_course(), $section);
                         if (count(utils::get_sectionids_for_chapter($chapter->id)) > 0) {
                             $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
@@ -361,7 +365,12 @@ class format_mooin4 extends core_courseformat\base {
                         $chapter_node->add_class('chapter' . $completed . $lastvisitedsection);
                         // $chapter_node->add_class('collapsed');
                     } else {
-                        $pre = get_string('lesson', 'format_mooin4') . ' ' . utils::get_section_prefix($section) . ': ';
+                        //show breadcrump lesson prefix according settings
+                        if (get_toggle_section_number_visibility($courseid)  === 1) {
+                            $pre = get_string('lesson', 'format_mooin4') . ' ' . utils::get_section_prefix($section) . ': ';
+                        } else {
+                            $pre = '';
+                        }
                         if ($section->name) {
                             $title = $pre . get_section_name($this->get_course(), $section);
                         } else {
