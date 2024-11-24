@@ -85,7 +85,7 @@ class section extends section_base {
             require_once(__DIR__ . '/../../../../lib.php');
             $courseid = $course->id;
 
-            //show course index chapter prefix numbers according settings
+            //show course index section prefix numbers according settings
             if (get_toggle_section_number_visibility($courseid) === 1) {
                 $data->sec_numb_visibility = true; 
                 $data->prefix = utils::get_section_prefix($this->section);
