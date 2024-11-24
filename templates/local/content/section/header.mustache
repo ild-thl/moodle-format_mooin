@@ -58,7 +58,12 @@
             {{/sec_numb_visibility}}
         {{/chapter}}
         {{^chapter}}
-            <a href="{{{url}}}">{{^singleheader}}{{#str}}lesson, format_mooin4{{/str}} {{{prefix}}}: {{/singleheader}}{{{title_without_link}}}</a>
+            {{#sec_numb_visibility}}
+                <a href="{{{url}}}">{{^singleheader}}{{#str}}lesson, format_mooin4{{/str}} {{{prefix}}}: {{/singleheader}}{{{title_without_link}}}</a>
+            {{/sec_numb_visibility}}
+            {{^sec_numb_visibility}}
+                <a href="{{{url}}}">{{{title_without_link}}}</a>
+            {{/sec_numb_visibility}}
         {{/chapter}}
         {{/editing}}
     </h3>
