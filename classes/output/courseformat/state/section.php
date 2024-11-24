@@ -81,19 +81,26 @@ class section extends section_base {
             if ($parentchapterAsSection = $DB->get_record('course_sections', array('id' => $parentchapter->sectionid))) {
                 $data->innerChapterNumber = $this->section->section - $parentchapterAsSection->section;
                 $data->parentChapterId = $parentchapterAsSection->id;
-            }   
+            }
+            
+            //show course index section prefix numbers according settings
             require_once(__DIR__ . '/../../../../lib.php');
             $courseid = $course->id;
-
-            //show course index section prefix numbers according settings
             if (get_toggle_section_number_visibility($courseid) === 1) {
-                $data->sec_numb_visibility = true; 
+                $data->sec_numb_visibility = true;
                 $data->prefix = utils::get_section_prefix($this->section);
-            }
-            else {
-                $data->sec_numb_visibility = false; 
+            } else {
+                $data->sec_numb_visibility = false;
                 $data->prefix = '';
             }
+        }
+        //set sec_numb_visibility for course index
+        require_once(__DIR__ . '/../../../../lib.php');
+        $courseid = $course->id;
+        if (get_toggle_section_number_visibility($courseid) === 1) {
+            $data->sec_numb_visibility = true;
+        } else {
+            $data->sec_numb_visibility = false;
         }
 
         $section_progress = utils::get_section_progress($course->id, $this->section->id, $USER->id);
@@ -118,7 +125,7 @@ class section extends section_base {
             }
             if (utils::is_last_section_of_chapter($this->section->id)) {
                 $data->isLastSectionOfChapter = true;
-                if (!get_user_preferences('format_mooin4_hide_modal_for_section_'.$this->section->id)) {
+                if (!get_user_preferences('format_mooin4_hide_modal_for_section_' . $this->section->id)) {
                     $data->showLastSectionModal = true;
                     //set_user_preference('format_mooin4_hide_modal_for_section_'.$this->section->id, 'true');
                 }
@@ -136,13 +143,8 @@ class section extends section_base {
             if ($last_section == $this->section->section) {
                 $data->isActiveSection = true;
             }
-            
         }
 
         return $data;
     }
-
-
-
-    
 }
