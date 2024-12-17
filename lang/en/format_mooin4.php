@@ -187,7 +187,7 @@ $string['latest_post'] = 'Latest post';
 $string['discussion_news'] = 'View post';
 
 // new Section 0
-$string['youareeditingsectioninfo'] = 'In this course format, content from this section is processed and can be used while hidden. However, no content is displayed in this section itself.';
+$string['youareeditingsectioninfo'] = 'In this course format, the contents of this section are processed hidden. You can use it as usual for hidden content in Moodle. However, no content is displayed in this section itself.';
 $string['youareeditingsection'] = 'Warning: You are editing Section 0!';
 
 // course competencies

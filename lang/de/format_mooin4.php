@@ -186,8 +186,8 @@ $string['latest_post'] = 'Neuester Beitrag ';
 $string['discussion_news'] = 'Zur Nachricht';
 
 // Neue Section 0 Strategie
-$string['youareeditingsectioninfo'] = 'In diesem Kursformat werden Inhalte aus dieser Section zwar versteckt verarbeitet und können so genutzt werden. Keinerlei Inhalte werden aber in dieser Section selbst angezeigt.';
-$string['youareeditingsection'] = 'Achtung: Sie bearbeiten Section 0!';
+$string['youareeditingsectioninfo'] = 'In diesem Kursformat werden die Inhalte aus diesem Abschnitt versteckt verarbeitet. Sie können wie gewohnt für versteckte Inhalte in Moodle genutzt werden. Es werden jedoch keine Inhalte in diesem Abschnitt selbst angezeigt.';
+$string['youareeditingsection'] = 'Achtung: Sie bearbeiten einen versteckten Abschnitt!';
 
 // course competencies
 $string['mycoursecompetencies'] = 'Meine Kurskompetenzen';
