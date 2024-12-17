@@ -113,9 +113,20 @@
                             <div class="d-flex flex-column ml-4">
                                 <span>
                                     <span class="font-weight-bold">
-                                        {{{user_count}}} {{#str}} user, format_mooin4 {{/str}}
+                                        {{{user_count}}} 
+                                        {{^singleuser}}
+                                            {{#str}} user, format_mooin4 {{/str}}
+                                        {{/singleuser}}
+                                        {{#singleuser}}
+                                            {{#str}} singleuser, format_mooin4 {{/str}}
+                                        {{/singleuser}}
                                     </span>
-                                    {{#str}} in_course, format_mooin4 {{/str}}
+                                    {{^singleuser}}
+                                        {{#str}} in_course, format_mooin4 {{/str}}
+                                    {{/singleuser}}
+                                    {{#singleuser}}
+                                        {{#str}} in_course_sgl, format_mooin4 {{/str}}
+                                    {{/singleuser}}
                                 </span>
                                 <span class="font-weight-bold caption--sm"> {{#str}} new_user, format_mooin4 {{/str}} </span>
                                 <span class="caption--sm">
@@ -138,8 +149,15 @@
                         <div class="no-participantscap-container">
                             <div class="no-participantscap-img"></div>
                             <span class="blue-info-text">
-                                    {{{user_count}}} {{#str}} user, format_mooin4 {{/str}}
-                                    {{#str}} in_course, format_mooin4 {{/str}}
+                                    {{{user_count}}} 
+                                    {{^singleuser}}
+                                        {{#str}} user, format_mooin4 {{/str}}
+                                        {{#str}} in_course, format_mooin4 {{/str}}
+                                    {{/singleuser}}
+                                    {{#singleuser}}
+                                        {{#str}} singleuser, format_mooin4 {{/str}}
+                                        {{#str}} in_course_sgl, format_mooin4 {{/str}}
+                                    {{/singleuser}}
                             </span>
                         </div>
                     {{/userCardList}}

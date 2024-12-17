@@ -283,11 +283,12 @@ class utils {
 
         $context = context_course::instance($courseid);
         $has_capability = has_capability('moodle/course:viewparticipants', $context);
-
+        $singleuser = $user_count == 1 ? true : false;
         $templatecontext = [
             'user_count' => $user_count,
             'user_list' => $user_list,
             'has_capability' => $has_capability,
+            'singleuser' => $singleuser,
         ];
 
         return $templatecontext;
