@@ -601,7 +601,11 @@ class utils {
     
     
     public static function get_section_prefix($section) {
-        global $DB, $USER;
+        global $DB, $USER, $SECTIONS;
+
+        if (isset($SECTIONS[$section->id]) && isset($SECTIONS[$section->id]->prefix)) {
+            return $SECTIONS[$section->id]->prefix;
+        }
     
         $sectionprefix = '';
     
@@ -609,7 +613,7 @@ class utils {
         $parentchapter = self::get_parent_chapter($section);
         if (is_object($parentchapter)) {
             // Get section ids for the chapter
-            $sids = self::get_sectionids_for_chapter($parentchapter->id);
+            $sids = $parentchapter->sectionids;
     
             // Get the course and format
             $course = get_course($section->course);
@@ -639,6 +643,10 @@ class utils {
                     error_log($section->name.$visible_count);
                 }
             }
+        }
+
+        if (isset($SECTIONS[$section->id])) {
+            $SECTIONS[$section->id]->prefix = $sectionprefix;
         }
     
         return $sectionprefix;
@@ -709,11 +717,28 @@ class utils {
 
     public static function get_parent_chapter($section) {
         global $DB;
+
+        global $CHAPTERS;
+        global $SECTIONS;
+        if (isset($SECTIONS[$section->id])) {
+            if (isset($CHAPTERS[$SECTIONS[$section->id]->parentchapterid])) {
+                return $CHAPTERS[$SECTIONS[$section->id]->parentchapterid];
+            }
+        }
     
         $chapters = $DB->get_records('format_mooin4_chapter', array('courseid' => $section->course));
         foreach ($chapters as $chapter) {
-            $sids = self::get_sectionids_for_chapter($chapter->id);
+            if (isset($CHAPTERS[$chapter->id]) && isset($CHAPTERS[$chapter->id]->sectionids)) {
+                $sids = $CHAPTERS[$chapter->id]->sectionids;
+            }
+            else {
+                $sids = self::get_sectionids_for_chapter($chapter->id);
+            }
             if (in_array($section->id, $sids)) {
+                $chapter->sectionids = $sids;
+                $CHAPTERS[$chapter->id] = $chapter;
+                $section->parentchapterid = $chapter->id;
+                $SECTIONS[$section->id] = $section;
                 return $chapter;
             }
         }
@@ -943,13 +968,18 @@ class utils {
     }
 
     public static function get_chapter_info($chapter) {
-        global $USER, $DB;
+        global $USER, $DB, $CHAPTERS;
         $info = array();
     
         $chaptercompleted = false;
         $lastvisited = false;
     
-        $sectionids = self::get_sectionids_for_chapter($chapter->id);
+        if (isset($CHAPTERS[$chapter->id]->sectionids)) {
+            $sectionids = $CHAPTERS[$chapter->id]->sectionids;
+        }
+        else {
+            $sectionids = self::get_sectionids_for_chapter($chapter->id);
+        }
         $completedsections = 0;
     
         foreach ($sectionids as $sectionid) {

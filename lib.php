@@ -425,7 +425,7 @@ class format_mooin4 extends core_courseformat\base {
                                 $title,
                                 $url,
                                 navigation_node::TYPE_SECTION,
-                                get_string('lesson_short', 'format_mooin4') . ' ' . utils::get_section_prefix($section) . ': ',
+                                get_string('lesson_short', 'format_mooin4') . ' ' . $pre . ': ',
                                 $section->id,
                                 $icon
                             );
