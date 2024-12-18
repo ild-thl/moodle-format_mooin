@@ -764,7 +764,6 @@ class utils {
 
     public static function get_sectionids_for_chapter($chapterid) {
         global $DB;
-        global $USER;
 
         $sectionids = array();
         if ($chapter = $DB->get_record('format_mooin4_chapter', array('id' => $chapterid))) {
@@ -973,13 +972,18 @@ class utils {
     }
 
     public static function get_chapter_info($chapter) {
-        global $USER, $DB;
+        global $USER, $DB, $CHAPTERS;
         $info = array();
 
         $chaptercompleted = false;
         $lastvisited = false;
 
-        $sectionids = self::get_sectionids_for_chapter($chapter->id);
+        if (isset($CHAPTERS[$chapter->id]->sectionids)) {
+            $sectionids = $CHAPTERS[$chapter->id]->sectionids;
+        }
+        else {
+            $sectionids = self::get_sectionids_for_chapter($chapter->id);
+        }
         $completedsections = 0;
 
         foreach ($sectionids as $sectionid) {
@@ -1034,7 +1038,7 @@ class utils {
 
     public static function get_section_progress($courseid, $sectionid, $userid) {
         global $DB, $CFG;
-
+        
         require_once($CFG->libdir . '/gradelib.php');
 
         $percentage = 0;
