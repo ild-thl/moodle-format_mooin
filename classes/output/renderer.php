@@ -120,7 +120,6 @@ class renderer extends section_renderer
                 'badges' => $badgesUrl,
                 'certificates' => $certificatesUrl,
                 'discussions' => $discussionsUrl,
-                'participants' => $participantsUrl,
                 'coursecompetencies' => $coursecompetenciesUrl,
             ];
             
@@ -134,7 +133,14 @@ class renderer extends section_renderer
                 }
             }
             
-
+            $context = context_course::instance($course->id);
+            $has_capability = has_capability('moodle/course:viewparticipants', $context);
+            if ($has_capability) {
+                $data['participants'] = [
+                    'url' => $participantsUrl,
+                    'active' => $this->check_if_active($participantsUrl)
+                ];
+            }
 
             if (!is_null($newsforumUrl) && get_config('format_mooin4', 'news') ) {
                 $data['newsforum'] = [
