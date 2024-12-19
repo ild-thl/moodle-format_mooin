@@ -135,7 +135,7 @@ class renderer extends section_renderer
             
             $context = context_course::instance($course->id);
             $has_capability = has_capability('moodle/course:viewparticipants', $context);
-            if ($has_capability) {
+            if ($has_capability && get_config('format_mooin4', 'participants') ) {
                 $data['participants'] = [
                     'url' => $participantsUrl,
                     'active' => $this->check_if_active($participantsUrl)
