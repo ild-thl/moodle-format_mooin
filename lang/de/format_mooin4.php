@@ -168,7 +168,9 @@ $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['users'] = 'Teilnehmende';
 $string['user_card_title'] = 'Teilnehmende im Kurs';
 $string['user'] = 'Personen';
+$string['singleuser'] = 'Person';
 $string['in_course'] = 'nehmen teil';
+$string['in_course_sgl'] = 'nimmt teil';
 $string['new_user'] = 'Neu hinzugekommen: ';
 $string['no_user'] = 'Keine Teilnehmenden wurden hinzugefügt!';
 $string['welcome'] = 'Herzlich willkommen im Kurs';
@@ -184,8 +186,8 @@ $string['latest_post'] = 'Neuester Beitrag ';
 $string['discussion_news'] = 'Zur Nachricht';
 
 // Neue Section 0 Strategie
-$string['youareeditingsectioninfo'] = 'In diesem Kursformat werden Inhalte aus dieser Section zwar versteckt verarbeitet und können so genutzt werden. Keinerlei Inhalte werden aber in dieser Section selbst angezeigt.';
-$string['youareeditingsection'] = 'Achtung: Sie bearbeiten Section 0!';
+$string['youareeditingsectioninfo'] = 'In diesem Kursformat werden die Inhalte aus diesem Abschnitt versteckt verarbeitet. Sie können wie gewohnt für versteckte Inhalte in Moodle genutzt werden. Es werden jedoch keine Inhalte in diesem Abschnitt selbst angezeigt.';
+$string['youareeditingsection'] = 'Achtung: Sie bearbeiten einen versteckten Abschnitt!';
 
 // course competencies
 $string['mycoursecompetencies'] = 'Meine Kurskompetenzen';

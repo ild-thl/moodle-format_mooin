@@ -55,7 +55,8 @@ $string['available_badges'] = 'Available badges';
 $string['awarded_badges'] = 'Recently issued badges';
 $string['hide_tabs'] = 'Hide MOOC tabs';
 $string['highscore'] = 'Highscore';
-$string['in_course'] = 'In this course';
+$string['in_course'] = 'in this course';
+$string['in_course_sgl'] = 'in this course';
 $string['in_mooin4'] = 'On this platform';
 $string['lastday'] = 'In the last 24 hours';
 $string['lastweek'] = 'In the last 7 days';
@@ -169,6 +170,7 @@ $string['users'] = 'Users';
 $string['user_card_title'] = 'Course participants';
 //$string['participants'] = 'participants <span class="fw-400">in the course</span>';
 $string['user'] = 'participants';
+$string['singleuser'] = 'participant';
 $string['in_course'] = 'in the course';
 $string['new_user'] = 'Recently joined: ';
 $string['no_user'] = 'No participant added';
@@ -185,7 +187,7 @@ $string['latest_post'] = 'Latest post';
 $string['discussion_news'] = 'View post';
 
 // new Section 0
-$string['youareeditingsectioninfo'] = 'In this course format, content from this section is processed and can be used while hidden. However, no content is displayed in this section itself.';
+$string['youareeditingsectioninfo'] = 'In this course format, the contents of this section are processed hidden. You can use it as usual for hidden content in Moodle. However, no content is displayed in this section itself.';
 $string['youareeditingsection'] = 'Warning: You are editing Section 0!';
 
 // course competencies
