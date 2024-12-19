@@ -115,7 +115,7 @@ class section extends section_base {
         ))) {
 
             $data->showCompletionButton = true;
-            if (utils::get_section_progress($course->id, $this->section->id, $USER->id) == 100) {
+            if ($section_progress == 100) {
                 $data->isCompleted = true;
             }
         }
