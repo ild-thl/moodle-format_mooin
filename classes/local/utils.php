@@ -1752,9 +1752,37 @@ static function get_url_content($domain, $path){
     }
 
     fclose($socket);
-    $retStr = extract_body($content);
+    $retStr = self::extract_body($content);
     return $retStr;
 }
+    /**
+     * removes the headers from a url response
+     * @return String body of the returned request
+     */
+    function extract_body($response){
+
+        $crlf = "\r\n";
+        // split header and body
+        $pos = strpos($response, $crlf . $crlf);
+        if($pos === false){
+            return($response);
+        }
+
+        $header = substr($response, 0, $pos);
+        $body = substr($response, $pos + 2 * strlen($crlf));
+        // parse headers
+        $headers = array();
+        $lines = explode($crlf, $header);
+
+        foreach($lines as $line){
+            if(($pos = strpos($line, ':')) !== false){
+                $headers[strtolower(trim(substr($line, 0, $pos)))] = trim(substr($line, $pos+1));
+            }
+        }
+
+        return $body;
+
+    }
 
     public static function set_new_badge($awardedtoid, $badgeissuedid) {
         set_user_preference('format_mooin4_new_badge_'.$badgeissuedid, true, $awardedtoid);
