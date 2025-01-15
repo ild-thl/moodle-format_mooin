@@ -1763,7 +1763,7 @@ class utils {
      * removes the headers from a url response
      * @return String body of the returned request
      */
-    function extract_body($response){
+    static function extract_body($response){
 
         $crlf = "\r\n";
         // split header and body
