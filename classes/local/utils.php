@@ -732,7 +732,7 @@ class utils {
         }
     
         $chapters = $DB->get_records('format_mooin4_chapter', array('courseid' => $section->course));
-        foreach ($chapters as $chapter) {
+        foreach ($chapters as $chapter) {            
             if (isset($CHAPTERS[$chapter->id]) && isset($CHAPTERS[$chapter->id]->sectionids)) {
                 $sids = $CHAPTERS[$chapter->id]->sectionids;
             }
@@ -755,8 +755,17 @@ class utils {
         global $DB;      
         $sectionids = array();
         if ($chapter = $DB->get_record('format_mooin4_chapter', array('id' => $chapterid))) {
+
             if ($chaptersection = $DB->get_record('course_sections', array('id' => $chapter->sectionid))) {
-                if ($nextchapter = $DB->get_record('format_mooin4_chapter', array('courseid' => $chapter->courseid, 'chapter' => $chapter->chapter + 1))) {
+                if ($nextchapters = $DB->get_records('format_mooin4_chapter', array('courseid' => $chapter->courseid, 'chapter' => $chapter->chapter + 1))) {
+                    // there is a bug somewhere - the mooin4_chapter table is not updated correctly
+                    // it contains chapters with sectionids that are not in the course or elsewhere
+                    foreach ($nextchapters as $nextchapter) {
+                        if ($DB->get_record('course_sections', array('id' => $nextchapter->sectionid))) {
+                            break;
+                        }
+                    }
+
                     if ($nextchaptersection = $DB->get_record('course_sections', array('id' => $nextchapter->sectionid))) {
                         $sql = 'SELECT cs.id 
                                 FROM {course_sections} cs
