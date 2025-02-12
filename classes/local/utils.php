@@ -1012,7 +1012,8 @@ class utils {
         // no activities in this section?
         $coursemodules = $DB->get_records('course_modules', array('course' => $courseid,
                                                                        'deletioninprogress' => 0,
-                                                                       'section' => $sectionid));
+                                                                       'section' => $sectionid, 
+                                                                       'visible' => 1));
     
         $activities = 0;
     
