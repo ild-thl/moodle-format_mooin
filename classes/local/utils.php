@@ -761,7 +761,7 @@ class utils {
                     // there is a bug somewhere - the mooin4_chapter table is not updated correctly
                     // it contains chapters with sectionids that are not in the course or elsewhere
                     foreach ($nextchapters as $nextchapter) {
-                        if ($DB->get_record('course_sections', array('id' => $nextchapter->sectionid))) {
+                        if ($DB->get_record('course_sections', array('id' => $nextchapter->sectionid, 'course' => $chapter->courseid))) {
                             break;
                         }
                     }
