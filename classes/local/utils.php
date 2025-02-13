@@ -1003,30 +1003,50 @@ class utils {
     }
 
     public static function get_section_progress($courseid, $sectionid, $userid) {
-        global $DB, $CFG;
-    
+        global $DB, $CFG, $SESSION;
+
         require_once($CFG->libdir . '/gradelib.php');
-    
+
+        $sessionlang = $SESSION->lang;
+
         $percentage = 0;
-    
+
         // no activities in this section?
         $coursemodules = $DB->get_records('course_modules', array('course' => $courseid,
-                                                                       'deletioninprogress' => 0,
-                                                                       'section' => $sectionid, 
-                                                                       'visible' => 1));
-    
+                                                                    'deletioninprogress' => 0,
+                                                                    'section' => $sectionid,
+                                                                    'visible' => 1));
+
         $activities = 0;
-    
         foreach ($coursemodules as $coursemodule) {
+            $skip = FALSE;
             // cm has completion activated?
             if ($coursemodule->completion == 2) {
-                $activities++;
-    
+                // Check availability based on language user uses in session
+                if ($coursemodule->availability !== NULL) {
+                    $data = json_decode($coursemodule->availability, true);
+                    foreach ($data['c'] as $item) {
+                        if ($item['type'] === 'language' && $item['id'] === $sessionlang) {
+                            $activities++;
+                        } else {
+                            //skip this course module if the language doesn't match
+                            $skip = TRUE;
+                        }
+                    }
+                    //no availability set
+                } else {
+                    $activities++;
+                }
+
+                if ($skip === TRUE) {
+                    continue; // Continue to the next coursemodule
+                }
+
                 $modulename = '';
                 if ($module = $DB->get_record('modules', array('id' => $coursemodule->module))) {
                     $modulename = $module->name;
                 }
-    
+
                 // activity is hvp, we use the grades to get the individual progress
                 if ($modulename == 'hvp') {
                     $grading_info = grade_get_grades($courseid, 'mod', 'hvp', $coursemodule->instance, $userid);
@@ -1035,33 +1055,33 @@ class utils {
                     if (isset($grade) && $grade != 0) {
                         $percentage += 100 / ($grademax / $grade);
                     }
-                }
-                else {
+                } else {
                     // if completed, add to percentage
                     $sql = 'SELECT *
                               FROM {course_modules_completion}
                              WHERE coursemoduleid = :coursemoduleid
                                AND userid = :userid
                                AND completionstate != 0 ';
-                    $params = array('coursemoduleid' => $coursemodule->id,
-                                    'userid' => $userid);
+                    $params = array(
+                        'coursemoduleid' => $coursemodule->id,
+                        'userid' => $userid
+                    );
                     if ($DB->get_record_sql($sql, $params)) {
                         $percentage += 100;
                     }
                 }
             }
         }
-    
+
         // no activities with completion activated?
         if ($activities == 0) {
-            if (get_user_preferences('format_mooin4_section_completed_'.$sectionid, 0, $userid) == 1) {
+            if (get_user_preferences('format_mooin4_section_completed_' . $sectionid, 0, $userid) == 1) {
                 return 100;
-            }
-            else {
+            } else {
                 return 0;
             }
         }
-    
+
         return round($percentage / $activities);
     }
 
