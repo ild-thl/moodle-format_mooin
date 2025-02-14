@@ -171,7 +171,7 @@ class renderer extends section_renderer
 
     function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = array())
     {
-        $singlesection = course_get_format($course)->get_section_number();
+        $singlesection = course_get_format($course)->get_sectionnum();
         // Mod tinjohn - not sure why it is permitted for a a course overview. 
         //if ($singlesection) {
             if (

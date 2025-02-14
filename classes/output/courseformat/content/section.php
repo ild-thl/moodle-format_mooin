@@ -90,7 +90,7 @@ class section extends section_base {
 
 
 
-        if (!$this->format->get_section_number()) {
+        if (!$this->format->get_sectionnum()) {
             $addsectionclass = $format->get_output_classname('content\\addsection');
             $addsection = new $addsectionclass($format);
             $data->numsections = $addsection->export_for_template($output);
@@ -154,7 +154,7 @@ class section extends section_base {
         $headerdata = $header->export_for_template($output);
 
         // When a section is displayed alone the title goes over the section, not inside it.
-        if ($section->section != 0 && $section->section == $format->get_section_number()) {
+        if ($section->section != 0 && $section->section == $format->get_sectionnum()) {
             $data->singleheader = $headerdata;
         } else {
             $data->header = $headerdata;
