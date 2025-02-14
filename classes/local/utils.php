@@ -1007,7 +1007,7 @@ class utils {
 
         require_once($CFG->libdir . '/gradelib.php');
 
-        $sessionlang = $SESSION->lang;
+        $sessionlang = isset($SESSION->lang) ? $SESSION->lang : null;
 
         $percentage = 0;
 
