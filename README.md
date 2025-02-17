@@ -11,7 +11,7 @@ We need to install the **course format**
     
     git clone https://github.com/ild-thl/moodle-format_mooin.git mooin4
 
-After installation, switch to the branch mooin_405 for Moodle 4.4 systems. 
+After installation, switch to the branch mooin_405 for Moodle 4.5 systems. 
 
     cd mooin4
     git switch mooin_404
@@ -22,7 +22,7 @@ and the **MOOIN 4.0 Design**
     
     git clone https://github.com/ild-thl/moodle-theme_mooin.git mooin4
     
-After installation, switch to the branch mooin_404 for Moodle 4.4 systems. 
+After installation, switch to the branch mooin_404 for Moodle 4.5 systems. 
 
     cd mooin4
     git switch mooin_404
