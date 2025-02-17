@@ -29,6 +29,7 @@ require_once($CFG->dirroot . '/course/format/lib.php');
 use core\output\inplace_editable;
 use core\plugininfo\format;
 use format_mooin4\local\utils as utils;
+use core_external\external_api;
 
 /**
  * Main class for the Topics course format.
@@ -160,7 +161,12 @@ class format_mooin4 extends core_courseformat\base {
                 $url->param('section', $sectionno);
             } else {
                 if (empty($CFG->linkcoursesections) && !empty($options['navigation'])) {
-                    return null;
+                    // return null throws error call on method call out() on null 
+                    // In moodle/course/format/classes/output/local/state/section.php.
+                    // Do not return null;
+                    // Display section on separate page.
+                    $sectioninfo = $this->get_section($sectionno);
+                    return new moodle_url('/course/section.php', ['id' => $sectioninfo->id]);
                 }
                 $url->set_anchor('section-' . $sectionno);
             }
