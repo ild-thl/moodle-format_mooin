@@ -1,4 +1,5 @@
 # MOOIN 4.5 course format
+
 **MOOIN** stands for **Mobile Open Online Interactive eNvironment**.
 
 It is used as Moodle course format for Massive Open Online Courses (MOOCs).

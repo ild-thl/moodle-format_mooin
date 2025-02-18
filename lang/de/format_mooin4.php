@@ -185,6 +185,9 @@ $string['all_news'] = 'Newsforum';
 $string['latest_post'] = 'Neuester Beitrag ';
 $string['discussion_news'] = 'Zur Nachricht';
 
+$string['toggle_section_number_visibility'] = 'Lektions- und Kapitelnummerierung aktivieren';
+$string['toggle_section_number_visibility_help'] = 'Wenn Option aktiviert ist, werden vor den selbst vergebenen Kapitel- und Lektionsnamen "Kapitel x.x" oder "Lektion x.x" angezeigt';
+
 // Neue Section 0 Strategie
 $string['youareeditingsectioninfo'] = 'In diesem Kursformat werden die Inhalte aus diesem Abschnitt versteckt verarbeitet. Sie können wie gewohnt für versteckte Inhalte in Moodle genutzt werden. Es werden jedoch keine Inhalte in diesem Abschnitt selbst angezeigt.';
 $string['youareeditingsection'] = 'Achtung: Sie bearbeiten einen versteckten Abschnitt!';

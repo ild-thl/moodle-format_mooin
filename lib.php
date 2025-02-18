@@ -360,8 +360,12 @@ class format_mooin4 extends core_courseformat\base {
                     $lastvisitedsection = '';
 
                     if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
-
-                        $pre = get_string('chapter', 'format_mooin4') . ' ' . $chapter->chapter . ': ';
+                        //show breadcrump chapter prefix according settings
+                        if (get_toggle_section_number_visibility($courseid)  === 1) {
+                            $pre = get_string('chapter', 'format_mooin4') . ' ' . $chapter->chapter . ': ';
+                        } else {
+                            $pre = '';
+                        }
                         $title = $pre . get_section_name($this->get_course(), $section);
                         if (count(utils::get_sectionids_for_chapter($chapter->id)) > 0) {
                             $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
@@ -397,7 +401,12 @@ class format_mooin4 extends core_courseformat\base {
                         $chapter_node->add_class('chapter' . $completed . $lastvisitedsection);
                         // $chapter_node->add_class('collapsed');
                     } else {
-                        $pre = get_string('lesson', 'format_mooin4') . ' ' . utils::get_section_prefix($section) . ': ';
+                        //show breadcrump lesson prefix according settings
+                        if (get_toggle_section_number_visibility($courseid)  === 1) {
+                            $pre = get_string('lesson', 'format_mooin4') . ' ' . utils::get_section_prefix($section) . ': ';
+                        } else {
+                            $pre = '';
+                        }
                         if ($section->name) {
                             $title = $pre . get_section_name($this->get_course(), $section);
                         } else {
@@ -419,7 +428,7 @@ class format_mooin4 extends core_courseformat\base {
                         if ($parentchapter = utils::get_parent_chapter($section)) {
                             $chapter_node = $node->get($parentchapter->sectionid);
                         }
-                      
+
                         if ($parentchapter && $chapter_node) {
                             $section_node = $chapter_node->add(
                                 $title,
@@ -559,7 +568,7 @@ class format_mooin4 extends core_courseformat\base {
         ];
     }
 
-    
+
 
     /**
      * Adds format options elements to the course/section edit form.
@@ -872,7 +881,7 @@ class format_mooin4 extends core_courseformat\base {
 
 
 
-/**
+    /**
      * Returns if an specific section is visible to the current user.
      *
      * Formats can overrride this method to implement any special section logic.
@@ -893,6 +902,43 @@ class format_mooin4 extends core_courseformat\base {
         return $section->uservisible ||
             ($section->visible && !$section->available && !empty($section->availableinfo)) ||
             (!$section->visible && !$hidesections);
+    }
+
+
+    /**
+     * Returns the course format options, with the possibility to include additional options for the edit form.
+     *
+     * This method defines and retrieves the course format options, allowing formats to include custom settings
+     * and modify their behavior depending on whether they are being used for editing or display purposes.
+     *
+     * @param bool $foreditform Whether to include additional options specific to the edit form.
+     * @return array The course format options, including defaults and edit form specifics.
+     */
+    public function course_format_options($foreditform = false) {
+        static $courseformatoptions = false;
+        if ($courseformatoptions === false) {
+            $courseconfig = get_config('moodlecourse');
+            $courseformatoptions = [
+                'toggle_section_number_visibility' => [
+                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
+                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                ],
+            ];
+        }
+        if ($foreditform) {
+            if (!isset($courseformatoptions['toggle_section_number_visibility']['label'])) {
+                $courseformatoptionsedit = [
+                    'toggle_section_number_visibility' => [
+                        'label' => new lang_string('toggle_section_number_visibility', 'format_mooin4'),
+                        'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                        'help' => 'toggle_section_number_visibility',
+                        'help_component' => 'format_mooin4',
+                    ],
+                ];
+                $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
+            }
+        }
+        return $courseformatoptions;
     }
 }
 
@@ -945,3 +991,30 @@ function format_mooin4_pluginfile($course, $cm, $context, $filearea, $args, $for
     send_stored_file($file, 0, 0, $forcedownload, $options);
 }
 
+
+
+
+/**
+ * Holt die benutzerdefinierte Einstellung 'toggle_section_number_visibility' eines Kurses.
+ *
+ * @param int $courseid Die ID des Kurses.
+ * @return int Der Wert der Einstellung (1 für sichtbar, 0 für unsichtbar).
+ */
+function get_toggle_section_number_visibility($courseid) {
+    // Kursdaten abrufen
+    $course = get_course($courseid);
+
+    // Kursformat abrufen
+    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
+    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
+
+    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    if (isset($formatoptions['toggle_section_number_visibility'])) {
+        // Wenn der Wert gesetzt ist, diesen verwenden
+        return $formatoptions['toggle_section_number_visibility'];
+    } else {
+        // Andernfalls den Standardwert verwenden
+        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        return $courseformatoptions['toggle_section_number_visibility']['default'];
+    }
+}

@@ -186,6 +186,9 @@ $string['all_news'] = 'news forum';
 $string['latest_post'] = 'Latest post';
 $string['discussion_news'] = 'View post';
 
+$string['toggle_section_number_visibility'] = 'Activate section numbers';
+$string['toggle_section_number_visibility_help'] = 'If the option is enabled, "Chapter x.x" or "Lesson x.x" will be displayed before the custom chapter and lesson names.';
+
 // new Section 0
 $string['youareeditingsectioninfo'] = 'In this course format, the contents of this section are processed hidden. You can use it as usual for hidden content in Moodle. However, no content is displayed in this section itself.';
 $string['youareeditingsection'] = 'Warning: You are editing Section 0!';

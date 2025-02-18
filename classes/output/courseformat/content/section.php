@@ -88,7 +88,15 @@ class section extends section_base {
         //     set_user_preference('format_mooin4_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
         // }
 
-
+        //update course table prefix according course settings 
+        require_once(__DIR__ . '/../../../../lib.php');
+        $courseid = $course->id;
+        if (get_toggle_section_number_visibility($courseid) === 1) {
+            $data->sec_numb_visibility = true; 
+        }
+        else {
+            $data->sec_numb_visibility = false; 
+        }
 
         if (!$this->format->get_sectionnum()) {
             $addsectionclass = $format->get_output_classname('content\\addsection');
