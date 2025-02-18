@@ -104,27 +104,64 @@
         {{/discussions}}
         {{#participants}}
             <div class="participants-container d-flex flex-column">
-                {{#userCardList}}
-                    <span>
-                        <i class="bi bi-people-fill"></i>
-                        <a href="{{{participantsUrl}}}" class="caption">{{#str}} user_card_title, format_mooin4 {{/str}}</a>  
-                    </span>
-                        <div class="d-flex flex-column ml-4">
-                            <span>
-                                <span class="font-weight-bold">
-                                    {{{user_count}}} {{#str}} user, format_mooin4 {{/str}}
+                {{#has_capability}}
+                    {{#userCardList}}
+                        <span>
+                            <i class="bi bi-people-fill"></i>
+                            <a href="{{{participantsUrl}}}" class="caption">{{#str}} user_card_title, format_mooin4 {{/str}}</a>  
+                        </span>
+                            <div class="d-flex flex-column ml-4">
+                                <span>
+                                    <span class="font-weight-bold">
+                                        {{{user_count}}} 
+                                        {{^singleuser}}
+                                            {{#str}} user, format_mooin4 {{/str}}
+                                        {{/singleuser}}
+                                        {{#singleuser}}
+                                            {{#str}} singleuser, format_mooin4 {{/str}}
+                                        {{/singleuser}}
+                                    </span>
+                                    {{^singleuser}}
+                                        {{#str}} in_course, format_mooin4 {{/str}}
+                                    {{/singleuser}}
+                                    {{#singleuser}}
+                                        {{#str}} in_course_sgl, format_mooin4 {{/str}}
+                                    {{/singleuser}}
                                 </span>
-                                {{#str}} in_course, format_mooin4 {{/str}}
+                                <span class="font-weight-bold caption--sm"> {{#str}} new_user, format_mooin4 {{/str}} </span>
+                                <span class="caption--sm">
+                                    {{{user_list}}}
+                                </span>
+                            </div>
+                            <div class="participants-link mt-auto">
+                                <a href="{{{participantsUrl}}}">{{#str}} show_all_infos, format_mooin4 {{/str}}</a>
+                            </div>
+                    {{/userCardList}}
+                {{/has_capability}}
+                {{^has_capability}}
+                    {{#userCardList}}
+                        <span>
+                            <i class="bi bi-people-fill"></i>
+                            <span class="caption">
+                                {{#str}} user_card_title, format_mooin4 {{/str}} 
                             </span>
-                            <span class="font-weight-bold caption--sm"> {{#str}} new_user, format_mooin4 {{/str}} </span>
-                            <span class="caption--sm">
-                                {{{user_list}}}
+                        </span>
+                        <div class="no-participantscap-container">
+                            <div class="no-participantscap-img"></div>
+                            <span class="blue-info-text">
+                                    {{{user_count}}} 
+                                    {{^singleuser}}
+                                        {{#str}} user, format_mooin4 {{/str}}
+                                        {{#str}} in_course, format_mooin4 {{/str}}
+                                    {{/singleuser}}
+                                    {{#singleuser}}
+                                        {{#str}} singleuser, format_mooin4 {{/str}}
+                                        {{#str}} in_course_sgl, format_mooin4 {{/str}}
+                                    {{/singleuser}}
                             </span>
                         </div>
-                        <div class="participants-link mt-auto">
-                            <a href="{{{participantsUrl}}}">{{#str}} show_all_infos, format_mooin4 {{/str}}</a>
-                        </div>
-                {{/userCardList}}
+                    {{/userCardList}}
+                {{/has_capability}}
             </div>
         {{/participants}}
     </div>

@@ -33,4 +33,46 @@ if ($ADMIN->fulltree) {
         new lang_string('indentation_help', 'format_mooin4').'<br />'.$link,
         1
     ));
+
+    // Add a headline "Include in Navigation"
+    $settings->add(new admin_setting_heading(
+        'format_mooin4/include_in_navigation',
+        get_string('include_in_sidebar', 'format_mooin4'),
+        ''
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/news',
+        new lang_string('news', 'format_mooin4'), "",
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/badges',
+        new lang_string('badges', 'format_mooin4'), "",
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/certificates',
+        new lang_string('certificates', 'format_mooin4'),"",
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/coursecompetencies',
+        new lang_string('coursecompetencies', 'tool_lp'),"",
+        0
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/discussions',
+        new lang_string('discussions', 'format_mooin4'),"",
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/participants',
+        new lang_string('participants', 'format_mooin4'),"",
+        1
+    ));
+
+
+
+
 }

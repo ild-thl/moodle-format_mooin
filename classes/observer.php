@@ -118,7 +118,7 @@ class format_mooin4_observer {
         //require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $userid = $event->objectid;
         if ($user = $DB->get_record('user', array('id' => $userid))) {
-            if ($coordinates = get_user_coordinates($user)) {
+            if ($coordinates = utils::get_user_coordinates($user)) {
                 utils::set_user_coordinates($userid, $coordinates->lat, $coordinates->lng);
             }
         }
@@ -126,7 +126,7 @@ class format_mooin4_observer {
 
     public static function course_section_created(\core\event\course_section_created $event) {
         global $DB;
-
+        
         $courseid = $event->courseid;
 
         $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
@@ -144,5 +144,7 @@ class format_mooin4_observer {
 
             $DB->update_record('course_sections', $newsection);
         }
+       
     }
+
 }

@@ -98,7 +98,6 @@ export default class extends BaseComponent {
             }
             directMutations[action] = mutationReference;
         }
-        
     }
 
     /**
@@ -182,8 +181,6 @@ export default class extends BaseComponent {
         this._setAddSectionLocked(state.course.sectionlist.length > state.course.maxsections);
     }
 
-    
-
     /**
      * Handle a move section request.
      *
@@ -258,8 +255,8 @@ export default class extends BaseComponent {
         pendingModalReady.resolve();
     }
     async _requestCompleteSection(target, event) {
-        const sectionId = target.dataset.id;
-        this.reactive.dispatch('completeSection', target, event)
+        // Tinjohn const sectionId = target.dataset.id;
+        this.reactive.dispatch('completeSection', target, event);
     }
 
     async _requestSectionSetChapter(target, event) {

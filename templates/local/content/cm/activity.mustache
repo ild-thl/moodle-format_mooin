@@ -57,8 +57,14 @@
     }
 }}
 {{#moveicon}} {{{moveicon}}} {{/moveicon}}
+
+{{#hvpcontent}}
 <div class="activity-basis d-flex align-items-center">
-    <div class="d-flex flex-column flex-md-row w-100 align-self-start">
+{{/hvpcontent}}
+
+{{^hvpcontent}}
+<div class="activity-grid {{^hasname}}noname-grid{{/hasname}}">
+{{/hvpcontent}}
         {{^hasname}}
             {{$ core_courseformat/local/content/cm/badges }}
                 {{> core_courseformat/local/content/cm/badges }}
@@ -78,17 +84,25 @@
             </div>
         {{/afterlink}}
 
-        {{#activityinfo}}
-            <div class="activity-info mt-1 mt-md-0">
-                {{$ core_courseformat/local/content/cm/activity_info}}
-                    {{> core_courseformat/local/content/cm/activity_info}}
-                {{/ core_courseformat/local/content/cm/activity_info}}
-            </div>
-        {{/activityinfo}}
-    </div>
+
+        {{! Completion }}
+        {{^hvpcontent}}
+        {{#completion}}
+            {{#hascompletion}}
+                <div class="activity-completion align-self-start ml-3">
+                    {{$ core_courseformat/local/content/cm/activity_info}}
+                        {{> core_courseformat/local/content/cm/activity_info}}
+                    {{/ core_courseformat/local/content/cm/activity_info}}
+                </div>
+            {{/hascompletion}}
+        {{/completion}}
+        {{/hvpcontent}}
+
+    
+
 
     {{#controlmenu}}
-        <div class="activity-actions align-self-start">
+        <div class="activity-actions">
             {{$ core_courseformat/local/content/cm/controlmenu }}
                 {{> core_courseformat/local/content/cm/controlmenu }}
             {{/ core_courseformat/local/content/cm/controlmenu }}

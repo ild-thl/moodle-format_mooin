@@ -1,4 +1,5 @@
-# MOOIN 4.1 course format
+# MOOIN 4.5 course format
+
 **MOOIN** stands for **Mobile Open Online Interactive eNvironment**.
 
 It is used as Moodle course format for Massive Open Online Courses (MOOCs).
@@ -11,10 +12,10 @@ We need to install the **course format**
     
     git clone https://github.com/ild-thl/moodle-format_mooin.git mooin4
 
-After installation, switch to the branch mooin_401 for Moodle 4.1 systems. 
+After installation, switch to the branch mooin_405 for Moodle 4.5 systems. 
 
     cd mooin4
-    git switch mooin_401
+    git switch mooin_404
 
 and the **MOOIN 4.0 Design**
 
@@ -22,10 +23,10 @@ and the **MOOIN 4.0 Design**
     
     git clone https://github.com/ild-thl/moodle-theme_mooin.git mooin4
     
-After installation, switch to the branch mooin_401 for Moodle 4.1 systems. 
+After installation, switch to the branch mooin_404 for Moodle 4.5 systems. 
 
     cd mooin4
-    git switch mooin_401
+    git switch mooin_404
     
 For a better user experience we recommand to use **H5P** (https://moodle.org/plugins/mod_hvp). 
 

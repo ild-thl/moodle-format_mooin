@@ -168,7 +168,9 @@ $string['show_all_infos'] = ' Alle Infos anzeigen';
 $string['users'] = 'Teilnehmende';
 $string['user_card_title'] = 'Teilnehmende im Kurs';
 $string['user'] = 'Personen';
+$string['singleuser'] = 'Person';
 $string['in_course'] = 'nehmen teil';
+$string['in_course_sgl'] = 'nimmt teil';
 $string['new_user'] = 'Neu hinzugekommen: ';
 $string['no_user'] = 'Keine Teilnehmenden wurden hinzugefügt!';
 $string['welcome'] = 'Herzlich willkommen im Kurs';
@@ -185,3 +187,17 @@ $string['discussion_news'] = 'Zur Nachricht';
 
 $string['toggle_section_number_visibility'] = 'Lektions- und Kapitelnummerierung aktivieren';
 $string['toggle_section_number_visibility_help'] = 'Wenn Option aktiviert ist, werden vor den selbst vergebenen Kapitel- und Lektionsnamen "Kapitel x.x" oder "Lektion x.x" angezeigt';
+
+// Neue Section 0 Strategie
+$string['youareeditingsectioninfo'] = 'In diesem Kursformat werden die Inhalte aus diesem Abschnitt versteckt verarbeitet. Sie können wie gewohnt für versteckte Inhalte in Moodle genutzt werden. Es werden jedoch keine Inhalte in diesem Abschnitt selbst angezeigt.';
+$string['youareeditingsection'] = 'Achtung: Sie bearbeiten einen versteckten Abschnitt!';
+
+// course competencies
+$string['mycoursecompetencies'] = 'Meine Kurskompetenzen';
+
+// indentation
+$string['indentation'] = 'Einzug auf der Kursseite erlauben';
+$string['indentation_help'] = 'Erlauben Sie Lehrern und anderen Benutzern mit der Berechtigung zur Verwaltung von Aktivitäten, Elemente auf der Kursseite einzurücken.';
+
+// course side bar
+$string['include_in_sidebar'] = "In der Seitenleite anzeigen";
