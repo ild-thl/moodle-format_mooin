@@ -1570,7 +1570,7 @@ class utils {
                 FROM
                     {badge} b
                 WHERE b.type > 0
-                  AND b.status != 4 ';
+                  AND b.status = 1'; //status for available badges
 
         if ($courseid == 0) {
             $sql .= ' AND b.type = :type';
