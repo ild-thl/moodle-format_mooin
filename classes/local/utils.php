@@ -660,7 +660,6 @@ class utils {
                     if ($is_visible && $section_info->visible) {
 
                         $visible_count += 1;
-                        error_log($section->name . $visible_count);
                     }
                 }
             } else {
