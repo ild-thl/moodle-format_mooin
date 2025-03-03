@@ -759,29 +759,41 @@ class utils {
                 if ($nextchapters = $DB->get_records('format_mooin4_chapter', array('courseid' => $chapter->courseid, 'chapter' => $chapter->chapter + 1))) {
                     // there is a bug somewhere - the mooin4_chapter table is not updated correctly
                     // it contains chapters with sectionids that are not in the course or elsewhere
+                    $valid_nextchapter = null;
                     foreach ($nextchapters as $nextchapter) {
                         if ($DB->get_record('course_sections', array('id' => $nextchapter->sectionid, 'course' => $chapter->courseid))) {
+                            $valid_nextchapter = $nextchapter;
                             break;
                         }
                     }
 
-                    if ($nextchaptersection = $DB->get_record('course_sections', array('id' => $nextchapter->sectionid))) {
+                    if ($valid_nextchapter && $nextchaptersection = $DB->get_record('course_sections', array('id' => $valid_nextchapter->sectionid))) {
                         $sql = 'SELECT cs.id 
                                 FROM {course_sections} cs
                                 WHERE cs.course = :courseid
                                 AND cs.section > :chaptersection
                                 AND cs.section < :nextchaptersection;';
                         $params = array('courseid' => $chapter->courseid, 'chaptersection' => $chaptersection->section, 'nextchaptersection' => $nextchaptersection->section);
+                    } else {
+                        // Fall back to getting all sections after this one if no valid next chapter
+                        $sql = 'SELECT cs.id 
+                                FROM {course_sections} cs
+                                WHERE cs.course = :courseid
+                                AND cs.section > :chaptersection;';
+                        $params = array('courseid' => $chapter->courseid, 'chaptersection' => $chaptersection->section);
                     }
-                }   
-                else {
+                } else {
                     $sql = 'SELECT cs.id 
                             FROM {course_sections} cs
                             WHERE cs.course = :courseid
                             AND cs.section > :chaptersection;';
                     $params = array('courseid' => $chapter->courseid, 'chaptersection' => $chaptersection->section);
                 }
-                $sectionids = $DB->get_fieldset_sql($sql, $params);
+
+                // Only execute the query if SQL and params are properly defined
+                if ($sql && $params) {
+                    $sectionids = $DB->get_fieldset_sql($sql, $params);
+                }
             }
         }
         return $sectionids;
