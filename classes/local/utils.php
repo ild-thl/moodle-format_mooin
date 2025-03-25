@@ -608,11 +608,11 @@ class utils {
     public static function get_section_prefix($section) {
         global $DB, $USER, $SECTIONS;
 
-        /* Dann ändern sich ja nix 
+        
         if (isset($SECTIONS[$section->id]) && isset($SECTIONS[$section->id]->prefix)) {
             return $SECTIONS[$section->id]->prefix;
         }
-        */
+        
     
 
         $sectionprefix = '';
