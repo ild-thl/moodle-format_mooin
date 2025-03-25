@@ -608,10 +608,13 @@ class utils {
     public static function get_section_prefix($section) {
         global $DB, $USER, $SECTIONS;
 
+        /* Dann ändern sich ja nix 
         if (isset($SECTIONS[$section->id]) && isset($SECTIONS[$section->id]->prefix)) {
             return $SECTIONS[$section->id]->prefix;
         }
+        */
     
+
         $sectionprefix = '';
     
         // Get parent chapter of the section
@@ -619,7 +622,9 @@ class utils {
         if (is_object($parentchapter)) {
             // Get section ids for the chapter
             $sids = $parentchapter->sectionids;
-    
+            // Added tinjohn. 
+            // Die Section ids kommen in einer unterschiedlichen Reihenfolge mariadb vs postgres.
+
             // Get the course and format
             $course = get_course($section->course);
             $format = course_get_format($course);
@@ -772,21 +777,26 @@ class utils {
                                 FROM {course_sections} cs
                                 WHERE cs.course = :courseid
                                 AND cs.section > :chaptersection
-                                AND cs.section < :nextchaptersection;';
+                                AND cs.section < :nextchaptersection
+                                ORDER BY cs.section ASC;';
                         $params = array('courseid' => $chapter->courseid, 'chaptersection' => $chaptersection->section, 'nextchaptersection' => $nextchaptersection->section);
                     } else {
                         // Fall back to getting all sections after this one if no valid next chapter
                         $sql = 'SELECT cs.id 
                                 FROM {course_sections} cs
                                 WHERE cs.course = :courseid
-                                AND cs.section > :chaptersection;';
+                                AND cs.section > :chaptersection
+                                ORDER BY cs.section ASC;';
                         $params = array('courseid' => $chapter->courseid, 'chaptersection' => $chaptersection->section);
                     }
                 } else {
                     $sql = 'SELECT cs.id 
                             FROM {course_sections} cs
                             WHERE cs.course = :courseid
-                            AND cs.section > :chaptersection;';
+                            AND cs.section > :chaptersection
+                            ORDER BY cs.section ASC;';
+                            
+
                     $params = array('courseid' => $chapter->courseid, 'chaptersection' => $chaptersection->section);
                 }
 
