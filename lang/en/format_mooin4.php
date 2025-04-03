@@ -188,6 +188,8 @@ $string['discussion_news'] = 'View post';
 
 $string['toggle_section_number_visibility'] = 'Activate section numbers';
 $string['toggle_section_number_visibility_help'] = 'If the option is enabled, "Chapter x.x" or "Lesson x.x" will be displayed before the custom chapter and lesson names.';
+$string['show_right_sidebar'] = 'Enable right sidebar';
+$string['show_right_sidebar_help'] = 'If the option is enabled, the right sidebar will be displayed, allowing blocks (e.g. Learner Dashboard) to be added.';
 
 // new Section 0
 $string['youareeditingsectioninfo'] = 'In this course format, the contents of this section are processed hidden. You can use it as usual for hidden content in Moodle. However, no content is displayed in this section itself.';

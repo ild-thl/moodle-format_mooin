@@ -923,15 +923,25 @@ class format_mooin4 extends core_courseformat\base {
                     'default' => 1,  // Standardwert (0 = nicht ausgewählt)
                     'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
                 ],
+                'show_right_sidebar' => [
+                    'default' => 0,
+                    'type' => PARAM_BOOL,
+                ],
             ];
         }
         if ($foreditform) {
-            if (!isset($courseformatoptions['toggle_section_number_visibility']['label'])) {
+            if (!isset($courseformatoptions['toggle_section_number_visibility']['label']) || !isset($courseformatoptions['show_right_sidebar']['label'])) {
                 $courseformatoptionsedit = [
                     'toggle_section_number_visibility' => [
                         'label' => new lang_string('toggle_section_number_visibility', 'format_mooin4'),
                         'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
                         'help' => 'toggle_section_number_visibility',
+                        'help_component' => 'format_mooin4',
+                    ],
+                    'show_right_sidebar' => [
+                        'label' => new lang_string('show_right_sidebar', 'format_mooin4'),
+                        'element_type' => 'advcheckbox',
+                        'help' => 'show_right_sidebar',
                         'help_component' => 'format_mooin4',
                     ],
                 ];
@@ -1016,5 +1026,22 @@ function get_toggle_section_number_visibility($courseid) {
         // Andernfalls den Standardwert verwenden
         $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
         return $courseformatoptions['toggle_section_number_visibility']['default'];
+    }
+}
+
+// Holt die benutzerdefinierte Einstellung 'show_right_sidebar' eines Kurses.
+function get_show_right_sidebar($courseid) {
+    $course = get_course($courseid);
+    $format = course_get_format($courseid);
+    $formatoptions = $format->get_format_options();
+
+    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    if (isset($formatoptions['show_right_sidebar'])) {
+        // Wenn der Wert gesetzt ist, diesen verwenden
+        return $formatoptions['show_right_sidebar'];
+    } else {
+        // Andernfalls den Standardwert verwenden
+        $courseformatoptions = $format->course_format_options(false);
+        return $courseformatoptions['show_right_sidebar']['default'];
     }
 }
