@@ -15,7 +15,7 @@ We need to install the **course format**
 After installation, switch to the branch mooin_405 for Moodle 4.5 systems. 
 
     cd mooin4
-    git switch mooin_404
+    git switch mooin_405
 
 and the **MOOIN 4.0 Design**
 
@@ -26,7 +26,7 @@ and the **MOOIN 4.0 Design**
 After installation, switch to the branch mooin_404 for Moodle 4.5 systems. 
 
     cd mooin4
-    git switch mooin_404
+    git switch mooin_405
     
 For a better user experience we recommand to use **H5P** (https://moodle.org/plugins/mod_hvp). 
 
