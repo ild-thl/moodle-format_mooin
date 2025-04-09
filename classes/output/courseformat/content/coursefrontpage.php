@@ -103,6 +103,13 @@ class coursefrontpage implements renderable {
             $data->progressbar_visibility = false; 
         }
 
+        if (get_toggle_discussion_visibility($courseid) === 1) {
+            $data->discussion_visibility = true; 
+        }
+        else {
+            $data->discussion_visibility = false; 
+        }
+
 
 
         $coursecontext = context_course::instance($course->id);
