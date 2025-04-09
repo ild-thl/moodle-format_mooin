@@ -117,6 +117,29 @@ class coursefrontpage implements renderable {
             $data->badge_visibility = false; 
         }
 
+        if (get_toggle_certificate_visibility($courseid) === 1) {
+            $data->certificate_visibility = true; 
+        }
+        else {
+            $data->certificate_visibility = false; 
+        }
+        
+        if (
+            get_toggle_badge_visibility($courseid) === 1
+            && get_toggle_certificate_visibility($courseid) === 1
+        ) {
+            $data->badge_cert_visibility = true;
+        } else {
+            $data->badge_cert_visibility = false;
+        }
+
+        if (
+            get_toggle_badge_visibility($courseid) === 0
+            && get_toggle_certificate_visibility($courseid) === 0
+        ) {
+            $data->badge_cert_hide = true;
+        }
+
 
         $coursecontext = context_course::instance($course->id);
         if (has_capability('moodle/course:update', $coursecontext)) {

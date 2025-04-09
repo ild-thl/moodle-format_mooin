@@ -42,7 +42,9 @@ Example context (json):
             
         </div>
         <div class="coursefrontpage__side d-none d-lg-flex">
-            {{> format_mooin4/local/content/frontpage/badges_and_certificates }}
+            {{^badge_cert_hide}}
+                {{> format_mooin4/local/content/frontpage/badges_and_certificates }}
+            {{/badge_cert_hide}}
             {{> format_mooin4/local/content/frontpage/community }}
         </div> 
     </div>

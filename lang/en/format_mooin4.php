@@ -218,4 +218,5 @@ $string['toggle_discussion_visibility_help'] = 'When activated, the discussion t
 $string['toggle_userlist_visibility'] = 'Show User List in Community Section';
 $string['toggle_userlist_visibility_help'] = 'When activated, the user list of the last attending users is displayed in the community tile.';
 
-
+$string['only_badges'] = 'Badges';
+$string['only_certificates'] = 'Certificates';

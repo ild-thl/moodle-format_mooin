@@ -220,3 +220,6 @@ $string['toggle_discussion_visibility_help'] = 'Wenn aktiviert, wird die Diskuss
 
 $string['toggle_userlist_visibility'] = 'User-Liste anzeigen';
 $string['toggle_userlist_visibility_help'] = 'Wenn aktiviert, wird die User-Liste der neu hinzugekommenen User im Community-Bereich angezeigt.';
+
+$string['only_badges'] = 'Badges';
+$string['only_certificates'] = 'Zertifikate';

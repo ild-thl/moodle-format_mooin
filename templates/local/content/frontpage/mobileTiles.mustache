@@ -1,23 +1,35 @@
 
 
 <div class="mobile-tiles d-flex d-sm-none flex-column">
-    <h2>{{#str}} badges_certificates, format_mooin4 {{/str}}</h2>
-    <div class="d-flex badges-certificates-mobile mb-4">
+{{^badge_cert_hide}}
+    {{^certificate_visibility}}
+        <h2>{{#str}} only_badges, format_mooin4 {{/str}}</h2>
+    {{/certificate_visibility}}
+    {{^badge_visibility}}
+        <h2>{{#str}} only_certificates, format_mooin4 {{/str}}</h2>
+    {{/badge_visibility}}
+    {{#badge_cert_visibility}}
+        <h2>{{#str}} badges_certificates, format_mooin4 {{/str}}</h2>
+    {{/badge_cert_visibility}}    <div class="d-flex badges-certificates-mobile mb-4">
     {{#badges}}
-        <a href="{{{badgesUrl}}}" class="mooin4-btn">
-            <i class="bi bi-trophy-fill mr-1"></i>
-            {{#str}} course_badges, format_mooin4{{/str}}
-        </a>
+        {{#badge_visibility}}
+            <a href="{{{badgesUrl}}}" class="mooin4-btn">
+                <i class="bi bi-trophy-fill mr-1"></i>
+                {{#str}} course_badges, format_mooin4{{/str}}
+            </a>
+        {{/badge_visibility}}
     {{/badges}}
     {{#certificates}}
-        <a href="{{{certificatesUrl}}}" class="mooin4-btn">
-            <i class="bi bi-award-fill mr-1"></i>
-            {{#str}} my_certificate, format_mooin4{{/str}}
-        </a>
+        {{#certificate_visibility}}
+            <a href="{{{certificatesUrl}}}" class="mooin4-btn">
+                <i class="bi bi-award-fill mr-1"></i>
+                {{#str}} my_certificate, format_mooin4{{/str}}
+            </a>
+        {{/certificate_visibility}}
     {{/certificates}}
     </div>
     <div class="seperator m-0 mb-4"></div>
-
+{{/badge_cert_hide}}
 
 
     <h2>{{#str}} community, format_mooin4 {{/str}}</h2>
