@@ -36,9 +36,11 @@
                 <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-newspaper"></i> {{#str}} news, format_mooin4 {{/str}}</a>
             {{/newsforum}}
         {{/newssection_visibility}}
-        {{#badges}}
-            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-trophy-fill"></i> {{#str}} badges, format_mooin4 {{/str}}</a>
-        {{/badges}}
+        {{#badge_visibility}}
+            {{#badges}}
+                <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-trophy-fill"></i> {{#str}} badges, format_mooin4 {{/str}}</a>
+            {{/badges}}
+        {{/badge_visibility}}
         {{#certificates}}
             <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-award-fill"></i> {{#str}} certificates, format_mooin4 {{/str}}</a>
         {{/certificates}}

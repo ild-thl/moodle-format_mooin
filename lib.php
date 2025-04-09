@@ -1114,3 +1114,15 @@ function get_toggle_discussion_visibility($courseid) {
         return $courseformatoptions['toggle_discussion_visibility']['default'];
     }
 }
+
+function get_toggle_badge_visibility($courseid) {
+    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
+    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
+    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    if (isset($formatoptions['toggle_badge_visibility'])) {
+        return $formatoptions['toggle_badge_visibility'];
+    } else {
+        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        return $courseformatoptions['toggle_badge_visibility']['default'];
+    }
+}
