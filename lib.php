@@ -923,6 +923,30 @@ class format_mooin4 extends core_courseformat\base {
                     'default' => 1,  // Standardwert (0 = nicht ausgewählt)
                     'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
                 ],
+                'toggle_newssection_visibility' => [
+                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
+                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                ],
+                'toggle_progressbar_visibility' => [
+                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
+                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                ],
+                'toggle_badge_visibility' => [
+                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
+                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                ],
+                'toggle_certificate_visibility' => [
+                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
+                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                ],
+                'toggle_discussion_visibility' => [
+                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
+                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                ],
+                'toggle_userlist_visibility' => [
+                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
+                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                ],
             ];
         }
         if ($foreditform) {
@@ -934,6 +958,42 @@ class format_mooin4 extends core_courseformat\base {
                         'help' => 'toggle_section_number_visibility',
                         'help_component' => 'format_mooin4',
                     ],
+                    'toggle_newssection_visibility' => [
+                    'label' => new lang_string('toggle_newssection_visibility', 'format_mooin4'),
+                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                    'help' => 'toggle_newssection_visibility',
+                    'help_component' => 'format_mooin4',
+                ],
+                'toggle_progressbar_visibility' => [
+                    'label' => new lang_string('toggle_progressbar_visibility', 'format_mooin4'),
+                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                    'help' => 'toggle_progressbar_visibility',
+                    'help_component' => 'format_mooin4',
+                ],
+                'toggle_badge_visibility' => [
+                    'label' => new lang_string('toggle_badge_visibility', 'format_mooin4'),
+                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                    'help' => 'toggle_badge_visibility',
+                    'help_component' => 'format_mooin4',
+                ],
+                'toggle_certificate_visibility' => [
+                    'label' => new lang_string('toggle_certificate_visibility', 'format_mooin4'),
+                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                    'help' => 'toggle_certificate_visibility',
+                    'help_component' => 'format_mooin4',
+                ],
+                'toggle_discussion_visibility' => [
+                    'label' => new lang_string('toggle_discussion_visibility', 'format_mooin4'),
+                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                    'help' => 'toggle_discussion_visibility',
+                    'help_component' => 'format_mooin4',
+                ],
+                'toggle_userlist_visibility' => [
+                    'label' => new lang_string('toggle_userlist_visibility', 'format_mooin4'),
+                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                    'help' => 'toggle_userlist_visibility',
+                    'help_component' => 'format_mooin4',
+                ],
                 ];
                 $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
             }

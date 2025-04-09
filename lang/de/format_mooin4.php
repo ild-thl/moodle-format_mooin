@@ -201,3 +201,22 @@ $string['indentation_help'] = 'Erlauben Sie Lehrern und anderen Benutzern mit de
 
 // course side bar
 $string['include_in_sidebar'] = "In der Seitenleite anzeigen";
+
+//course menu settings
+$string['toggle_newssection_visibility'] = 'News-Bereich anzeigen';
+$string['toggle_newssection_visibility_help'] = 'Wenn aktiviert, wird der Newsbereich mit einem Preview des neuesten Newsbeitrags angezeigt.';
+
+$string['toggle_progressbar_visibility'] = 'Progressbar anzeigen';
+$string['toggle_progressbar_visibility_help'] = 'Wenn aktiviert, wird der Progressbar angezeigt.';
+
+$string['toggle_badge_visibility'] = 'Badge-Kachel anzeigen';
+$string['toggle_badge_visibility_help'] = 'Wenn aktiviert, wird die Badge-Kachel im Kurs angezeigt.';
+
+$string['toggle_certificate_visibility'] = 'Zertifikate-Kachel anzeigen';
+$string['toggle_certificate_visibility_help'] = 'Wenn aktiviert, wird die Zertifikatskachel im Kurs angezeigt.';
+
+$string['toggle_discussion_visibility'] = 'Diskussionskachel anzeigen';
+$string['toggle_discussion_visibility_help'] = 'Wenn aktiviert, wird die Diskussionskachel im Community-Bereich angezeigt.';
+
+$string['toggle_userlist_visibility'] = 'User-Liste anzeigen';
+$string['toggle_userlist_visibility_help'] = 'Wenn aktiviert, wird die User-Liste der neu hinzugekommenen User im Community-Bereich angezeigt.';

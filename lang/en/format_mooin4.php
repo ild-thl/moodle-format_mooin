@@ -199,3 +199,23 @@ $string['mycoursecompetencies'] = 'My course competencies';
 // course side bar
 $string['include_in_sidebar'] = 'Display in sidebar';
 
+//course menu settings
+$string['toggle_newssection_visibility'] = 'Show News Section with Post-Preview';
+$string['toggle_newssection_visibility_help'] = 'When activated, the news section with preview of the last post is displayed in the course.';
+
+$string['toggle_progressbar_visibility'] = 'Show Progressbar';
+$string['toggle_progressbar_visibility_help'] = 'When activated, the progress bar is displayed in the course.';
+
+$string['toggle_badge_visibility'] = 'Show Badge Tile';
+$string['toggle_badge_visibility_help'] = 'When activated, the badge tile is displayed in the course.';
+
+$string['toggle_certificate_visibility'] = 'Show Certificate Tile';
+$string['toggle_certificate_visibility_help'] = 'When activated, the certificate tile is displayed in the course.';
+
+$string['toggle_discussion_visibility'] = 'Show Discussion Tile in Community Section';
+$string['toggle_discussion_visibility_help'] = 'When activated, the discussion tile is displayed in the community tile.';
+
+$string['toggle_userlist_visibility'] = 'Show User List in Community Section';
+$string['toggle_userlist_visibility_help'] = 'When activated, the user list of the last attending users is displayed in the community tile.';
+
+
