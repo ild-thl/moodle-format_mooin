@@ -31,9 +31,11 @@
         {{#overview}}
             <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-signpost-2-fill"></i> {{#str}} course_overview, format_mooin4 {{/str}}</a>
         {{/overview}}
-        {{#newsforum}}
-            <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-newspaper"></i> {{#str}} news, format_mooin4 {{/str}}</a>
-        {{/newsforum}}
+        {{#newssection_visibility}}
+            {{#newsforum}}
+                <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-newspaper"></i> {{#str}} news, format_mooin4 {{/str}}</a>
+            {{/newsforum}}
+        {{/newssection_visibility}}
         {{#badges}}
             <a href="{{url}}" class="{{#active}}active{{/active}}"><i class="bi bi-trophy-fill"></i> {{#str}} badges, format_mooin4 {{/str}}</a>
         {{/badges}}

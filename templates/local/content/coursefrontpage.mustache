@@ -21,10 +21,12 @@ Example context (json):
                 {{> format_mooin4/local/content/frontpage/header }}
             {{/header}}
             <div class="mobile-bg">
-                {{#news_section}}
-                {{> format_mooin4/local/content/frontpage/news_section }}                
-                {{/news_section}}
-                
+                {{#newssection_visibility}}
+                    {{#news_section}}
+                    {{> format_mooin4/local/content/frontpage/news_section }}                
+                    {{/news_section}}
+                {{/newssection_visibility}}
+                {{#progressbar_visibility}}
                 {{#courseprogress}}
                     {{> format_mooin4/local/content/frontpage/courseprogress }}
                 {{/courseprogress}}

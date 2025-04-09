@@ -1078,3 +1078,15 @@ function get_toggle_section_number_visibility($courseid) {
         return $courseformatoptions['toggle_section_number_visibility']['default'];
     }
 }
+
+function get_toggle_newssection_visibility($courseid) {
+    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
+    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
+    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    if (isset($formatoptions['toggle_newssection_visibility'])) {
+        return $formatoptions['toggle_newssection_visibility'];
+    } else {
+        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        return $courseformatoptions['toggle_newssection_visibility']['default'];
+    }
+}
