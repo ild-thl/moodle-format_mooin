@@ -96,6 +96,13 @@ class coursefrontpage implements renderable {
            $data->newssection_visibility = false; 
         }
 
+        if (get_toggle_progressbar_visibility($courseid) === 1) {
+            $data->progressbar_visibility = true; 
+        }
+        else {
+            $data->progressbar_visibility = false; 
+        }
+
 
 
         $coursecontext = context_course::instance($course->id);
