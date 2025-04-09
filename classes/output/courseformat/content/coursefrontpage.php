@@ -110,13 +110,29 @@ class coursefrontpage implements renderable {
             $data->discussion_visibility = false; 
         }
 
+        if (get_toggle_userlist_visibility($courseid) === 1) {
+            $data->userlist_visibility = true; 
+        }
+        else {
+            $data->userlist_visibility = false; 
+        }
+
+        if (
+            get_toggle_discussion_visibility($courseid) === 0
+            && get_toggle_userlist_visibility($courseid) === 0
+        ) {
+            $data->community_visibility = false;
+        } else {
+            $data->community_visibility = true;
+        }
+
         if (get_toggle_badge_visibility($courseid) === 1) {
             $data->badge_visibility = true; 
         }
         else {
             $data->badge_visibility = false; 
         }
-
+  
         if (get_toggle_certificate_visibility($courseid) === 1) {
             $data->certificate_visibility = true; 
         }
@@ -139,6 +155,16 @@ class coursefrontpage implements renderable {
         ) {
             $data->badge_cert_hide = true;
         }
+
+        if (
+            get_toggle_badge_visibility($courseid) === 0
+            && get_toggle_certificate_visibility($courseid) === 0
+            && get_toggle_discussion_visibility($courseid) === 0
+            && get_toggle_userlist_visibility($courseid) === 0
+        ) {
+            $data->hide_coursefrontpage_side = true;
+        }
+        
 
 
         $coursecontext = context_course::instance($course->id);
