@@ -41,8 +41,13 @@ Example context (json):
             </div>
             
         </div>
-        <div class="coursefrontpage__side d-none d-lg-flex">
-            {{^badge_cert_hide}}
+        {{#hide_coursefrontpage_side}}
+            <div class="hide-block">
+        {{/hide_coursefrontpage_side}}
+        {{^hide_coursefrontpage_side}}
+            <div class="coursefrontpage__side d-none d-lg-flex">
+        {{/hide_coursefrontpage_side}}            
+        {{^badge_cert_hide}}
                 {{> format_mooin4/local/content/frontpage/badges_and_certificates }}
             {{/badge_cert_hide}}
             {{> format_mooin4/local/content/frontpage/community }}
