@@ -382,7 +382,7 @@ class utils {
         global $DB, $USER;
 
         // SQL query to get all unread posts
-        $sql = 'SELECT fp.*, f.id as forumid, fd.groupid, fd.id as discussionid, cm.id as cmid
+        $sql = 'SELECT DISTINCT fp.id AS uniqueid, fp.*, f.id as forumid, fd.groupid, fd.id as discussionid, cm.id as cmid
                 FROM {forum_posts} as fp
                 JOIN {forum_discussions} as fd ON fp.discussion = fd.id
                 JOIN {forum} as f ON fd.forum = f.id
@@ -409,7 +409,7 @@ class utils {
             'wait' => time() - 1800
         );
 
-        $unreadposts = $DB->get_records_sql($sql, $params);
+        $unreadposts = $DB->get_recordset_sql($sql, $params);
         $visible_unread_posts = 0;
 
         // Check visibility of each post
