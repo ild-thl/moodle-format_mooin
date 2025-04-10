@@ -220,3 +220,7 @@ $string['toggle_userlist_visibility_help'] = 'When activated, the user list of t
 
 $string['only_badges'] = 'Badges';
 $string['only_certificates'] = 'Certificates';
+
+$string['indentation_help'] = 'Allow teachers and other users with permission to manage activities to indent items on the course page.';
+$string['indentation'] = 'Allow indentation on the course page';
+
