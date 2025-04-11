@@ -200,6 +200,9 @@ $string['mycoursecompetencies'] = 'My course competencies';
 $string['include_in_sidebar'] = 'Display in sidebar';
 
 //course menu settings
+$string['toggle_courseindex_visibility'] = 'Show Course Index';
+$string['toggle_courseindex_visibility_help'] = 'When activated, the course index is displayed in the course.';
+
 $string['toggle_newssection_visibility'] = 'Show News Section with Post-Preview';
 $string['toggle_newssection_visibility_help'] = 'When activated, the news section with preview of the last post is displayed in the course.';
 

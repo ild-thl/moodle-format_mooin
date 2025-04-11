@@ -203,6 +203,9 @@ $string['indentation_help'] = 'Erlauben Sie Lehrern und anderen Benutzern mit de
 $string['include_in_sidebar'] = "In der Seitenleite anzeigen";
 
 //course menu settings
+$string['toggle_courseindex_visibility'] = 'Kursindex anzeigen';
+$string['toggle_courseindex_visibility_help'] = 'Wenn aktiviert, wird der Kursindex auf der linken Seite angezeigt.';
+
 $string['toggle_newssection_visibility'] = 'News-Bereich anzeigen';
 $string['toggle_newssection_visibility_help'] = 'Wenn aktiviert, wird der Newsbereich mit einem Preview des neuesten Newsbeitrags angezeigt.';
 

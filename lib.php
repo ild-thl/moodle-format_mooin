@@ -52,7 +52,13 @@ class format_mooin4 extends core_courseformat\base {
     }
 
     public function uses_course_index() {
-        return true;
+        $course = $this->get_course();
+        $courseid = $course->id;
+        if (get_toggle_courseindex_visibility($courseid) === 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function uses_indentation(): bool {
@@ -614,7 +620,7 @@ class format_mooin4 extends core_courseformat\base {
      */
     public function update_course_format_options($data, $oldcourse = null) {
         global $DB;
-        
+
         // Function update_course_format_options for format_topics_test.php only.
         if (!$oldcourse) {
             // Add first chapter, there must be no sections without parent chapter
@@ -923,6 +929,10 @@ class format_mooin4 extends core_courseformat\base {
                     'default' => 1,  // Standardwert (0 = nicht ausgewählt)
                     'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
                 ],
+                'toggle_courseindex_visibility' => [
+                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
+                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                ],
                 'toggle_newssection_visibility' => [
                     'default' => 1,  // Standardwert (0 = nicht ausgewählt)
                     'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
@@ -958,42 +968,48 @@ class format_mooin4 extends core_courseformat\base {
                         'help' => 'toggle_section_number_visibility',
                         'help_component' => 'format_mooin4',
                     ],
+                    'toggle_courseindex_visibility' => [
+                        'label' => new lang_string('toggle_courseindex_visibility', 'format_mooin4'),
+                        'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                        'help' => 'toggle_courseindex_visibility',
+                        'help_component' => 'format_mooin4',
+                    ],
                     'toggle_newssection_visibility' => [
-                    'label' => new lang_string('toggle_newssection_visibility', 'format_mooin4'),
-                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
-                    'help' => 'toggle_newssection_visibility',
-                    'help_component' => 'format_mooin4',
-                ],
-                'toggle_progressbar_visibility' => [
-                    'label' => new lang_string('toggle_progressbar_visibility', 'format_mooin4'),
-                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
-                    'help' => 'toggle_progressbar_visibility',
-                    'help_component' => 'format_mooin4',
-                ],
-                'toggle_badge_visibility' => [
-                    'label' => new lang_string('toggle_badge_visibility', 'format_mooin4'),
-                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
-                    'help' => 'toggle_badge_visibility',
-                    'help_component' => 'format_mooin4',
-                ],
-                'toggle_certificate_visibility' => [
-                    'label' => new lang_string('toggle_certificate_visibility', 'format_mooin4'),
-                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
-                    'help' => 'toggle_certificate_visibility',
-                    'help_component' => 'format_mooin4',
-                ],
-                'toggle_discussion_visibility' => [
-                    'label' => new lang_string('toggle_discussion_visibility', 'format_mooin4'),
-                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
-                    'help' => 'toggle_discussion_visibility',
-                    'help_component' => 'format_mooin4',
-                ],
-                'toggle_userlist_visibility' => [
-                    'label' => new lang_string('toggle_userlist_visibility', 'format_mooin4'),
-                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
-                    'help' => 'toggle_userlist_visibility',
-                    'help_component' => 'format_mooin4',
-                ],
+                        'label' => new lang_string('toggle_newssection_visibility', 'format_mooin4'),
+                        'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                        'help' => 'toggle_newssection_visibility',
+                        'help_component' => 'format_mooin4',
+                    ],
+                    'toggle_progressbar_visibility' => [
+                        'label' => new lang_string('toggle_progressbar_visibility', 'format_mooin4'),
+                        'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                        'help' => 'toggle_progressbar_visibility',
+                        'help_component' => 'format_mooin4',
+                    ],
+                    'toggle_badge_visibility' => [
+                        'label' => new lang_string('toggle_badge_visibility', 'format_mooin4'),
+                        'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                        'help' => 'toggle_badge_visibility',
+                        'help_component' => 'format_mooin4',
+                    ],
+                    'toggle_certificate_visibility' => [
+                        'label' => new lang_string('toggle_certificate_visibility', 'format_mooin4'),
+                        'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                        'help' => 'toggle_certificate_visibility',
+                        'help_component' => 'format_mooin4',
+                    ],
+                    'toggle_discussion_visibility' => [
+                        'label' => new lang_string('toggle_discussion_visibility', 'format_mooin4'),
+                        'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                        'help' => 'toggle_discussion_visibility',
+                        'help_component' => 'format_mooin4',
+                    ],
+                    'toggle_userlist_visibility' => [
+                        'label' => new lang_string('toggle_userlist_visibility', 'format_mooin4'),
+                        'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                        'help' => 'toggle_userlist_visibility',
+                        'help_component' => 'format_mooin4',
+                    ],
                 ];
                 $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
             }
@@ -1148,5 +1164,17 @@ function get_toggle_userlist_visibility($courseid) {
     } else {
         $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
         return $courseformatoptions['toggle_userlist_visibility']['default'];
+    }
+}
+
+function get_toggle_courseindex_visibility($courseid) {
+    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
+    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
+    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    if (isset($formatoptions['toggle_courseindex_visibility'])) {
+        return $formatoptions['toggle_courseindex_visibility'];
+    } else {
+        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        return $courseformatoptions['toggle_courseindex_visibility']['default'];
     }
 }
