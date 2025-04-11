@@ -73,6 +73,32 @@ if ($ADMIN->fulltree) {
     ));
 
 
+    // Add a headline "Include in Navigation"
+    $settings->add(new admin_setting_heading(
+        'format_mooin4/global_tile_visibility',
+        get_string('global_tile_visibility', 'format_mooin4'),
+        ''
+    ));
 
-
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/toggle_global_badge_visibility',
+        new lang_string('toggle_global_badge_visibility', 'format_mooin4'), "",
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/toggle_global_certificate_visibility',
+        new lang_string('toggle_global_certificate_visibility', 'format_mooin4'), "",
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/toggle_global_discussion_visibility',
+        new lang_string('toggle_global_discussion_visibility', 'format_mooin4'),"",
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/toggle_global_userlist_visibility',
+        new lang_string('toggle_global_userlist_visibility', 'format_mooin4'),"",
+        1
+    ));
+   
 }

@@ -114,21 +114,33 @@ class renderer extends section_renderer {
             //check course settings 
             require_once(__DIR__ . '/../../../../lib.php');
             $courseid = $course->id;
-            if (get_config('format_mooin4', "badges") && get_toggle_badge_visibility($courseid) === 1) {
+            if (
+                get_config('format_mooin4', "badges")
+                && get_toggle_badge_visibility($courseid) === 1
+                && get_config('format_mooin4', "toggle_global_badge_visibility")
+            ) {
                 $data['badges'] = [
                     'url' => $badgesUrl,
                     'active' => $this->check_if_active($badgesUrl),
                 ];
             }
 
-            if (get_config('format_mooin4', "certificates") && get_toggle_certificate_visibility($courseid) === 1) {
+            if (
+                get_config('format_mooin4', "certificates")
+                && get_toggle_certificate_visibility($courseid) === 1
+                && get_config('format_mooin4', "toggle_global_certificate_visibility")
+            ) {
                 $data['certificates'] = [
                     'url' => $certificatesUrl,
                     'active' => $this->check_if_active($certificatesUrl),
                 ];
             }
 
-            if (get_config('format_mooin4', "discussions") && get_toggle_discussion_visibility($courseid) === 1) {
+            if (
+                get_config('format_mooin4', "discussions")
+                && get_toggle_discussion_visibility($courseid) === 1
+                && get_config('format_mooin4', "toggle_global_discussion_visibility")
+            ) {
                 $data['discussions'] = [
                     'url' => $discussionsUrl,
                     'active' => $this->check_if_active($discussionsUrl),
@@ -164,6 +176,7 @@ class renderer extends section_renderer {
                 $has_capability
                 && get_config('format_mooin4', 'participants')
                 && get_toggle_userlist_visibility($courseid) === 1
+                && get_config('format_mooin4', 'toggle_global_userlist_visibility') === 1
             ) {
                 $data['participants'] = [
                     'url' => $participantsUrl,

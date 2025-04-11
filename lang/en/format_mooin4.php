@@ -197,7 +197,13 @@ $string['youareeditingsection'] = 'Warning: You are editing Section 0!';
 $string['mycoursecompetencies'] = 'My course competencies';
 
 // course side bar
-$string['include_in_sidebar'] = 'Display in sidebar';
+$string['include_in_sidebar'] = 'Display links in course index';
+$string['global_tile_visibility'] = 'Display mooin tiles in course globally';
+$string['toggle_global_badge_visibility'] = 'Toggle global badge tile visibility';
+$string['toggle_global_certificate_visibility'] = 'Toggle global certificate tile visibility';
+$string['toggle_global_discussion_visibility'] = 'Toggle global discussion tile visibility';
+$string['toggle_global_userlist_visibility'] = 'Toggle global userlist tile visibility';
+
 
 //course menu settings
 $string['toggle_courseindex_visibility'] = 'Show Course Index';
