@@ -36,3 +36,10 @@ First check if changing Designs in courses is enabled. Go to **Site Administrati
 Then create a new course or navigate to an existing course. In the course settings go to **Course format** and choose **Mooin 4.x course format**. Then go to **Appearance > Force theme** and choose **Mooin 4.x**.
 
 To add more chapters to the course, **turn editig on**. Move to the bottom of the course overview site and click **Add sections**. Change the name and move it to the required position. Click **Edit** at the right side of the lesson and choose **Set as chapter title**.
+
+## mooin_405 Features and bug fixes
+Features: 
+- change mooin4 theme colors by selecting a color palate or choose custom colors
+- display/hide section and chapter numbers by using checkmark in course settings
+Bug fixes:
+- only show available badges in badge tile 
