@@ -89,7 +89,9 @@
         >
         <i class="bi bi-caret-right-fill" data-for="caret"></i>
         <span>
-        {{#str}}chapter, format_mooin4{{/str}} <span data-for="index_number" data-id="{{id}}">{{{isChapter}}}</span>:
+            {{#sec_numb_visibility}}
+                {{#str}}chapter, format_mooin4{{/str}} <span data-for="index_number" data-id="{{id}}">{{{isChapter}}}</span>:
+            {{/sec_numb_visibility}}
             {{{title}}}
         </span>
         </span>
@@ -129,8 +131,10 @@
             data-for="section_title"
             tabindex="-1"
         >
-       
-          <span data-for="index_number" data-id="{{id}}">{{{prefix}}}</span>: 
+               
+            {{#sec_numb_visibility}}
+            <span data-for="index_number" data-id="{{id}}">{{{prefix}}}</span>: 
+            {{/sec_numb_visibility}}
             {{{title}}}
             
         </a>

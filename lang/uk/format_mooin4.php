@@ -169,7 +169,9 @@ $string['show_all_infos'] = ' Показати всю інформацію';
 $string['users'] = 'Учасники';
 $string['user_card_title'] = 'Учасники курсу';
 $string['user'] = 'Люди';
+$string['singleuser'] = 'людина';
 $string['in_course'] = 'беруть участь';
+$string['in_course_sgl'] = 'беруть участь';
 $string['new_user'] = 'Нещодавно доданий: ';
 $string['no_user'] = 'Учасників не додано!';
 $string['welcome'] = 'Ласкаво просимо на курс';
@@ -185,7 +187,7 @@ $string['latest_post'] = 'Останнє повідомлення';
 $string['discussion_news'] = 'До новин';
 
 // Neue Section 0 Strategie
-$string['youareeditingsectioninfo'] = 'У цьому форматі курсу вміст цього розділу обробляється та може використовуватися прихованим. Однак жоден вміст не відображається в самому цьому розділі.';
+$string['youareeditingsectioninfo'] = 'У цьому форматі курсу вміст цього розділу обробляється приховано. Ви можете використовувати його, як зазвичай, для прихованого вмісту в Moodle. Однак, у цьому розділі сам вміст не відображається.';
 $string['youareeditingsection'] = 'Увага: Ви редагуєте Розділ 0!';
 
 // Kurskompetenzen
