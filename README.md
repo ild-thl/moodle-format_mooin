@@ -43,4 +43,5 @@ Features:
 - display/hide section and chapter numbers by using checkmark in course settings
 
 Bug fixes:
-- only show available badges in badge tile 
+- only show available badges in badge tile
+- only calculate course/ section progress by using visible activities/activities of same language
