@@ -39,7 +39,7 @@ To add more chapters to the course, **turn editig on**. Move to the bottom of th
 
 ## mooin_405 Features and bug fixes
 Features: 
-- change mooin4 theme colors by selecting a color palate or choose custom colors
+- change mooin4 theme colors by selecting a color palate or choose custom colors in theme settings /admin/settings.php?section=themesettingmooin4
 - display/hide section and chapter numbers by using checkmark in course settings
 
 Bug fixes:
