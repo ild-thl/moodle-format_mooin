@@ -41,5 +41,6 @@ To add more chapters to the course, **turn editig on**. Move to the bottom of th
 Features: 
 - change mooin4 theme colors by selecting a color palate or choose custom colors
 - display/hide section and chapter numbers by using checkmark in course settings
+
 Bug fixes:
 - only show available badges in badge tile 
