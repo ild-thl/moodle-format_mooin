@@ -1073,25 +1073,45 @@ class utils {
     }
 
     public static function get_section_progress($courseid, $sectionid, $userid) {
-        global $DB, $CFG;
+        global $DB, $CFG, $SESSION;
 
         require_once($CFG->libdir . '/gradelib.php');
+
+        $sessionlang = isset($SESSION->lang) ? $SESSION->lang : null;
 
         $percentage = 0;
 
         // no activities in this section?
-        $coursemodules = $DB->get_records('course_modules', array(
-            'course' => $courseid,
-            'deletioninprogress' => 0,
-            'section' => $sectionid
-        ));
+        $coursemodules = $DB->get_records('course_modules', array('course' => $courseid,
+                                                                    'deletioninprogress' => 0,
+                                                                    'section' => $sectionid,
+                                                                    'visible' => 1));
 
         $activities = 0;
 
         foreach ($coursemodules as $coursemodule) {
+            $skip = FALSE;
             // cm has completion activated?
             if ($coursemodule->completion == 2) {
-                $activities++;
+                // Check availability based on language user uses in session
+                if ($coursemodule->availability !== NULL) {
+                    $data = json_decode($coursemodule->availability, true);
+                    foreach ($data['c'] as $item) {
+                        if ($item['type'] === 'language' && $item['id'] === $sessionlang) {
+                            $activities++;
+                        } else {
+                            //skip this course module if the language doesn't match
+                            $skip = TRUE;
+                        }
+                    }
+                    //no availability set
+                } else {
+                    $activities++;
+                }
+
+                if ($skip === TRUE) {
+                    continue; // Continue to the next coursemodule
+                }
 
                 $modulename = '';
                 if ($module = $DB->get_record('modules', array('id' => $coursemodule->module))) {
