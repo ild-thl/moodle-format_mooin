@@ -1638,7 +1638,7 @@ class utils {
         $userbadges = badges_get_user_badges($userid, $courseid, null, null, null, true);
 
         foreach ($userbadges as $ub) {
-            if ($ub->status != 4) {
+            if ($ub->status == 1 || $ub->status == 3) {
 
                 $coursebadges[$ub->id]->highlight = true;
                 $coursebadges[$ub->id]->uniquehash = $ub->uniquehash;
@@ -1663,7 +1663,14 @@ class utils {
                 FROM
                     {badge} b
                 WHERE b.type > 0
-                  AND b.status != 4 ';
+                  AND (b.status = 1 OR b.status = 3)'; //status for available badges
+        /*
+        Statusvarianten:
+        0 nicht verfügbar und nicht vergeben
+        1 verfügbar und nicht vergeben
+        2 zugriff verhindert und vergeben
+        3 vergeben
+        */
 
         if ($courseid == 0) {
             $sql .= ' AND b.type = :type';
