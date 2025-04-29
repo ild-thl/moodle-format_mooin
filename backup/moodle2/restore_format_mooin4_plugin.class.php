@@ -120,7 +120,7 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
                     $id = $this->get_mappingid('course_section', $section->sectionid);
                     $DB->execute(
                         "UPDATE {course_sections} SET name = ? WHERE course = ? AND id = ?",
-                        [get_string('lesson', 'format_mooin4') .' '.$section->title, $this->step->get_task()->get_courseid(), $id]
+                        [$section->title, $this->step->get_task()->get_courseid(), $id]
                     );
                 }
             }
