@@ -197,7 +197,7 @@ $string['youareeditingsection'] = 'Warning: You are editing Section 0!';
 $string['mycoursecompetencies'] = 'My course competencies';
 
 // course side bar
-$string['include_in_sidebar'] = 'Display links in course index';
+$string['include_in_sidebar'] = 'Display links in course index (only available when globally activated)';
 $string['global_tile_visibility'] = 'Display mooin tiles and links in course index in course globally';
 $string['toggle_global_badge_visibility'] = 'Toggle global badge tile and course index link visibility';
 $string['toggle_global_certificate_visibility'] = 'Toggle global certificate tile and course index link visibility';
