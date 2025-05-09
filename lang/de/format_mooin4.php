@@ -200,12 +200,12 @@ $string['indentation'] = 'Einzug auf der Kursseite erlauben';
 $string['indentation_help'] = 'Erlauben Sie Lehrern und anderen Benutzern mit der Berechtigung zur Verwaltung von Aktivitäten, Elemente auf der Kursseite einzurücken.';
 
 // course side bar
-$string['include_in_sidebar'] = "Links im Kursindex anzeigen";
-$string['global_tile_visibility'] = 'mooin-Kacheln global verfügbar (Kursstartseite)';
-$string['toggle_global_badge_visibility'] = 'Badge-Kachel global verfügbar';
-$string['toggle_global_certificate_visibility'] = 'Zertifikatskachel global verfügbar';
-$string['toggle_global_discussion_visibility'] = 'Diskussionskachel global verfügbar';
-$string['toggle_global_userlist_visibility'] = 'Userliste-Kachel global verfügbar';
+$string['include_in_sidebar'] = "Links im Kursindex anzeigen (nur verfügbar, wenn global aktiviert)";
+$string['global_tile_visibility'] = 'mooin-Kacheln und Links im Kursindex global verfügbar (Kursstartseite)';
+$string['toggle_global_badge_visibility'] = 'Badge-Kachel und Kursindexlink global verfügbar';
+$string['toggle_global_certificate_visibility'] = 'Zertifikatskachel und Kursindexlink global verfügbar';
+$string['toggle_global_discussion_visibility'] = 'Diskussionskachel und Kursindexlink global verfügbar';
+$string['toggle_global_userlist_visibility'] = 'Userliste-Kachel und Kursindexlink global verfügbar';
 
 //course menu settings
 $string['toggle_courseindex_visibility'] = 'Kursindex anzeigen';
