@@ -200,4 +200,34 @@ $string['indentation'] = 'Einzug auf der Kursseite erlauben';
 $string['indentation_help'] = 'Erlauben Sie Lehrern und anderen Benutzern mit der Berechtigung zur Verwaltung von Aktivitäten, Elemente auf der Kursseite einzurücken.';
 
 // course side bar
-$string['include_in_sidebar'] = "In der Seitenleite anzeigen";
+$string['include_in_sidebar'] = "Links im Kursindex anzeigen (nur verfügbar, wenn global aktiviert)";
+$string['global_tile_visibility'] = 'mooin-Kacheln und Links im Kursindex global verfügbar (Kursstartseite)';
+$string['toggle_global_badge_visibility'] = 'Badge-Kachel und Kursindexlink global verfügbar';
+$string['toggle_global_certificate_visibility'] = 'Zertifikatskachel und Kursindexlink global verfügbar';
+$string['toggle_global_discussion_visibility'] = 'Diskussionskachel und Kursindexlink global verfügbar';
+$string['toggle_global_userlist_visibility'] = 'Userliste-Kachel und Kursindexlink global verfügbar';
+
+//course menu settings
+$string['toggle_courseindex_visibility'] = 'Kursindex anzeigen';
+$string['toggle_courseindex_visibility_help'] = 'Wenn aktiviert, wird der Kursindex auf der linken Seite angezeigt.';
+
+$string['toggle_newssection_visibility'] = 'News-Bereich anzeigen';
+$string['toggle_newssection_visibility_help'] = 'Wenn aktiviert, wird der Newsbereich mit einem Preview des neuesten Newsbeitrags angezeigt.';
+
+$string['toggle_progressbar_visibility'] = 'Progressbar anzeigen';
+$string['toggle_progressbar_visibility_help'] = 'Wenn aktiviert, wird der Progressbar angezeigt.';
+
+$string['toggle_badge_visibility'] = 'Badge-Kachel anzeigen';
+$string['toggle_badge_visibility_help'] = 'Wenn aktiviert, wird die Badge-Kachel im Kurs angezeigt.';
+
+$string['toggle_certificate_visibility'] = 'Zertifikate-Kachel anzeigen';
+$string['toggle_certificate_visibility_help'] = 'Wenn aktiviert, wird die Zertifikatskachel im Kurs angezeigt.';
+
+$string['toggle_discussion_visibility'] = 'Diskussionskachel anzeigen';
+$string['toggle_discussion_visibility_help'] = 'Wenn aktiviert, wird die Diskussionskachel im Community-Bereich angezeigt.';
+
+$string['toggle_userlist_visibility'] = 'User-Liste anzeigen';
+$string['toggle_userlist_visibility_help'] = 'Wenn aktiviert, wird die User-Liste der neu hinzugekommenen User im Community-Bereich angezeigt.';
+
+$string['only_badges'] = 'Badges';
+$string['only_certificates'] = 'Zertifikate';
