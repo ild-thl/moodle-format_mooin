@@ -38,12 +38,26 @@ class certificates implements renderable {
             $other_certificates = false;
         }
 
+        // Get Certificat number on moblie
+        $cert = utils::count_certificate($USER->id, $course->id);
+        if ($cert['completed'] > 0) {
+            $certificates_number_mobile = $cert['completed'];
+        } else {
+            $certificates_number_mobile = false;
+        }
 
+        $new_cert = $certificates_number_mobile > 0;
+        error_log('new_cert : ' . $new_cert);
+        error_log('certificates_number_mobile : ' . $certificates_number_mobile);
 
         $data = (object)[
             'coursecertificates' => $certificates,
             'certificatesUrl' => new moodle_url('/course/format/mooin4/certificates.php', array('id' => $course->id)),
-            'othercertificates' => $other_certificates
+            'othercertificates' => $other_certificates,
+            //'new_cert' => $new_cert,
+            'new_cert' => true,
+            //'cert_number' => $certificates_number_mobile,
+            'cert_number' => 1,
         ];
         return $data;
     }
