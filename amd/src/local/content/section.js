@@ -286,7 +286,7 @@ export default class extends DndSection {
 
           const adjustParentIFrameHeight = () => {
             setTimeout(() => {
-              console.log("adjustParentIFrameHeight");
+              //console.log("adjustParentIFrameHeight");
 
               if (nestedIFrame && nestedIFrame.contentWindow.document.body) {
                 const nestedIFrameHeight =
