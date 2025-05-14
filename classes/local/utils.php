@@ -416,7 +416,7 @@ class utils {
         $ids = [];
 
         foreach ($unreadposts as $post) {
-            error_log("Post ID: {$post->id}, Forum ID: {$post->forumid}, User: {$userid}");
+            //error_log("Post ID: {$post->id}, Forum ID: {$post->forumid}, User: {$userid}");
 
             $forum = $DB->get_record('forum', array('id' => $post->forumid));
             $discussion = $DB->get_record('forum_discussions', array('id' => $post->discussionid));
@@ -426,7 +426,7 @@ class utils {
             if (forum_user_can_see_post($forum, $discussion, $post, $USER, $cm)) {
                 //fix: check if the post is already in the list
                 if (in_array($post->id, $ids)) {
-                    error_log("Duplicate: " . $post->id);
+                    //error_log("Duplicate: " . $post->id);
                 } else {
                     $visible_unread_posts++;
                 }
@@ -1874,5 +1874,25 @@ class utils {
                 }
             }
         }
+    }
+
+    public static function count_unviewed_badges($userid, $courseid) {
+        global $DB;
+        $unviewed_badges = 0;
+        $sql = 'SELECT bi.id
+              FROM {badge_issued} as bi, {badge} as b
+             WHERE b.courseid = :courseid
+               AND b.id = bi.badgeid
+               AND bi.userid = :userid';
+        $params = array('courseid' => $courseid, 'userid' => $userid);
+        if ($records = $DB->get_records_sql($sql, $params)) {
+            foreach ($records as $record) {
+                $badgeisnew = get_user_preferences('format_mooin4_new_badge_' . $record->id, 0, $userid);
+                if ($badgeisnew) {
+                    $unviewed_badges++;
+                }
+            }
+        }
+        return $unviewed_badges;
     }
 }
