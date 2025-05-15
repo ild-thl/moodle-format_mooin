@@ -13,7 +13,12 @@
         {{#badges}}
             {{#badge_visibility}}
                 <a href="{{{badgesUrl}}}" class="mooin4-btn">
+                    <span class="chat-icon pr-2 position-relative">
                     <i class="bi bi-trophy-fill mr-1"></i>
+                        {{#new_badge}}
+                            <span class="notification-badge notification-badge--mobile position-absolute">{{{badges_number}}}</span>
+                        {{/new_badge}}
+                    </span>
                     {{#str}} course_badges, format_mooin4{{/str}}
                 </a>
             {{/badge_visibility}}
@@ -21,7 +26,12 @@
         {{#certificates}}
             {{#certificate_visibility}}
                 <a href="{{{certificatesUrl}}}" class="mooin4-btn">
+                    <span class="chat-icon pr-2 position-relative">
                     <i class="bi bi-award-fill mr-1"></i>
+                        {{#new_cert}}
+                            <span class="notification-badge notification-badge--mobile position-absolute">{{{cert_number}}}</span>
+                        {{/new_cert}}
+                    </span>
                     {{#str}} my_certificate, format_mooin4{{/str}}
                 </a>
             {{/certificate_visibility}}
