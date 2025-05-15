@@ -43,8 +43,6 @@ class badges implements renderable {
         }
         $badges_count_mobile = utils::count_unviewed_badges($USER->id, $course->id);
         $new_badge = $badges_count_mobile > 0;
-        error_log('new badge: ' . $new_badge);
-        error_log('badges count mobile: ' . $badges_count_mobile);
 
         $data = (object)[
             'badgesList' => $badges,
