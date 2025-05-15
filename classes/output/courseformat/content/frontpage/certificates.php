@@ -61,15 +61,15 @@ class certificates implements renderable {
         //for ilddigitalcert get user_preference data
         $modulename = "ilddigitalcert";
         $awardedtoid = $USER->id;
-        $issuedrecords = $DB->get_records('tool_certificate_issues', [
+        $issuedrecords = $DB->get_records('ilddigitalcert_issued', [
             'userid' => $USER->id,
             'courseid' => $course->id
         ], '', 'id');
 
         // Get Certificat number on moblie
-        $issuedids = array_keys($issuedrecords);
+        $issuedids_ild = array_keys($issuedrecords);
 
-        foreach ($issuedids as $issuedid) {
+        foreach ($issuedids_ild as $issuedid) {
             $cert = get_user_preferences('format_mooin4_new_certificate_' . $modulename . '_' . $issuedid, 0, $awardedtoid);
             if ($cert == 1) {
                 $certificates_number_mobile++;
