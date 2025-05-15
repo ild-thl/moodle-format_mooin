@@ -85,7 +85,8 @@ export default class extends DndSection {
         this.configDragDrop(headerComponent);
       }
     }
-    this._showLastSectionModal(state);
+    //quick and dirty: don't show modal in last section
+    //this._showLastSectionModal(state);
     this._hvpListener();
   }
 
