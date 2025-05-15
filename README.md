@@ -38,11 +38,6 @@ Then create a new course or navigate to an existing course. In the course settin
 To add more chapters to the course, **turn editig on**. Move to the bottom of the course overview site and click **Add sections**. Change the name and move it to the required position. Click **Edit** at the right side of the lesson and choose **Set as chapter title**.
 
 ## mooin_405 Features and bug fixes
-Features: 
-- change mooin4 theme colors by selecting a color palate or choose custom colors in theme settings /admin/settings.php?section=themesettingmooin4
-- display/hide section and chapter numbers by using checkmark in course settings
-- Links will be displayed underlined and with following "link"-icon
+Features: see https://github.com/ild-thl/moodle-format_mooin/wiki/mooin_405-Features
 
-Bug fixes:
-- only show available badges in badge tile
-- only calculate course/ section progress by using visible activities/activities of same language
+Bug fixes: see https://github.com/ild-thl/moodle-format_mooin/wiki/Bug-Fixes
