@@ -421,7 +421,7 @@ class utils {
             $forum = $DB->get_record('forum', array('id' => $post->forumid));
             $discussion = $DB->get_record('forum_discussions', array('id' => $post->discussionid));
             $cm = get_coursemodule_from_instance('forum', $forum->id, $courseid);
-            
+
             //check if the user can see the post
             if (forum_user_can_see_post($forum, $discussion, $post, $USER, $cm)) {
                 //fix: check if the post is already in the list
@@ -1393,17 +1393,25 @@ class utils {
         $result = [];
         // Make the request into the module & course_module
         $module_ilddigitalcert = $DB->get_record('modules', ['name' => 'ilddigitalcert']);
+        error_log('module_ilddigitalcert: ' . print_r($module_ilddigitalcert, true));
         $module_coursecertificate = $DB->get_record('modules', ['name' => 'coursecertificate']);
+        error_log('module_coursecertificate: ' . print_r($module_coursecertificate, true));
 
         if ($module_ilddigitalcert == true) {
             // Make request into course_module
-            $cm_ilddigitalcertificate = $DB->get_records('course_modules', ['module' => $module_ilddigitalcert->id]);
+            $cm_ilddigitalcertificate = $DB->get_records('course_modules', [
+                'module' => $module_ilddigitalcert->id,
+                'course' => $courseid
+            ]);
         } else {
             $cm_ilddigitalcertificate  = [];
         }
         if ($module_coursecertificate == true) {
             // Make request into course_module
-            $cm_coursecertificate = $DB->get_records('course_modules', ['module' => $module_coursecertificate->id]);
+            $cm_coursecertificate = $DB->get_records('course_modules', [
+                'module' => $module_coursecertificate->id,
+                'course' => $courseid
+            ]);
         } else {
             $cm_coursecertificate  = [];
         }
@@ -1411,7 +1419,7 @@ class utils {
         // Check if the module has been completed and save into module_completion table
         if (isset($cm_ilddigitalcertificate)) {
             foreach ($cm_ilddigitalcertificate as $value) {
-                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => $value->id, 'userid' => $userid]);
+                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => ($value->id)-1, 'userid' => $userid]);
                 if ($exist_completed_certificate) {
                     $completed++;
                 } else {
@@ -1421,7 +1429,7 @@ class utils {
         }
         if (isset($cm_coursecertificate)) {
             foreach ($cm_coursecertificate as $value) {
-                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => $value->id, 'userid' => $userid]);
+                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => ($value->id)-1, 'userid' => $userid]);
                 if ($exist_completed_certificate) {
                     $completed++;
                 } else {
@@ -1431,7 +1439,8 @@ class utils {
         }
 
         $result = ['completed' => $completed, 'not_completed' => $not_completed];
-
+        error_log("value->id = " . $value->id);
+        error_log('result: ' . print_r($result, true));
         return $result;
     }
 

@@ -54,10 +54,10 @@ class certificates implements renderable {
             'coursecertificates' => $certificates,
             'certificatesUrl' => new moodle_url('/course/format/mooin4/certificates.php', array('id' => $course->id)),
             'othercertificates' => $other_certificates,
-            //'new_cert' => $new_cert,
-            'new_cert' => true,
-            //'cert_number' => $certificates_number_mobile,
-            'cert_number' => 1,
+            'new_cert' => $new_cert,
+            //'new_cert' => true,
+            'cert_number' => $certificates_number_mobile,
+            //'cert_number' => 11,
         ];
         return $data;
     }
