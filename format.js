@@ -16,7 +16,7 @@ M.course.format = M.course.format || {};
  *
  * @return {object} section list configuration
  */
-M.course.format.get_config = function() {
+M.course.format.get_config = function () {
     return {
         container_node: 'ul',
         container_class: 'topics',
@@ -32,7 +32,7 @@ M.course.format.get_config = function() {
  * @param {string} node1 node to swap to
  * @param {string} node2 node to swap with
  */
-M.course.format.swap_sections = function(Y, node1, node2) {
+M.course.format.swap_sections = function (Y, node1, node2) {
     var CSS = {
         COURSECONTENT: 'course-content',
         SECTIONADDMENUS: 'section_add_menus'
@@ -54,13 +54,13 @@ M.course.format.swap_sections = function(Y, node1, node2) {
  * @param {string} sectionfrom first affected section
  * @param {string} sectionto last affected section
  */
-M.course.format.process_sections = function(Y, sectionlist, response, sectionfrom, sectionto) {
+M.course.format.process_sections = function (Y, sectionlist, response, sectionfrom, sectionto) {
     var CSS = {
         SECTIONNAME: 'sectionname'
     },
-    SELECTORS = {
-        SECTIONLEFTSIDE: '.left .section-handle .icon'
-    };
+        SELECTORS = {
+            SECTIONLEFTSIDE: '.left .section-handle .icon'
+        };
 
     if (response.action == 'move') {
         // If moving up swap around 'sectionfrom' and 'sectionto' so the that loop operates.
@@ -88,3 +88,37 @@ M.course.format.process_sections = function(Y, sectionlist, response, sectionfro
         }
     }
 };
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (window.location.href.indexOf("admin/settings.php?section=formatsettingmooin4") > -1) {
+        function toggleDisableCheckbox(masterId, dependentId) {
+            const master = document.getElementById(masterId);
+            const dependent = document.getElementById(dependentId);
+
+            if (!master || !dependent) return;
+
+            // Funktion zur Aktualisierung des Zustands
+            function updateState() {
+                if (master.checked) {
+                    dependent.disabled = false;
+                    dependent.checked = true;
+                } else {
+                    dependent.checked = false;
+                    dependent.disabled = true;
+                }
+            }
+
+            // Anfangszustand setzen
+            updateState();
+
+            // Eventlistener setzen
+            master.addEventListener("change", updateState);
+        }
+
+        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_badge_visibility", "id_s_format_mooin4_badges");
+        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_certificate_visibility", "id_s_format_mooin4_certificates");
+        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_discussion_visibility", "id_s_format_mooin4_discussions");
+        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_userlist_visibility", "id_s_format_mooin4_participants");
+
+    }
+});

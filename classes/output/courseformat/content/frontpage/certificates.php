@@ -38,12 +38,69 @@ class certificates implements renderable {
             $other_certificates = false;
         }
 
+        $certificates_number_mobile = 0;
 
+        //for course_certificate get user_preference data
+        $modulename = "coursecertificate";
+        $awardedtoid = $USER->id;
+
+        $dbman = $DB->get_manager();
+
+        if ($dbman->table_exists('tool_certificate_issues')) {
+
+            $issuedrecords = $DB->get_records('tool_certificate_issues', [
+                'userid' => $USER->id,
+                'courseid' => $course->id
+            ], '', 'id');
+        } else {
+            // Tabelle existiert nicht, ggf. Fehlerbehandlung
+            $issuedrecords = [];
+        }
+
+        // Get Certificat number on moblie
+        $issuedids = array_keys($issuedrecords);
+
+        foreach ($issuedids as $issuedid) {
+            $cert = get_user_preferences('format_mooin4_new_certificate_' . $modulename . '_' . $issuedid, 0, $awardedtoid);
+            if ($cert == 1) {
+                $certificates_number_mobile++;
+            }
+        }
+
+        //for ilddigitalcert get user_preference data
+        $modulename = "ilddigitalcert";
+        $awardedtoid = $USER->id;
+
+        if ($dbman->table_exists('ilddigitalcert_issued')) {
+
+            $issuedrecords = $DB->get_records('ilddigitalcert_issued', [
+                'userid' => $USER->id,
+                'courseid' => $course->id
+            ], '', 'id');
+        } else {
+            // Tabelle existiert nicht, ggf. Fehlerbehandlung
+            $issuedrecords = [];
+        }
+        // Get Certificat number on moblie
+        $issuedids_ild = array_keys($issuedrecords);
+
+        foreach ($issuedids_ild as $issuedid) {
+            $cert = get_user_preferences('format_mooin4_new_certificate_' . $modulename . '_' . $issuedid, 0, $awardedtoid);
+            if ($cert == 1) {
+                $certificates_number_mobile++;
+            }
+        }
+
+        //error_log('certificates_number_mobile: ' . $certificates_number_mobile);
+
+        $new_cert = $certificates_number_mobile > 0;
 
         $data = (object)[
             'coursecertificates' => $certificates,
             'certificatesUrl' => new moodle_url('/course/format/mooin4/certificates.php', array('id' => $course->id)),
-            'othercertificates' => $other_certificates
+            'othercertificates' => $other_certificates,
+            'new_cert' => $new_cert,
+            'cert_number' => $certificates_number_mobile,
         ];
         return $data;
     }
