@@ -40,4 +40,4 @@ To add more chapters to the course, **turn editig on**. Move to the bottom of th
 ## mooin_405 Features and bug fixes
 Features: see https://github.com/ild-thl/moodle-format_mooin/wiki/mooin_405-Features
 
-Bug fixes: see https://github.com/ild-thl/moodle-format_mooin/wiki/Bug-Fixes
+Bug fixes: see https://github.com/ild-thl/moodle-format_mooin/wiki/mooin_405-Bug-Fixes
