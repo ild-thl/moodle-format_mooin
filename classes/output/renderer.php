@@ -175,8 +175,8 @@ class renderer extends section_renderer {
             if (
                 $has_capability
                 && get_config('format_mooin4', 'participants')
-                && get_toggle_userlist_visibility($courseid) === 1
-                && get_config('format_mooin4', 'toggle_global_userlist_visibility') === 1
+                && get_toggle_userlist_visibility($courseid)
+                && get_config('format_mooin4', 'toggle_global_userlist_visibility')
             ) {
                 $data['participants'] = [
                     'url' => $participantsUrl,
