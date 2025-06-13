@@ -144,7 +144,8 @@ ILD.checkLibrary = (H5PIntegration, H5PInstance) => {
     if (H5PInstance.interactions && Array.isArray(H5PInstance.interactions) && H5PInstance.interactions.length === 0) {
 
       H5PInstance.video.on('stateChange', function (event) {
-        //console.log(`Video stateChange event for contentId ${contentId}:`, event.data);
+
+        console.log(`Video stateChange event for contentId ${contentId}:`, event.data);
         // stateChange data === 0 bedeutet Video beendet
         if (event.data === 0) {
           console.log(`✅ Video with contentId ${contentId} finished.`);
