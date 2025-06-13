@@ -134,7 +134,7 @@ ILD.setResult = (contentId, score, maxScore) => {
 // Check if library is InteractiveVideo or QuestionSet
 ILD.checkLibrary = (H5PIntegration, H5PInstance) => {
 
-  //window.console.log(H5PInstance);
+  window.console.log(H5PInstance);
   const contentId = H5PInstance.contentId;
 
   //fix
