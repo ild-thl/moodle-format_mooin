@@ -100,11 +100,9 @@ document.addEventListener("DOMContentLoaded", function () {
             // Funktion zur Aktualisierung des Zustands
             function updateState() {
                 if (master.checked) {
-                    dependent.disabled = false;
-                    dependent.checked = true;
+                    document.getElementById(dependentId).style.display = 'flex';
                 } else {
-                    dependent.checked = false;
-                    dependent.disabled = true;
+                    document.getElementById(dependentId).style.display = 'none';
                 }
             }
 
@@ -115,10 +113,10 @@ document.addEventListener("DOMContentLoaded", function () {
             master.addEventListener("change", updateState);
         }
 
-        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_badge_visibility", "id_s_format_mooin4_badges");
-        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_certificate_visibility", "id_s_format_mooin4_certificates");
-        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_discussion_visibility", "id_s_format_mooin4_discussions");
-        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_userlist_visibility", "id_s_format_mooin4_participants");
+        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_badge_visibility", "admin-badges");
+        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_certificate_visibility", "admin-certificates");
+        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_discussion_visibility", "admin-discussions");
+        toggleDisableCheckbox("id_s_format_mooin4_toggle_global_userlist_visibility", "admin-participants");
 
     }
 });
