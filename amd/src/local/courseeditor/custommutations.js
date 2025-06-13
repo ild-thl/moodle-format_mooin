@@ -45,6 +45,7 @@ export default class {
         }])[0];
         window.console.log("MUTAtION PROGRESS");
         window.console.log("updates = " + JSON.parse(updates));
+        window.console.log("updates = " + (updates));
         stateManager.processUpdates(JSON.parse(updates));
     }
 
