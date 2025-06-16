@@ -140,12 +140,19 @@ ILD.checkLibrary = (H5PIntegration, H5PInstance) => {
   //fix
   //progress trigger for hvp videos without interactions when video ends
   if (H5PInstance && H5PInstance.video && typeof H5PInstance.video.on === 'function') {
+
+    //debugging
+    H5PInstance.video.on('stateChange', function (event) {
+      console.log(`1. Video stateChange event for contentId ${contentId}:`, event.data);
+    });
+
+
     console.log(`H5P Interactive Video instance (${contentId}) detected. Attaching video listener.`);
     if (H5PInstance.interactions && Array.isArray(H5PInstance.interactions) && H5PInstance.interactions.length === 0) {
       console.log(`No interactions found for contentId ${contentId}. Attaching stateChange listener to video.`);
       H5PInstance.video.on('stateChange', function (event) {
 
-        console.log(`Video stateChange event for contentId ${contentId}:`, event.data);
+        console.log(`2. Video stateChange event for contentId ${contentId}:`, event.data);
         // stateChange data === 0 bedeutet Video beendet
         if (event.data === 0) {
           console.log(`✅ Video with contentId ${contentId} finished.`);
