@@ -138,10 +138,19 @@ ILD.checkLibrary = (H5PIntegration, H5PInstance) => {
   const contentId = H5PInstance.contentId;
 
   //fix
-  //progress trigger for hvp videos without interactions when video ends
+  //progress trigger for hvp videos without interactions or without answerable interactions when video ends
   if (H5PInstance && H5PInstance.video && typeof H5PInstance.video.on === 'function') {
+
+    // Check if there are no answerable interactions in video
+    function noAnswerableInteractions(H5PInstance) {
+      return H5PInstance.interactions.every(interaction => !interaction.isAnswerable());
+    }
+
     //console.log(`H5P Interactive Video instance (${contentId}) detected. Attaching video listener.`);
-    if (H5PInstance.interactions && Array.isArray(H5PInstance.interactions) && H5PInstance.interactions.length === 0) {
+    if (H5PInstance.interactions
+      && Array.isArray(H5PInstance.interactions)
+      && H5PInstance.interactions.length === 0
+      || noAnswerableInteractions(H5PInstance)) {
 
       H5PInstance.video.on('stateChange', function (event) {
         //console.log(`Video stateChange event for contentId ${contentId}:`, event.data);
