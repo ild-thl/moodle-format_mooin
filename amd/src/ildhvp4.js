@@ -141,6 +141,19 @@ ILD.checkLibrary = (H5PIntegration, H5PInstance) => {
   //progress trigger for hvp videos without interactions when video ends
   if (H5PInstance && H5PInstance.video && typeof H5PInstance.video.on === 'function') {
 
+    H5PInstance.interactions.forEach(interaction => {
+      const lib = interaction.getLibraryName();  // z. B. "H5P.Text"
+      console.log("Typ:", lib);
+
+      if (interaction.isAnswerable()) {
+        console.log("→ Quiz-Interaktion:", lib);
+      } else if (interaction.isGotoClickable()) {
+        console.log("→ Navigations-/Adaptivity-Interaktion:", lib);
+      } else {
+        console.log("→ Inhaltliche Interaktion:", lib);
+      }
+    });
+
     //debugging
     H5PInstance.video.on('stateChange', function (event) {
       console.log(`1. Video stateChange event for contentId ${contentId}:`, event.data);
