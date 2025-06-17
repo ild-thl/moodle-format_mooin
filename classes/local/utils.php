@@ -1098,28 +1098,31 @@ class utils {
         $activities = 0;
 
         foreach ($coursemodules as $coursemodule) {
+            $modinfo = get_fast_modinfo($courseid, $userid);
+            $cm = $modinfo->get_cm($coursemodule->id);
+            $info = new \core_availability\info_module($cm);
+            $warnings = [];
+            $isavailable = $info->is_available($warnings, false, $userid);
             $skip = FALSE;
+            
             // cm has completion activated?
             if ($coursemodule->completion == 2) {
                 // Check availability based on language user uses in session
                 if ($coursemodule->availability !== NULL) {
                     $data = json_decode($coursemodule->availability, true);
                     foreach ($data['c'] as $item) {
-                        if ($item['type'] === 'language' && $item['id'] === $sessionlang) {
-                            $activities++;
-                        } else {
-                            //skip this course module if the language doesn't match
-                            $skip = TRUE;
+                        if ($item['type'] === 'language' && $item['id'] !== $sessionlang) {
+                            $skip = true;
+                            break;
                         }
                     }
-                    //no availability set
-                } else {
-                    $activities++;
                 }
 
-                if ($skip === TRUE) {
-                    continue; // Continue to the next coursemodule
+                if ($skip || !$isavailable) {
+                    continue;
                 }
+
+                $activities++;
 
                 $modulename = '';
                 if ($module = $DB->get_record('modules', array('id' => $coursemodule->module))) {
@@ -1419,7 +1422,7 @@ class utils {
         // Check if the module has been completed and save into module_completion table
         if (isset($cm_ilddigitalcertificate)) {
             foreach ($cm_ilddigitalcertificate as $value) {
-                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => ($value->id)-1, 'userid' => $userid]);
+                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => ($value->id) - 1, 'userid' => $userid]);
                 if ($exist_completed_certificate) {
                     $completed++;
                 } else {
@@ -1429,7 +1432,7 @@ class utils {
         }
         if (isset($cm_coursecertificate)) {
             foreach ($cm_coursecertificate as $value) {
-                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => ($value->id)-1, 'userid' => $userid]);
+                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => ($value->id) - 1, 'userid' => $userid]);
                 if ($exist_completed_certificate) {
                     $completed++;
                 } else {
