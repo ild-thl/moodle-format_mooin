@@ -1,24 +1,78 @@
-
-
 <div class="subpage">
     {{{breadcrumb}}}
-    <div class="subpage--badges d-flex flex-column">
-        <h2>{{#str}} badges, format_mooin4 {{/str}}</h2>
-        <p>{{#str}} badge_overview_description, format_mooin4 {{/str}}</p>
-        <a href="{{{userBadges}}}">{{#str}} profile_badges, format_mooin4 {{/str}}</a>
-        <a href="{{{badgeOptions}}}">{{#str}} badge_options, format_mooin4 {{/str}}</a>
-        <h2 class="mt-3">{{#str}} overview, format_mooin4 {{/str}}</h2>
-        {{#badges}}
-        <div class="border-card">
-            {{{badges}}}
-        </div>
-        {{/badges}}
-        {{^badges}}
-            <div class="no-badges-container">
-                <div class="no-badges-img"></div>
-                <span class="blue-info-text">{{#str}} no_badges_image_text, format_mooin4{{/str}}</span>
+
+    <div class="subpage--badges">
+        <h2 class="mb-3">{{#str}} badges, format_mooin4 {{/str}}</h2>
+
+        {{#badgerows}}
+        <div class="row">
+            {{#.}}
+            <div class="col-md-6 mb-4">
+                <div class="badge-card p-3 border rounded h-100">
+                    <div class="badge-header d-flex align-items-center">
+                        <a href="{{{overview_url}}}" class="badge-link">
+                            <div class="badge-image-wrapper {{^unlocked}}locked{{/unlocked}}">
+                                <img src="{{image}}" alt="{{name}}" class="badge-icon" width="60" height="60">
+                            </div>
+                        </a>
+                        <div class="ml-3">
+                            <h5 class="mb-0">{{name}}</h5>
+                            <small class="text-muted">{{description}}</small>
+                        </div>
+                    </div>
+
+                    <div class="badge-progress mt-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1 progress-text">
+                            <span>{{progress_percent}} % completed</span>
+                            {{#unlocked}}<span class="badge-earned green">✔</span>{{/unlocked}}
+                            {{^unlocked}}<span class="text-muted">Locked</span>{{/unlocked}}
+                        </div>
+
+                        <div class="progressbar">
+                            <div class="progressbar-inner" style="width: {{progress_percent}}%;"></div>
+                        </div>
+
+                        <ul class="condition-list mt-2 pl-3">
+                            {{#conditions}}
+                                {{#label}}
+                                <li class="condition-item {{#done}}green{{/done}}{{^done}}text-danger{{/done}}">
+                                    {{label}}
+                                </li>
+                                {{/label}}
+                            {{/conditions}}
+                        </ul>
+                    </div>
+                    {{#unlocked}}
+                    <div class="badge-issued mt-2 text-success">
+                        ✔ {{dateissued}}
+                    </div>
+                    {{/unlocked}}
+
+                </div>
             </div>
-        {{/badges}}
+            {{/.}}
+        </div>
+        {{/badgerows}}
+
+        {{^badgerows}}
+        <div class="no-badges-container text-center mt-5">
+            <div class="no-badges-img mb-3"></div>
+            <span class="blue-info-text">{{#str}} no_badges_image_text, format_mooin4{{/str}}</span>
+        </div>
+        {{/badgerows}}
     </div>
-    
+
 </div>
+
+<style>
+.badge-image-wrapper.locked img {
+    opacity: 0.3;
+    filter: grayscale(60%);
+    transition: opacity 0.3s ease;
+}
+
+.badge-image-wrapper img {
+    opacity: 1;
+    filter: none;
+}
+</style>

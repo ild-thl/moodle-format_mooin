@@ -85,8 +85,7 @@ export default class extends DndSection {
         this.configDragDrop(headerComponent);
       }
     }
-    //quick and dirty: don't show modal in last section
-    //this._showLastSectionModal(state);
+    this._showLastSectionModal(state);
     this._hvpListener();
   }
 
@@ -287,7 +286,7 @@ export default class extends DndSection {
 
           const adjustParentIFrameHeight = () => {
             setTimeout(() => {
-              //console.log("adjustParentIFrameHeight");
+              console.log("adjustParentIFrameHeight");
 
               if (nestedIFrame && nestedIFrame.contentWindow.document.body) {
                 const nestedIFrameHeight =

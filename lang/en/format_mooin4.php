@@ -197,39 +197,5 @@ $string['youareeditingsection'] = 'Warning: You are editing Section 0!';
 $string['mycoursecompetencies'] = 'My course competencies';
 
 // course side bar
-$string['include_in_sidebar'] = 'Display links in course index (only available when globally activated)';
-$string['global_tile_visibility'] = 'Display mooin tiles and links in course index in course globally';
-$string['toggle_global_badge_visibility'] = 'Toggle global badge tile and course index link visibility';
-$string['toggle_global_certificate_visibility'] = 'Toggle global certificate tile and course index link visibility';
-$string['toggle_global_discussion_visibility'] = 'Toggle global discussion tile and course index link visibility';
-$string['toggle_global_userlist_visibility'] = 'Toggle global userlist tile and course index link visibility';
-
-
-//course menu settings
-$string['toggle_courseindex_visibility'] = 'Show Course Index';
-$string['toggle_courseindex_visibility_help'] = 'When activated, the course index is displayed in the course.';
-
-$string['toggle_newssection_visibility'] = 'Show News Section with Post-Preview';
-$string['toggle_newssection_visibility_help'] = 'When activated, the news section with preview of the last post is displayed in the course.';
-
-$string['toggle_progressbar_visibility'] = 'Show Progressbar';
-$string['toggle_progressbar_visibility_help'] = 'When activated, the progress bar is displayed in the course.';
-
-$string['toggle_badge_visibility'] = 'Show Badge Tile';
-$string['toggle_badge_visibility_help'] = 'When activated, the badge tile is displayed in the course.';
-
-$string['toggle_certificate_visibility'] = 'Show Certificate Tile';
-$string['toggle_certificate_visibility_help'] = 'When activated, the certificate tile is displayed in the course.';
-
-$string['toggle_discussion_visibility'] = 'Show Discussion Tile in Community Section';
-$string['toggle_discussion_visibility_help'] = 'When activated, the discussion tile is displayed in the community tile.';
-
-$string['toggle_userlist_visibility'] = 'Show User List in Community Section';
-$string['toggle_userlist_visibility_help'] = 'When activated, the user list of the last attending users is displayed in the community tile.';
-
-$string['only_badges'] = 'Badges';
-$string['only_certificates'] = 'Certificates';
-
-$string['indentation_help'] = 'Allow teachers and other users with permission to manage activities to indent items on the course page.';
-$string['indentation'] = 'Allow indentation on the course page';
+$string['include_in_sidebar'] = 'Display in sidebar';
 

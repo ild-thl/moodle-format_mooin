@@ -80,6 +80,12 @@ unset($contextid);
 
 require_login($course);
 
+// $user_test = $DB->get_records('user',  array('id' => $course->id));
+$user_test = $DB->get_records('user');
+$user_test_enrol = $DB->get_records('user_enrolments'); // , array('courseid'=>$courseid)
+
+$course_test_enrol = $DB->get_records('enrol', array('courseid' => $course->id));// $DB->get_records('enrol',array('courseid' => $courseid));
+
 $systemcontext = context_system::instance();
 $isfrontpage = ($course->id == SITEID);
 

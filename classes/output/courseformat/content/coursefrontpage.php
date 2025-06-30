@@ -71,7 +71,7 @@ class coursefrontpage implements renderable {
         $participants = $this->participants;
         $course = $format->get_course();
 
-
+        
 
         $data = (object)[
             'header' => $header->export_for_template($output),
@@ -84,104 +84,6 @@ class coursefrontpage implements renderable {
             'participants' => $participants->export_for_template($output),
             'unenrolurl' => utils::get_unenrol_url($course->id),
         ];
-
-        require_once(__DIR__ . '/../../../../lib.php');
-        $courseid = $course->id;
-
-        //handle data for course element visibility
-        if (get_toggle_newssection_visibility($courseid) == 1) {
-            $data->newssection_visibility = true;
-        } else {
-            $data->newssection_visibility = false;
-        }
-
-        if (get_toggle_progressbar_visibility($courseid) == 1) {
-            $data->progressbar_visibility = true;
-        } else {
-            $data->progressbar_visibility = false;
-        }
-
-        if (
-            get_toggle_discussion_visibility($courseid) == 1
-            && get_config('format_mooin4', "toggle_global_discussion_visibility") == 1
-        ) {
-            $data->discussion_visibility = true;
-        } else {
-            $data->discussion_visibility = false;
-        }
-
-        if (
-            get_toggle_userlist_visibility($courseid) == 1
-            && get_config('format_mooin4', "toggle_global_userlist_visibility") == 1
-        ) {
-            $data->userlist_visibility = true;
-        } else {
-            $data->userlist_visibility = false;
-        }
-
-        if (
-            (get_toggle_discussion_visibility($courseid) == 0
-                || get_config('format_mooin4', "toggle_global_discussion_visibility") == 0)
-            && (get_toggle_userlist_visibility($courseid) == 0
-                || get_config('format_mooin4', "toggle_global_userlist_visibility") == 0)
-        ) {
-            $data->community_visibility = false;
-        } else {
-            $data->community_visibility = true;
-        }
-
-        if (
-            get_toggle_badge_visibility($courseid) == 1
-            && get_config('format_mooin4', "toggle_global_badge_visibility") == 1
-        ) {
-            $data->badge_visibility = true;
-        } else {
-            $data->badge_visibility = false;
-        }
-
-        if (
-            get_toggle_certificate_visibility($courseid) == 1
-            && get_config('format_mooin4', "toggle_global_certificate_visibility") == 1
-        ) {
-            $data->certificate_visibility = true;
-        } else {
-            $data->certificate_visibility = false;
-        }
-
-        if (
-            (get_toggle_badge_visibility($courseid) == 1
-                && get_config('format_mooin4', "toggle_global_badge_visibility") == 1)
-            && (get_toggle_certificate_visibility($courseid) == 1
-                && get_config('format_mooin4', "toggle_global_certificate_visibility") == 1)
-            && (get_toggle_discussion_visibility($courseid) == 1
-                && get_config('format_mooin4', "toggle_global_discussion_visibility") == 1)
-        ) {
-            $data->badge_cert_visibility = true;
-        } else {
-            $data->badge_cert_visibility = false;
-        }
-
-        if (
-            (get_toggle_badge_visibility($courseid) == 0
-                || get_config('format_mooin4', "toggle_global_badge_visibility") == 0)
-            && (get_toggle_certificate_visibility($courseid) == 0
-                || get_config('format_mooin4', "toggle_global_certificate_visibility") == 0)
-        ) {
-            $data->badge_cert_hide = true;
-        }
-
-        if (
-            (get_toggle_badge_visibility($courseid) == 0
-                || get_config('format_mooin4', "toggle_global_badge_visibility") == 0)
-            && (get_toggle_certificate_visibility($courseid) == 0
-                || get_config('format_mooin4', "toggle_global_certificate_visibility") == 0)
-            && (get_toggle_discussion_visibility($courseid) == 0
-                || get_config('format_mooin4', "toggle_global_discussion_visibility") == 0)
-            && (get_toggle_userlist_visibility($courseid) == 0
-                || get_config('format_mooin4', "toggle_global_userlist_visibility") == 0)
-        ) {
-            $data->hide_coursefrontpage_side = true;
-        }
 
         $coursecontext = context_course::instance($course->id);
         if (has_capability('moodle/course:update', $coursecontext)) {

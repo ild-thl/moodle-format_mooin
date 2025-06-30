@@ -6,7 +6,6 @@ use renderable;
 use core_courseformat\base as course_format;
 use moodle_url;
 use format_mooin4\local\utils as utils;
-use context_course;
 
 
 /**
@@ -35,17 +34,10 @@ class participants implements renderable {
             $user_card_list = utils::get_user_in_course($course->id);
         }
 
-
         $data = (object)[
             'participantsUrl' => new moodle_url('/course/format/mooin4/participants.php', array('id' => $course->id)),
             'userCardList' => $user_card_list,
         ];
-        $coursecontext = context_course::instance($course->id);
-        if (has_capability('moodle/course:viewparticipants', $coursecontext)) {
-            $data->has_capability_viewuser = true;
-        } else {
-            $data->has_capability_viewuser = false;
-        }
 
         
 

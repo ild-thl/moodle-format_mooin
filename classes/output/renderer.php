@@ -29,7 +29,8 @@ use format_mooin4\local\utils as utils;
  * @copyright 2012 Dan Poltawski
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends section_renderer {
+class renderer extends section_renderer
+{
 
     /**
      * Constructor method, calls the parent constructor.
@@ -37,7 +38,8 @@ class renderer extends section_renderer {
      * @param moodle_page $page
      * @param string $target one of rendering target constants
      */
-    public function __construct(moodle_page $page, $target) {
+    public function __construct(moodle_page $page, $target)
+    {
         parent::__construct($page, $target);
 
         // Since format_mooin4_renderer::section_edit_control_items() only displays the 'Highlight' control
@@ -53,7 +55,8 @@ class renderer extends section_renderer {
      * @param stdClass $course The course entry from DB
      * @return string HTML to output.
      */
-    public function section_title($section, $course) {
+    public function section_title($section, $course)
+    {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section));
     }
 
@@ -64,7 +67,8 @@ class renderer extends section_renderer {
      * @param int|stdClass $course The course entry from DB
      * @return string HTML to output.
      */
-    public function section_title_without_link($section, $course) {
+    public function section_title_without_link($section, $course)
+    {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section, false));
     }
 
@@ -79,7 +83,8 @@ class renderer extends section_renderer {
      * @param course_format $format the course format
      * @return String the course index HTML.
      */
-    public function course_index_drawer(course_format $format): ?String {
+    public function course_index_drawer(course_format $format): ?String
+    {
         global $DB;
 
         if ($format->uses_course_index()) {
@@ -92,64 +97,24 @@ class renderer extends section_renderer {
             $discussionsUrl = new moodle_url('/course/format/mooin4/all_discussionforums.php', array('id' => $course->id));
             $participantsUrl = new moodle_url('/course/format/mooin4/participants.php', array('id' => $course->id));
             $coursecompetenciesUrl = new moodle_url('/admin/tool/lp/coursecompetencies.php', array('courseid' => $course->id, 'mod' => 0));
-
+            
             $newsforumUrl = null;
-
+            
             if ($forum = $DB->get_record('forum', array('course' => $course->id, 'type' => 'news'))) {
                 if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
                     if ($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance' => $forum->id))) {
                         $newsforumUrl = new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
-                    }
+                    } 
                 }
-            }
-
+            } 
+           
             $data = [
                 'coursename' => $course->shortname,
                 'overview' => ['url' => $overview, 'active' => $this->check_if_active($overview)],
                 'unenrolurl' => utils::get_unenrol_url($course->id),
             ];
-
-
-
-            //check course settings 
-            require_once(__DIR__ . '/../../../../lib.php');
-            $courseid = $course->id;
-            if (
-                get_config('format_mooin4', "badges")
-                && get_toggle_badge_visibility($courseid) === 1
-                && get_config('format_mooin4', "toggle_global_badge_visibility")
-            ) {
-                $data['badges'] = [
-                    'url' => $badgesUrl,
-                    'active' => $this->check_if_active($badgesUrl),
-                ];
-            }
-
-            if (
-                get_config('format_mooin4', "certificates")
-                && get_toggle_certificate_visibility($courseid) === 1
-                && get_config('format_mooin4', "toggle_global_certificate_visibility")
-            ) {
-                $data['certificates'] = [
-                    'url' => $certificatesUrl,
-                    'active' => $this->check_if_active($certificatesUrl),
-                ];
-            }
-
-            if (
-                get_config('format_mooin4', "discussions")
-                && get_toggle_discussion_visibility($courseid) === 1
-                && get_config('format_mooin4', "toggle_global_discussion_visibility")
-            ) {
-                $data['discussions'] = [
-                    'url' => $discussionsUrl,
-                    'active' => $this->check_if_active($discussionsUrl),
-                ];
-            }
-
-            //check global settings
-
-            /*
+    
+            
             // Define the settings and corresponding URLs.
             $features = [
                 'badges' => $badgesUrl,
@@ -157,40 +122,29 @@ class renderer extends section_renderer {
                 'discussions' => $discussionsUrl,
                 'coursecompetencies' => $coursecompetenciesUrl,
             ];
+            
             // Loop through each feature, adding it if the setting is enabled.
             foreach ($features as $key => $url) {
-                if (get_config('format_mooin4', $key) && isset($url)) {
+                if (get_config('format_mooin4', $key)) {
                     $data[$key] = [
                         'url' => $url,
                         'active' => $this->check_if_active($url)
                     ];
-                } else {
-                    unset($data[$key]);
                 }
             }
             
-            */
             $context = context_course::instance($course->id);
             $has_capability = has_capability('moodle/course:viewparticipants', $context);
-            if (
-                $has_capability
-                && get_config('format_mooin4', 'participants')
-                && get_toggle_userlist_visibility($courseid)
-                && get_config('format_mooin4', 'toggle_global_userlist_visibility')
-            ) {
+            if ($has_capability && get_config('format_mooin4', 'participants') ) {
                 $data['participants'] = [
                     'url' => $participantsUrl,
                     'active' => $this->check_if_active($participantsUrl)
                 ];
             }
 
-            if (
-                !is_null($newsforumUrl)
-                && get_config('format_mooin4', 'news')
-                && get_toggle_newssection_visibility($courseid) === 1
-            ) {
+            if (!is_null($newsforumUrl) && get_config('format_mooin4', 'news') ) {
                 $data['newsforum'] = [
-                    'url' => $newsforumUrl,
+                    'url' => $newsforumUrl, 
                     'active' => $this->check_if_active($newsforumUrl),
                 ];
             }
@@ -199,13 +153,15 @@ class renderer extends section_renderer {
         return '';
     }
 
-    function check_if_active($url) {
+    function check_if_active($url)
+    {
         global $PAGE;
         if ($url !== null) {
             if ($PAGE->url->compare($url, URL_MATCH_EXACT)) {
                 //if ($PAGE->url instanceof moodle_url && $url instanceof moodle_url) {
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
         } else {
@@ -213,27 +169,28 @@ class renderer extends section_renderer {
         }
     }
 
-    function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = array()) {
+    function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = array())
+    {
         $singlesection = course_get_format($course)->get_sectionnum();
         // Mod tinjohn - not sure why it is permitted for a a course overview. 
         //if ($singlesection) {
-        if (
-            !has_capability('moodle/course:manageactivities', context_course::instance($course->id))
-            || !$this->page->user_is_editing()
-        ) {
-            return '';
-        }
+            if (
+                !has_capability('moodle/course:manageactivities', context_course::instance($course->id))
+                || !$this->page->user_is_editing()
+            ) {
+                return '';
+            }
 
-        $data = [
-            'sectionid' => $section,
-            'sectionreturn' => $sectionreturn
-        ];
-        $ajaxcontrol = $this->render_from_template('course/activitychooserbutton', $data);
+            $data = [
+                'sectionid' => $section,
+                'sectionreturn' => $sectionreturn
+            ];
+            $ajaxcontrol = $this->render_from_template('course/activitychooserbutton', $data);
 
-        // Load the JS for the modal.
-        $this->course_activitychooser($course->id);
+            // Load the JS for the modal.
+            $this->course_activitychooser($course->id);
 
-        return $ajaxcontrol;
+            return $ajaxcontrol;
         //}
     }
 }

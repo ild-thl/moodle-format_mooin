@@ -130,62 +130,6 @@ ILD.setResult = (contentId, score, maxScore) => {
   // ]);
 };
 
-
-// Check if library is InteractiveVideo or QuestionSet
-ILD.checkLibrary = (H5PIntegration, H5PInstance) => {
-
-  //window.console.log(H5PInstance);
-  const contentId = H5PInstance.contentId;
-
-  //fix
-  //progress trigger for hvp videos without interactions or without answerable interactions when video ends
-  if (H5PInstance && H5PInstance.video && typeof H5PInstance.video.on === 'function') {
-
-    // Check if there are no answerable interactions in video
-    function noAnswerableInteractions(H5PInstance) {
-      return H5PInstance.interactions.every(interaction => !interaction.isAnswerable());
-    }
-
-    //console.log(`H5P Interactive Video instance (${contentId}) detected. Attaching video listener.`);
-    if (H5PInstance.interactions
-      && Array.isArray(H5PInstance.interactions)
-      && H5PInstance.interactions.length === 0
-      || noAnswerableInteractions(H5PInstance)) {
-
-      H5PInstance.video.on('stateChange', function (event) {
-        //console.log(`Video stateChange event for contentId ${contentId}:`, event.data);
-        // stateChange data === 0 bedeutet Video beendet
-        if (event.data === 0) {
-          console.log(`✅ Video with contentId ${contentId} finished.`);
-          ILD.setResult(contentId, 100, 100);
-        }
-      });
-
-
-    }
-  }
-
-  if (typeof contentId !== 'undefined') {
-    const contentData = H5PIntegration.contents[`cid-${contentId}`];
-    const content = JSON.parse(contentData.jsonContent);
-    const library = contentData.library;
-
-
-    if (library.includes('H5P.InteractiveVideo')) {
-      ILD.getVideoInteractions(contentId, content);
-    } else if (library.includes('H5P.QuestionSet')) {
-      ILD.getQuestionSetPercentage(contentId, content);
-    } else if (library.includes('H5P.SingleChoiceSet')) {
-      ILD.getSingleChoiceInteractions(contentId, content);
-    } else if (library.includes('H5P.Essay')) {
-      ILD.getEssayPercentage(contentId, content);
-    } else if (library.includes('H5P.BranchingScenario')) {
-      ILD.BranchingScenario[contentId] = 1;
-    }
-  }
-};
-
-
 // Count interactions layers from interactive video element
 ILD.getVideoInteractions = (contentId, content) => {
   const interactions = content.interactiveVideo.assets.interactions;
@@ -208,19 +152,23 @@ ILD.getVideoInteractions = (contentId, content) => {
     ILD.interactions[contentId] = interactionsCounter;
   }
 
-
-
-  /*
   if (!interactions || (typeof interactions === 'object' && interactionsCounter === 0)) {
+
+//quick fix
+    /*
     $('.h5p-iframe')[0].contentWindow.onload = () => {
       $('.h5p-iframe')[0].contentWindow.H5P.instances[0].video.on('stateChange', (event) => {
         if (event.data === 0) {
-          ILD.setResult(contentId, 100, 100);
-        }
-      });
-    };
+        */
+    ILD.setResult(contentId, 100, 100);
+
+    //quick fix
+    /*
   }
-    */
+});
+};
+*/
+  }
 
   if (summaries.length) {
     let summary = false;
@@ -261,7 +209,32 @@ ILD.getEssayPercentage = (contentId, content) => {
   ILD.EssayPassPercentage[contentId] = content.behaviour.percentagePassing;
 };
 
+// Check if library is InteractiveVideo or QuestionSet
+ILD.checkLibrary = (H5PIntegration, H5PInstance) => {
 
+  window.console.log(H5PInstance);
+  const contentId = H5PInstance.contentId;
+
+
+  if (typeof contentId !== 'undefined') {
+    const contentData = H5PIntegration.contents[`cid-${contentId}`];
+    const content = JSON.parse(contentData.jsonContent);
+    const library = contentData.library;
+
+
+    if (library.includes('H5P.InteractiveVideo')) {
+      ILD.getVideoInteractions(contentId, content);
+    } else if (library.includes('H5P.QuestionSet')) {
+      ILD.getQuestionSetPercentage(contentId, content);
+    } else if (library.includes('H5P.SingleChoiceSet')) {
+      ILD.getSingleChoiceInteractions(contentId, content);
+    } else if (library.includes('H5P.Essay')) {
+      ILD.getEssayPercentage(contentId, content);
+    } else if (library.includes('H5P.BranchingScenario')) {
+      ILD.BranchingScenario[contentId] = 1;
+    }
+  }
+};
 
 
 export default {

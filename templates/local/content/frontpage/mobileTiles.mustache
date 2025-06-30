@@ -1,73 +1,48 @@
 
+
 <div class="mobile-tiles d-flex d-sm-none flex-column">
-    {{^badge_cert_hide}}
-        {{^certificate_visibility}}
-            <h2>{{#str}} only_badges, format_mooin4 {{/str}}</h2>
-        {{/certificate_visibility}}
-        {{^badge_visibility}}
-            <h2>{{#str}} only_certificates, format_mooin4 {{/str}}</h2>
-        {{/badge_visibility}}
-        {{#badge_cert_visibility}}
-            <h2>{{#str}} badges_certificates, format_mooin4 {{/str}}</h2>
-        {{/badge_cert_visibility}}    <div class="d-flex badges-certificates-mobile mb-4">
-        {{#badges}}
-            {{#badge_visibility}}
-                <a href="{{{badgesUrl}}}" class="mooin4-btn">
-                    <span class="chat-icon pr-2 position-relative">
-                    <i class="bi bi-trophy-fill mr-1"></i>
-                        {{#new_badge}}
-                            <span class="notification-badge notification-badge--mobile position-absolute">{{{badges_number}}}</span>
-                        {{/new_badge}}
-                    </span>
-                    {{#str}} course_badges, format_mooin4{{/str}}
-                </a>
-            {{/badge_visibility}}
-        {{/badges}}
-        {{#certificates}}
-            {{#certificate_visibility}}
-                <a href="{{{certificatesUrl}}}" class="mooin4-btn">
-                    <span class="chat-icon pr-2 position-relative">
-                    <i class="bi bi-award-fill mr-1"></i>
-                        {{#new_cert}}
-                            <span class="notification-badge notification-badge--mobile position-absolute">{{{cert_number}}}</span>
-                        {{/new_cert}}
-                    </span>
-                    {{#str}} my_certificate, format_mooin4{{/str}}
-                </a>
-            {{/certificate_visibility}}
-        {{/certificates}}
+    <h2>{{#str}} badges_certificates, format_mooin4 {{/str}}</h2>
+    <div class="d-flex badges-certificates-mobile mb-4">
+    {{#badges}}
+        <a href="{{{badgesUrl}}}" class="mooin4-btn">
+            <i class="bi bi-trophy-fill mr-1"></i>
+            {{#str}} course_badges, format_mooin4{{/str}}
+        </a>
+    {{/badges}}
+    {{#certificates}}
+        <a href="{{{certificatesUrl}}}" class="mooin4-btn">
+            <i class="bi bi-award-fill mr-1"></i>
+            {{#str}} my_certificate, format_mooin4{{/str}}
+        </a>
+    {{/certificates}}
     </div>
     <div class="seperator m-0 mb-4"></div>
-{{/badge_cert_hide}}
 
-{{#community_visibility}}
+
+
     <h2>{{#str}} community, format_mooin4 {{/str}}</h2>
     <div class="d-flex badges-certificates-mobile mb-4">
-        {{#discussions}}
-            {{#discussion_visibility}}
-                <a href="{{{all_discussions_url}}}" class="mooin4-btn">
-                    <span class="chat-icon pr-2 position-relative">
-                        <i class="bi bi-chat-left"></i>
-                        <i class="bi bi-chat-right-text-fill"></i>
-                        {{^no_new_news}}
-                        <span class="notification-badge notification-badge--mobile position-absolute">{{{unreadNewsNumber}}}</span>
-                        {{/no_new_news}}
-                    </span>
-                    
-                    {{#str}} forums, format_mooin4{{/str}}
-                </a>
-            {{/discussion_visibility}}
-        {{/discussions}}
+    {{#discussions}}
+        <a href="{{{all_discussions_url}}}" class="mooin4-btn">
+            <span class="chat-icon pr-2 position-relative">
+                <i class="bi bi-chat-left"></i>
+                <i class="bi bi-chat-right-text-fill"></i>
+                {{^no_new_news}}
+                <span class="notification-badge notification-badge--mobile position-absolute">{{{unreadNewsNumber}}}</span>
+                {{/no_new_news}}
+            </span>
+            
+            {{#str}} forums, format_mooin4{{/str}}
+        </a>
         
-        {{#participants}}
-            {{#userlist_visibility}}
-                <a href="{{{participantsUrl}}}" class="mooin4-btn">
-                    <i class="bi bi-people-fill mr-1"></i>
-                    {{#str}} participants, format_mooin4{{/str}}
-                </a>
-            {{/userlist_visibility}}
-        {{/participants}}
-        </div>
-        <div class="seperator m-0"></div>
-    {{/community_visibility}}
+    {{/discussions}}
+    
+    {{#participants}}
+        <a href="{{{participantsUrl}}}" class="mooin4-btn">
+            <i class="bi bi-people-fill mr-1"></i>
+            {{#str}} participants, format_mooin4{{/str}}
+        </a>
+    {{/participants}}
+    </div>
+    <div class="seperator m-0"></div>
 </div>

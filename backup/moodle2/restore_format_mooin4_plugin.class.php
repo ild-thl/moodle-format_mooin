@@ -114,16 +114,13 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
 
         $DB->delete_records('files', array('contextid' => $contextid, 'itemid' => $backupinfo->original_course_id));
 
-        if ($newcourse = $DB->get_record('course', array('id' => $this->step->get_task()->get_courseid()))) {
-            if ($newcourse->format == 'mooin4') {
-                foreach ($backupinfo->sections as $section) {
-                    $id = $this->get_mappingid('course_section', $section->sectionid);
-                    $DB->execute(
-                        "UPDATE {course_sections} SET name = ? WHERE course = ? AND id = ?",
-                        [$section->title, $this->step->get_task()->get_courseid(), $id]
-                    );
-                }
-            }
+
+        foreach ($backupinfo->sections as $section) {
+            $id = $this->get_mappingid('course_section', $section->sectionid);
+            $DB->execute(
+                "UPDATE {course_sections} SET name = ? WHERE course = ? AND id = ?",
+                [$section->title, $this->step->get_task()->get_courseid(), $id]
+            );
         }
 
         $DB->delete_records('format_mooin4_chapter', array('chapter' => 1, 'courseid' => $this->step->get_task()->get_courseid()));

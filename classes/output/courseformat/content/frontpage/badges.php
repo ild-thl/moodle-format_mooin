@@ -36,20 +36,16 @@ class badges implements renderable {
         $badges .= ob_get_contents();
         ob_end_clean();
 
-        if (count(utils::get_badge_records($course->id, null, null, null))  > 3) {
+        if(count(utils::get_badge_records($course->id, null, null, null))  > 3) {
             $other_badges = count(utils::get_badge_records($course->id, null, null, null)) - 3;
         } else {
             $other_badges = false;
         }
-        $badges_count_mobile = utils::count_unviewed_badges($USER->id, $course->id);
-        $new_badge = $badges_count_mobile > 0;
 
         $data = (object)[
             'badgesList' => $badges,
             'otherBadges' => $other_badges,
             'badgesUrl' => new moodle_url('/course/format/mooin4/badges.php', array('id' => $course->id)),
-            'new_badge' => $new_badge,
-            'badges_number' => $badges_count_mobile,
         ];
 
         $coursecontext = context_course::instance($course->id);
