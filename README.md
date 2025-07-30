@@ -15,7 +15,7 @@ We need to install the **course format**
 After installation, switch to the branch mooin_405 for Moodle 4.5 systems. 
 
     cd mooin4
-    git switch mooin_404
+    git switch mooin_405
 
 and the **MOOIN 4.0 Design**
 
@@ -26,7 +26,7 @@ and the **MOOIN 4.0 Design**
 After installation, switch to the branch mooin_404 for Moodle 4.5 systems. 
 
     cd mooin4
-    git switch mooin_404
+    git switch mooin_405
     
 For a better user experience we recommand to use **H5P** (https://moodle.org/plugins/mod_hvp). 
 
@@ -36,3 +36,8 @@ First check if changing Designs in courses is enabled. Go to **Site Administrati
 Then create a new course or navigate to an existing course. In the course settings go to **Course format** and choose **Mooin 4.x course format**. Then go to **Appearance > Force theme** and choose **Mooin 4.x**.
 
 To add more chapters to the course, **turn editig on**. Move to the bottom of the course overview site and click **Add sections**. Change the name and move it to the required position. Click **Edit** at the right side of the lesson and choose **Set as chapter title**.
+
+## mooin_405 Features and bug fixes
+Features: see https://github.com/ild-thl/moodle-format_mooin/wiki/mooin_405-Features
+
+Bug fixes: see https://github.com/ild-thl/moodle-format_mooin/wiki/mooin_405-Bug-Fixes

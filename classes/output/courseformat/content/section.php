@@ -121,11 +121,10 @@ class section extends section_base {
             'section' => $this->section->id,
             'completion' => 2
         ))) {
-
             $data->showCompletionButton = true;
-            if ($section_progress == 100) {
-                $data->isCompleted = true;
-            }
+        }
+        if ($section_progress == 100) {
+            $data->isCompleted = true;
         }
 
         if ($chapter = $this->chapter) {

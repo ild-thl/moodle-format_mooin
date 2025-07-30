@@ -21,14 +21,17 @@ Example context (json):
                 {{> format_mooin4/local/content/frontpage/header }}
             {{/header}}
             <div class="mobile-bg">
-                {{#news_section}}
-                {{> format_mooin4/local/content/frontpage/news_section }}                
-                {{/news_section}}
-                
-                {{#courseprogress}}
-                    {{> format_mooin4/local/content/frontpage/courseprogress }}
-                {{/courseprogress}}
-                <div class="seperator"></div>
+                {{#newssection_visibility}}
+                    {{#news_section}}
+                    {{> format_mooin4/local/content/frontpage/news_section }}                
+                    {{/news_section}}
+                {{/newssection_visibility}}
+                {{#progressbar_visibility}}
+                    {{#courseprogress}}
+                        {{> format_mooin4/local/content/frontpage/courseprogress }}
+                    {{/courseprogress}}
+                    <div class="seperator"></div>
+                {{/progressbar_visibility}}
                 {{> format_mooin4/local/content/frontpage/tabletTiles }}
                 {{> format_mooin4/local/content/frontpage/mobileTiles }}
                 {{> format_mooin4/local/content/frontpage/coursetable }}
@@ -38,8 +41,15 @@ Example context (json):
             </div>
             
         </div>
-        <div class="coursefrontpage__side d-none d-lg-flex">
-            {{> format_mooin4/local/content/frontpage/badges_and_certificates }}
+        {{#hide_coursefrontpage_side}}
+            <div class="hide-block">
+        {{/hide_coursefrontpage_side}}
+        {{^hide_coursefrontpage_side}}
+            <div class="coursefrontpage__side d-none d-lg-flex">
+        {{/hide_coursefrontpage_side}}            
+        {{^badge_cert_hide}}
+                {{> format_mooin4/local/content/frontpage/badges_and_certificates }}
+            {{/badge_cert_hide}}
             {{> format_mooin4/local/content/frontpage/community }}
         </div> 
     </div>

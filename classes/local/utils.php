@@ -375,14 +375,14 @@ class utils {
                 //'new_news' => $new_news
             ];
             return $templatecontext;
-        } 
+        }
     }
 
     public static function count_unread_posts($userid, $courseid, $news = false, $forumid = 0) {
         global $DB, $USER;
 
         // SQL query to get all unread posts
-        $sql = 'SELECT fp.*, f.id as forumid, fd.groupid, fd.id as discussionid, cm.id as cmid
+        $sql = 'SELECT DISTINCT fp.id AS uniqueid, fp.*, f.id as forumid, fd.groupid, fd.id as discussionid, cm.id as cmid
                 FROM {forum_posts} as fp
                 JOIN {forum_discussions} as fd ON fp.discussion = fd.id
                 JOIN {forum} as f ON fd.forum = f.id
@@ -409,17 +409,28 @@ class utils {
             'wait' => time() - 1800
         );
 
-        $unreadposts = $DB->get_records_sql($sql, $params);
+        $unreadposts = $DB->get_recordset_sql($sql, $params);
         $visible_unread_posts = 0;
 
         // Check visibility of each post
+        $ids = [];
+
         foreach ($unreadposts as $post) {
+            //error_log("Post ID: {$post->id}, Forum ID: {$post->forumid}, User: {$userid}");
+
             $forum = $DB->get_record('forum', array('id' => $post->forumid));
             $discussion = $DB->get_record('forum_discussions', array('id' => $post->discussionid));
             $cm = get_coursemodule_from_instance('forum', $forum->id, $courseid);
 
+            //check if the user can see the post
             if (forum_user_can_see_post($forum, $discussion, $post, $USER, $cm)) {
-                $visible_unread_posts++;
+                //fix: check if the post is already in the list
+                if (in_array($post->id, $ids)) {
+                    //error_log("Duplicate: " . $post->id);
+                } else {
+                    $visible_unread_posts++;
+                }
+                $ids[] = $post->id;
             }
         }
 
@@ -436,7 +447,7 @@ class utils {
     public static function get_last_forum_discussion($courseid, $forum_type) {
         global $DB, $OUTPUT, $USER;
 
-    
+
         $sql = "SELECT fp.*, f.id as forumid, fd.groupid, fd.id as discussionid, cm.id as cmid
                 FROM {forum_posts} as fp
                 JOIN {forum_discussions} as fd ON fp.discussion = fd.id
@@ -446,8 +457,8 @@ class utils {
                 AND (fp.mailnow = 1 OR fp.created < :wait)
                 AND f.type != :news
                 AND cm.module = (SELECT id FROM {modules} WHERE name = 'forum')
-                ORDER BY fp.created DESC";
-    
+                ORDER BY fp.created DESC LIMIT 1";
+
         $params = array(
             'courseid' => $courseid,
             'news' => 'news',
@@ -620,7 +631,7 @@ class utils {
         if (isset($SECTIONS[$section->id]) && isset($SECTIONS[$section->id]->prefix)) {
             return $SECTIONS[$section->id]->prefix;
         }
-    
+
         $sectionprefix = '';
 
         // Get parent chapter of the section
@@ -628,7 +639,7 @@ class utils {
         if (is_object($parentchapter)) {
             // Get section ids for the chapter
             $sids = $parentchapter->sectionids;
-    
+
             // Get the course and format
             $course = get_course($section->course);
             $format = course_get_format($course);
@@ -671,7 +682,7 @@ class utils {
         if (isset($SECTIONS[$section->id])) {
             $SECTIONS[$section->id]->prefix = $sectionprefix;
         }
-    
+
         return $sectionprefix;
     }
 
@@ -751,13 +762,12 @@ class utils {
                 return $CHAPTERS[$SECTIONS[$section->id]->parentchapterid];
             }
         }
-    
+
         $chapters = $DB->get_records('format_mooin4_chapter', array('courseid' => $section->course));
-        foreach ($chapters as $chapter) {            
+        foreach ($chapters as $chapter) {
             if (isset($CHAPTERS[$chapter->id]) && isset($CHAPTERS[$chapter->id]->sectionids)) {
                 $sids = $CHAPTERS[$chapter->id]->sectionids;
-            }
-            else {
+            } else {
                 $sids = self::get_sectionids_for_chapter($chapter->id);
             }
             if (in_array($section->id, $sids)) {
@@ -774,7 +784,7 @@ class utils {
 
     public static function get_sectionids_for_chapter($chapterid) {
 
-        global $DB;      
+        global $DB;
         $sectionids = array();
         if ($chapter = $DB->get_record('format_mooin4_chapter', array('id' => $chapterid))) {
 
@@ -796,9 +806,7 @@ class utils {
                                 AND cs.section < :nextchaptersection;';
                         $params = array('courseid' => $chapter->courseid, 'chaptersection' => $chaptersection->section, 'nextchaptersection' => $nextchaptersection->section);
                     }
-
-                }   
-                else {
+                } else {
                     $sql = 'SELECT cs.id 
                             FROM {course_sections} cs
                             WHERE cs.course = :courseid
@@ -909,7 +917,7 @@ class utils {
             // But from lib.php function update_course_format_options sections without parents are not allowed
             $parentchapter = self::get_parent_chapter($section);
             // Added  tinjohn.
-            if(!$parentchapter) {
+            if (!$parentchapter) {
                 return false;
             }
             $sectionids = self::get_sectionids_for_chapter($parentchapter->id);
@@ -945,33 +953,32 @@ class utils {
     public static function course_navbar() {
         global $PAGE, $OUTPUT, $COURSE;
 
-         $items = $PAGE->navbar->get_items();
+        $items = $PAGE->navbar->get_items();
 
-         if(!$items) {
+        if (!$items) {
             $message = "no breadcrumb for section 0 for testing ";
             \core\notification::warning($message);
             return;
-         }
-         $course_items = [];
-    
+        }
+        $course_items = [];
+
         //Split the navbar array at coursehome
         foreach ($items as $item) {
             if ($item->key === $COURSE->id) {
                 $course_items = array_splice($items, intval(array_search($item, $items)));
             }
-
-         }
+        }
         // Mod for check tinjohn.
         $course_items[0]->add_class('course-title');
         $course_items[0]->text = $COURSE->fullname;
-         $section_node = $course_items[array_key_last($course_items)];
-         $section_node->action = null;
-         $text = $section_node->text;
-         $parts = explode(':', $text, 2);
-         $result = trim($parts[0]) . ':';
-         $text = $section_node->text = $result;
-    
-         //Provide custom templatecontext for the new Navbar
+        $section_node = $course_items[array_key_last($course_items)];
+        $section_node->action = null;
+        $text = $section_node->text;
+        $parts = explode(':', $text, 2);
+        $result = trim($parts[0]) . ':';
+        $text = $section_node->text = $result;
+
+        //Provide custom templatecontext for the new Navbar
         $templatecontext = array(
             'get_items' => $course_items
         );
@@ -1013,11 +1020,10 @@ class utils {
         $chaptercompleted = false;
         $lastvisited = false;
 
-    
+
         if (isset($CHAPTERS[$chapter->id]->sectionids)) {
             $sectionids = $CHAPTERS[$chapter->id]->sectionids;
-        }
-        else {
+        } else {
             $sectionids = self::get_sectionids_for_chapter($chapter->id);
         }
         $completedsections = 0;
@@ -1073,9 +1079,11 @@ class utils {
     }
 
     public static function get_section_progress($courseid, $sectionid, $userid) {
-        global $DB, $CFG;
+        global $DB, $CFG, $SESSION;
 
         require_once($CFG->libdir . '/gradelib.php');
+
+        $sessionlang = isset($SESSION->lang) ? $SESSION->lang : null;
 
         $percentage = 0;
 
@@ -1083,14 +1091,37 @@ class utils {
         $coursemodules = $DB->get_records('course_modules', array(
             'course' => $courseid,
             'deletioninprogress' => 0,
-            'section' => $sectionid
+            'section' => $sectionid,
+            'visible' => 1
         ));
 
         $activities = 0;
 
         foreach ($coursemodules as $coursemodule) {
+            $modinfo = get_fast_modinfo($courseid, $userid);
+            $cm = $modinfo->get_cm($coursemodule->id);
+            $info = new \core_availability\info_module($cm);
+            $warnings = [];
+            $isavailable = $info->is_available($warnings, false, $userid);
+            $skip = FALSE;
+            
             // cm has completion activated?
             if ($coursemodule->completion == 2) {
+                // Check availability based on language user uses in session
+                if ($coursemodule->availability !== NULL) {
+                    $data = json_decode($coursemodule->availability, true);
+                    foreach ($data['c'] as $item) {
+                        if ($item['type'] === 'language' && $item['id'] !== $sessionlang) {
+                            $skip = true;
+                            break;
+                        }
+                    }
+                }
+
+                if ($skip || !$isavailable) {
+                    continue;
+                }
+
                 $activities++;
 
                 $modulename = '';
@@ -1365,17 +1396,25 @@ class utils {
         $result = [];
         // Make the request into the module & course_module
         $module_ilddigitalcert = $DB->get_record('modules', ['name' => 'ilddigitalcert']);
+        error_log('module_ilddigitalcert: ' . print_r($module_ilddigitalcert, true));
         $module_coursecertificate = $DB->get_record('modules', ['name' => 'coursecertificate']);
+        error_log('module_coursecertificate: ' . print_r($module_coursecertificate, true));
 
         if ($module_ilddigitalcert == true) {
             // Make request into course_module
-            $cm_ilddigitalcertificate = $DB->get_records('course_modules', ['module' => $module_ilddigitalcert->id]);
+            $cm_ilddigitalcertificate = $DB->get_records('course_modules', [
+                'module' => $module_ilddigitalcert->id,
+                'course' => $courseid
+            ]);
         } else {
             $cm_ilddigitalcertificate  = [];
         }
         if ($module_coursecertificate == true) {
             // Make request into course_module
-            $cm_coursecertificate = $DB->get_records('course_modules', ['module' => $module_coursecertificate->id]);
+            $cm_coursecertificate = $DB->get_records('course_modules', [
+                'module' => $module_coursecertificate->id,
+                'course' => $courseid
+            ]);
         } else {
             $cm_coursecertificate  = [];
         }
@@ -1383,7 +1422,7 @@ class utils {
         // Check if the module has been completed and save into module_completion table
         if (isset($cm_ilddigitalcertificate)) {
             foreach ($cm_ilddigitalcertificate as $value) {
-                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => $value->id, 'userid' => $userid]);
+                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => ($value->id) - 1, 'userid' => $userid]);
                 if ($exist_completed_certificate) {
                     $completed++;
                 } else {
@@ -1393,7 +1432,7 @@ class utils {
         }
         if (isset($cm_coursecertificate)) {
             foreach ($cm_coursecertificate as $value) {
-                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => $value->id, 'userid' => $userid]);
+                $exist_completed_certificate = $DB->record_exists('course_modules_completion', ['coursemoduleid' => ($value->id) - 1, 'userid' => $userid]);
                 if ($exist_completed_certificate) {
                     $completed++;
                 } else {
@@ -1403,7 +1442,8 @@ class utils {
         }
 
         $result = ['completed' => $completed, 'not_completed' => $not_completed];
-
+        error_log("value->id = " . $value->id);
+        error_log('result: ' . print_r($result, true));
         return $result;
     }
 
@@ -1618,7 +1658,7 @@ class utils {
         $userbadges = badges_get_user_badges($userid, $courseid, null, null, null, true);
 
         foreach ($userbadges as $ub) {
-            if ($ub->status != 4) {
+            if ($ub->status == 1 || $ub->status == 3) {
 
                 $coursebadges[$ub->id]->highlight = true;
                 $coursebadges[$ub->id]->uniquehash = $ub->uniquehash;
@@ -1643,7 +1683,14 @@ class utils {
                 FROM
                     {badge} b
                 WHERE b.type > 0
-                  AND b.status != 4 ';
+                  AND (b.status = 1 OR b.status = 3)'; //status for available badges
+        /*
+        Statusvarianten:
+        0 nicht verfügbar und nicht vergeben
+        1 verfügbar und nicht vergeben
+        2 zugriff verhindert und vergeben
+        3 vergeben
+        */
 
         if ($courseid == 0) {
             $sql .= ' AND b.type = :type';
@@ -1791,22 +1838,22 @@ class utils {
         }
 
 
-    fclose($socket);
-    $retStr = self::extract_body($content);
-    return $retStr;
-}
+        fclose($socket);
+        $retStr = self::extract_body($content);
+        return $retStr;
+    }
 
     /**
      * removes the headers from a url response
      * @return String body of the returned request
      */
-    static function extract_body($response){
+    static function extract_body($response) {
 
         $crlf = "\r\n";
         // split header and body
         $pos = strpos($response, $crlf . $crlf);
-        if($pos === false){
-            return($response);
+        if ($pos === false) {
+            return ($response);
         }
 
         $header = substr($response, 0, $pos);
@@ -1815,9 +1862,9 @@ class utils {
         $headers = array();
         $lines = explode($crlf, $header);
 
-        foreach($lines as $line){
-            if(($pos = strpos($line, ':')) !== false){
-                $headers[strtolower(trim(substr($line, 0, $pos)))] = trim(substr($line, $pos+1));
+        foreach ($lines as $line) {
+            if (($pos = strpos($line, ':')) !== false) {
+                $headers[strtolower(trim(substr($line, 0, $pos)))] = trim(substr($line, $pos + 1));
             }
         }
 
@@ -1841,4 +1888,23 @@ class utils {
         }
     }
 
+    public static function count_unviewed_badges($userid, $courseid) {
+        global $DB;
+        $unviewed_badges = 0;
+        $sql = 'SELECT bi.id
+              FROM {badge_issued} as bi, {badge} as b
+             WHERE b.courseid = :courseid
+               AND b.id = bi.badgeid
+               AND bi.userid = :userid';
+        $params = array('courseid' => $courseid, 'userid' => $userid);
+        if ($records = $DB->get_records_sql($sql, $params)) {
+            foreach ($records as $record) {
+                $badgeisnew = get_user_preferences('format_mooin4_new_badge_' . $record->id, 0, $userid);
+                if ($badgeisnew) {
+                    $unviewed_badges++;
+                }
+            }
+        }
+        return $unviewed_badges;
+    }
 }
