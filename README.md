@@ -10,25 +10,29 @@ We need to install the **course format**
 
     cd /path/to/moodle/course/format/
     
-    git clone https://github.com/ild-thl/moodle-format_mooin.git mooin4
-
-After installation, switch to the branch mooin_405 for Moodle 4.5 systems. 
-
-    cd mooin4
-    git switch mooin_405
+    git clone -b mooin_405 https://github.com/ild-thl/moodle-format_mooin.git mooin4
 
 and the **MOOIN 4.0 Design**
 
     cd /path/to/moodle/theme/
     
-    git clone https://github.com/ild-thl/moodle-theme_mooin.git mooin4
-    
-After installation, switch to the branch mooin_404 for Moodle 4.5 systems. 
+    git clone -b mooin_405 https://github.com/ild-thl/moodle-theme_mooin.git mooin4
 
-    cd mooin4
-    git switch mooin_405
+and the **Boost Union Design**
+
+    cd /path/to/moodle/theme/
+
+    git clone -b MOODLE_405_STABLE https://github.com/moodle-an-hochschulen/moodle-theme_boost_union.git boost_union
     
-For a better user experience we recommand to use **H5P** (https://moodle.org/plugins/mod_hvp). 
+For a better user experience we recommend to use **H5P** (https://moodle.org/plugins/mod_hvp). 
+
+    cd /path/to/moodle/mod/
+
+    git clone https://github.com/h5p/moodle-mod_hvp.git hvp
+
+    cd /path/to/moodle/mod/hvp/
+
+    git submodule update --init
 
 ## Usage
 First check if changing Designs in courses is enabled. Go to **Site Administration > Appearance > Theme settings** and enable **Allow course themes** (allowcoursethemes).
