@@ -199,3 +199,6 @@ $string['indentation_help'] = 'Дозволити викладачам та ін
 
 // course side bar
 $string['include_in_sidebar'] = 'Показувати в бічній панелі';
+
+// geoNames settings
+$string['geonamessettings'] = 'Налаштування GeoNames';

@@ -100,6 +100,28 @@ if ($ADMIN->fulltree) {
         1
     ));
 
+    // Configure data for getting user coordinates.
+    // Add a headline "Include in Navigation"
+    $settings->add(new admin_setting_heading(
+        'format_mooin4/geonamessettings',
+        get_string('geonamessettings', 'format_mooin4'),
+        ''
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'format_mooin4/geonamesapi_url',
+        get_string('configlabel_geonamesapi_url', 'format_mooin4'),
+        get_string('configdesc_geonamesapi_url', 'format_mooin4'), 
+        'http://api.geonames.org'
+    ));
+    $settings->add(new admin_setting_configtext(
+        'format_mooin4/geonamesapi_username',
+        get_string('configlabel_geonamesapi_username', 'format_mooin4'),
+        get_string('configdesc_geonamesapi_username', 'format_mooin4'), 
+        'mooin4'
+    ));
+
+    
 }
 
 if (isset($PAGE)) {

@@ -231,3 +231,5 @@ $string['toggle_userlist_visibility_help'] = 'Wenn aktiviert, wird die User-List
 
 $string['only_badges'] = 'Badges';
 $string['only_certificates'] = 'Zertifikate';
+
+$string['geonamessettings'] = 'GeoNames Einstellungen';
