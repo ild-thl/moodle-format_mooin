@@ -101,7 +101,7 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
 
         $data = $this->connectionpoint->get_data();
         $backupinfo = $this->step->get_task()->get_info();
-        if ($backupinfo->original_course_format !== 'topics' || !isset($data['tags']['numsections'])) {
+        if ($backupinfo->original_course_format !== 'mooin4' || !isset($data['tags']['numsections'])) {
             // Backup from another course format or backup file does not even have 'numsections'.
             return;
         }

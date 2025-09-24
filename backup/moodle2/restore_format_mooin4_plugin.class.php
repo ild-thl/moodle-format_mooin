@@ -108,6 +108,10 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
 
         $backupinfo = $this->step->get_task()->get_info();
         $contextid = $this->task->get_contextid();
+        
+        if ($backupinfo->original_course_format !== 'mooin4') {
+            return;
+        }
 
         $this->restore_files('headerimagedesktop');
         $this->restore_files('headerimagemobile');
