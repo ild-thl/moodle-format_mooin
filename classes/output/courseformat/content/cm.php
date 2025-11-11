@@ -54,7 +54,7 @@ class cm extends cm_base {
      * @return stdClass data context for a mustache template
      */
     public function export_for_template(renderer_base $output): stdClass {
-        global $USER, $CFG;
+        global $USER, $CFG, $DB;
         $data = parent::export_for_template($output);
 
         if ($this->mod->modname == 'hvp' && $USER->editing != 1) {
@@ -65,6 +65,39 @@ class cm extends cm_base {
             //$link = '<iframe src="' . $CFG->httpswwwroot . '/mod/hvp/embed.php?id=' . $this->mod->id . '" class="parent-iframe" style="height: 400px;" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="' . $CFG->httpswwwroot . '/mod/hvp/library/js/h5p-resizer.js" charset="UTF-8"></script>';
             $this->mod->set_content($link);
             $data->hvpcontent = $this->mod->content;
+        }
+
+        if ($this->mod->modname === 'h5pactivity' && $USER->editing != 1) {
+            $context = $this->mod->context ?? \context_module::instance($this->mod->id);
+            $fs = get_file_storage();
+            $files = $fs->get_area_files($context->id, 'mod_h5pactivity', 'package', 0, 'id', false);
+            $file = reset($files);
+
+            if ($file) {
+                $displayoptions = 0;
+                if ($activity = $DB->get_record('h5pactivity', ['id' => $this->mod->instance], 'displayoptions')) {
+                    $displayoptions = (int) ($activity->displayoptions ?? 0);
+                }
+
+                $fileurl = \moodle_url::make_pluginfile_url(
+                    $file->get_contextid(),
+                    $file->get_component(),
+                    $file->get_filearea(),
+                    $file->get_itemid(),
+                    $file->get_filepath(),
+                    $file->get_filename(),
+                    false
+                );
+
+                $factory = new \core_h5p\factory();
+                $core = $factory->get_core();
+                $config = \core_h5p\helper::decode_display_options($core, $displayoptions);
+
+                $playerhtml = \core_h5p\player::display($fileurl, $config, true, 'mod_h5pactivity', false, []);
+
+                $this->mod->set_content($playerhtml);
+                $data->hvpcontent = $this->mod->content;
+            }
         }
         
 
