@@ -165,7 +165,8 @@ class format_mooin4_external extends external_api
       return new external_function_parameters(array(
           'contentid' => new external_value(PARAM_INT, 'H5P content id'),
           'score' => new external_value(PARAM_FLOAT, 'H5P score'),
-          'maxscore' => new external_value(PARAM_FLOAT, 'H5P max score')
+          'maxscore' => new external_value(PARAM_FLOAT, 'H5P max score'),
+          'cmid' => new external_value(PARAM_INT, 'Course module id', VALUE_DEFAULT, 0)
       ));
   }
 
@@ -173,48 +174,94 @@ class format_mooin4_external extends external_api
    * Returns status
    * @return array user data
    */
-  public static function setgrade($contentid, $score, $maxscore) {
-      global $SESSION, $DB, $CFG;
-      require_once($CFG->dirroot . '/mod/hvp/lib.php');
-      $cm = get_coursemodule_from_instance('hvp', $contentid);
+  public static function setgrade($contentid, $score, $maxscore, $cmid = 0) {
+      global $SESSION, $DB, $CFG, $USER;
 
+      $params = self::validate_parameters(self::setgrade_parameters(), array(
+          'contentid' => $contentid,
+          'score' => $score,
+          'maxscore' => $maxscore,
+          'cmid' => $cmid,
+      ));
+      $contentid = $params['contentid'];
+      $score = $params['score'];
+      $maxscore = $params['maxscore'];
+      $cmid = $params['cmid'];
 
-      //Parameter validation
-      //REQUIRED
-      $params = self::validate_parameters(self::setgrade_parameters(),
-          array(
-              'contentid' => $contentid,
-              'score' => $score,
-              'maxscore' => $maxscore
-          ));
-
-      //Context validation
-      //OPTIONAL but in most web service it should present
       $context = \context_system::instance();
       self::validate_context($context);
 
-      $courseid = $cm->course;
-      $course_already_completed = utils::is_course_completed($courseid);
+      $cm = null;
+      $module = null;
 
+      if (!empty($cmid)) {
+        $cm = get_coursemodule_from_id(null, $cmid, 0, false, IGNORE_MISSING);
+        if ($cm) {
+          $module = $cm->modname;
+        }
+      }
+
+      if (!$cm) {
+        $cm = get_coursemodule_from_instance('hvp', $contentid, 0, false, IGNORE_MISSING);
+        if ($cm) {
+          $module = 'hvp';
+        }
+      }
+
+      if (!$cm) {
+        $cm = get_coursemodule_from_instance('h5pactivity', $contentid, 0, false, IGNORE_MISSING);
+        if ($cm) {
+          $module = 'h5pactivity';
+        }
+      }
+
+      if (!$cm) {
+        return array(
+          'sectionid' => null,
+          'percentage' => null,
+          'course_already_completed' => false,
+          'chapter_already_completed' => false,
+          'courseid' => null,
+        );
+      }
+
+      if ($module === 'hvp') {
+        require_once($CFG->dirroot . '/mod/hvp/lib.php');
+      }
+
+      $courseid = $cm->course;
       $section_id = $cm->section;
+
+      $course_already_completed = utils::is_course_completed($courseid);
       $section = $DB->get_record('course_sections', array('id' => $section_id));
       $parent_chapter = utils::get_parent_chapter($section);
       $info = utils::get_chapter_info($parent_chapter);
-      $chapter_already_completed = false;
-      if ($info['completed']) {
-        $chapter_already_completed = true;
+      $chapter_already_completed = !empty($info['completed']);
 
+      $progress = false;
+      $immediatepercentage = null;
+      if ($module === 'hvp') {
+        $progress = utils::setgrade($contentid, $score, $maxscore);
       }
 
-      // if ($info['completed']) {
-      //   $chapter_already_completed = true;
-      // }
+      if ($maxscore > 0) {
+        $immediatepercentage = ($score / $maxscore) * 100;
+        if (!empty($cm->id)) {
+          set_user_preference('format_mooin4_hvp_progress_cmid_' . $cm->id, $immediatepercentage, $USER->id);
+        }
+        if ($module !== 'h5pactivity') {
+          set_user_preference('format_mooin4_hvp_progress_' . $contentid, $immediatepercentage, $USER->id);
+        }
+      }
 
-      $progress = utils::setgrade($contentid, $score, $maxscore);
-      //$section = $DB->get_record('course_sections', array('id' => $progress['sectionid']));
-      //$courseid = $section->course;
-      //$course_already_completed = is_course_completed($courseid);
-
+      if ($progress === false) {
+        $progress = array(
+          'sectionid' => $section_id,
+          'percentage' => $immediatepercentage ?? utils::get_section_progress($courseid, $section_id, $USER->id),
+        );
+      } else if ($immediatepercentage !== null) {
+        $progress['percentage'] = $immediatepercentage;
+      }
 
       return array(
           'sectionid' => $progress['sectionid'],
@@ -222,7 +269,6 @@ class format_mooin4_external extends external_api
           'course_already_completed' => $course_already_completed,
           'chapter_already_completed' => $chapter_already_completed,
           'courseid' => $courseid,
-          'sectionid' => $section_id,
       );
   }
 
@@ -237,7 +283,6 @@ class format_mooin4_external extends external_api
           'course_already_completed' => new external_value(PARAM_BOOL, 'Check if the Course is completetd already'),
           'chapter_already_completed' => new external_value(PARAM_BOOL, 'Check if the current Chapter is completetd already'),
           'courseid' => new external_value(PARAM_INT, 'Course ID'),
-          'sectionid' => new external_value(PARAM_INT, 'Section ID'),
       ), 'Section progress');
   }
 }

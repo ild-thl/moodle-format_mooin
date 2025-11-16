@@ -27,7 +27,7 @@ import DndSection from "format_mooin4/local/courseeditor/dndsection";
 import Templates from "core/templates";
 import ModalFactory from "core/modal_factory";
 import Mooin4Modal from "../../mooin4modal";
-import { get_string as getString } from "core/str";
+import {get_string as getString} from "core/str";
 import ILD from "format_mooin4/ildhvp4";
 
 export default class extends DndSection {
@@ -85,8 +85,8 @@ export default class extends DndSection {
         this.configDragDrop(headerComponent);
       }
     }
-    //quick and dirty: don't show modal in last section
-    //this._showLastSectionModal(state);
+    // Quick and dirty: don't show modal in last section
+    // this._showLastSectionModal(state);
     this._hvpListener();
   }
 
@@ -97,7 +97,7 @@ export default class extends DndSection {
    */
   getWatchers() {
     return [
-      { watch: `section[${this.id}]:updated`, handler: this._refreshSection },
+      {watch: `section[${this.id}]:updated`, handler: this._refreshSection},
       // {watch: `section[${this.id}].sectionprogress:updated`, handler: this._updateSectionProgress}
     ];
   }
@@ -136,7 +136,7 @@ export default class extends DndSection {
    * @param {object} param
    * @param {Object} param.element details the update details.
    */
-  _refreshSection({ element }) {
+  _refreshSection({element}) {
     // Update classes.
     this.element.classList.toggle(
       this.classes.DRAGGING,
@@ -165,15 +165,15 @@ export default class extends DndSection {
     this._updateActionsMenu(element);
 
     if (this.reactive.isEditing) {
-      //this._reloadSectionNames({ element: element });
+      // This._reloadSectionNames({ element: element });
     }
   }
 
-  async _reloadSectionNames({ element }) {
+  async _reloadSectionNames({element}) {
     const title = this.getElement(this.selectors.SECTION_ITEM);
-    //window.console.log(element);
+    // Window.console.log(element);
     if (!element.isChapter) {
-      //title.innerHTML = element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
+      // Title.innerHTML = element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
       title.innerHTML = element.prefix;
     }
   }
@@ -274,43 +274,41 @@ export default class extends DndSection {
 
   _hvpListener() {
     var h5p_contentIds = [];
-    var parentIFrames = this.getElements(this.selectors.H5P);
-    //console.log("Anzahl der parentIFrames gefunden:", parentIFrames.length);
+    let parentIFrames = Array.from(this.getElements(this.selectors.H5P));
+
+    if (!parentIFrames.length) {
+      parentIFrames = Array.from(
+        this.element.querySelectorAll(".h5p-iframe, iframe[src*='h5p']")
+      );
+    }
+
     if (parentIFrames.length > 0) {
       parentIFrames.forEach((parentIFrame) => {
         if (parentIFrame.contentDocument) {
           var parentIFrameContent =
             parentIFrame.contentDocument || parentIFrame.contentWindow.document;
-          //console.log("parentIFrameContent gefunden:", parentIFrameContent);
+
+          const parentIsDirectH5P = parentIFrame.classList.contains("h5p-iframe");
 
           let nestedIFrame = null;
 
           const adjustParentIFrameHeight = () => {
             setTimeout(() => {
-              //console.log("adjustParentIFrameHeight");
-
               if (nestedIFrame && nestedIFrame.contentWindow.document.body) {
                 const nestedIFrameHeight =
                   nestedIFrame.contentWindow.document.body.scrollHeight;
                 if (nestedIFrameHeight > 1) {
-                  parentIFrame.style.height = nestedIFrameHeight + "px";
-                  // console.log(
-                  //     "ParentIFrame-Höhe angepasst:",
-                  //     nestedIFrameHeight + "px"
-                  // );
+                  if (!parentIsDirectH5P) {
+                    parentIFrame.style.height = nestedIFrameHeight + "px";
+                  }
                 } else {
-                  //console.log("Inhalt noch nicht vollständig gerendert, Höhe nicht angepasst.");
                 }
               } else {
-                //console.log("Body ist noch nicht verfügbar.");
               }
             }, 100);
           };
 
           const monitorElementLoads = () => {
-            console.log("monitorElementLoads");
-
-            // Überwache das Laden von Bildern, Videos und anderen Medien im iframe
             const elementsToWatch = ['img', 'video', 'iframe', 'embed', 'object'];
             elementsToWatch.forEach(tag => {
               const elements = nestedIFrame.contentDocument.getElementsByTagName(tag);
@@ -321,15 +319,22 @@ export default class extends DndSection {
             });
           };
 
+          const cmElement = parentIFrame.closest('[data-for="cmitem"]');
+          const cmId = cmElement ? cmElement.dataset.id : null;
+
           const checkForH5P = () => {
-            console.log("checkForH5P");
             if (nestedIFrame) {
               var H5PIntegration = nestedIFrame.contentWindow.H5PIntegration;
               var H5P = nestedIFrame.contentWindow.H5P;
               if (H5P && H5P.externalDispatcher) {
-                //console.log("H5P-Objekt gefunden.");
+                // Console.log("H5P-Objekt gefunden.");
 
-                //workaround for problem, that several observer regard the same object
+                // workaround for problem, that several observer regard the same object
+                /**
+                 *
+                 * @param array
+                 * @param element
+                 */
                 function addUniqueH5PcontentId(array, element) {
                   if (!array.includes(element)) {
                     array.push(element);
@@ -337,28 +342,30 @@ export default class extends DndSection {
                   return array;
                 }
 
-                //array of h5p contentId
+                // Array of h5p contentId
 
-                H5P.setFinished = function (contentId, score, maxScore, time) {
+                H5P.setFinished = function(contentId, score, maxScore, time) {
                   // H5P-Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
                 };
 
-                //H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
-                //ILD.checkLibrary();
-                //H5P.externalDispatcher.on("xAPI", ILD.xAPIAnsweredListener);
-                if (!h5p_contentIds.includes(H5P.instances[0].contentId)) {
-                  var current_array = addUniqueH5PcontentId(h5p_contentIds, H5P.instances[0].contentId);
-                  ILD.init(H5P, H5PIntegration, this.id, this.reactive);
+                // H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
+                // ILD.checkLibrary();
+                // H5P.externalDispatcher.on("xAPI", ILD.xAPIAnsweredListener);
+                const instance = (H5P.instances || []).find((inst) => typeof inst?.contentId !== "undefined");
+
+                if (instance && !h5p_contentIds.includes(instance.contentId)) {
+                  addUniqueH5PcontentId(h5p_contentIds, instance.contentId);
+                  ILD.init(H5P, H5PIntegration, this.id, this.reactive, cmId, this.element.dataset.id);
                 }
-                //window.console.log(H5P);
+                // Window.console.log(H5P);
 
                 adjustParentIFrameHeight(); // Höhe sofort anpassen, wenn H5P gefunden wird
 
                 // Starte den MutationObserver
-                var observer = new MutationObserver(function (mutations) {
-                  mutations.forEach(function (mutation) {
+                var observer = new MutationObserver(function(mutations) {
+                  mutations.forEach(function(mutation) {
                     if (mutation.addedNodes.length > 0 || mutation.attributeName === 'src') {
-                      // console.log(
+                      // Console.log(
                       //     "DOM-Änderung oder Attributänderung erkannt im .h5p-iframe: ",
                       //     mutation
                       // );
@@ -372,7 +379,7 @@ export default class extends DndSection {
                   subtree: true,
                   attributes: true, // Überwacht Änderungen an Attributen wie `src`
                 });
-                // console.log(
+                // Console.log(
                 //     "MutationObserver wurde gestartet, um Änderungen im .h5p-iframe zu überwachen."
                 // );
 
@@ -382,49 +389,49 @@ export default class extends DndSection {
             return false; // H5P wurde noch nicht gefunden oder nestedIFrame ist nicht verfügbar
           };
 
-          const checkForNestedIFrame = () => {
-            nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
-            //console.log("nestedIFrame gefunden:", nestedIFrame);
+          const handleNestedIframeFound = () => {
+            nestedIFrame.addEventListener('load', function() {
+              adjustParentIFrameHeight();
+              checkForH5P();
+              monitorElementLoads();
+            });
 
-            if (nestedIFrame) {
-              // Füge ein 'load' Event hinzu
-              nestedIFrame.addEventListener('load', function () {
-                //console.log('.h5p-iframe vollständig geladen.');
-                adjustParentIFrameHeight(); // Passe die Höhe an, wenn das iframe vollständig geladen ist
-                checkForH5P(); // Prüfe H5P erneut nach dem Laden
-                monitorElementLoads(); // Überwache das Laden von Elementen
-              });
-
-              // Fallback: Sofortiger Versuch, H5P zu finden
-              if (!checkForH5P()) {
-                //console.log("H5P wurde nicht gefunden, starte Überwachung.");
-
-                // Fallback: Regelmäßige Überprüfung des Inhalts (Polling) für H5P
-                var h5pCheckInterval = setInterval(function () {
-                  if (checkForH5P()) {
-                    clearInterval(h5pCheckInterval); // Stoppe das Intervall, wenn H5P gefunden wurde
-                  }
-                }, 500); // Überprüft alle 500ms
-              }
-
-              return true; // nestedIFrame wurde gefunden, keine weitere Aktion erforderlich
+            if (!checkForH5P()) {
+              var h5pCheckInterval = setInterval(function() {
+                if (checkForH5P()) {
+                  clearInterval(h5pCheckInterval);
+                }
+              }, 500);
             }
-            return false; // nestedIFrame wurde noch nicht gefunden
+            return true;
+          };
+
+          const checkForNestedIFrame = () => {
+            if (parentIsDirectH5P) {
+              nestedIFrame = parentIFrame;
+              return handleNestedIframeFound();
+            }
+
+            nestedIFrame = parentIFrameContent.querySelector(".h5p-iframe");
+            if (nestedIFrame) {
+              return handleNestedIframeFound();
+            }
+            return false;
           };
 
           // Initialer Versuch, nestedIFrame zu finden
           if (!checkForNestedIFrame()) {
-            // console.log(
+            // Console.log(
             //     "nestedIFrame wurde nicht gefunden, starte Beobachtung des parentIFrame."
             // );
 
             // Beobachte den parentIFrame für das Erscheinen des nestedIFrame
-            var observer = new MutationObserver(function (mutations) {
+            var observer = new MutationObserver(function(mutations) {
               console.log("_hvpListener 7");
 
-              mutations.forEach(function (mutation) {
+              mutations.forEach(function(mutation) {
                 if (mutation.addedNodes.length > 0) {
-                  // console.log(
+                  // Console.log(
                   //     "Eine neue Node wurde hinzugefügt:",
                   //     mutation.addedNodes
                   // );
@@ -441,17 +448,13 @@ export default class extends DndSection {
             });
           }
         } else {
-          //console.error("Kein Dokument im parentIFrame gefunden.");
+          // Console.error("Kein Dokument im parentIFrame gefunden.");
         }
       });
     } else {
-      //console.error("Keine parentIFrames gefunden.");
+      // Console.error("Keine parentIFrames gefunden.");
     }
   }
-
-
-
-
 
 
   // _hvpListener() {

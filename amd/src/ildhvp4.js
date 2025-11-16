@@ -15,8 +15,13 @@ ILD.interactions = [];
 // SingleChoiceInteractions counter
 ILD.singleChoiceInteractions = [];
 
-// SubContentIds - avoid duplicated answered statement
+// SubContentIds - pro Inhalt, um doppelte Antworten zu vermeiden
 ILD.subIds = [];
+
+// Mapping zwischen ContentId und Course Module Id
+ILD.contentToCm = [];
+ILD.contentToSection = [];
+ILD.currentSectionOverride = null;
 
 // Stores QuestionSet PassPercentage
 ILD.questionSetPassPercentage = [];
@@ -26,6 +31,10 @@ ILD.EssayPassPercentage = [];
 
 // Stores Branching scenario info
 ILD.BranchingScenario = [];
+
+// *** NEU HINZUGEFÜGT (Schritt 1) ***
+// Merkt sich, welche Sub-Interaktionen pro Inhalt bereits beantwortet wurden
+ILD.answeredSubIds = [];
 
 // Stores maxScore of interactions
 ILD.maxScore = 0;
@@ -62,18 +71,37 @@ ILD.xAPIAnsweredListener = (event) => {
     const maxScore = event.getMaxScore();
     let subContentId = event.data.statement.object.id.split('subContentId=')[1];
 
-    if (ILD.subIds.indexOf(subContentId) !== -1) {
-      if (typeof ILD.interactions[contentId] === 'undefined') {
-        ILD.interactions[contentId] = 1;
+    if (subContentId && subContentId.indexOf('&') !== -1) {
+      subContentId = subContentId.split('&')[0];
+    }
+
+    // *** START ÄNDERUNG (Schritt 2) ***
+    // Dieser Block wurde ersetzt
+    const contentSubIds = ILD.subIds[contentId] || [];
+
+    if (contentSubIds.indexOf(subContentId) !== -1) {
+      if (!ILD.answeredSubIds[contentId]) {
+        ILD.answeredSubIds[contentId] = [];
+      }
+
+      const answered = ILD.answeredSubIds[contentId];
+
+      if (answered.indexOf(subContentId) === -1) {
+        answered.push(subContentId);
       }
 
       const interactions = ILD.interactions[contentId];
-      ILD.percentage += (score / maxScore / interactions) * 100;
-      ILD.setResult(contentId, ILD.percentage, 100);
-    } else if (ILD.subIds.indexOf(subContentId) === -1 && ILD.subIds.length === 0) {
+      const answeredCount = answered.length;
+
+      if (interactions && interactions > 0) {
+        ILD.percentage = (answeredCount / interactions) * 100;
+        ILD.setResult(contentId, answeredCount, interactions, ILD.contentToSection[contentId] || null);
+      }
+    } else if (!contentSubIds.length) {
       const percentage = (score / maxScore) * 100;
-      ILD.setResult(contentId, percentage, 100);
+      ILD.setResult(contentId, percentage, 100, ILD.contentToSection[contentId] || null);
     }
+    // *** ENDE ÄNDERUNG (Schritt 2) ***
   }
 
   // Handle QuestionSet completion
@@ -84,9 +112,9 @@ ILD.xAPIAnsweredListener = (event) => {
     const passPercentage = ILD.questionSetPassPercentage[contentId];
 
     if (percentage >= passPercentage) {
-      ILD.setResult(contentId, 100, 100);
+      ILD.setResult(contentId, 100, 100, ILD.contentToSection[contentId] || null);
     } else {
-      ILD.setResult(contentId, percentage, 100);
+      ILD.setResult(contentId, percentage, 100, ILD.contentToSection[contentId] || null);
     }
   }
 
@@ -95,7 +123,7 @@ ILD.xAPIAnsweredListener = (event) => {
     const score = event.getScore();
     const maxScore = event.getMaxScore();
     const percentage = (score / maxScore) * 100;
-    ILD.setResult(contentId, percentage, 100);
+    ILD.setResult(contentId, percentage, 100, ILD.contentToSection[contentId] || null);
   }
 
   // Handle SingleChoiceSet completion
@@ -103,31 +131,51 @@ ILD.xAPIAnsweredListener = (event) => {
     const score = event.getScore();
     const maxScore = event.getMaxScore();
     const percentage = (score / maxScore) * 100;
-    ILD.setResult(contentId, percentage, 100);
+    ILD.setResult(contentId, percentage, 100, ILD.contentToSection[contentId] || null);
   }
 
   // Handle BranchingScenario completion
   if (typeof ILD.BranchingScenario[contentId] !== 'undefined' && event.getVerb() === 'completed') {
-    ILD.setResult(contentId, 100, 100);
+    ILD.setResult(contentId, 100, 100, ILD.contentToSection[contentId] || null);
   }
 };
 
 // Post answered results for user and set progress
-ILD.setResult = (contentId, score, maxScore) => {
+ILD.setResult = (contentId, score, maxScore, sectionIdOverride = null) => {
   window.console.log(score);
+  const cmid = ILD.contentToCm[contentId] || null;
+  const targetSectionId = sectionIdOverride || ILD.currentSectionOverride || ILD.sectionId;
   ILD.reactive.dispatch(
     "updateSectionprogress",
-    ILD.sectionId,
+    targetSectionId,
     contentId,
     score,
-    maxScore
+    maxScore,
+    cmid
   );
-  // ajax.call([
-  //   {
-  //     methodname: 'format_mooin4_setgrade',
-  //     args: { contentid: contentId, score, maxscore: maxScore },
-  //   },
-  // ]);
+  const percentage = maxScore ? (score / maxScore) * 100 : score;
+  const rounded = Math.round(percentage);
+  const sectionElement = document.querySelector(`[data-for="section"][data-id="${targetSectionId}"]`);
+  if (sectionElement) {
+    const progressbar = sectionElement.querySelector('[data-for="progressbar_inner"]');
+    if (progressbar) {
+      progressbar.style.width = `${rounded}%`;
+    }
+    const progressText = sectionElement.querySelector('[data-for="section-progress"]');
+    if (progressText) {
+      progressText.innerText = rounded;
+    }
+  }
+
+  // Fallback: update first progress bar on the page (current section header).
+  const fallbackProgressbar = document.querySelector('[data-for="progressbar_inner"]');
+  if (fallbackProgressbar) {
+    fallbackProgressbar.style.width = `${rounded}%`;
+  }
+  const fallbackProgressText = document.querySelector('[data-for="section-progress"]');
+  if (fallbackProgressText) {
+    fallbackProgressText.innerText = rounded;
+  }
 };
 
 
@@ -170,7 +218,6 @@ ILD.checkLibrary = (H5PIntegration, H5PInstance) => {
     const content = JSON.parse(contentData.jsonContent);
     const library = contentData.library;
 
-
     if (library.includes('H5P.InteractiveVideo')) {
       ILD.getVideoInteractions(contentId, content);
     } else if (library.includes('H5P.QuestionSet')) {
@@ -194,6 +241,8 @@ ILD.getVideoInteractions = (contentId, content) => {
 
   let interactionsCounter = 0;
 
+  ILD.subIds[contentId] = [];
+
   if (typeof interactions === 'object') {
     $.each(interactions, (i) => {
       const library = interactions[i].action.library;
@@ -201,7 +250,7 @@ ILD.getVideoInteractions = (contentId, content) => {
 
       if (!notAllowedInteractions.some((item) => library.includes(item))) {
         interactionsCounter++;
-        ILD.subIds.push(subid);
+        ILD.subIds[contentId].push(subid);
       }
     });
 
@@ -228,7 +277,7 @@ ILD.getVideoInteractions = (contentId, content) => {
     $.each(summaries, (s) => {
       if (typeof summaries[s].summary !== 'undefined') {
         const subId = content.interactiveVideo.summary.task.subContentId;
-        ILD.subIds.push(subId);
+        ILD.subIds[contentId].push(subId);
         summary = true;
       }
     });
@@ -243,9 +292,11 @@ ILD.getVideoInteractions = (contentId, content) => {
 ILD.getSingleChoiceInteractions = (contentId, content) => {
   const interactions = content.choices;
 
+  ILD.subIds[contentId] = [];
+
   $.each(interactions, (s) => {
     const subid = interactions[s].subContentId;
-    ILD.subIds.push(subid);
+    ILD.subIds[contentId].push(subid);
   });
 
   ILD.singleChoiceInteractions[contentId] = interactions.length;
@@ -265,10 +316,23 @@ ILD.getEssayPercentage = (contentId, content) => {
 
 
 export default {
-  init(H5PInstance, H5PIntegration, sectionId, reactive) {
+  init(H5PInstance, H5PIntegration, sectionId, reactive, cmid = null, sectionIdOverride = null) {
     ILD.sectionId = sectionId;
     ILD.reactive = reactive;
+    const instance = H5PInstance.instances && H5PInstance.instances[0];
+    if (instance && typeof instance.contentId !== 'undefined' && cmid) {
+      ILD.contentToCm[instance.contentId] = cmid;
+      const targetSection = sectionIdOverride || sectionId;
+      ILD.contentToSection[instance.contentId] = targetSection;
+    }
     ILD.checkLibrary(H5PIntegration, H5PInstance.instances[0]);
-    H5PInstance.externalDispatcher.on('xAPI', ILD.xAPIAnsweredListener);
+    H5PInstance.externalDispatcher.on('xAPI', (event) => {
+      if (sectionIdOverride) {
+        ILD.currentSectionOverride = sectionIdOverride;
+      } else {
+        ILD.currentSectionOverride = null;
+      }
+      ILD.xAPIAnsweredListener(event);
+    });
   },
 };
