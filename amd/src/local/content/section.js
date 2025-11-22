@@ -278,12 +278,29 @@ export default class extends DndSection {
 
     if (!parentIFrames.length) {
       parentIFrames = Array.from(
-        this.element.querySelectorAll(".h5p-iframe, iframe[src*='h5p']")
+        this.element.querySelectorAll(".h5p-iframe, iframe[src*='h5p'], iframe[src*='h5pactivity'], iframe[src*='mod/h5pactivity']")
       );
     }
 
+    // Also search for h5pactivity iframes that might be nested differently
+    if (parentIFrames.length < 2) {
+      const additionalFrames = Array.from(
+        this.element.querySelectorAll("iframe")
+      ).filter(iframe => {
+        const src = iframe.src || '';
+        return src.includes('h5p') || src.includes('h5pactivity') || iframe.classList.contains('h5p-iframe');
+      });
+      
+      // Add frames that aren't already in parentIFrames
+      additionalFrames.forEach(frame => {
+        if (!parentIFrames.includes(frame)) {
+          parentIFrames.push(frame);
+        }
+      });
+    }
+
     if (parentIFrames.length > 0) {
-      parentIFrames.forEach((parentIFrame) => {
+      parentIFrames.forEach((parentIFrame, index) => {
         if (parentIFrame.contentDocument) {
           var parentIFrameContent =
             parentIFrame.contentDocument || parentIFrame.contentWindow.document;
@@ -323,9 +340,11 @@ export default class extends DndSection {
           const cmId = cmElement ? cmElement.dataset.id : null;
 
           const checkForH5P = () => {
-            if (nestedIFrame) {
-              var H5PIntegration = nestedIFrame.contentWindow.H5PIntegration;
-              var H5P = nestedIFrame.contentWindow.H5P;
+            // Try nestedIFrame first, then fallback to parentIFrame if it's a direct H5P iframe
+            const targetIFrame = nestedIFrame || (parentIsDirectH5P ? parentIFrame : null);
+            if (targetIFrame && targetIFrame.contentWindow) {
+              var H5PIntegration = targetIFrame.contentWindow.H5PIntegration;
+              var H5P = targetIFrame.contentWindow.H5P;
               if (H5P && H5P.externalDispatcher) {
                 // Console.log("H5P-Objekt gefunden.");
 
@@ -348,14 +367,39 @@ export default class extends DndSection {
                   // H5P-Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
                 };
 
-                // H5P.externalDispatcher.on("xAPI", this._hvpprogress.bind(this));
-                // ILD.checkLibrary();
-                // H5P.externalDispatcher.on("xAPI", ILD.xAPIAnsweredListener);
-                const instance = (H5P.instances || []).find((inst) => typeof inst?.contentId !== "undefined");
+                // Function to initialize H5P when instance is available
+                const tryInitH5P = () => {
+                  const instances = H5P.instances || [];
+                  const instance = instances.find((inst) => typeof inst?.contentId !== "undefined");
 
-                if (instance && !h5p_contentIds.includes(instance.contentId)) {
-                  addUniqueH5PcontentId(h5p_contentIds, instance.contentId);
-                  ILD.init(H5P, H5PIntegration, this.id, this.reactive, cmId, this.element.dataset.id);
+                  if (instance && !h5p_contentIds.includes(instance.contentId)) {
+                    addUniqueH5PcontentId(h5p_contentIds, instance.contentId);
+                    ILD.init(H5P, H5PIntegration, this.id, this.reactive, cmId, this.element.dataset.id);
+                    return true;
+                  } else if (instance) {
+                    return true;
+                  }
+                  return false;
+                };
+
+                // Try to initialize immediately
+                if (!tryInitH5P()) {
+                  // If no instance found, wait for 'initialized' event
+                  H5P.externalDispatcher.on('initialized', () => {
+                    tryInitH5P();
+                  });
+                  
+                  // Also check periodically as fallback
+                  let initCheckInterval = setInterval(() => {
+                    if (tryInitH5P()) {
+                      clearInterval(initCheckInterval);
+                    }
+                  }, 500);
+                  
+                  // Stop checking after 10 seconds
+                  setTimeout(() => {
+                    clearInterval(initCheckInterval);
+                  }, 10000);
                 }
                 // Window.console.log(H5P);
 
@@ -427,8 +471,6 @@ export default class extends DndSection {
 
             // Beobachte den parentIFrame für das Erscheinen des nestedIFrame
             var observer = new MutationObserver(function(mutations) {
-              console.log("_hvpListener 7");
-
               mutations.forEach(function(mutation) {
                 if (mutation.addedNodes.length > 0) {
                   // Console.log(
@@ -454,6 +496,38 @@ export default class extends DndSection {
     } else {
       // Console.error("Keine parentIFrames gefunden.");
     }
+
+    // Add observer to watch for new iframes that might be added dynamically
+    const iframeObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length > 0) {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1) { // Element node
+              // Check if the added node is an iframe or contains iframes
+              const newIFrames = node.tagName === 'IFRAME' 
+                ? [node] 
+                : (node.querySelectorAll ? Array.from(node.querySelectorAll('iframe')) : []);
+              
+              newIFrames.forEach((iframe) => {
+                const src = iframe.src || '';
+                if (src.includes('h5p') || src.includes('h5pactivity') || iframe.classList.contains('h5p-iframe')) {
+                  // Re-run _hvpListener to process the new iframe
+                  setTimeout(() => {
+                    this._hvpListener();
+                  }, 500);
+                }
+              });
+            }
+          });
+        }
+      });
+    });
+
+    // Observe the section element for new iframes
+    iframeObserver.observe(this.element, {
+      childList: true,
+      subtree: true
+    });
   }
 
 

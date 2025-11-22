@@ -22,9 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import { BaseComponent } from "core/reactive";
-import { debounce } from "core/utils";
-import { getCurrentCourseEditor } from "core_courseformat/courseeditor";
+import {BaseComponent} from "core/reactive";
+import {debounce} from "core/utils";
+import {getCurrentCourseEditor} from "core_courseformat/courseeditor";
 import inplaceeditable from "core/inplace_editable";
 import Section from "format_mooin4/local/content/section";
 import CmItem from "format_mooin4/local/content/section/cmitem";
@@ -36,7 +36,7 @@ import * as CourseEvents from "core_course/events";
 import jQuery from "jquery";
 import Pending from "core/pending";
 import log from "core/log";
-import { get_string as getString } from "core/str";
+import {get_string as getString} from "core/str";
 import ModalFactory from "core/modal_factory";
 import Templates from "core/templates";
 import ModalEvents from "core/modal_events";
@@ -76,7 +76,7 @@ export default class Component extends BaseComponent {
       COMPLETIONBUTTON: `[data-for='complete-section']`,
       SECTIONPROGRESS: `[data-for='section-progress']`,
       TITLEOVERLAY: `[data-for='title-overlay']`,
-      //H5P: `.parent-iframe`,
+      // H5P: `.parent-iframe`,
     };
     // Default classes to toggle on refresh.
     this.classes = {
@@ -100,7 +100,7 @@ export default class Component extends BaseComponent {
     this.sectionReturn = descriptor.sectionReturn ?? 0;
     this.debouncedReloads = new Map();
 
-    //Last Scrollposition
+    // Last Scrollposition
     this.lastScroll = 0;
   }
 
@@ -166,7 +166,7 @@ export default class Component extends BaseComponent {
         this.reactive.addMutations({
           sectionSetChapter: mutations.sectionSetChapter,
           sectionUnsetChapter: mutations.sectionUnsetChapter,
-          //completeSection: mutations.completeSection,
+          // CompleteSection: mutations.completeSection,
         });
       }
       new DispatchActions(this);
@@ -207,8 +207,8 @@ export default class Component extends BaseComponent {
       "scroll",
       this._scrollHandlerTina
     );
-    //this._showLastSectionModal(state);
-    //this._hvpListener();
+    // This._showLastSectionModal(state);
+    // this._hvpListener();
   }
 
   /**
@@ -282,34 +282,34 @@ export default class Component extends BaseComponent {
     }
     return [
       // State changes that require to reload some course modules.
-      { watch: `cm.visible:updated`, handler: this._reloadCm },
-      { watch: `cm.stealth:updated`, handler: this._reloadCm },
-      { watch: `cm.indent:updated`, handler: this._reloadCm },
+      {watch: `cm.visible:updated`, handler: this._reloadCm},
+      {watch: `cm.stealth:updated`, handler: this._reloadCm},
+      {watch: `cm.indent:updated`, handler: this._reloadCm},
       // Update section number and title.
-      { watch: `section.number:updated`, handler: this._refreshSectionNumber },
+      {watch: `section.number:updated`, handler: this._refreshSectionNumber},
       // Collapse and expand sections.
       {
         watch: `section.contentcollapsed:updated`,
         handler: this._refreshSectionCollapsed,
       },
       // Sections and cm sorting.
-      { watch: `transaction:start`, handler: this._startProcessing },
+      {watch: `transaction:start`, handler: this._startProcessing},
       {
         watch: `course.sectionlist:updated`,
         handler: this._refreshCourseSectionlist,
       },
-      { watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist },
+      {watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist},
       // Section visibility.
-      { watch: `section.visible:updated`, handler: this._reloadSection },
+      {watch: `section.visible:updated`, handler: this._reloadSection},
       {
         watch: `section.isChapter:updated`,
         handler: this._updateChapters,
       },
       // Reindex sections and cms.
-      { watch: `state:updated`, handler: this._indexContents },
+      {watch: `state:updated`, handler: this._indexContents},
       // State changes thaty require to reload course modules.
-      { watch: `cm.visible:updated`, handler: this._reloadCm },
-      { watch: `cm.sectionid:updated`, handler: this._reloadCm },
+      {watch: `cm.visible:updated`, handler: this._reloadCm},
+      {watch: `cm.sectionid:updated`, handler: this._reloadCm},
       {
         watch: `section.sectionprogress:updated`,
         handler: this._updateSectionProgress,
@@ -327,7 +327,7 @@ export default class Component extends BaseComponent {
    * @param {Object} args.state The state data
    * @param {Object} args.element The element to update
    */
-  _refreshSectionCollapsed({ state, element }) {
+  _refreshSectionCollapsed({state, element}) {
     const target = this.getElement(this.selectors.SECTION, element.id);
     if (!target) {
       throw new Error(`Unknown section with ID ${element.id}`);
@@ -404,7 +404,7 @@ export default class Component extends BaseComponent {
    *
    * @param {Event} event the custom ecent
    */
-  _completionHandler({ detail }) {
+  _completionHandler({detail}) {
     if (detail === undefined) {
       return;
     }
@@ -423,7 +423,7 @@ export default class Component extends BaseComponent {
       this._dynamicHeader(pageOffset);
     }
 
-    // const items = this.reactive
+    // Const items = this.reactive
     //   .getExporter()
     //   .allItemsArray(this.reactive.state);
     // // Check what is the active element now.
@@ -485,19 +485,19 @@ export default class Component extends BaseComponent {
         pageOffset > this.lastScroll &&
         !navigationHeader.classList.contains(this.classes.SCROLLDOWN)
       ) {
-        // down
+        // Down
         navigationHeader.classList.remove(this.classes.SCROLLUP);
         navigationHeader.classList.add(this.classes.SCROLLDOWN);
         navigationHeader.style.transform =
           "translateY(-" + removeOffsetNav + "px)";
         breadcrumb.style.transform = "translateY(" + removeOffsetBreadCrump + "px)";
         title.style.transform = "translateY(" + removeOffset + "px)";
-        //progressbarContainer.style.transform = "translateY(" + removeOffset + "px)";
+        // ProgressbarContainer.style.transform = "translateY(" + removeOffset + "px)";
       } else if (
         pageOffset < this.lastScroll &&
         navigationHeader.classList.contains(this.classes.SCROLLDOWN)
       ) {
-        // up
+        // Up
         navigationHeader.classList.remove(this.classes.SCROLLDOWN);
         navigationHeader.classList.add(this.classes.SCROLLUP);
         navigationHeader.style.transform = "translateY(" + removeOffsetNavUp + "px)";
@@ -532,10 +532,12 @@ export default class Component extends BaseComponent {
    * rendering. Luckily in edit mode we can trigger a title update using the inplace_editable module.
    *
    *
+   * @param state.state
    * @param {Object} state
    * @param {Object} param.element details the update details.
+   * @param state.element
    */
-  _refreshSectionNumber({ state, element }) {
+  _refreshSectionNumber({state, element}) {
     // Find the element.
     const target = this.getElement(this.selectors.SECTION, element.id);
     if (!target) {
@@ -550,10 +552,10 @@ export default class Component extends BaseComponent {
     target.dataset.sectionid = element.number;
     // The data-number is the attribute used by components to store the section number.
     target.dataset.number = element.number;
-    
-    //this._reloadSectionNames({ state: state, element: element });
- 
-    
+
+    // This._reloadSectionNames({ state: state, element: element });
+
+
     // Update title and title inplace editable, if any.
     const inplace = inplaceeditable.getInplaceEditable(
       target.querySelector(this.selectors.SECTION_ITEM)
@@ -582,7 +584,7 @@ export default class Component extends BaseComponent {
    * @param {Object} param
    * @param {Object} param.element details the update details.
    */
-  _refreshSectionCmlist({ element }) {
+  _refreshSectionCmlist({element}) {
     const cmlist = element.cmlist ?? [];
     const section = this.getElement(this.selectors.SECTION, element.id);
     const listparent = section?.querySelector(this.selectors.SECTION_CMLIST);
@@ -605,7 +607,7 @@ export default class Component extends BaseComponent {
    * @param {Object} param
    * @param {Object} param.element details the update details.
    */
-  _refreshCourseSectionlist({ element }) {
+  _refreshCourseSectionlist({element}) {
     // If we have a section return means we only show a single section so no need to fix order.
     if (this.reactive.sectionReturn != 0) {
       return;
@@ -680,7 +682,7 @@ export default class Component extends BaseComponent {
    * @param {object} param0 the watcher details
    * @param {object} param0.element the state object
    */
-  _reloadCm({ element }) {
+  _reloadCm({element}) {
     if (!this.getElement(this.selectors.CM, element.id)) {
       return;
     }
@@ -751,7 +753,7 @@ export default class Component extends BaseComponent {
    * @param {details} param0 the watcher details
    * @param {object} param0.element the state object
    */
-  _reloadSection({ state, element }) {
+  _reloadSection({state, element}) {
     const pendingReload = new Pending(
       `courseformat/content:reloadSection_${element.id}`
     );
@@ -763,11 +765,11 @@ export default class Component extends BaseComponent {
       }
       this.reactive.dispatch('reloadAllSectionPrefixes', element);
       const promise = courseActions.refreshSection(sectionitem, element.id);
-      
+
       promise
         .then(() => {
           this._indexContents();
-          this._reloadSectionNames({ state: state, element: element });
+          this._reloadSectionNames({state: state, element: element});
           return true;
         })
         .catch((error) => {
@@ -775,39 +777,39 @@ export default class Component extends BaseComponent {
         })
         .finally(() => {
           pendingReload.resolve();
-          
+
         });
     }
   }
 
-  _reloadSectionNames({ state, element }) {
+  _reloadSectionNames({state, element}) {
     state.section.forEach((section) => {
       if (section.number >= element.number) {
         const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
         if (section.isChapter) {
           number.innerHTML = section.isChapter;
         } else {
-          // if (!section.visible) {
+          // If (!section.visible) {
           //   number.innerHTML = "ausgeblendet"
           // } else {
           //   //this.reactive.dispatch('reloadAllSectionPrefixes', element);
           //   number.innerHTML = state.section.get(section.id).prefix;
           // }
           number.innerHTML = state.section.get(section.id).prefix;
-            //section.parentChapter + "." + section.innerChapterNumber;
+            // Section.parentChapter + "." + section.innerChapterNumber;
         }
       }
     });
   }
 
-  _updateChapters({ state, element }) {
-    //this.reactive.dispatch('reloadAllSectionPrefixes', element);
-    //this._reloadSection({ element });
-    //window.console.log("chapter updated");
+  _updateChapters({state, element}) {
+    // This.reactive.dispatch('reloadAllSectionPrefixes', element);
+    // this._reloadSection({ element });
+    // window.console.log("chapter updated");
     this._reloadSection({
             state: state, element: element,
           });
-    // state.section.forEach((section) => {
+    // State.section.forEach((section) => {
     //   if (section.number >= element.number) {
     //     this._reloadSection({
     //       element: section,
@@ -819,12 +821,12 @@ export default class Component extends BaseComponent {
         //   number.innerHTML =
         //     section.parentChapter + "." + section.innerChapterNumber;
         // }
-        //window.console.log(number);
+        // window.console.log(number);
      // }
-    //});
+    // });
   }
 
-  //_reloadSectionNames({state, element}) {
+  // _reloadSectionNames({state, element}) {
   // this._reloadSection({element});
   // state.section.forEach(section => {
   //   if (section.number > element.number) {
@@ -835,7 +837,7 @@ export default class Component extends BaseComponent {
   // elements.forEach(element => {
   //   element.innerHTML = "&nbsp3000:&nbsp";
   // });
-  //}
+  // }
 
   /**
    * Create a new course module item in a section.
@@ -957,7 +959,7 @@ export default class Component extends BaseComponent {
     }
   }
 
-  async _updateSectionProgress({ state, element }) {
+  async _updateSectionProgress({state, element}) {
     const progressbar = this.getElement(this.selectors.PROGRESSBARINNER);
     progressbar.style.width = element.sectionprogress + "%";
 
@@ -1023,7 +1025,7 @@ export default class Component extends BaseComponent {
       ),
       footer: Templates.render(
         "format_mooin4/local/content/modals/completechapterfooter",
-        { nextSection }
+        {nextSection}
       ),
       scrollable: false,
     });

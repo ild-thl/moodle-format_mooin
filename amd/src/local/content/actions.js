@@ -47,14 +47,14 @@ prefetchStrings('core', ['movecoursesection', 'movecoursemodule', 'confirm', 'de
 const directMutations = {
     sectionHide: 'sectionHide',
     sectionShow: 'sectionShow',
-    // sectionSetChapter: 'sectionSetChapter',
+    // SectionSetChapter: 'sectionSetChapter',
     // sectionUnsetChapter: 'sectionUnsetChapter',
     cmHide: 'cmHide',
     cmShow: 'cmShow',
     cmStealth: 'cmStealth',
     cmMoveRight: 'cmMoveRight',
     cmMoveLeft: 'cmMoveLeft',
-    //completeSection: 'completeSection'
+    // CompleteSection: 'completeSection'
 };
 
 export default class extends BaseComponent {
@@ -77,7 +77,7 @@ export default class extends BaseComponent {
             CONTENTTREE: `#destination-selector`,
             ACTIONMENU: `.action-menu`,
             ACTIONMENUTOGGLER: `[data-toggle="dropdown"]`,
-            //COMPLETESECTION: `[data-for='complete-section']`,
+            // COMPLETESECTION: `[data-for='complete-section']`,
         };
         // Component css classes.
         this.classes = {

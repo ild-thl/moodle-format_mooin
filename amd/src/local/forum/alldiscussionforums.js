@@ -6,9 +6,9 @@ export default class Component extends BaseComponent {
 
     create() {
         this.name = 'alldiscussionforums';
-       
+
         this.selectors = {
-            UNREADLINK: `[data-for='unread_link']`, 
+            UNREADLINK: `[data-for='unread_link']`,
             UNREADCONTAINER: `[data-for='mark_as_read_container']`,
         };
     }

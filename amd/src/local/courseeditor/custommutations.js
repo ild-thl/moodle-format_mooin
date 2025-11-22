@@ -22,7 +22,7 @@ export default class {
 
     async updateSectionprogress(stateManager, sectionId, contentid, score, maxscore, cmid = null) {
 
-        await ajax.call([
+        const response = await ajax.call([
             {
               methodname: "format_mooin4_setgrade",
               args: {
@@ -34,6 +34,31 @@ export default class {
             },
           ])[0];
 
+        // Update progress bar immediately with backend-calculated percentage
+        if (response && response.percentage !== null && response.percentage !== undefined) {
+          const percentage = Math.round(response.percentage);
+          const sectionElement = document.querySelector(`[data-for="section"][data-id="${sectionId}"]`);
+          if (sectionElement) {
+            const progressbar = sectionElement.querySelector('[data-for="progressbar_inner"]');
+            if (progressbar) {
+              progressbar.style.width = `${percentage}%`;
+            }
+            const progressText = sectionElement.querySelector('[data-for="section-progress"]');
+            if (progressText) {
+              progressText.innerText = percentage;
+            }
+          }
+
+          // Fallback: update first progress bar on the page (current section header)
+          const fallbackProgressbar = document.querySelector('[data-for="progressbar_inner"]');
+          if (fallbackProgressbar) {
+            fallbackProgressbar.style.width = `${percentage}%`;
+          }
+          const fallbackProgressText = document.querySelector('[data-for="section-progress"]');
+          if (fallbackProgressText) {
+            fallbackProgressText.innerText = percentage;
+          }
+        }
 
         const course = stateManager.get('course');
         let ids = [];
@@ -48,7 +73,6 @@ export default class {
             methodname: 'core_courseformat_update_course',
             args
         }])[0];
-        window.console.log("MUTAtION PROGRESS");
         stateManager.processUpdates(JSON.parse(updates));
     }
 

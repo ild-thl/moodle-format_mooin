@@ -142,9 +142,9 @@ ILD.xAPIAnsweredListener = (event) => {
 
 // Post answered results for user and set progress
 ILD.setResult = (contentId, score, maxScore, sectionIdOverride = null) => {
-  window.console.log(score);
   const cmid = ILD.contentToCm[contentId] || null;
   const targetSectionId = sectionIdOverride || ILD.currentSectionOverride || ILD.sectionId;
+  // Dispatch to state manager - it will calculate and update the correct overall progress
   ILD.reactive.dispatch(
     "updateSectionprogress",
     targetSectionId,
@@ -153,29 +153,7 @@ ILD.setResult = (contentId, score, maxScore, sectionIdOverride = null) => {
     maxScore,
     cmid
   );
-  const percentage = maxScore ? (score / maxScore) * 100 : score;
-  const rounded = Math.round(percentage);
-  const sectionElement = document.querySelector(`[data-for="section"][data-id="${targetSectionId}"]`);
-  if (sectionElement) {
-    const progressbar = sectionElement.querySelector('[data-for="progressbar_inner"]');
-    if (progressbar) {
-      progressbar.style.width = `${rounded}%`;
-    }
-    const progressText = sectionElement.querySelector('[data-for="section-progress"]');
-    if (progressText) {
-      progressText.innerText = rounded;
-    }
-  }
-
-  // Fallback: update first progress bar on the page (current section header).
-  const fallbackProgressbar = document.querySelector('[data-for="progressbar_inner"]');
-  if (fallbackProgressbar) {
-    fallbackProgressbar.style.width = `${rounded}%`;
-  }
-  const fallbackProgressText = document.querySelector('[data-for="section-progress"]');
-  if (fallbackProgressText) {
-    fallbackProgressText.innerText = rounded;
-  }
+  // Don't update DOM directly here - let the state manager handle it after backend calculation
 };
 
 

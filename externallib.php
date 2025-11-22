@@ -209,9 +209,20 @@ class format_mooin4_external extends external_api
       }
 
       if (!$cm) {
+        // For h5pactivity, try to find by contentid (which might be the instance ID)
         $cm = get_coursemodule_from_instance('h5pactivity', $contentid, 0, false, IGNORE_MISSING);
         if ($cm) {
           $module = 'h5pactivity';
+        } else {
+          // If not found by instance, try to find by searching in h5pactivity table
+          // This is a fallback if contentid is not the instance ID
+          $h5pactivity = $DB->get_record('h5pactivity', array('id' => $contentid), '*', IGNORE_MISSING);
+          if ($h5pactivity) {
+            $cm = get_coursemodule_from_instance('h5pactivity', $h5pactivity->id, 0, false, IGNORE_MISSING);
+            if ($cm) {
+              $module = 'h5pactivity';
+            }
+          }
         }
       }
 
@@ -254,13 +265,18 @@ class format_mooin4_external extends external_api
         }
       }
 
+      // Always calculate the overall section progress after storing individual activity progress
+      // This ensures we return the correct percentage based on all activities in the section
+      $overall_progress = utils::get_section_progress($courseid, $section_id, $USER->id);
+
       if ($progress === false) {
         $progress = array(
           'sectionid' => $section_id,
-          'percentage' => $immediatepercentage ?? utils::get_section_progress($courseid, $section_id, $USER->id),
+          'percentage' => $overall_progress,
         );
-      } else if ($immediatepercentage !== null) {
-        $progress['percentage'] = $immediatepercentage;
+      } else {
+        // Update with overall progress, not just the single activity progress
+        $progress['percentage'] = $overall_progress;
       }
 
       return array(
