@@ -109,18 +109,18 @@ export default class Component extends BaseComponent {
     getWatchers() {
         return [
             {watch: `section.indexcollapsed:updated`, handler: this._refreshSectionCollapsed},
-            //{watch: `cm:created`, handler: this._createCm},
-            //{watch: `cm:deleted`, handler: this._deleteCm},
+            // {watch: `cm:created`, handler: this._createCm},
+            // {watch: `cm:deleted`, handler: this._deleteCm},
             {watch: `section:created`, handler: this._createSection},
             {watch: `section:deleted`, handler: this._deleteSection},
             {watch: `course.pageItem:created`, handler: this._refreshPageItem},
             {watch: `course.pageItem:updated`, handler: this._refreshPageItem},
             // Sections and cm sorting.
-            
+
             {watch: `course.sectionlist:updated`, handler: this._refreshCourseSectionlist},
-            //{watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist},
-            
-            //{watch: `section.isChapter:updated`, handler: this._updateChapters},
+            // {watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist},
+
+            // {watch: `section.isChapter:updated`, handler: this._updateChapters},
         ];
     }
 
@@ -373,5 +373,5 @@ export default class Component extends BaseComponent {
         delete this.sections[element.id];
     }
 
-    
+
 }

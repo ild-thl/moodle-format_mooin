@@ -1,7 +1,7 @@
 import ajax from 'core/ajax';
 
 export default class {
-    
+
 
     async completeSection(stateManager, target) {
         const course = stateManager.get('course');
@@ -20,15 +20,45 @@ export default class {
         stateManager.processUpdates(JSON.parse(updates));
     }
 
-    async updateSectionprogress(stateManager, sectionId, contentid, score, maxscore) {
+    async updateSectionprogress(stateManager, sectionId, contentid, score, maxscore, cmid = null) {
 
-        await ajax.call([
+        const response = await ajax.call([
             {
               methodname: "format_mooin4_setgrade",
-              args: { contentid: contentid, score: score, maxscore: maxscore },
+              args: {
+                contentid: contentid,
+                score: score,
+                maxscore: maxscore,
+                cmid: cmid ? Number(cmid) : 0,
+              },
             },
-          ])[0];  
+          ])[0];
 
+        // Update progress bar immediately with backend-calculated percentage
+        if (response && response.percentage !== null && response.percentage !== undefined) {
+          const percentage = Math.round(response.percentage);
+          const sectionElement = document.querySelector(`[data-for="section"][data-id="${sectionId}"]`);
+          if (sectionElement) {
+            const progressbar = sectionElement.querySelector('[data-for="progressbar_inner"]');
+            if (progressbar) {
+              progressbar.style.width = `${percentage}%`;
+            }
+            const progressText = sectionElement.querySelector('[data-for="section-progress"]');
+            if (progressText) {
+              progressText.innerText = percentage;
+            }
+          }
+
+          // Fallback: update first progress bar on the page (current section header)
+          const fallbackProgressbar = document.querySelector('[data-for="progressbar_inner"]');
+          if (fallbackProgressbar) {
+            fallbackProgressbar.style.width = `${percentage}%`;
+          }
+          const fallbackProgressText = document.querySelector('[data-for="section-progress"]');
+          if (fallbackProgressText) {
+            fallbackProgressText.innerText = percentage;
+          }
+        }
 
         const course = stateManager.get('course');
         let ids = [];
@@ -43,7 +73,6 @@ export default class {
             methodname: 'core_courseformat_update_course',
             args
         }])[0];
-        window.console.log("MUTAtION PROGRESS");
         stateManager.processUpdates(JSON.parse(updates));
     }
 
@@ -52,13 +81,13 @@ export default class {
         let ids = [];
         const targetSection = stateManager.state.section.get(target.dataset.id);
         ids.push(target.dataset.id);
-        // stateManager.state.section.forEach(section => {
+        // StateManager.state.section.forEach(section => {
         //     if (section.number >= targetSection.number) {
         //         ids.push(section.id);
         //     }
         // });
-        
-        
+
+
         const args = {
             action: 'section_setChapter',
             courseid: course.id,
@@ -77,13 +106,13 @@ export default class {
 
         stateManager.state.section.forEach(section => {
             if (section.number > targetSection.number) {
-                //statesection = state.section.get(section.id)
+                // Statesection = state.section.get(section.id)
                 if (section.isChapter) {
-                    lastChapter = section;  // Das aktuelle Chapter zwischenspeichern
+                    lastChapter = section; // Das aktuelle Chapter zwischenspeichern
                     section.isChapter++;
                     invisbleCounter = 0;
                 } else if (section.isChapter == false) {
-                    
+
                         section.parentChapter = lastChapter.isChapter;
                         section.innerChapterNumber = section.number - lastChapter.number - invisbleCounter;
                         if (section.visible) {
@@ -101,13 +130,13 @@ export default class {
         let ids = [];
         const targetSection = stateManager.state.section.get(target.dataset.id);
         ids.push(target.dataset.id);
-        // const targetSection = stateManager.state.section.get(target.dataset.id);
+        // Const targetSection = stateManager.state.section.get(target.dataset.id);
         // stateManager.state.section.forEach(section => {
         //     if (section.number >= targetSection.number) {
         //         ids.push(section.id);
         //     }
         // });
-        
+
         const args = {
             action: 'section_unsetChapter',
             courseid: course.id,
@@ -118,12 +147,12 @@ export default class {
             methodname: 'core_courseformat_update_course',
             args,
         }])[0];
-        
+
 
         stateManager.setReadOnly(false);
 
         let lastChapter = stateManager.state.section.get(target.dataset.id);
-        let prevChapter = lastChapter.isChapter -1;
+        let prevChapter = lastChapter.isChapter - 1;
 
         stateManager.state.section.forEach(section => {
             window.console.log(prevChapter);
@@ -137,26 +166,26 @@ export default class {
 
         stateManager.state.section.forEach(section => {
             if (section.number > targetSection.number) {
-                //statesection = state.section.get(section.id)
+                // Statesection = state.section.get(section.id)
                 if (section.isChapter && section.isChapter != 1) {
                     lastChapter = section;
                     section.isChapter--;
                     invisbleCounter = 0;
                 } else if (section.isChapter == false) {
-                    
+
                         section.parentChapter = lastChapter.isChapter;
                         section.innerChapterNumber = section.number - lastChapter.number - invisbleCounter;
                         if (section.visible) {
                             section.prefix = section.parentChapter + "." + section.innerChapterNumber;
                         } else {
                             invisbleCounter++;
-                        } 
+                        }
                 }
             }
         });
         stateManager.setReadOnly(true);
         stateManager.processUpdates(JSON.parse(updates));
-        
+
     }
 
     async setLastSectionModal(stateManager, id) {
@@ -182,19 +211,19 @@ export default class {
         const course = state.course;
         course.continueSection = id;
         state.section.forEach((section) => {
-            //section.containsActiveSection = false;
-            //section.isActiveSection = false;
+            // Section.containsActiveSection = false;
+            // section.isActiveSection = false;
             if (section.id == id) {
                 section.isActiveSection = true;
             }
-            
+
             if (section.parentChapter == state.section.get(id).parentChapter) {
                 section.containsActiveSection = true;
-                
+
             }
         });
         state.section.get(id).isActiveSection = true;
-        
+
         stateManager.setReadOnly(true);
     }
 
@@ -234,11 +263,11 @@ export default class {
         const course = state.course;
         let ids = [];
         stateManager.state.section.forEach(section => {
-            // if (section.number >= target.number) {
+            // If (section.number >= target.number) {
                 ids.push(section.id);
             // }
         });
-        //ids.push(target); 
+        // Ids.push(target);
         const args = {
             action: 'reload_all_section_prefixes',
             courseid: course.id,

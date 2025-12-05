@@ -46,7 +46,7 @@ export default class Component extends DndSectionItem {
         if (this.section.number > 1) {
             this.getDraggableData = this._getDraggableData;
         }
-        
+
     }
 
     /**

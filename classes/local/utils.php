@@ -163,37 +163,51 @@ class utils {
         $activities = 0;
 
         foreach ($coursemodules as $coursemodule) {
-            // cm has completion activated?
-            if ($coursemodule->completion == 2) {
-                $activities++;
+            $storedprogress = null;
+            $modulename = '';
+            if ($module = $DB->get_record('modules', array('id' => $coursemodule->module))) {
+                $modulename = $module->name;
+            }
 
-                $modulename = '';
-                if ($module = $DB->get_record('modules', array('id' => $coursemodule->module))) {
-                    $modulename = $module->name;
+            if ($modulename === 'hvp') {
+                $storedprogress = null;
+                if (!empty($coursemodule->id)) {
+                    $storedprogress = get_user_preferences('format_mooin4_hvp_progress_cmid_' . $coursemodule->id, null, $userid);
                 }
+                if ($storedprogress === null) {
+                    $storedprogress = get_user_preferences('format_mooin4_hvp_progress_' . $coursemodule->instance, null, $userid);
+                }
+            }
 
-                // activity is hvp, we use the grades to get the individual progress
-                if ($modulename == 'hvp') {
-                    $grading_info = grade_get_grades($courseid, 'mod', 'hvp', $coursemodule->instance, $userid);
-                    $grade = $grading_info->items[0]->grades[$userid]->grade;
-                    $grademax = $grading_info->items[0]->grademax;
-                    if (isset($grade) && $grade != 0) {
-                        $percentage += 100 / ($grademax / $grade);
-                    }
-                } else {
-                    // if completed, add to percentage
-                    $sql = 'SELECT *
+            if ($coursemodule->completion != 2 && $storedprogress === null) {
+                continue;
+            }
+
+            $activities++;
+
+            // activity is hvp, we use the grades to get the individual progress
+            if ($modulename == 'hvp') {
+                $grading_info = grade_get_grades($courseid, 'mod', 'hvp', $coursemodule->instance, $userid);
+                $grade = $grading_info->items[0]->grades[$userid]->grade;
+                $grademax = $grading_info->items[0]->grademax;
+                if (isset($grade) && $grade != 0) {
+                    $percentage += 100 / ($grademax / $grade);
+                } else if ($storedprogress !== null) {
+                    $percentage += (float)$storedprogress;
+                }
+            } else {
+                // if completed, add to percentage
+                $sql = 'SELECT *
                               FROM {course_modules_completion}
                              WHERE coursemoduleid = :coursemoduleid
                                AND userid = :userid
                                AND completionstate != 0 ';
-                    $params = array(
-                        'coursemoduleid' => $coursemodule->id,
-                        'userid' => $userid
-                    );
-                    if ($DB->get_record_sql($sql, $params)) {
-                        $percentage += 100;
-                    }
+                $params = array(
+                    'coursemoduleid' => $coursemodule->id,
+                    'userid' => $userid
+                );
+                if ($DB->get_record_sql($sql, $params)) {
+                    $percentage += 100;
                 }
             }
         }
@@ -1103,54 +1117,112 @@ class utils {
             $info = new \core_availability\info_module($cm);
             $warnings = [];
             $isavailable = $info->is_available($warnings, false, $userid);
-            $skip = FALSE;
+            $skip = false;
+
+            $modulename = '';
+            if ($module = $DB->get_record('modules', array('id' => $coursemodule->module))) {
+                $modulename = $module->name;
+            }
+            $storedprogress = null;
+            if (!empty($coursemodule->id)) {
+                $storedprogress = get_user_preferences('format_mooin4_hvp_progress_cmid_' . $coursemodule->id, null, $userid);
+            }
+            // Fallback for hvp: try to get progress by instance ID
+            if ($storedprogress === null && $modulename === 'hvp') {
+                $storedprogress = get_user_preferences('format_mooin4_hvp_progress_' . $coursemodule->instance, null, $userid);
+            }
+            // For h5pactivity, we only use cmid-based storage (no fallback needed)
+
+            $istrackedh5p = in_array($modulename, ['hvp', 'h5pactivity']);
+            $completionrequired = ($coursemodule->completion == 2);
             
-            // cm has completion activated?
-            if ($coursemodule->completion == 2) {
-                // Check availability based on language user uses in session
-                if ($coursemodule->availability !== NULL) {
-                    $data = json_decode($coursemodule->availability, true);
+            // Always process H5P activities (hvp and h5pactivity), even if not yet started
+            // Skip only non-H5P activities that don't require completion and have no stored progress
+            if (!$istrackedh5p && !$completionrequired && $storedprogress === null) {
+                continue;
+            }
+
+            // Check availability based on language user uses in session
+            // For H5P activities, we still want to count them even if language doesn't match
+            if ($coursemodule->availability !== NULL && !$istrackedh5p) {
+                $data = json_decode($coursemodule->availability, true);
+                if (isset($data['c']) && is_array($data['c'])) {
                     foreach ($data['c'] as $item) {
-                        if ($item['type'] === 'language' && $item['id'] !== $sessionlang) {
+                        if (isset($item['type']) && $item['type'] === 'language' && isset($item['id']) && $item['id'] !== $sessionlang) {
                             $skip = true;
                             break;
                         }
                     }
                 }
+            }
 
-                if ($skip || !$isavailable) {
+            // For H5P activities, always count them even if not available (they will count as 0%)
+            // For other activities, skip if not available
+            if (!$istrackedh5p && ($skip || !$isavailable)) {
+                continue;
+            }
+
+            // Always increment activities counter - this ensures both H5P types are counted
+            $activities++;
+
+            // activity is hvp, we use the grades to get the individual progress
+            if ($modulename == 'hvp') {
+                if ($storedprogress !== null) {
+                    $percentage += (float)$storedprogress;
+                } else {
+                    $grading_info = grade_get_grades($courseid, 'mod', 'hvp', $coursemodule->instance, $userid);
+                    if (!empty($grading_info->items)) {
+                        $grade = $grading_info->items[0]->grades[$userid]->grade;
+                        $grademax = $grading_info->items[0]->grademax;
+                        if (isset($grade) && $grade != 0) {
+                            $percentage += 100 / ($grademax / $grade);
+                        } else {
+                            // No grade yet, add 0% to ensure activity is counted in average
+                            $percentage += 0;
+                        }
+                    } else {
+                        // No gradebook entry yet, add 0% to ensure activity is counted in average
+                        $percentage += 0;
+                    }
+                }
+            } else if ($modulename == 'h5pactivity') {
+                // For h5pactivity, always check stored progress first (from user preferences)
+                if ($storedprogress !== null) {
+                    $percentage += (float)$storedprogress;
+                } else {
+                    // If no stored progress, try to get from gradebook
+                    $grading_info = grade_get_grades($courseid, 'mod', 'h5pactivity', $coursemodule->instance, $userid);
+                    if (!empty($grading_info->items) && !empty($grading_info->items[0]->grades[$userid])) {
+                        $grade = $grading_info->items[0]->grades[$userid]->grade;
+                        $grademax = $grading_info->items[0]->grademax;
+                        if (isset($grade) && $grade != null && $grade != 0 && $grademax && $grademax > 0) {
+                            $percentage += 100 / ($grademax / $grade);
+                        } else {
+                            // No grade yet, add 0% to ensure activity is counted in average
+                            $percentage += 0;
+                        }
+                    } else {
+                        // No gradebook entry yet, add 0% to ensure activity is counted in average
+                        $percentage += 0;
+                    }
+                }
+            } else {
+                if (!$completionrequired && $storedprogress !== null) {
+                    $percentage += (float)$storedprogress;
                     continue;
                 }
-
-                $activities++;
-
-                $modulename = '';
-                if ($module = $DB->get_record('modules', array('id' => $coursemodule->module))) {
-                    $modulename = $module->name;
-                }
-
-                // activity is hvp, we use the grades to get the individual progress
-                if ($modulename == 'hvp') {
-                    $grading_info = grade_get_grades($courseid, 'mod', 'hvp', $coursemodule->instance, $userid);
-                    $grade = $grading_info->items[0]->grades[$userid]->grade;
-                    $grademax = $grading_info->items[0]->grademax;
-                    if (isset($grade) && $grade != 0) {
-                        $percentage += 100 / ($grademax / $grade);
-                    }
-                } else {
-                    // if completed, add to percentage
-                    $sql = 'SELECT *
+                // if completed, add to percentage
+                $sql = 'SELECT *
                               FROM {course_modules_completion}
                              WHERE coursemoduleid = :coursemoduleid
                                AND userid = :userid
                                AND completionstate != 0 ';
-                    $params = array(
-                        'coursemoduleid' => $coursemodule->id,
-                        'userid' => $userid
-                    );
-                    if ($DB->get_record_sql($sql, $params)) {
-                        $percentage += 100;
-                    }
+                $params = array(
+                    'coursemoduleid' => $coursemodule->id,
+                    'userid' => $userid
+                );
+                if ($DB->get_record_sql($sql, $params)) {
+                    $percentage += 100;
                 }
             }
         }
