@@ -93,12 +93,12 @@ export default class Component extends DndCmItem {
             || (window.location.href.includes(course.baseurl) && anchor == cm.anchor)
         ) {
             this.reactive.dispatch('setPageItem', 'cm', this.id);
-            this.element.scrollIntoView({block: "center"});
+            this.element.scrollIntoView({ block: "center" });
         }
         // Check if this we are displaying this activity page.
         if (Config.contextid != Config.courseContextId && Config.contextInstanceId == this.id) {
             this.reactive.dispatch('setPageItem', 'cm', this.id, true);
-            this.element.scrollIntoView({block: "center"});
+            this.element.scrollIntoView({ block: "center" });
         }
         // Add anchor logic if the element is not user visible.
         if (!cm.uservisible) {
@@ -117,10 +117,10 @@ export default class Component extends DndCmItem {
      */
     getWatchers() {
         return [
-            {watch: `cm[${this.id}]:deleted`, handler: this.remove},
-            {watch: `cm[${this.id}]:updated`, handler: this._refreshCm},
-            {watch: `cm[${this.id}].completionstate:updated`, handler: this._refreshCompletion},
-            {watch: `course.pageItem:updated`, handler: this._refreshPageItem},
+            { watch: `cm[${this.id}]:deleted`, handler: this.remove },
+            { watch: `cm[${this.id}]:updated`, handler: this._refreshCm },
+            { watch: `cm[${this.id}].completionstate:updated`, handler: this._refreshCompletion },
+            { watch: `course.pageItem:updated`, handler: this._refreshPageItem },
         ];
     }
 
@@ -130,7 +130,7 @@ export default class Component extends DndCmItem {
      * @param {object} param
      * @param {Object} param.element details the update details.
      */
-    _refreshCm({element}) {
+    _refreshCm({ element }) {
         // Update classes.
         this.element.classList.toggle(this.classes.CMHIDDEN, !element.visible);
         this.getElement(this.selectors.CM_NAME).innerHTML = element.name;
@@ -147,14 +147,14 @@ export default class Component extends DndCmItem {
      * @param {Object} details the update details
      * @param {Object} details.element the course state data.
      */
-    _refreshPageItem({element}) {
+    _refreshPageItem({ element }) {
         if (!element.pageItem) {
             return;
         }
         const isPageId = (element.pageItem.type == 'cm' && element.pageItem.id == this.id);
         this.element.classList.toggle(this.classes.PAGEITEM, isPageId);
         if (isPageId && !this.reactive.isEditing) {
-            this.element.scrollIntoView({block: "nearest"});
+            this.element.scrollIntoView({ block: "nearest" });
         }
     }
 
@@ -165,7 +165,7 @@ export default class Component extends DndCmItem {
      * @param {Object} details.state the state data
      * @param {Object} details.element the element data
      */
-    async _refreshCompletion({state, element}) {
+    async _refreshCompletion({ state, element }) {
         // No completion icons are displayed in edit mode.
         if (this.reactive.isEditing || !element.istrackeduser) {
             return;
@@ -181,7 +181,7 @@ export default class Component extends DndCmItem {
         const data = exporter.cmCompletion(state, element);
 
         try {
-            const {html, js} = await Templates.renderForPromise(completionTemplate, data);
+            const { html, js } = await Templates.renderForPromise(completionTemplate, data);
             Templates.replaceNode(completionElement, html, js);
         } catch (error) {
             throw error;
