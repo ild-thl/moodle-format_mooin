@@ -25,13 +25,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {BaseComponent} from 'core/reactive';
+import { BaseComponent } from 'core/reactive';
 import ModalFactory from 'core/modal_factory';
 import ModalEvents from 'core/modal_events';
 import Templates from 'core/templates';
-import {prefetchStrings} from 'core/prefetch';
-import {get_string as getString} from 'core/str';
-import {getList} from 'core/normalise';
+import { prefetchStrings } from 'core/prefetch';
+import { get_string as getString } from 'core/str';
+import { getList } from 'core/normalise';
 import * as CourseEvents from 'core_course/events';
 import Pending from 'core/pending';
 import ContentTree from 'core_courseformat/local/courseeditor/contenttree';
@@ -114,12 +114,12 @@ export default class extends BaseComponent {
             this._dispatchClick
         );
         // Check section limit.
-        this._checkSectionlist({state});
+        this._checkSectionlist({ state });
         // Add an Event listener to recalculate limits it if a section HTML is altered.
         this.addEventListener(
             this.element,
             CourseEvents.sectionRefreshed,
-            () => this._checkSectionlist({state})
+            () => this._checkSectionlist({ state })
         );
     }
 
@@ -131,7 +131,7 @@ export default class extends BaseComponent {
     getWatchers() {
         return [
             // Check section limit.
-            {watch: `course.sectionlist:updated`, handler: this._checkSectionlist},
+            { watch: `course.sectionlist:updated`, handler: this._checkSectionlist },
         ];
     }
 
@@ -176,7 +176,7 @@ export default class extends BaseComponent {
      * @param {Object} detail the update details.
      * @param {Object} detail.state the state object.
      */
-    _checkSectionlist({state}) {
+    _checkSectionlist({ state }) {
         // Disable "add section" actions if the course max sections has been exceeded.
         this._setAddSectionLocked(state.course.sectionlist.length > state.course.maxsections);
     }
@@ -504,7 +504,7 @@ export default class extends BaseComponent {
         if (element) {
             element.focus();
         }
-        setTimeout(() =>{
+        setTimeout(() => {
             modal.destroy();
             pendingDestroy.resolve();
         }, 500);

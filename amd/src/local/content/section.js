@@ -27,7 +27,7 @@ import DndSection from "format_mooin4/local/courseeditor/dndsection";
 import Templates from "core/templates";
 import ModalFactory from "core/modal_factory";
 import Mooin4Modal from "../../mooin4modal";
-import {get_string as getString} from "core/str";
+import { get_string as getString } from "core/str";
 import ILD from "format_mooin4/ildhvp4";
 
 export default class extends DndSection {
@@ -97,7 +97,7 @@ export default class extends DndSection {
    */
   getWatchers() {
     return [
-      {watch: `section[${this.id}]:updated`, handler: this._refreshSection},
+      { watch: `section[${this.id}]:updated`, handler: this._refreshSection },
       // {watch: `section[${this.id}].sectionprogress:updated`, handler: this._updateSectionProgress}
     ];
   }
@@ -136,7 +136,7 @@ export default class extends DndSection {
    * @param {object} param
    * @param {Object} param.element details the update details.
    */
-  _refreshSection({element}) {
+  _refreshSection({ element }) {
     // Update classes.
     this.element.classList.toggle(
       this.classes.DRAGGING,
@@ -169,7 +169,7 @@ export default class extends DndSection {
     }
   }
 
-  async _reloadSectionNames({element}) {
+  async _reloadSectionNames({ element }) {
     const title = this.getElement(this.selectors.SECTION_ITEM);
     // Window.console.log(element);
     if (!element.isChapter) {
@@ -290,7 +290,7 @@ export default class extends DndSection {
         const src = iframe.src || '';
         return src.includes('h5p') || src.includes('h5pactivity') || iframe.classList.contains('h5p-iframe');
       });
-      
+
       // Add frames that aren't already in parentIFrames
       additionalFrames.forEach(frame => {
         if (!parentIFrames.includes(frame)) {
@@ -363,7 +363,7 @@ export default class extends DndSection {
 
                 // Array of h5p contentId
 
-                H5P.setFinished = function(contentId, score, maxScore, time) {
+                H5P.setFinished = function (contentId, score, maxScore, time) {
                   // H5P-Funktion hijacken, damit die Grade nicht doppelt eingetragen wird
                 };
 
@@ -388,14 +388,14 @@ export default class extends DndSection {
                   H5P.externalDispatcher.on('initialized', () => {
                     tryInitH5P();
                   });
-                  
+
                   // Also check periodically as fallback
                   let initCheckInterval = setInterval(() => {
                     if (tryInitH5P()) {
                       clearInterval(initCheckInterval);
                     }
                   }, 500);
-                  
+
                   // Stop checking after 10 seconds
                   setTimeout(() => {
                     clearInterval(initCheckInterval);
@@ -406,8 +406,8 @@ export default class extends DndSection {
                 adjustParentIFrameHeight(); // Höhe sofort anpassen, wenn H5P gefunden wird
 
                 // Starte den MutationObserver
-                var observer = new MutationObserver(function(mutations) {
-                  mutations.forEach(function(mutation) {
+                var observer = new MutationObserver(function (mutations) {
+                  mutations.forEach(function (mutation) {
                     if (mutation.addedNodes.length > 0 || mutation.attributeName === 'src') {
                       // Console.log(
                       //     "DOM-Änderung oder Attributänderung erkannt im .h5p-iframe: ",
@@ -434,14 +434,14 @@ export default class extends DndSection {
           };
 
           const handleNestedIframeFound = () => {
-            nestedIFrame.addEventListener('load', function() {
+            nestedIFrame.addEventListener('load', function () {
               adjustParentIFrameHeight();
               checkForH5P();
               monitorElementLoads();
             });
 
             if (!checkForH5P()) {
-              var h5pCheckInterval = setInterval(function() {
+              var h5pCheckInterval = setInterval(function () {
                 if (checkForH5P()) {
                   clearInterval(h5pCheckInterval);
                 }
@@ -470,8 +470,8 @@ export default class extends DndSection {
             // );
 
             // Beobachte den parentIFrame für das Erscheinen des nestedIFrame
-            var observer = new MutationObserver(function(mutations) {
-              mutations.forEach(function(mutation) {
+            var observer = new MutationObserver(function (mutations) {
+              mutations.forEach(function (mutation) {
                 if (mutation.addedNodes.length > 0) {
                   // Console.log(
                   //     "Eine neue Node wurde hinzugefügt:",
@@ -504,10 +504,10 @@ export default class extends DndSection {
           mutation.addedNodes.forEach((node) => {
             if (node.nodeType === 1) { // Element node
               // Check if the added node is an iframe or contains iframes
-              const newIFrames = node.tagName === 'IFRAME' 
-                ? [node] 
+              const newIFrames = node.tagName === 'IFRAME'
+                ? [node]
                 : (node.querySelectorAll ? Array.from(node.querySelectorAll('iframe')) : []);
-              
+
               newIFrames.forEach((iframe) => {
                 const src = iframe.src || '';
                 if (src.includes('h5p') || src.includes('h5pactivity') || iframe.classList.contains('h5p-iframe')) {
