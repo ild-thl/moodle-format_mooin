@@ -26,7 +26,7 @@
 
 import SectionTitle from 'format_mooin4/local/courseindex/sectiontitle';
 import DndSection from 'format_mooin4/local/courseeditor/dndsection';
-import {get_string as getString} from "core/str";
+import { get_string as getString } from "core/str";
 
 export default class Component extends DndSection {
 
@@ -44,7 +44,7 @@ export default class Component extends DndSection {
             INDEXNUMBER: `[data-for='index_number']`,
             CARET: `[data-for='caret']`,
             INDEXINFOS: `[data-for='index_infos']`,
-            // CHECKMARK: `[data-for='checkmark']`,
+            CHECKMARK: `[data-for='checkmark']`,
         };
         // Default classes to toggle on refresh.
         this.classes = {
@@ -108,10 +108,10 @@ export default class Component extends DndSection {
      */
     getWatchers() {
         return [
-            {watch: `section[${this.id}]:deleted`, handler: this.remove},
-            {watch: `section[${this.id}]:updated`, handler: this._refreshSection},
-            {watch: `course.pageItem:updated`, handler: this._refreshPageItem},
-            {watch: `section[${this.id}].sectionprogress:updated`, handler: this._updateSectionProgress},
+            { watch: `section[${this.id}]:deleted`, handler: this.remove },
+            { watch: `section[${this.id}]:updated`, handler: this._refreshSection },
+            { watch: `course.pageItem:updated`, handler: this._refreshPageItem },
+            { watch: `section[${this.id}].sectionprogress:updated`, handler: this._updateSectionProgress },
             // {watch: `section[${this.id}].isChapter:updated`, handler: this._reloadSectionNames},
         ];
     }
@@ -132,7 +132,7 @@ export default class Component extends DndSection {
      * @param {Object} param.element the section element
      * @param param.state
      */
-    _refreshSection({state, element}) {
+    _refreshSection({ state, element }) {
         // Update classes.
         const sectionItem = this.getElement(this.selectors.SECTION_ITEM);
         sectionItem.classList.toggle(this.classes.SECTIONHIDDEN, !element.visible);
@@ -142,12 +142,12 @@ export default class Component extends DndSection {
         this.element.classList.toggle(this.classes.LOCKED, element.locked ?? false);
         this.locked = element.locked;
         if (this.reactive.isEditing) {
-            this._reloadSectionNames({element: element});
+            this._reloadSectionNames({ element: element });
         }
 
     }
 
-    async _reloadSectionNames({element}) {
+    async _reloadSectionNames({ element }) {
         const title = this.getElement(this.selectors.SECTION_TITLE);
         // Window.console.log(element);
         if (element.isChapter) {
@@ -159,7 +159,7 @@ export default class Component extends DndSection {
             // Title.innerHTML = element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
             title.innerHTML = element.prefix + ": " + element.title;
         }
-      }
+    }
 
     /**
      * Handle a page item update.
@@ -168,7 +168,7 @@ export default class Component extends DndSection {
      * @param {Object} details.state the state data.
      * @param {Object} details.element the course state data.
      */
-    _refreshPageItem({element, state}) {
+    _refreshPageItem({ element, state }) {
         if (!element.pageItem) {
             return;
         }
@@ -186,22 +186,26 @@ export default class Component extends DndSection {
         const sectionItem = this.getElement(this.selectors.SECTION_ITEM);
         sectionItem.classList.toggle(this.classes.PAGEITEM, this.pageItem ?? false);
         if (this.pageItem && !this.reactive.isEditing) {
-            this.element.scrollIntoView({block: "nearest"});
+            this.element.scrollIntoView({ block: "nearest" });
         }
     }
 
 
-    async _updateSectionProgress({state, element}) {
-        if (element.isCompleted) {
+    async _updateSectionProgress({ state, element }) {
+        // Remove any existing checkmarks first.
+        const existingCheckmarks = this.element.querySelectorAll(this.selectors.CHECKMARK); // Assuming you've uncommented the selector in create()
+        if (existingCheckmarks) {
+            existingCheckmarks.forEach(node => node.remove());
+        }
+
+        if (element.sectionprogress == 100) {
             const infos = this.getElement(this.selectors.INDEXINFOS);
             const checkMark = document.createElement("i");
             checkMark.classList.add("bi", "bi-check");
+            // Important: Add the data attribute so we can find and remove it later.
+            checkMark.dataset.for = 'checkmark';
             infos.appendChild(checkMark);
-        } else {
-            // Const checkmark = this.getElement(this.selectors.CHECKMARK);
-            // checkmark.remove();
         }
-
-
     }
 }
+
