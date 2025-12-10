@@ -179,7 +179,7 @@ class utils {
                 }
             }
 
-            if ($coursemodule->completion != 2 && $storedprogress === null) {
+            if ($coursemodule->completion != 2) {
                 continue;
             }
 
@@ -214,11 +214,11 @@ class utils {
 
         // no activities with completion activated?
         if ($activities == 0) {
+            $percentage = 0;
             if (get_user_preferences('format_mooin4_section_completed_' . $sectionid, 0, $userid) == 1) {
-                return 100;
-            } else {
-                return 0;
+                $percentage = 100;
             }
+            return array('sectionid' => $sectionid, 'percentage' => $percentage);
         }
         $progress = array('sectionid' => $sectionid, 'percentage' => round($percentage / $activities));
         return $progress; // round($percentage / $activities);
@@ -1138,7 +1138,8 @@ class utils {
             
             // Always process H5P activities (hvp and h5pactivity), even if not yet started
             // Skip only non-H5P activities that don't require completion and have no stored progress
-            if (!$istrackedh5p && !$completionrequired && $storedprogress === null) {
+            // Mod: For H5P we also enforce strict completion requirement now (completion == 2)
+            if ((!$istrackedh5p && !$completionrequired && $storedprogress === null) || ($istrackedh5p && !$completionrequired)) {
                 continue;
             }
 

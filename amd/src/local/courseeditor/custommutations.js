@@ -24,40 +24,40 @@ export default class {
 
         const response = await ajax.call([
             {
-              methodname: "format_mooin4_setgrade",
-              args: {
-                contentid: contentid,
-                score: score,
-                maxscore: maxscore,
-                cmid: cmid ? Number(cmid) : 0,
-              },
+                methodname: "format_mooin4_setgrade",
+                args: {
+                    contentid: contentid,
+                    score: score,
+                    maxscore: maxscore,
+                    cmid: cmid ? Number(cmid) : 0,
+                },
             },
-          ])[0];
+        ])[0];
 
         // Update progress bar immediately with backend-calculated percentage
         if (response && response.percentage !== null && response.percentage !== undefined) {
-          const percentage = Math.round(response.percentage);
-          const sectionElement = document.querySelector(`[data-for="section"][data-id="${sectionId}"]`);
-          if (sectionElement) {
-            const progressbar = sectionElement.querySelector('[data-for="progressbar_inner"]');
-            if (progressbar) {
-              progressbar.style.width = `${percentage}%`;
+            const percentage = Math.round(response.percentage);
+            const sectionElement = document.querySelector(`[data-for="section"][data-id="${sectionId}"]`);
+            if (sectionElement) {
+                const progressbar = sectionElement.querySelector('[data-for="progressbar_inner"]');
+                if (progressbar) {
+                    progressbar.style.width = `${percentage}%`;
+                }
+                const progressText = sectionElement.querySelector('[data-for="section-progress"]');
+                if (progressText) {
+                    progressText.innerText = percentage;
+                }
             }
-            const progressText = sectionElement.querySelector('[data-for="section-progress"]');
-            if (progressText) {
-              progressText.innerText = percentage;
-            }
-          }
 
-          // Fallback: update first progress bar on the page (current section header)
-          const fallbackProgressbar = document.querySelector('[data-for="progressbar_inner"]');
-          if (fallbackProgressbar) {
-            fallbackProgressbar.style.width = `${percentage}%`;
-          }
-          const fallbackProgressText = document.querySelector('[data-for="section-progress"]');
-          if (fallbackProgressText) {
-            fallbackProgressText.innerText = percentage;
-          }
+            // Fallback: update first progress bar on the page (current section header)
+            const fallbackProgressbar = document.querySelector('[data-for="progressbar_inner"]');
+            if (fallbackProgressbar) {
+                fallbackProgressbar.style.width = `${percentage}%`;
+            }
+            const fallbackProgressText = document.querySelector('[data-for="section-progress"]');
+            if (fallbackProgressText) {
+                fallbackProgressText.innerText = percentage;
+            }
         }
 
         const course = stateManager.get('course');
@@ -113,13 +113,13 @@ export default class {
                     invisbleCounter = 0;
                 } else if (section.isChapter == false) {
 
-                        section.parentChapter = lastChapter.isChapter;
-                        section.innerChapterNumber = section.number - lastChapter.number - invisbleCounter;
-                        if (section.visible) {
-                            section.prefix = section.parentChapter + "." + section.innerChapterNumber;
-                        } else {
-                            invisbleCounter++;
-                        }
+                    section.parentChapter = lastChapter.isChapter;
+                    section.innerChapterNumber = section.number - lastChapter.number - invisbleCounter;
+                    if (section.visible) {
+                        section.prefix = section.parentChapter + "." + section.innerChapterNumber;
+                    } else {
+                        invisbleCounter++;
+                    }
                 }
             }
         });
@@ -173,13 +173,13 @@ export default class {
                     invisbleCounter = 0;
                 } else if (section.isChapter == false) {
 
-                        section.parentChapter = lastChapter.isChapter;
-                        section.innerChapterNumber = section.number - lastChapter.number - invisbleCounter;
-                        if (section.visible) {
-                            section.prefix = section.parentChapter + "." + section.innerChapterNumber;
-                        } else {
-                            invisbleCounter++;
-                        }
+                    section.parentChapter = lastChapter.isChapter;
+                    section.innerChapterNumber = section.number - lastChapter.number - invisbleCounter;
+                    if (section.visible) {
+                        section.prefix = section.parentChapter + "." + section.innerChapterNumber;
+                    } else {
+                        invisbleCounter++;
+                    }
                 }
             }
         });
@@ -264,7 +264,7 @@ export default class {
         let ids = [];
         stateManager.state.section.forEach(section => {
             // If (section.number >= target.number) {
-                ids.push(section.id);
+            ids.push(section.id);
             // }
         });
         // Ids.push(target);
