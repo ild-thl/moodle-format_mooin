@@ -72,5 +72,10 @@ $observers = array(
     array(
         'eventname' => '\core\event\course_section_created',
         'callback' => 'format_mooin4_observer::course_section_created',
+    ),
+    // Course reset
+    array(
+        'eventname' => '\core\event\course_reset_ended',
+        'callback' => 'format_mooin4_observer::course_reset_ended',
     )
 );

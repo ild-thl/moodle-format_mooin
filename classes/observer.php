@@ -147,4 +147,73 @@ class format_mooin4_observer {
        
     }
 
+    /**
+     * Handle course reset ended event.
+     * Deletes all mooin4-related user preferences for the reset course.
+     *
+     * @param \core\event\course_reset_ended $event
+     */
+    public static function course_reset_ended(\core\event\course_reset_ended $event) {
+        global $DB;
+
+        $courseid = $event->courseid;
+        $course = $DB->get_record('course', array('id' => $courseid));
+
+        // Only process if the course uses mooin4 format.
+        if (!$course || $course->format !== 'mooin4') {
+            return;
+        }
+
+        // Get all section IDs for this course.
+        $sections = $DB->get_records('course_sections', array('course' => $courseid), '', 'id');
+        $sectionids = array_keys($sections);
+
+        // Get all course module IDs for this course.
+        $cms = $DB->get_records('course_modules', array('course' => $courseid), '', 'id, instance');
+
+        // Delete user preferences related to this course.
+        // 1. Last section visited in course.
+        $DB->delete_records_select('user_preferences', 
+            "name = :name", 
+            array('name' => 'format_mooin4_last_section_in_course_' . $courseid)
+        );
+
+        // 2. Section completed status for each section.
+        foreach ($sectionids as $sectionid) {
+            $DB->delete_records_select('user_preferences', 
+                "name = :name", 
+                array('name' => 'format_mooin4_section_completed_' . $sectionid)
+            );
+            $DB->delete_records_select('user_preferences', 
+                "name = :name", 
+                array('name' => 'format_mooin4_hide_modal_for_section_' . $sectionid)
+            );
+        }
+
+        // 3. H5P progress for each course module.
+        foreach ($cms as $cm) {
+            $DB->delete_records_select('user_preferences', 
+                "name = :name", 
+                array('name' => 'format_mooin4_hvp_progress_cmid_' . $cm->id)
+            );
+            $DB->delete_records_select('user_preferences', 
+                "name = :name", 
+                array('name' => 'format_mooin4_hvp_progress_' . $cm->instance)
+            );
+        }
+
+        // 4. Delete all mooin4 preferences using LIKE patterns for this course.
+        // This catches any remaining preferences that might be tied to course-specific data.
+        $likepatterns = array(
+            'format_mooin4_last_section_in_course_' . $courseid,
+        );
+
+        foreach ($likepatterns as $pattern) {
+            $DB->delete_records_select('user_preferences', 
+                "name = :name", 
+                array('name' => $pattern)
+            );
+        }
+    }
+
 }
