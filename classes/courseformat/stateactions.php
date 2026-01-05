@@ -38,12 +38,21 @@ use format_mooin4\local\utils as utils;
  * Extended classes should be locate in "format_XXX\course" namespace and
  * extends core_courseformat\stateactions.
  *
- * @package    core_courseformat
+ * @package    format_mooin4
  * @copyright  2021 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class stateactions extends Base {
 
+    /**
+     * Reload all section prefixes.
+     *
+     * @param stateupdates $updates
+     * @param stdClass $course
+     * @param array $ids
+     * @param int|null $targetsectionid
+     * @param int|null $targetcmid
+     */
     public function reload_all_section_prefixes(
         stateupdates $updates,
         stdClass $course,
@@ -51,13 +60,21 @@ class stateactions extends Base {
         ?int $targetsectionid = null,
         ?int $targetcmid = null
     ): void {
-        foreach($ids as $id) {
+        foreach ($ids as $id) {
             $updates->add_section_put($id);
         }
-        
-        //$this->section_state($updates, $course, $ids);
+
     }
 
+    /**
+     * Complete a section manually.
+     *
+     * @param stateupdates $updates
+     * @param stdClass $course
+     * @param array $ids
+     * @param int|null $targetsectionid
+     * @param int|null $targetcmid
+     */
     public function complete_section(
         stateupdates $updates,
         stdClass $course,
@@ -69,6 +86,15 @@ class stateactions extends Base {
         $this->section_state($updates, $course, $ids);
     }
 
+    /**
+     * Update section progress.
+     *
+     * @param stateupdates $updates
+     * @param stdClass $course
+     * @param array $ids
+     * @param int|null $targetsectionid
+     * @param int|null $targetcmid
+     */
     public function update_sectionprogress(
         stateupdates $updates,
         stdClass $course,
@@ -79,6 +105,15 @@ class stateactions extends Base {
         $this->section_state($updates, $course, $ids);
     }
 
+    /**
+     * Set last section modal.
+     *
+     * @param stateupdates $updates
+     * @param stdClass $course
+     * @param array $ids
+     * @param int|null $targetsectionid
+     * @param int|null $targetcmid
+     */
     public function set_last_section_modal(
         stateupdates $updates,
         stdClass $course,
@@ -90,7 +125,16 @@ class stateactions extends Base {
         $this->section_state($updates, $course, $ids);
     }
 
-    public function section_setChapter(
+    /**
+     * Set a section as a chapter.
+     *
+     * @param stateupdates $updates
+     * @param stdClass $course
+     * @param array $ids
+     * @param int|null $targetsectionid
+     * @param int|null $targetcmid
+     */
+    public function section_set_chapter(
         stateupdates $updates,
         stdClass $course,
         array $ids = [],
@@ -100,11 +144,18 @@ class stateactions extends Base {
         utils::set_chapter($targetsectionid);
         $this->section_state($updates, $course, $ids);
 
-        // course_modinfo::purge_course_modules_cache($course->id, $ids);
-        // rebuild_course_cache($course->id, false, true);
     }
 
-    public function section_unsetChapter(
+    /**
+     * Unset a section as a chapter.
+     *
+     * @param stateupdates $updates
+     * @param stdClass $course
+     * @param array $ids
+     * @param int|null $targetsectionid
+     * @param int|null $targetcmid
+     */
+    public function section_unset_chapter(
         stateupdates $updates,
         stdClass $course,
         array $ids = [],
@@ -113,25 +164,36 @@ class stateactions extends Base {
     ): void {
         utils::unset_chapter($targetsectionid);
         $this->section_state($updates, $course, $ids);
-        // course_modinfo::purge_course_modules_cache($course->id, $ids);
-        // rebuild_course_cache($course->id, false, true);
     }
 
-    public function getContinuesection(
+    /**
+     * Get continue section.
+     *
+     * @param stateupdates $updates
+     * @param stdClass $course
+     */
+    public function get_continue_section(
         stateupdates $updates,
         stdClass $course,
     ): void {
         $this->course_state($updates, $course);
     }
 
-    public function readAllForumDiscussions(
+    /**
+     * Read all forum discussions.
+     *
+     * @param stateupdates $updates
+     * @param stdClass $course
+     * @param array $ids
+     */
+    public function read_all_forum_discussions(
         stateupdates $updates,
         stdClass $course,
         array $ids = [],
     ): void {
         global $DB, $USER;
         $forumid = $ids[0];
-        if ($discussions = $DB->get_records('forum_discussions', array('forum' => $forumid))) {
+        if ($discussions = $DB->get_records('forum_discussions', ['forum' => $forumid])) {
             foreach ($discussions as $discussion) {
                 utils::set_discussion_viewed($USER->id, $forumid, $discussion->id);
             }
@@ -240,3 +302,4 @@ class stateactions extends Base {
         $updates->add_course_put();
     }
 }
+

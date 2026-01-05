@@ -33,7 +33,7 @@ use JsonSerializable;
  * Extended classes should be located in "format_XXX\course" namespace and
  * extends {@see \core_courseformat\stateupdates}.
  *
- * @package    core_course
+ * @package    format_mooin4
  * @copyright  2021 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
