@@ -30,31 +30,14 @@ use moodle_url;
 /**
  * Contains the ajax update section structure.
  *
- * @package   core_course
+ * @package   format_mooin4
  * @copyright 2021 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class section extends section_base {
 
+    /** @var int|null $continuesection The section ID to continue from. */
     protected $continuesection;
-
-    /**
-     * Constructor.
-     *
-     * @param course_format $format the course format
-     * @param section_info $section the section info
-     */
-    // public function __construct(course_format $format, section_info $section) {
-    //     global $USER;
-    //     parent::__construct($format, $section);
-    //     $course = $format->get_course();
-    //     $sectionnumber = optional_param('section', 0, PARAM_INT);
-    //     if ($sectionnumber > 0) {
-    //         set_user_preference('format_mooin4_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
-    //     }
-    // }
-
-    //protected $containsActiveSection = false;
 
     /**
      * Export this data so it can be used as state object in the course editor.
@@ -64,27 +47,25 @@ class section extends section_base {
      */
     public function export_for_template(\renderer_base $output): stdClass {
         global $DB, $USER, $PAGE;
-        $isChapter = false;
+        $ischapter = false;
         $parentchapter = null;
         $course = $this->format->get_course();
 
-
-        if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $this->section->id))) {
-            $isChapter = $chapter->chapter;
+        if ($chapter = $DB->get_record('format_mooin4_chapter', ['sectionid' => $this->section->id])) {
+            $ischapter = $chapter->chapter;
         } else {
             $parentchapter = utils::get_parent_chapter($this->section);
         }
         $data = (object)parent::export_for_template($output);
-        $data->isChapter = $isChapter;
+        $data->ischapter = $ischapter;
         if (!is_null($parentchapter)) {
             $data->parentChapter = $parentchapter->chapter;
 
-            if ($parentchapterAsSection = $DB->get_record('course_sections', array('id' => $parentchapter->sectionid))) {
-                $data->innerChapterNumber = $this->section->section - $parentchapterAsSection->section;
-                $data->parentChapterId = $parentchapterAsSection->id;
+            if ($parentchapterassection = $DB->get_record('course_sections', ['id' => $parentchapter->sectionid])) {
+                $data->innerchapternumber = $this->section->section - $parentchapterassection->section;
+                $data->parentchapterid = $parentchapterassection->id;
             }
-            
-            //show course index section prefix numbers according settings
+            // Show course index section prefix numbers according settings.
             require_once(__DIR__ . '/../../../../lib.php');
             $courseid = $course->id;
             if (get_toggle_section_number_visibility($courseid) === 1) {
@@ -95,7 +76,7 @@ class section extends section_base {
                 $data->prefix = '';
             }
         }
-        //set sec_numb_visibility for course index
+        // Set sec_numb_visibility for course index.
         require_once(__DIR__ . '/../../../../lib.php');
         $courseid = $course->id;
         if (get_toggle_section_number_visibility($courseid) === 1) {
@@ -104,44 +85,43 @@ class section extends section_base {
             $data->sec_numb_visibility = false;
         }
 
-        $section_progress = utils::get_section_progress($course->id, $this->section->id, $USER->id);
-        $data->sectionprogress = $section_progress;
-        if ($section_progress == 100) {
-            $data->isCompleted = true;
+        $sectionprogress = utils::get_section_progress($course->id, $this->section->id, $USER->id);
+        $data->sectionprogress = $sectionprogress;
+        if ($sectionprogress == 100) {
+            $data->iscompleted = true;
         }
 
-        if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $this->section->id))) {
-            $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
-            if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                $last_sections_parent_chapter = utils::get_parent_chapter($continuesection);
-                if ($last_sections_parent_chapter == $chapter) {
+        if ($chapter = $DB->get_record('format_mooin4_chapter', ['sectionid' => $this->section->id])) {
+            $lastsection = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
+            if ($continuesection = $DB->get_record('course_sections', ['course' => $course->id, 'section' => $lastsection])) {
+                $lastsectionsparentchapter = utils::get_parent_chapter($continuesection);
+                if ($lastsectionsparentchapter == $chapter) {
                     $data->containsActiveSection = true;
                 }
             }
         }
 
-        if (!$isChapter) {
+        if (!$ischapter) {
             if (utils::is_first_section_of_chapter($this->section->id)) {
-                $data->isFirstSectionOfChapter = true;
+                $data->isfirstsectionofchapter = true;
             }
             if (utils::is_last_section_of_chapter($this->section->id)) {
-                $data->isLastSectionOfChapter = true;
+                $data->islastsectionofchapter = true;
                 if (!get_user_preferences('format_mooin4_hide_modal_for_section_' . $this->section->id)) {
-                    $data->showLastSectionModal = true;
-                    //set_user_preference('format_mooin4_hide_modal_for_section_'.$this->section->id, 'true');
+                    $data->showlastsectionmodal = true;
                 }
             }
 
-            $parent_chapter = utils::get_parent_chapter($this->section);
-            $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
-            if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                $last_sections_parent_chapter = utils::get_parent_chapter($continuesection);
-                if ($last_sections_parent_chapter == $parent_chapter) {
+            $parentchapter = utils::get_parent_chapter($this->section);
+            $lastsection = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
+            if ($continuesection = $DB->get_record('course_sections', ['course' => $course->id, 'section' => $lastsection])) {
+                $lastsectionsparentchapter = utils::get_parent_chapter($continuesection);
+                if ($lastsectionsparentchapter == $parentchapter) {
                     $data->containsActiveSection = true;
                 }
             }
 
-            if ($last_section == $this->section->section) {
+            if ($lastsection == $this->section->section) {
                 $data->isActiveSection = true;
             }
         }

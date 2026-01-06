@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+
 
 /**
  * Upgrade script for Topics course format.
@@ -75,7 +75,7 @@ function xmldb_format_mooin4_upgrade($oldversion) {
             $dbman->create_table($table);
         }
 
-        // mooin4 savepoint reached.
+        // Mooin4 savepoint reached.
         upgrade_plugin_savepoint(true, 2023011702, 'format', 'mooin4');
     }
 

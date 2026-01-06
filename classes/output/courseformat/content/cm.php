@@ -17,7 +17,7 @@
 /**
  * Contains the default activity list from a section.
  *
- * @package   core_courseformat
+ * @package   format_mooin4
  * @copyright 2020 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -41,12 +41,12 @@ use stdClass;
 /**
  * Base class to render a course module inside a course format.
  *
- * @package   core_courseformat
+ * @package   format_mooin4
  * @copyright 2020 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cm extends cm_base {
-    
+
     /**
      * Export this data so it can be used as the context for a mustache template.
      *
@@ -58,11 +58,9 @@ class cm extends cm_base {
         $data = parent::export_for_template($output);
 
         if ($this->mod->modname == 'hvp' && $USER->editing != 1) {
-            $link = '<iframe src="' . $CFG->httpswwwroot . '/mod/hvp/embed.php?id=' . $this->mod->id . '" class="parent-iframe" frameborder="0" allowfullscreen="allowfullscreen"></iframe>';
+            $link = '<iframe src="' . $CFG->httpswwwroot . '/mod/hvp/embed.php?id=' . $this->mod->id
+                . '" class="parent-iframe" frameborder="0" allowfullscreen="allowfullscreen"></iframe>';
             $link .= '<script src="' . $CFG->httpswwwroot . '/mod/hvp/library/js/h5p-resizer.js" charset="UTF-8"></script>';
-            
-            //$link = '<iframe src="' . $CFG->httpswwwroot . '/mod/hvp/embed.php?id=' . $this->mod->id . '"class="parent-iframe"" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="' . $CFG->httpswwwroot . '/mod/hvp/library/js/h5p-resizer.js" charset="UTF-8"></script>';
-            //$link = '<iframe src="' . $CFG->httpswwwroot . '/mod/hvp/embed.php?id=' . $this->mod->id . '" class="parent-iframe" style="height: 400px;" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="' . $CFG->httpswwwroot . '/mod/hvp/library/js/h5p-resizer.js" charset="UTF-8"></script>';
             $this->mod->set_content($link);
             $data->hvpcontent = $this->mod->content;
         }
@@ -99,7 +97,6 @@ class cm extends cm_base {
                 $data->hvpcontent = $this->mod->content;
             }
         }
-        
 
         return $data;
     }

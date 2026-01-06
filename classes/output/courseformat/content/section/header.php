@@ -17,7 +17,7 @@
 /**
  * Contains the default section header format output class.
  *
- * @package   core_courseformat
+ * @package   format_mooin4
  * @copyright 2020 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -34,23 +34,43 @@ use format_mooin4\local\utils as utils;
 /**
  * Base class to render a section header.
  *
- * @package   core_courseformat
+ * @package   format_mooin4
  * @copyright 2020 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class header extends header_base {
 
+    /** @var object The chapter object. */
     protected $chapter;
 
+    /**
+     * Constructor.
+     *
+     * @param course_format $format The course format object.
+     * @param section_info $section The section info object.
+     * @param mixed $chapter The chapter information.
+     */
     public function __construct(course_format $format, section_info $section, $chapter) {
         parent::__construct($format, $section);
         $this->chapter = $chapter;
     }
 
+    /**
+     * Get the template name to use for rendering.
+     *
+     * @param \renderer_base $renderer The renderer base.
+     * @return string The template name.
+     */
     public function get_template_name(\renderer_base $renderer): string {
         return 'format_mooin4/local/content/section/header';
     }
 
+    /**
+     * Export the data for the template.
+     *
+     * @param \renderer_base $output The renderer base.
+     * @return stdClass The exported data.
+     */
     public function export_for_template(\renderer_base $output): stdClass {
         global $USER;
 
@@ -69,42 +89,25 @@ class header extends header_base {
         require_once(__DIR__ . '/../../../../../lib.php');
         $courseid = $course->id;
         if (get_toggle_section_number_visibility($courseid) === 1) {
-            $data->sec_numb_visibility = true; 
+            $data->sec_numb_visibility = true;
+        } else {
+            $data->sec_numb_visibility = false;
         }
-        else {
-            $data->sec_numb_visibility = false; 
-        }
-        
         $coursedisplay = $format->get_course_display();
         $data->headerdisplaymultipage = false;
         if ($coursedisplay == COURSE_DISPLAY_MULTIPAGE) {
             $data->headerdisplaymultipage = true;
 
-                if ($chapter) {
-                    $data->chapter = true;
-                    $data->prefix = $chapter->chapter;
-                    $data->title = $output->section_title_without_link($section, $course);
-                } else {
-                    $data->chapter = false;
-                    $data->prefix = utils::get_section_prefix($section);
-                    $data->title_with_link = $output->section_title($section, $course);
-                    $data->title_without_link = $output->section_title_without_link($section, $course);
-                    // if (format_mooin4\local\progresslib::get_section_progress($course->id, $this->section->id, $USER->id) == 100) {
-                    //     $data->isCompleted = true;
-                    // }
-                }
-                
-
-            
-                 //$data->prefix = format_mooin4\local\chapterlib::get_section_prefix($section);
-                //$url = course_get_url($course, $section->section, array('navigation' => true));
-                //$data->title = $output->section_title_without_link($section, $course);
-                 
-                // $data->url = course_get_url($course, $section->section, array('navigation' => true));
-
-            
-
-
+            if ($chapter) {
+                $data->chapter = true;
+                $data->prefix = $chapter->chapter;
+                $data->title = $output->section_title_without_link($section, $course);
+            } else {
+                $data->chapter = false;
+                $data->prefix = utils::get_section_prefix($section);
+                $data->title_with_link = $output->section_title($section, $course);
+                $data->title_without_link = $output->section_title_without_link($section, $course);
+            }
         }
 
         if ($section->section > $format->get_last_section_number()) {

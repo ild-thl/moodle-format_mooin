@@ -27,30 +27,10 @@ use renderer_base;
 /**
  * Contains the ajax update course structure.
  *
- * @package   core_course
+ * @package   format_mooin4
  * @copyright 2021 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course extends course_base {
-    
 
-    /**
-     * Export this data so it can be used as state object in the course editor.
-     *
-     * @param renderer_base $output typically, the renderer that's calling this function
-     * @return stdClass data context for a mustache template
-     */
-    // public function export_for_template(\renderer_base $output): stdClass {
-    //     global $USER, $DB;
-    //     $data = parent::export_for_template($output);
-    //     $course = $this->format->get_course();
-    //     $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
-    //     if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-    //         $data->continueSection = $continuesection->id;
-    //     }
-        
-
-
-    //     return $data;
-    // }
 }

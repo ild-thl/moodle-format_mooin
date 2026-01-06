@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace format_mooin4\output\courseformat\content\frontpage;
 
@@ -21,22 +35,24 @@ class courseprogress implements renderable {
     /** @var course_format the course format class */
     private $format;
 
+    /** @var chapterlib the chapter library */
     private $chapterlib;
-
-    //private $continue_section;
-
 
     /**
      * Constructor.
      *
-     * @param course $course the course
+     * @param course_format $format the course format
      */
     public function __construct(course_format $format) {
         $this->format = $format;
-        //$this->chapterlib = new chapterlib();
-        //$this->continue_section = $this->get_continue_section();
     }
 
+    /**
+     * Export this data so it can be used as the context for a mustache template.
+     *
+     * @param \renderer_base $output typically, the renderer that's calling this function
+     * @return \stdClass data context for a mustache template
+     */
     public function export_for_template(\renderer_base $output) {
         global $USER;
         $course = $this->format->get_course();
@@ -46,71 +62,10 @@ class courseprogress implements renderable {
             'is_course_started' => utils::is_course_started($course),
             'continue_section' => utils::get_continue_section($course),
             'continue_url' => utils::get_continue_url($course),
-            'courseprogress' => $courseprogress
+            'courseprogress' => $courseprogress,
         ];
         return $data;
     }
 
-    // public function is_course_started() {
-    //     global $DB;
-    //     global $USER;
-    //     $chapterlib = $this->chapterlib;
-    //     $course = $this->format->get_course();
-    //     $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
-    //     if ($last_section) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
 
-    // public function get_continue_section() {
-    //     global $DB;
-    //     global $USER;
-    //     $chapterlib = $this->chapterlib;
-    //     $course = $this->format->get_course();
-
-    //     $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
-
-
-    //     if ($last_section) {
-    //         if ($last_section == 0 || $last_section == 1) {
-    //             $last_section = 2;
-    //         }
-
-    //         if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-    //             return $chapterlib->get_section_prefix($continuesection);
-    //         } else {
-    //             return false;
-    //         }
-    //     } else {
-    //         return 2;
-    //     }
-    // }
-
-    // public function get_continue_url() {
-    //     global $DB;
-    //     global $USER;
-    //     $chapterlib = $this->chapterlib;
-    //     $course = $this->format->get_course();
-
-    //     $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
-
-
-    //     if ($last_section) {
-    //         if ($last_section == 0 || $last_section == 1) {
-    //             //return new moodle_url('/course/view.php', array('id' => $course->id, 'section' => 1));
-    //             $last_section = 2;
-    //         }
-    //         if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-    //             return new moodle_url('/course/view.php', array('id' => $course->id, 'section' => $continuesection->section));
-    //             //return $continuesection->section;
-    //         } else {
-    //             return new moodle_url('/course/view.php', array('id' => $course->id, 'section' => 2));
-    //         }
-    //     } else {
-    //         //return new moodle_url('/course/view.php', array('id' => $course->id, 'section' => 1));
-    //         return new moodle_url('/course/view.php', array('id' => $course->id, 'section' => 2));
-    //     }
-    // }
 }

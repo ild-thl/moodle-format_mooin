@@ -36,27 +36,26 @@ if (!has_capability('moodle/course:update', $coursecontext)) {
 // User has to be logged in.
 require_login($courseid, false);
 
-//$context = context_system::instance();
-$url = new moodle_url('/course/format/mooin4/edit_header.php', array('course' => $courseid));
-$course = $DB->get_record('course', array('id' => $courseid));
+$url = new moodle_url('/course/format/mooin4/edit_header.php', ['course' => $courseid]);
+$course = $DB->get_record('course', ['id' => $courseid]);
 $coursecontext = context_course::instance($courseid);
 
 $PAGE->set_pagelayout('admin');
 $PAGE->set_context($coursecontext);
 $PAGE->set_url($url);
-$PAGE->set_title(get_string('coursetitle', 'moodle', array('course' => $course->fullname)));
+$PAGE->set_title(get_string('coursetitle', 'moodle', ['course' => $course->fullname]));
 $PAGE->set_heading(get_string('edit_course_header', 'format_mooin4'));
 
-$filemanageropts = array(
+$filemanageropts = [
     'subdirs' => 0,
     'maxbytes' => 1048576,
     'areamaxbytes' => 1048576,
     'maxfiles' => 1,
-    'accepted_types' => array('image'),
-    'context' => $coursecontext
-);
+    'accepted_types' => ['image'],
+    'context' => $coursecontext,
+];
 
-$customdata = array('filemanageropts' => $filemanageropts);
+$customdata = ['filemanageropts' => $filemanageropts];
 
 $mform = new edit_header_form($url . '?course=' . $courseid, $customdata);
 
@@ -64,40 +63,54 @@ $redirectto = new moodle_url('/course/view.php?id='.$courseid);
 
 if ($mform->is_cancelled()) {
     redirect($redirectto);
-} 
-else if ($fromform = $mform->get_data()) {
-    // save
+} else if ($fromform = $mform->get_data()) {
+    // Save.
     if (isset($fromform->headerimagedesktop)) {
-        file_save_draft_area_files($fromform->headerimagedesktop,
+        file_save_draft_area_files(
+            $fromform->headerimagedesktop,
             $coursecontext->id,
             'format_mooin4',
             'headerimagedesktop',
             $courseid,
-            array('maxfiles' => 1));
-    }
-    else {
+            ['maxfiles' => 1]
+        );
+    } else {
         throw new coding_exception(get_string('file_save_error', 'format_mooin4'));
     }
     if (isset($fromform->headerimagemobile)) {
-        file_save_draft_area_files($fromform->headerimagemobile,
+        file_save_draft_area_files(
+            $fromform->headerimagemobile,
             $coursecontext->id,
             'format_mooin4',
             'headerimagemobile',
             $courseid,
-            array('maxfiles' => 1));
-    }
-    else {
+            ['maxfiles' => 1]
+        );
+    } else {
         throw new coding_exception(get_string('file_save_error', 'format_mooin4'));
     }
     redirect($redirectto);
-}
-else {
-    // prefill
+} else {
+    // Prefill.
     $draftitemiddesktop = file_get_submitted_draft_itemid('headerimagedesktop');
-    file_prepare_draft_area($draftitemiddesktop, $coursecontext->id, 'format_mooin4', 'headerimagedesktop', $courseid, array('maxfiles' => 1));
+    file_prepare_draft_area(
+        $draftitemiddesktop,
+        $coursecontext->id,
+        'format_mooin4',
+        'headerimagedesktop',
+        $courseid,
+        ['maxfiles' => 1]
+    );
     $draftitemidmobile = file_get_submitted_draft_itemid('headerimagemobile');
-    file_prepare_draft_area($draftitemidmobile, $coursecontext->id, 'format_mooin4', 'headerimagemobile', $courseid, array('maxfiles' => 1));
-    
+    file_prepare_draft_area(
+        $draftitemidmobile,
+        $coursecontext->id,
+        'format_mooin4',
+        'headerimagemobile',
+        $courseid,
+        ['maxfiles' => 1]
+    );
+
     $toform = new stdClass();
     $toform->headerimagedesktop = $draftitemiddesktop;
     $toform->headerimagemobile = $draftitemidmobile;
@@ -107,7 +120,6 @@ else {
 
 echo $OUTPUT->header();
 
-    //$mform->set_data($toform);
-    $mform->display();
+$mform->display();
 
 echo $OUTPUT->footer();

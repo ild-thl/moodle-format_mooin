@@ -67,10 +67,8 @@ class controlmenu extends controlmenu_base {
             $url = course_get_url($course);
         }
         $url->param('sesskey', sesskey());
-        
 
         $controls = [];
-
 
         $parentcontrols = parent::section_control_items();
 
@@ -78,15 +76,14 @@ class controlmenu extends controlmenu_base {
         unset($parentcontrols['delete']);
 
         if ($section->section && $section->section > 1 && has_capability('moodle/course:setcurrentsection', $coursecontext)) {
-            //Add the chapter set/unset controlls
-            if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
-                //$url = new moodle_url('/course/view.php');
+            // Add the chapter set/unset controls.
+            if ($chapter = $DB->get_record('format_mooin4_chapter', ['sectionid' => $section->id])) {
                 $url->param('unsetchapter', $section->section);
-                $controls['chapter'] = array(
+                $controls['chapter'] = [
                     'url' => $url,
                     'icon' => 'i/settings',
                     'name' => get_string('unsetchapter', 'format_mooin4'),
-                    'pixattr' => array('class' => ''),
+                    'pixattr' => ['class' => ''],
                     'attr' => [
                         'class' => 'icon editing_showhide',
                         'data-sectionreturn' => $sectionreturn,
@@ -95,15 +92,14 @@ class controlmenu extends controlmenu_base {
                         'data-swapname' => get_string('setchapter', 'format_mooin4'),
                         'data-swapicon' => 'i/settings',
                     ],
-                );
+                ];
             } else {
-                //$url = new moodle_url('/course/view.php');
                 $url->param('setchapter', $section->section);
-                $controls['chapter'] = array(
+                $controls['chapter'] = [
                     'url' => $url,
                     'icon' => 'i/settings',
                     'name' => get_string('setchapter', 'format_mooin4'),
-                    'pixattr' => array('class' => ''),
+                    'pixattr' => ['class' => ''],
                     'attr' => [
                         'class' => 'icon editing_showhide',
                         'data-sectionreturn' => $sectionreturn,
@@ -112,23 +108,23 @@ class controlmenu extends controlmenu_base {
                         'data-swapname' => get_string('unsetchapter', 'format_mooin4'),
                         'data-swapicon' => 'i/settings',
                     ],
-                );
+                ];
             }
         }
         if ($section->section) {
-            $chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id));
+            $chapter = $DB->get_record('format_mooin4_chapter', ['sectionid' => $section->id]);
             if (course_can_delete_section($course, $section) && !$chapter) {
                 if (get_string_manager()->string_exists('deletesection', 'format_' . $course->format)) {
                     $strdelete = get_string('deletesection', 'format_' . $course->format);
                 } else {
                     $strdelete = get_string('deletesection');
                 }
-                $url = new moodle_url('/course/editsection.php', array(
+                $url = new moodle_url('/course/editsection.php', [
                     'id' => $section->id,
                     'sr' => $sectionreturn,
                     'delete' => 1,
-                    'sesskey' => sesskey()
-                ));
+                    'sesskey' => sesskey(),
+                ]);
                 $controls['delete'] = [
                     'url' => $url,
                     'icon' => 'i/delete',

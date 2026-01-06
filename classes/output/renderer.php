@@ -14,7 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Renderer for format_mooin4.
+ *
+ * @package   format_mooin4
+ * @copyright 2012 Dan Poltawski
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace format_mooin4\output;
+
+
 
 use core_courseformat\output\section_renderer;
 use moodle_page;
@@ -26,6 +36,7 @@ use format_mooin4\local\utils as utils;
 /**
  * Basic renderer for topics format.
  *
+ * @package   format_mooin4
  * @copyright 2012 Dan Poltawski
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -86,19 +97,22 @@ class renderer extends section_renderer {
             include_course_editor($format);
             $course = $format->get_course();
 
-            $overview = new moodle_url('/course/view.php', array('id' => $course->id));
-            $badgesUrl = new moodle_url('/course/format/mooin4/badges.php', array('id' => $course->id));
-            $certificatesUrl = new moodle_url('/course/format/mooin4/certificates.php', array('id' => $course->id));
-            $discussionsUrl = new moodle_url('/course/format/mooin4/all_discussionforums.php', array('id' => $course->id));
-            $participantsUrl = new moodle_url('/course/format/mooin4/participants.php', array('id' => $course->id));
-            $coursecompetenciesUrl = new moodle_url('/admin/tool/lp/coursecompetencies.php', array('courseid' => $course->id, 'mod' => 0));
+            $overview = new moodle_url('/course/view.php', ['id' => $course->id]);
+            $badgesurl = new moodle_url('/course/format/mooin4/badges.php', ['id' => $course->id]);
+            $certificatesurl = new moodle_url('/course/format/mooin4/certificates.php', ['id' => $course->id]);
+            $discussionsurl = new moodle_url('/course/format/mooin4/all_discussionforums.php', ['id' => $course->id]);
+            $participantsurl = new moodle_url('/course/format/mooin4/participants.php', ['id' => $course->id]);
+            $coursecompetenciesurl = new moodle_url('/admin/tool/lp/coursecompetencies.php', [
+                'courseid' => $course->id,
+                'mod' => 0,
+            ]);
 
-            $newsforumUrl = null;
+            $newsforumurl = null;
 
-            if ($forum = $DB->get_record('forum', array('course' => $course->id, 'type' => 'news'))) {
-                if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
-                    if ($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance' => $forum->id))) {
-                        $newsforumUrl = new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
+            if ($forum = $DB->get_record('forum', ['course' => $course->id, 'type' => 'news'])) {
+                if ($module = $DB->get_record('modules', ['name' => 'forum'])) {
+                    if ($cm = $DB->get_record('course_modules', ['module' => $module->id, 'instance' => $forum->id])) {
+                        $newsforumurl = new moodle_url('/mod/forum/view.php', ['id' => $cm->id]);
                     }
                 }
             }
@@ -109,9 +123,7 @@ class renderer extends section_renderer {
                 'unenrolurl' => utils::get_unenrol_url($course->id),
             ];
 
-
-
-            //check course settings 
+            // Check course settings.
             require_once(__DIR__ . '/../../../../lib.php');
             $courseid = $course->id;
             if (
@@ -120,8 +132,8 @@ class renderer extends section_renderer {
                 && get_config('format_mooin4', "toggle_global_badge_visibility")
             ) {
                 $data['badges'] = [
-                    'url' => $badgesUrl,
-                    'active' => $this->check_if_active($badgesUrl),
+                    'url' => $badgesurl,
+                    'active' => $this->check_if_active($badgesurl),
                 ];
             }
 
@@ -131,8 +143,8 @@ class renderer extends section_renderer {
                 && get_config('format_mooin4', "toggle_global_certificate_visibility")
             ) {
                 $data['certificates'] = [
-                    'url' => $certificatesUrl,
-                    'active' => $this->check_if_active($certificatesUrl),
+                    'url' => $certificatesurl,
+                    'active' => $this->check_if_active($certificatesurl),
                 ];
             }
 
@@ -142,56 +154,33 @@ class renderer extends section_renderer {
                 && get_config('format_mooin4', "toggle_global_discussion_visibility")
             ) {
                 $data['discussions'] = [
-                    'url' => $discussionsUrl,
-                    'active' => $this->check_if_active($discussionsUrl),
+                    'url' => $discussionsurl,
+                    'active' => $this->check_if_active($discussionsurl),
                 ];
             }
 
-            //check global settings
-
-            /*
-            // Define the settings and corresponding URLs.
-            $features = [
-                'badges' => $badgesUrl,
-                'certificates' => $certificatesUrl,
-                'discussions' => $discussionsUrl,
-                'coursecompetencies' => $coursecompetenciesUrl,
-            ];
-            // Loop through each feature, adding it if the setting is enabled.
-            foreach ($features as $key => $url) {
-                if (get_config('format_mooin4', $key) && isset($url)) {
-                    $data[$key] = [
-                        'url' => $url,
-                        'active' => $this->check_if_active($url)
-                    ];
-                } else {
-                    unset($data[$key]);
-                }
-            }
-            
-            */
             $context = context_course::instance($course->id);
-            $has_capability = has_capability('moodle/course:viewparticipants', $context);
+            $hascapability = has_capability('moodle/course:viewparticipants', $context);
             if (
-                $has_capability
+                $hascapability
                 && get_config('format_mooin4', 'participants')
                 && get_toggle_userlist_visibility($courseid)
                 && get_config('format_mooin4', 'toggle_global_userlist_visibility')
             ) {
                 $data['participants'] = [
-                    'url' => $participantsUrl,
-                    'active' => $this->check_if_active($participantsUrl)
+                    'url' => $participantsurl,
+                    'active' => $this->check_if_active($participantsurl),
                 ];
             }
 
             if (
-                !is_null($newsforumUrl)
+                !is_null($newsforumurl)
                 && get_config('format_mooin4', 'news')
                 && get_toggle_newssection_visibility($courseid) === 1
             ) {
                 $data['newsforum'] = [
-                    'url' => $newsforumUrl,
-                    'active' => $this->check_if_active($newsforumUrl),
+                    'url' => $newsforumurl,
+                    'active' => $this->check_if_active($newsforumurl),
                 ];
             }
             return $this->render_from_template('format_mooin4/local/courseindex/drawer', $data);
@@ -199,24 +188,31 @@ class renderer extends section_renderer {
         return '';
     }
 
-    function check_if_active($url) {
-        global $PAGE;
+    /**
+     * Checks if the current page URL matches the given URL.
+     *
+     * @param moodle_url|null $url The URL to check against.
+     * @return bool True if active, false otherwise.
+     */
+    public function check_if_active(?moodle_url $url): bool {
         if ($url !== null) {
-            if ($PAGE->url->compare($url, URL_MATCH_EXACT)) {
-                //if ($PAGE->url instanceof moodle_url && $url instanceof moodle_url) {
+            if ($this->page->url->compare($url, URL_MATCH_EXACT)) {
                 return true;
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
-    function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = array()) {
-        $singlesection = course_get_format($course)->get_sectionnum();
-        // Mod tinjohn - not sure why it is permitted for a a course overview. 
-        //if ($singlesection) {
+    /**
+     * Generate the add control for a section.
+     *
+     * @param stdClass $course The course entry from DB
+     * @param section_info|stdClass $section The course_section entry from DB
+     * @param int|null $sectionreturn The section to return to regarding the section edit control
+     * @param array $displayoptions Optional display options
+     * @return string HTML to output.
+     */
+    public function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = []) {
         if (
             !has_capability('moodle/course:manageactivities', context_course::instance($course->id))
             || !$this->page->user_is_editing()
@@ -226,7 +222,7 @@ class renderer extends section_renderer {
 
         $data = [
             'sectionid' => $section,
-            'sectionreturn' => $sectionreturn
+            'sectionreturn' => $sectionreturn,
         ];
         $ajaxcontrol = $this->render_from_template('course/activitychooserbutton', $data);
 
@@ -234,6 +230,5 @@ class renderer extends section_renderer {
         $this->course_activitychooser($course->id);
 
         return $ajaxcontrol;
-        //}
     }
 }
