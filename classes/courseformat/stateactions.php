@@ -206,8 +206,8 @@ class stateactions extends Base {
      * @param stateupdates $updates the affected course elements track
      * @param stdClass $course the course object
      * @param int[] $ids section ids
-     * @param int $targetsectionid not used
-     * @param int $targetcmid not used
+     * @param int|null $targetsectionid not used
+     * @param int|null $targetcmid not used
      */
     public function section_show(
         stateupdates $updates,
@@ -252,8 +252,8 @@ class stateactions extends Base {
      * @param stateupdates $updates the affected course elements track
      * @param stdClass $course the course object
      * @param int[] $ids the list of affected course module ids
-     * @param int $targetsectionid optional target section id
-     * @param int $targetcmid optional target cm id
+     * @param int|null $targetsectionid optional target section id
+     * @param int|null $targetcmid optional target cm id
      */
     public function section_move(
         stateupdates $updates,

@@ -296,7 +296,8 @@ class utils {
 
     /**
      * Get the user in the course
-     * @param int courseid
+     *
+     * @param int $courseid
      * @return array out
      */
     public static function get_user_in_course($courseid) {
@@ -374,7 +375,7 @@ class utils {
     /**
      * Get the last News in the course
      * @param int $courseid
-     * @param string $forum_type
+     * @param string $forumtype
      * @return array
      */
     public static function get_last_news($courseid, $forumtype) {
@@ -507,7 +508,7 @@ class utils {
     /**
      * Get the last forum discussion in the course
      * @param int $courseid
-     * @param string @forum_type
+     * @param string $forumtype
      * @return array
      */
     public static function get_last_forum_discussion($courseid, $forumtype) {
@@ -576,7 +577,7 @@ class utils {
 
     /**
      * Get the right user picture for creating forum
-     * @param int courseid
+     * @param int $courseid
      * @return object of user
      */
     public static function user_print_forum($courseid) {
@@ -1378,8 +1379,8 @@ class utils {
     /**
      * Returns url for headerimage
      *
-     * @param int courseid
-     * @param bool true if mobile header image is required or false for desktop image
+     * @param int $courseid
+     * @param bool $mobile true if mobile header image is required or false for desktop image
      * @return string|bool String with url or false if no image exists
      */
     public static function get_headerimage_url($courseid, $mobile = true) {
@@ -1902,8 +1903,8 @@ class utils {
 
     /**
      * show the  certificat on the welcome page
-     * @param int courseid
-     * @return array
+     * @param int $courseid
+     * @return array|string|null
      */
     public static function show_certificat($courseid) {
         global $USER;
@@ -2021,6 +2022,8 @@ class utils {
 
     /**
      * Gets the content of a url request
+     * @param string $domain
+     * @param string $path
      * @uses $CFG
      * @return String body of the returned request
      */
@@ -2061,6 +2064,7 @@ class utils {
 
     /**
      * removes the headers from a url response
+     * @param string $response
      * @return String body of the returned request
      */
     public static function extract_body($response) {

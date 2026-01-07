@@ -56,10 +56,10 @@ class format_mooin4_external extends external_api {
 
     /**
      * Returns status
-     * @param int $section_id
-     * @param bool $isActivity
-     * @param bool $course_already_completed
-     * @param bool $chapter_already_completed
+     * @param int $sectionid
+     * @param bool $isactivity
+     * @param bool $coursealreadycompleted
+     * @param bool $chapteralreadycompleted
      * @return array user data
      */
     public static function check_completion_status($sectionid, $isactivity, $coursealreadycompleted, $chapteralreadycompleted) {

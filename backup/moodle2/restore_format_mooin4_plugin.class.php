@@ -104,6 +104,7 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
     /**
      * Dummy process method.
      *
+     * @param array $data
      * @return void
      */
     public function process_dummy_course($data) {
