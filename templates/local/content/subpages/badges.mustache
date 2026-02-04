@@ -15,7 +15,12 @@
         {{/badges}}
         {{^badges}}
             <div class="no-badges-container">
-                <div class="no-badges-img"></div>
+                {{#placeholder_badges_url}}
+                    <img src="{{{placeholder_badges_url}}}" alt="{{#str}} no_badges_image_text, format_mooin4{{/str}}" class="placeholder-img" style="max-width: 200px; height: auto; display: block; margin: 0 auto;">
+                {{/placeholder_badges_url}}
+                {{^placeholder_badges_url}}
+                    <div class="no-badges-img"></div>
+                {{/placeholder_badges_url}}
                 <span class="blue-info-text">{{#str}} no_badges_image_text, format_mooin4{{/str}}</span>
             </div>
         {{/badges}}

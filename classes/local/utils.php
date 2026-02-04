@@ -385,6 +385,58 @@ class utils {
     }
 
     /**
+     * Get the URL for a placeholder image.
+     *
+     * @param string $type The type of placeholder (badges, certificates, participants)
+     * @return string|null The URL of the placeholder image or null if not set
+     */
+    public static function get_placeholder_url($type) {
+        $config = get_config('format_mooin4', 'placeholder_' . $type);
+
+        // DEBUG: Log the config value
+        error_log("DEBUG get_placeholder_url($type): config = " . var_export($config, true));
+
+        if (empty($config)) {
+            error_log("DEBUG get_placeholder_url($type): config is empty, returning null");
+            return null;
+        }
+
+        $fs = get_file_storage();
+        $context = context_system::instance();
+        $files = $fs->get_area_files(
+            $context->id,
+            'format_mooin4',
+            'placeholder_' . $type,
+            0,
+            'itemid, filepath, filename',
+            false
+        );
+
+        error_log("DEBUG get_placeholder_url($type): found " . count($files) . " files");
+
+        if (empty($files)) {
+            error_log("DEBUG get_placeholder_url($type): no files found, returning null");
+            return null;
+        }
+
+        $file = reset($files);
+        $url = moodle_url::make_pluginfile_url(
+            $file->get_contextid(),
+            $file->get_component(),
+            $file->get_filearea(),
+            $file->get_itemid(),
+            $file->get_filepath(),
+            $file->get_filename()
+        )->out();
+        
+        error_log("DEBUG get_placeholder_url($type): returning URL = $url");
+        return $url;
+    }
+
+
+
+
+    /**
      * Get the user in the course
      *
      * @param int $courseid

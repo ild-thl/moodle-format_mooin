@@ -114,64 +114,77 @@
         {{#participants}}
             {{#userlist_visibility}}
                 <div class="participants-container d-flex flex-column">
-                    {{#has_capability_viewuser}}
-                        {{#userCardList}}
+                    {{#userCardList}}
+                        {{#is_admin}}
+                            {{! Admin view: Show detailed participant list }}
                             <span>
                                 <i class="bi bi-people-fill"></i>
                                 <a href="{{{participantsUrl}}}" class="caption">{{#str}} user_card_title, format_mooin4 {{/str}}</a>  
                             </span>
-                                <div class="d-flex flex-column ml-4">
-                                    <span>
-                                        <span class="font-weight-bold">
-                                            {{{user_count}}} 
-                                            {{^singleuser}}
-                                                {{#str}} user, format_mooin4 {{/str}}
-                                            {{/singleuser}}
-                                            {{#singleuser}}
-                                                {{#str}} singleuser, format_mooin4 {{/str}}
-                                            {{/singleuser}}
-                                        </span>
-                                        {{^singleuser}}
-                                            {{#str}} in_course, format_mooin4 {{/str}}
-                                        {{/singleuser}}
-                                        {{#singleuser}}
-                                            {{#str}} in_course_sgl, format_mooin4 {{/str}}
-                                        {{/singleuser}}
-                                    </span>
-                                    <span class="font-weight-bold caption--sm"> {{#str}} new_user, format_mooin4 {{/str}} </span>
-                                    <span class="caption--sm">
-                                        {{{user_list}}}
-                                    </span>
-                                </div>
-                                <div class="participants-link mt-auto">
-                                    <a href="{{{participantsUrl}}}">{{#str}} show_all_infos, format_mooin4 {{/str}}</a>
-                                </div>
-                        {{/userCardList}}
-                    {{/has_capability_viewuser}}
-                    {{^has_capability_viewuser}}
-                        {{#userCardList}}
-                            <span>
-                                <i class="bi bi-people-fill"></i>
-                                <span class="caption">
-                                    {{#str}} user_card_title, format_mooin4 {{/str}} 
-                                </span>
-                            </span>
-                            <div class="no-participantscap-container">
-                                <div class="no-participantscap-img"></div>
-                                <span class="blue-info-text">
+                            <div class="d-flex flex-column ml-4">
+                                <span>
+                                    <span class="font-weight-bold">
                                         {{{user_count}}} 
                                         {{^singleuser}}
                                             {{#str}} user, format_mooin4 {{/str}}
-                                            {{#str}} in_course, format_mooin4 {{/str}}
                                         {{/singleuser}}
                                         {{#singleuser}}
                                             {{#str}} singleuser, format_mooin4 {{/str}}
-                                            {{#str}} in_course_sgl, format_mooin4 {{/str}}
                                         {{/singleuser}}
+                                    </span>
+                                    {{^singleuser}}
+                                        {{#str}} in_course, format_mooin4 {{/str}}
+                                    {{/singleuser}}
+                                    {{#singleuser}}
+                                        {{#str}} in_course_sgl, format_mooin4 {{/str}}
+                                    {{/singleuser}}
+                                </span>
+                                <span class="font-weight-bold caption--sm"> {{#str}} new_user, format_mooin4 {{/str}} </span>
+                                <span class="caption--sm">
+                                    {{{user_list}}}
                                 </span>
                             </div>
-                        {{/userCardList}}
-                    {{/has_capability_viewuser}}
+                            <div class="participants-link mt-auto">
+                                <a href="{{{participantsUrl}}}">{{#str}} show_all_infos, format_mooin4 {{/str}}</a>
+                            </div>
+                        {{/is_admin}}
+                        {{^is_admin}}
+                            {{! Non-admin view: Show only placeholder image }}
+                            <span>
+                                <i class="bi bi-people-fill"></i>
+                                {{#has_capability_viewuser}}
+                                    <a href="{{{participantsUrl}}}" class="caption">{{#str}} user_card_title, format_mooin4 {{/str}}</a>
+                                {{/has_capability_viewuser}}
+                                {{^has_capability_viewuser}}
+                                    <span class="caption">{{#str}} user_card_title, format_mooin4 {{/str}}</span>
+                                {{/has_capability_viewuser}}
+                            </span>
+                            <div class="no-participantscap-container">
+                                {{#placeholder_participants_url}}
+                                    <img src="{{{placeholder_participants_url}}}" alt="{{#str}} user_card_title, format_mooin4 {{/str}}" style="max-width: 200px; max-height: 200px; width: 100%; height: auto; object-fit: contain;" />
+                                {{/placeholder_participants_url}}
+                                {{^placeholder_participants_url}}
+                                    <div class="no-participantscap-img"></div>
+                                {{/placeholder_participants_url}}
+                                <span class="blue-info-text">
+                                    {{{user_count}}} 
+                                    {{^singleuser}}
+                                        {{#str}} user, format_mooin4 {{/str}}
+                                        {{#str}} in_course, format_mooin4 {{/str}}
+                                    {{/singleuser}}
+                                    {{#singleuser}}
+                                        {{#str}} singleuser, format_mooin4 {{/str}}
+                                        {{#str}} in_course_sgl, format_mooin4 {{/str}}
+                                    {{/singleuser}}
+                                </span>
+                            </div>
+                            {{#has_capability_viewuser}}
+                                <div class="participants-link mt-auto">
+                                    <a href="{{{participantsUrl}}}">{{#str}} show_all_infos, format_mooin4 {{/str}}</a>
+                                </div>
+                            {{/has_capability_viewuser}}
+                        {{/is_admin}}
+                    {{/userCardList}}
                 </div>
             {{/userlist_visibility}}
         {{/participants}}

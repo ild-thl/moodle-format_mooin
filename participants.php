@@ -75,6 +75,10 @@ unset($contextid);
 
 require_login($course);
 
+// Check if user has editing capabilities (admin/teacher).
+// This will work with role switching, unlike is_siteadmin().
+$isadmin = has_capability('moodle/course:manageactivities', $context);
+
 $systemcontext = context_system::instance();
 $isfrontpage = ($course->id == SITEID);
 
@@ -575,6 +579,49 @@ foreach ($userlist as $lu) {
     }
 }
 
+if (!$isadmin) {
+    // Non-admin view: Show only placeholder image and participant count.
+    echo '<div class="non-admin-participants-view" style="text-align: center; padding: 40px 20px;">';
+    
+    // Get placeholder image URL.
+    $syscontext = context_system::instance();
+    $fs = get_file_storage();
+    $files = $fs->get_area_files($syscontext->id, 'format_mooin4', 'placeholder_participants', 0, 'filename', false);
+    
+    if (!empty($files)) {
+        $file = reset($files);
+        $placeholderurl = moodle_url::make_pluginfile_url(
+            $syscontext->id,
+            'format_mooin4',
+            'placeholder_participants',
+            0,
+            '/',
+            $file->get_filename()
+        )->out();
+        echo '<img src="' . $placeholderurl . '" alt="' . get_string('participants', 'format_mooin4') . '" 
+              style="max-width: 400px; max-height: 400px; width: 100%; height: auto; object-fit: contain; margin: 20px auto; display: block;" />';
+    } else {
+        echo '<div class="no-participantscap-img" style="width: 400px; height: 400px; margin: 20px auto; background-color: #f0f0f0; border-radius: 8px;"></div>';
+    }
+    
+    echo '<h2 style="font-size: 24px; margin: 20px 0;">';
+    echo $totalcount . ' ' . get_string('participants', 'format_mooin4');
+    echo '</h2>';
+    echo '</div>';
+    
+    echo '</div>';  // Userlist.
+    echo '</div>';  // mooin4-subpage-bg.
+    
+    echo $OUTPUT->footer();
+    
+    if ($userlist) {
+        $userlist->close();
+    }
+    
+    exit; // Stop execution for non-admins.
+}
+
+// Admin view: Show full participant list with map and table.
 $maptitle = get_string('map_title', 'format_mooin4');
 $mapdescr = get_string('map_descr', 'format_mooin4');
 $templatecontext = (object)[

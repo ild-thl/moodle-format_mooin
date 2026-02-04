@@ -201,3 +201,13 @@ $string['users'] = 'Teilnehmende';
 $string['welcome'] = 'Herzlich willkommen im Kurs';
 $string['youareeditingsection'] = 'Achtung: Sie bearbeiten einen versteckten Abschnitt!';
 $string['youareeditingsectioninfo'] = 'In diesem Kursformat werden die Inhalte aus diesem Abschnitt versteckt verarbeitet. Sie können wie gewohnt für versteckte Inhalte in Moodle genutzt werden. Es werden jedoch keine Inhalte in diesem Abschnitt selbst angezeigt.';
+
+// Placeholder images settings.
+$string['placeholder_images_heading'] = 'Platzhaltergrafiken';
+$string['placeholder_images_description'] = 'Konfiguriere Platzhaltergrafiken, die angezeigt werden, wenn keine Inhalte verfügbar sind (z.B. keine Badges, Zertifikate oder Teilnehmende).';
+$string['placeholder_badges'] = 'Badges Platzhaltergrafik';
+$string['placeholder_badges_help'] = 'Lade eine benutzerdefinierte Platzhaltergrafik für Badges hoch. Empfohlene Größe: 200x200px. Wenn kein Bild hochgeladen wird, wird der Standard-CSS-Platzhalter verwendet.';
+$string['placeholder_certificates'] = 'Zertifikate Platzhaltergrafik';
+$string['placeholder_certificates_help'] = 'Lade eine benutzerdefinierte Platzhaltergrafik für Zertifikate hoch. Empfohlene Größe: 200x200px. Wenn kein Bild hochgeladen wird, wird der Standard-CSS-Platzhalter verwendet.';
+$string['placeholder_participants'] = 'Teilnehmer Platzhaltergrafik';
+$string['placeholder_participants_help'] = 'Lade eine benutzerdefinierte Platzhaltergrafik für Teilnehmer hoch. Empfohlene Größe: 200x200px. Wenn kein Bild hochgeladen wird, wird der Standard-CSS-Platzhalter verwendet.';
