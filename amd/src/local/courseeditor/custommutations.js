@@ -89,7 +89,7 @@ export default class {
 
 
         const args = {
-            action: 'section_setChapter',
+            action: 'section_set_chapter',
             courseid: course.id,
             ids: ids,
             targetsectionid: target.dataset.id,
@@ -138,7 +138,7 @@ export default class {
         // });
 
         const args = {
-            action: 'section_unsetChapter',
+            action: 'section_unset_chapter',
             courseid: course.id,
             ids: ids,
             targetsectionid: target.dataset.id,
@@ -231,7 +231,7 @@ export default class {
         const state = stateManager.state;
         const course = state.course;
         const args = {
-            action: 'getContinuesection',
+            action: 'get_continue_section',
             courseid: course.id,
         };
         let updates = await ajax.call([{
@@ -247,7 +247,7 @@ export default class {
         let ids = [];
         ids.push(forumid);
         const args = {
-            action: 'readAllForumDiscussions',
+            action: 'read_all_forum_discussions',
             courseid: course.id,
             ids: ids,
         };

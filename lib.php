@@ -25,7 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/course/format/lib.php');
-//require_once($CFG->dirroot . '/lib/externallib.php');
 
 use core\output\inplace_editable;
 use core\plugininfo\format;
@@ -51,6 +50,11 @@ class format_mooin4 extends core_courseformat\base {
         return true;
     }
 
+    /**
+     * Returns true if this course format uses course index.
+     *
+     * @return bool
+     */
     public function uses_course_index() {
         $course = $this->get_course();
         $courseid = $course->id;
@@ -61,6 +65,11 @@ class format_mooin4 extends core_courseformat\base {
         }
     }
 
+    /**
+     * Returns whether this course format uses indentation.
+     *
+     * @return bool
+     */
     public function uses_indentation(): bool {
         return false;
     }
@@ -169,7 +178,7 @@ class format_mooin4 extends core_courseformat\base {
                 $url->param('section', $sectionno);
             } else {
                 if (empty($CFG->linkcoursesections) && !empty($options['navigation'])) {
-                    // Added tinjohn - return null throws error call on method call out() on null 
+                    // Added tinjohn - return null throws error call on method call out() on null.
                     // In moodle/course/format/classes/output/local/state/section.php.
                     // Do not return null;.
                     // Display section on separate page.
@@ -224,11 +233,23 @@ class format_mooin4 extends core_courseformat\base {
         return $ajaxsupport;
     }
 
+    /**
+     * Returns true if this course format supports components.
+     *
+     * @return bool
+     */
     public function supports_components() {
         return true;
     }
 
 
+    /**
+     * Loads all of the course sections into the navigation.
+     *
+     * @param global_navigation $navigation The navigation object
+     * @param navigation_node $node The course node within the navigation
+     * @return void
+     */
     public function extend_course_navigation($navigation, navigation_node $node) {
         global $PAGE, $DB, $CFG, $USER;
         // If section is specified in course/view.php, make sure it is expanded in navigation.
@@ -247,63 +268,18 @@ class format_mooin4 extends core_courseformat\base {
 
         $courseid = $this->get_course()->id;
 
-        // if ($badgesnode = $node->get('badgesview', navigation_node::TYPE_SETTING)) {
-        //     $badgesnode->remove();
-        // }
-
-        // if($competenciesnode = $node->get('competencies', navigation_node::TYPE_SETTING)) {
-        //     $competenciesnode->remove();
-        // }
-
-        // if($gradesnode = $node->get('grades', navigation_node::TYPE_SETTING)) {
-        //     $gradesnode->remove();
-        // }
-
-
-
-        // if ($forum = $DB->get_record('forum', array('course' => $courseid, 'type' => 'news'))) {
-        //     if ($module = $DB->get_record('modules', array('name' => 'forum'))) {
-        //         if($cm = $DB->get_record('course_modules', array('module' => $module->id, 'instance'=>$forum->id))){
-        //             $node->add(
-        //                 get_string('news', 'format_mooin4'),
-        //                 new moodle_url('/mod/forum/view.php', array('id' => $cm->id)),
-        //                 navigation_node::TYPE_CUSTOM,
-        //                 null,
-        //                 'format_mooin4_newsforum',
-        //                 new pix_icon('i/news', '')
-        //             );
-
-        //         }
-        //     }
-
-        // }
-
-        // $overview = $node->add(
-        //     $this->get_course()->shortname,
-        //     //get_string('course_overview', 'format_mooin4'),
-        //     null,
-        //     //new moodle_url('/course/view.php', array('id' => $courseid)),
-        //     navigation_node::TYPE_CUSTOM,
-        //     null,
-        //     'format_mooin4_course_overview',
-        //     new pix_icon('i/location', '')
-        // );
-        // $overview->showinflatnavigation=true;
-        // //$overview->add_class('overview_node');
-
         $node->add(
             get_string('badges', 'format_mooin4'),
-            new moodle_url('/course/format/mooin4/badges.php', array('id' => $courseid)),
+            new moodle_url('/course/format/mooin4/badges.php', ['id' => $courseid]),
             navigation_node::TYPE_CUSTOM,
             null,
             'format_mooin4_badges',
             new pix_icon('i/badge', '')
         );
 
-
         $node->add(
             get_string('certificates', 'format_mooin4'),
-            new moodle_url('/course/format/mooin4/certificates.php', array('id' => $courseid)),
+            new moodle_url('/course/format/mooin4/certificates.php', ['id' => $courseid]),
             navigation_node::TYPE_CUSTOM,
             null,
             'format_mooin4_certificates',
@@ -312,7 +288,7 @@ class format_mooin4 extends core_courseformat\base {
 
         $node->add(
             get_string('forums', 'format_mooin4'),
-            new moodle_url('/course/format/mooin4/all_discussionforums.php', array('id' => $courseid)),
+            new moodle_url('/course/format/mooin4/all_discussionforums.php', ['id' => $courseid]),
             navigation_node::TYPE_CUSTOM,
             null,
             'format_mooin4_discussions',
@@ -321,22 +297,12 @@ class format_mooin4 extends core_courseformat\base {
 
         $node->add(
             get_string('participants', 'format_mooin4'),
-            new moodle_url('/course/format/mooin4/participants.php', array('id' => $courseid)),
+            new moodle_url('/course/format/mooin4/participants.php', ['id' => $courseid]),
             navigation_node::TYPE_CUSTOM,
             null,
             'format_mooin4_participants',
             new pix_icon('t/messages', '')
         );
-
-        // $participantsnode = $node->get('participants', navigation_node::TYPE_CONTAINER);
-        // if ($participantsnode) {
-        //     $participantsnode->remove();
-        //     $participantsnode->action = $url = new moodle_url('/course/format/mooin4/participants.php', array('id' => $courseid));
-        //     $participantsnode->text = get_string('participants', 'format_mooin4');
-        // $node->add_node($participantsnode);
-        // }
-
-
 
         // We want to remove the general section if it is empty.
         $modinfo = get_fast_modinfo($this->get_course());
@@ -351,7 +317,7 @@ class format_mooin4 extends core_courseformat\base {
             }
         }
 
-        if ($sections = $DB->get_records('course_sections', array('course' => $courseid), 'section')) {
+        if ($sections = $DB->get_records('course_sections', ['course' => $courseid], 'section')) {
             foreach ($sections as $section) {
                 if ($sectionnode = $node->get($section->id, navigation_node::TYPE_SECTION)) {
                     $sectionnode->remove();
@@ -365,16 +331,16 @@ class format_mooin4 extends core_courseformat\base {
                     $completed = '';
                     $lastvisitedsection = '';
 
-                    if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
-                        //show breadcrump chapter prefix according settings
-                        if (get_toggle_section_number_visibility($courseid)  === 1) {
+                    if ($chapter = $DB->get_record('format_mooin4_chapter', ['sectionid' => $section->id])) {
+                        // Show breadcrumb chapter prefix according to settings.
+                        if (get_toggle_section_number_visibility($courseid) === 1) {
                             $pre = get_string('chapter', 'format_mooin4') . ' ' . $chapter->chapter . ': ';
                         } else {
                             $pre = '';
                         }
                         $title = $pre . get_section_name($this->get_course(), $section);
                         if (count(utils::get_sectionids_for_chapter($chapter->id)) > 0) {
-                            $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section + 1));
+                            $url = new moodle_url('/course/view.php', ['id' => $courseid, 'section' => $section->section + 1]);
                         }
                         $icon = new pix_icon('i/folder', '');
 
@@ -383,7 +349,7 @@ class format_mooin4 extends core_courseformat\base {
                             $completed .= ' completed';
                         }
 
-                        $chapter_node = $node->add(
+                        $chapternode = $node->add(
                             $title,
                             null,
                             navigation_node::TYPE_SECTION,
@@ -392,23 +358,10 @@ class format_mooin4 extends core_courseformat\base {
                             $icon
                         );
 
-                        // $chapter_node->showinflatnavigation = true;
-                        // $chapter_node->isexpandable = true;
-                        // $chapter_node->collapse = true;
-                        // $chapter_node->mainnavonly = false;
-                        // $chapter_node->isactive = false;
-
-                        // if ($chapter->chapter == 1) {
-                        //     $chapter_node->preceedwithhr = false;
-                        // } else {
-                        //     $chapter_node->preceedwithhr = true;
-                        // }
-
-                        $chapter_node->add_class('chapter' . $completed . $lastvisitedsection);
-                        // $chapter_node->add_class('collapsed');
+                        $chapternode->add_class('chapter' . $completed . $lastvisitedsection);
                     } else {
-                        //show breadcrump lesson prefix according settings
-                        if (get_toggle_section_number_visibility($courseid)  === 1) {
+                        // Show breadcrumb lesson prefix according to settings.
+                        if (get_toggle_section_number_visibility($courseid) === 1) {
                             $pre = get_string('lesson', 'format_mooin4') . ' ' . utils::get_section_prefix($section) . ': ';
                         } else {
                             $pre = '';
@@ -418,25 +371,21 @@ class format_mooin4 extends core_courseformat\base {
                         } else {
                             $title = $pre . $title;
                         }
-                        $url = new moodle_url('/course/view.php', array('id' => $courseid, 'section' => $section->section));
+                        $url = new moodle_url('/course/view.php', ['id' => $courseid, 'section' => $section->section]);
                         $icon = new pix_icon('i/navigationitem', '');
 
-                        // mark as completed
-                        $progress_result = utils::get_section_progress($courseid, $section->id, $USER->id);
-                        if ($progress_result == 100) {
+                        // Mark as completed.
+                        $progressresult = utils::get_section_progress($courseid, $section->id, $USER->id);
+                        if ($progressresult == 100) {
                             $completed .= ' completed';
                         }
 
-                        // if (isset($icon)) {
-                        //     $sectionnodeNew->icon = $icon;
-                        // }
-                        // $sectionnode->$key = null;
                         if ($parentchapter = utils::get_parent_chapter($section)) {
-                            $chapter_node = $node->get($parentchapter->sectionid);
+                            $chapternode = $node->get($parentchapter->sectionid);
                         }
 
-                        if ($parentchapter && $chapter_node) {
-                            $section_node = $chapter_node->add(
+                        if ($parentchapter && $chapternode) {
+                            $sectionnode = $chapternode->add(
                                 $title,
                                 $url,
                                 navigation_node::TYPE_SECTION,
@@ -444,46 +393,30 @@ class format_mooin4 extends core_courseformat\base {
                                 $section->id,
                                 $icon
                             );
-                            // $section_node->showinflatnavigation = true;
-                            // $section_node->collapse = true;
-                            // $section_node->preceedwithhr = true;
 
-                            // highlight as last visited section only if we are not in a section
+                            // Highlight as last visited section only if we are not in a section.
                             $urlparams = $PAGE->url->params();
                             if (!isset($urlparams['section'])) {
-                                if (get_user_preferences('format_mooin4_last_section_in_course_' . $courseid, 0, $USER->id) == $section->section) {
-                                    $section_node->add_Class('lastvisitedsection');
-                                    //$section_node->make_active();
-                                    //$section_node->parent->isexpandable = true;
-                                    $section_node->parent->collapse = false;
-                                    $section_node->parent->remove_class('collapsed');
+                                $lastcoursepreference = 'format_mooin4_last_section_in_course_' . $courseid;
+                                if (get_user_preferences($lastcoursepreference, 0, $USER->id) == $section->section) {
+                                    $sectionnode->add_Class('lastvisitedsection');
+
+                                    $sectionnode->parent->collapse = false;
+                                    $sectionnode->parent->remove_class('collapsed');
                                 }
                             }
-                            $section_node->add_Class('lesson' . $completed . $lastvisitedsection);
+                            $sectionnode->add_Class('lesson' . $completed . $lastvisitedsection);
                         }
 
-
-                        //$sectionnodeNew -> showinflatnavigation = true;
-                        //$parent_node->add_node($sectionnodeNew);
                     }
-
-                    // $sectionnode->text = '<span class="media-body'.$completed.$lastvisitedsection.'">'.$title.'</span>';
-                    // $sectionnode->shorttext = $pre;
-                    // $sectionnode->action = $url;
-                    // if (isset($icon)) {
-                    //     $sectionnode->icon = $icon;
-                    // }
-                    // // $sectionnode->$key = null;
-                    // $node->add_node($sectionnode);
-                    //}
 
                 }
             }
         }
 
-        // unenrol from course
+        // Unenrol from course.
         if ($unenrolurl = utils::get_unenrol_url($courseid)) {
-            $unenrol_node = $node->add(
+            $unenrolnode = $node->add(
                 get_string('unenrol', 'format_mooin4'),
                 $unenrolurl,
                 navigation_node::TYPE_CUSTOM,
@@ -491,75 +424,10 @@ class format_mooin4 extends core_courseformat\base {
                 'format_mooin4_unenrol',
                 new pix_icon('i/user', '')
             );
-            $unenrol_node->add_class("unenrol-btn");
+            $unenrolnode->add_class("unenrol-btn");
         }
     }
 
-
-
-    /**
-     * Loads all of the course sections into the navigation.
-     *
-     * @param global_navigation $navigation
-     * @param navigation_node $node The course node within the navigation
-     * @return void
-     */
-    // public function extend_course_navigation($navigation, navigation_node $node) {
-    //     global $PAGE;
-    //     // If section is specified in course/view.php, make sure it is expanded in navigation.
-    //     if ($navigation->includesectionnum === false) {
-    //         $selectedsection = optional_param('section', null, PARAM_INT);
-    //         if ($selectedsection !== null && (!defined('AJAX_SCRIPT') || AJAX_SCRIPT == '0') &&
-    //                 $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)) {
-    //             $navigation->includesectionnum = $selectedsection;
-    //         }
-    //     }
-
-    //     // Check if there are callbacks to extend course navigation.
-    //     parent::extend_course_navigation($navigation, $node);
-
-    //     // We want to remove the general section if it is empty.
-    //     $modinfo = get_fast_modinfo($this->get_course());
-    //     $sections = $modinfo->get_sections();
-    //     if (!isset($sections[0])) {
-    //         // The general section is empty to find the navigation node for it we need to get its ID.
-    //         $section = $modinfo->get_section_info(0);
-    //         $generalsection = $node->get($section->id, navigation_node::TYPE_SECTION);
-    //         if ($generalsection) {
-    //             // We found the node - now remove it.
-    //             $generalsection->remove();
-    //         }
-    //     }
-    // }
-
-    // /**
-    //  * Custom action after section has been moved in AJAX mode.
-    //  *
-    //  * Used in course/rest.php
-    //  *
-    //  * @return array This will be passed in ajax respose
-    //  */
-    // public function ajax_section_move() {
-    //     global $DB, $PAGE;
-    //     $titles = [];
-    //     $course = $this->get_course();
-    //     $modinfo = get_fast_modinfo($course);
-    //     $renderer = $this->get_renderer($PAGE);
-    //     if ($renderer && ($sections = $modinfo->get_section_info_all())) {
-    //         foreach ($sections as $number => $section) {
-
-    //             if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
-    //                 \format_mooin4\local\chapterlib::sort_course_chapters($course->id);
-    //                 //$section->name = $chapter->title;
-    //                 $titles[$number] = get_string('chapter', 'format_mooin4').' '.$chapter->chapter.' '.$renderer->section_title_without_link($section, $course);
-    //             }
-    //             else {
-    //                 $titles[$number] = get_string('lesson', 'format_mooin4').' '.\format_mooin4\local\chapterlib::get_section_prefix($section).' '.$renderer->section_title($section, $course);
-    //             }
-    //         }
-    //     }
-    //     return ['sectiontitles' => $titles, 'action' => 'move'];
-    // }
 
     /**
      * Returns the list of blocks to be automatically added for the newly created course.
@@ -579,7 +447,7 @@ class format_mooin4 extends core_courseformat\base {
     /**
      * Adds format options elements to the course/section edit form.
      *
-     * This function is called from {@link course_edit_form::definition_after_data()}.
+     * This function is called from {@see course_edit_form::definition_after_data()}.
      *
      * @param MoodleQuickForm $mform form the elements are added to.
      * @param bool $forsection 'true' if this is a section edit form, 'false' if this is course edit form.
@@ -613,8 +481,8 @@ class format_mooin4 extends core_courseformat\base {
      * In case if course format was changed to 'topics', we try to copy options
      * 'coursedisplay' and 'hiddensections' from the previous format.
      *
-     * @param stdClass|array $data return value from {@link moodleform::get_data()} or array with data
-     * @param stdClass $oldcourse if this function is called from {@link update_course()}
+     * @param stdClass|array $data return value from {@see moodleform::get_data()} or array with data
+     * @param stdClass $oldcourse if this function is called from {@see update_course()}
      *     this object contains information about the course before update
      * @return bool whether there were any changes to the options values
      */
@@ -623,7 +491,7 @@ class format_mooin4 extends core_courseformat\base {
 
         // Function update_course_format_options for format_topics_test.php only.
         if (!$oldcourse) {
-            // Add first chapter, there must be no sections without parent chapter
+            // Add first chapter, there must be no sections without parent chapter.
             $chaptertitle = get_string('chapter', 'format_mooin4') . ' 1';
 
             $newsection = new stdClass();
@@ -642,14 +510,19 @@ class format_mooin4 extends core_courseformat\base {
                 $newchapter->chapter = 1;
                 $DB->insert_record('format_mooin4_chapter', $newchapter);
             }
-        } else { // add new chapter at position 1 if format is changed to mooin4
+        } else {
+            // Add new chapter at position 1 if format is changed to mooin4.
             // was format of oldcourse not mooin4?
             if ($oldcourse->format != 'mooin4') {
-                // is there no chapter at position 1?
-                if ($section1 = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => 1))) {
-                    if (!$DB->get_record('format_mooin4_chapter', array('courseid' => $this->courseid, 'sectionid' => $section1->id))) {
-                        // add new section
-                        $sectionnumber = $DB->count_records('course_sections', array('course' => $this->courseid));
+                // Is there no chapter at position 1?
+                if ($section1 = $DB->get_record('course_sections', ['course' => $this->courseid, 'section' => 1])) {
+                    $chapterexists = $DB->get_record(
+                        'format_mooin4_chapter',
+                        ['courseid' => $this->courseid, 'sectionid' => $section1->id]
+                    );
+                    if (!$chapterexists) {
+                        // Add new section.
+                        $sectionnumber = $DB->count_records('course_sections', ['course' => $this->courseid]);
                         if ($sectionnumber > 0) {
                             $chaptertitle = get_string('chapter', 'format_mooin4') . ' 1';
                             $newsection = new stdClass();
@@ -661,10 +534,10 @@ class format_mooin4 extends core_courseformat\base {
                             $newsection->timemodified = time();
 
                             if ($newsectionid = $DB->insert_record('course_sections', $newsection)) {
-                                // move new section to position 1
-                                if ($course = $DB->get_record('course', array('id' => $this->courseid))) {
+                                // Move new section to position 1.
+                                if ($course = $DB->get_record('course', ['id' => $this->courseid])) {
                                     move_section_to($course, $sectionnumber, 1, true);
-                                    // convert new section to chapter
+                                    // Convert new section to chapter.
                                     $newchapter = new stdClass();
                                     $newchapter->courseid = $this->courseid;
                                     $newchapter->title = $chaptertitle;
@@ -680,9 +553,7 @@ class format_mooin4 extends core_courseformat\base {
             }
         }
 
-        if ($course = $DB->get_record('course', array('id' => $this->courseid))) {
-            // $course->enablecompletion = 1;
-            // $course->showcompletionconditions = 0;
+        if ($course = $DB->get_record('course', ['id' => $this->courseid])) {
             $course->newsitems = 1;
             $DB->update_record('course', $course);
         }
@@ -693,7 +564,7 @@ class format_mooin4 extends core_courseformat\base {
     /**
      * Whether this format allows to delete sections.
      *
-     * Do not call this function directly, instead use {@link course_can_delete_section()}
+     * Do not call this function directly, instead use {@see course_can_delete_section()}
      *
      * @param int|stdClass|section_info $section
      * @return bool
@@ -752,45 +623,13 @@ class format_mooin4 extends core_courseformat\base {
     }
 
     /**
-     * Callback used in WS core_course_edit_section when teacher performs an AJAX action on a section (show/hide).
-     *
-     * Access to the course is already validated in the WS but the callback has to make sure
-     * that particular action is allowed by checking capabilities
-     *
-     * Course formats should register.
+     * Callback used when teacher performs an AJAX action on a section.
      *
      * @param section_info|stdClass $section
      * @param string $action
      * @param int $sr
-     * @return null|array any data for the Javascript post-processor (must be json-encodeable)
+     * @return array Data for the Javascript post-processor
      */
-    // public function section_action($section, $action, $sr) {
-    //     global $PAGE;
-
-    //     if ($section->section && ($action === 'setmarker' || $action === 'removemarker')) {
-    //         // Format 'topics' allows to set and remove markers in addition to common section actions.
-    //         require_capability('moodle/course:setcurrentsection', context_course::instance($this->courseid));
-    //         course_set_marker($this->courseid, ($action === 'setmarker') ? $section->section : 0);
-    //         return null;
-    //     }
-
-    //     \format_mooin4\local\chapterlib::sort_course_chapters($section->course);
-
-    //     // For show/hide actions call the parent method and return the new content for .section_availability element.
-    //     $rv = parent::section_action($section, $action, $sr);
-    //     $renderer = $PAGE->get_renderer('format_mooin4');
-
-    //     if (!($section instanceof section_info)) {
-    //         $modinfo = course_modinfo::instance($this->courseid);
-    //         $section = $modinfo->get_section_info($section->section);
-    //     }
-    //     $elementclass = $this->get_output_classname('content\\section\\availability');
-    //     $availability = new $elementclass($this, $section);
-
-    //     $rv['section_availability'] = $renderer->render($availability);
-    //     return $rv;
-    // }
-
     public function section_action($section, $action, $sr) {
         global $PAGE;
         if (!$this->uses_sections() || !$section->section) {
@@ -819,17 +658,10 @@ class format_mooin4 extends core_courseformat\base {
             case 'show':
                 require_capability('moodle/course:sectionvisibility', $coursecontext);
                 $visible = ($action === 'hide') ? 0 : 1;
-                course_update_section($course, $section, array('visible' => $visible));
+                course_update_section($course, $section, ['visible' => $visible]);
                 break;
             case 'sectionSetChapter':
-                //TODO: Add capability
-                //format_mooin4\local\chapterlib::set_chapter($section->id);
-                //course_update_section($course, $section, array('chapterstatus' => true));
-                break;
             case 'sectionUnsetChapter':
-                //TODO: Add capability
-                //format_mooin4\local\chapterlib::unset_chapter($section->id);
-                //course_update_section($course, $section, array('chapterstatus' => false));
                 break;
             case 'refresh':
                 return [
@@ -875,9 +707,9 @@ class format_mooin4 extends core_courseformat\base {
 
             $newtitle = clean_param($newvalue, PARAM_TEXT);
             if (strval($section->name) !== strval($newtitle)) {
-                course_update_section($section->course, $section, array('name' => $newtitle));
+                course_update_section($section->course, $section, ['name' => $newtitle]);
             }
-            if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $section->id))) {
+            if ($chapter = $DB->get_record('format_mooin4_chapter', ['sectionid' => $section->id])) {
                 $chapter->title = $newtitle;
                 $DB->update_record('format_mooin4_chapter', $chapter);
             }
@@ -900,7 +732,6 @@ class format_mooin4 extends core_courseformat\base {
         // the default logic is the same required for topics and weeks format and still uses
         // a "hiddensections" format setting.
         $course = $this->get_course();
-        //$hidesections = false;
         $hidesections = $course->hiddensections ?? true;
         // Show the section if the user is permitted to access it, OR if it's not available
         // but there is some available info text which explains the reason & should display,
@@ -926,20 +757,20 @@ class format_mooin4 extends core_courseformat\base {
             $courseconfig = get_config('moodlecourse');
             $courseformatoptions = [
                 'toggle_section_number_visibility' => [
-                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
-                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                    'default' => 1,  // Default value (0 = not selected).
+                    'type' => PARAM_BOOL,  // Boolean value (Checkbox).
                 ],
                 'toggle_courseindex_visibility' => [
-                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
-                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                    'default' => 1,  // Default value (0 = not selected).
+                    'type' => PARAM_BOOL,  // Boolean value (Checkbox).
                 ],
                 'toggle_newssection_visibility' => [
-                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
-                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                    'default' => 1,  // Default value (0 = not selected).
+                    'type' => PARAM_BOOL,  // Boolean value (Checkbox).
                 ],
                 'toggle_progressbar_visibility' => [
-                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
-                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                    'default' => 1,  // Default value (0 = not selected).
+                    'type' => PARAM_BOOL,  // Boolean value (Checkbox).
                 ],
                 'show_right_sidebar' => [
                     'default' => 0,
@@ -948,29 +779,29 @@ class format_mooin4 extends core_courseformat\base {
             ];
             if (get_config('format_mooin4', "toggle_global_badge_visibility") == 1) {
                 $courseformatoptions['toggle_badge_visibility'] = [
-                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
-                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                    'default' => 1,  // Default value (0 = not selected).
+                    'type' => PARAM_BOOL,  // Boolean value (Checkbox).
 
                 ];
             }
             if (get_config('format_mooin4', "toggle_global_certificate_visibility") == 1) {
                 $courseformatoptions['toggle_certificate_visibility'] = [
-                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
-                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                    'default' => 1,  // Default value (0 = not selected).
+                    'type' => PARAM_BOOL,  // Boolean value (Checkbox).
 
                 ];
             }
             if (get_config('format_mooin4', "toggle_global_discussion_visibility") == 1) {
                 $courseformatoptions['toggle_discussion_visibility'] = [
-                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
-                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                    'default' => 1,  // Default value (0 = not selected).
+                    'type' => PARAM_BOOL,  // Boolean value (Checkbox).
 
                 ];
             }
             if (get_config('format_mooin4', "toggle_global_userlist_visibility") == 1) {
                 $courseformatoptions['toggle_userlist_visibility'] = [
-                    'default' => 1,  // Standardwert (0 = nicht ausgewählt)
-                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox)
+                    'default' => 1,  // Standardwert (0 = nicht ausgewählt).
+                    'type' => PARAM_BOOL,  // Boolean-Wert (Checkbox).
 
                 ];
             }
@@ -980,7 +811,7 @@ class format_mooin4 extends core_courseformat\base {
             if (!isset($courseformatoptions['toggle_section_number_visibility']['label'])) {
                 $courseformatoptionsedit['toggle_section_number_visibility'] = [
                     'label' => new lang_string('toggle_section_number_visibility', 'format_mooin4'),
-                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                    'element_type' => 'advcheckbox',  // Checkbox type for edit form.
                     'help' => 'toggle_section_number_visibility',
                     'help_component' => 'format_mooin4',
                 ];
@@ -995,26 +826,26 @@ class format_mooin4 extends core_courseformat\base {
             }
             $courseformatoptionsedit['toggle_courseindex_visibility'] = [
                 'label' => new lang_string('toggle_courseindex_visibility', 'format_mooin4'),
-                'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular.
                 'help' => 'toggle_courseindex_visibility',
                 'help_component' => 'format_mooin4',
             ];
             $courseformatoptionsedit['toggle_newssection_visibility'] = [
                 'label' => new lang_string('toggle_newssection_visibility', 'format_mooin4'),
-                'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular.
                 'help' => 'toggle_newssection_visibility',
                 'help_component' => 'format_mooin4',
             ];
             $courseformatoptionsedit['toggle_progressbar_visibility'] = [
                 'label' => new lang_string('toggle_progressbar_visibility', 'format_mooin4'),
-                'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular.
                 'help' => 'toggle_progressbar_visibility',
                 'help_component' => 'format_mooin4',
             ];
             if (get_config('format_mooin4', "toggle_global_badge_visibility") == 1) {
                 $courseformatoptionsedit['toggle_badge_visibility'] = [
                     'label' => new lang_string('toggle_badge_visibility', 'format_mooin4'),
-                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                    'element_type' => 'advcheckbox',  // Checkbox type for edit form.
                     'help' => 'toggle_badge_visibility',
                     'help_component' => 'format_mooin4',
                 ];
@@ -1022,7 +853,7 @@ class format_mooin4 extends core_courseformat\base {
             if (get_config('format_mooin4', "toggle_global_certificate_visibility") == 1) {
                 $courseformatoptionsedit['toggle_certificate_visibility'] = [
                     'label' => new lang_string('toggle_certificate_visibility', 'format_mooin4'),
-                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                    'element_type' => 'advcheckbox',  // Checkbox type for edit form.
                     'help' => 'toggle_certificate_visibility',
                     'help_component' => 'format_mooin4',
                 ];
@@ -1030,7 +861,7 @@ class format_mooin4 extends core_courseformat\base {
             if (get_config('format_mooin4', "toggle_global_discussion_visibility") == 1) {
                 $courseformatoptionsedit['toggle_discussion_visibility'] = [
                     'label' => new lang_string('toggle_discussion_visibility', 'format_mooin4'),
-                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                    'element_type' => 'advcheckbox',  // Checkbox type for edit form.
                     'help' => 'toggle_discussion_visibility',
                     'help_component' => 'format_mooin4',
                 ];
@@ -1038,7 +869,7 @@ class format_mooin4 extends core_courseformat\base {
             if (get_config('format_mooin4', "toggle_global_userlist_visibility") == 1) {
                 $courseformatoptionsedit['toggle_userlist_visibility'] = [
                     'label' => new lang_string('toggle_userlist_visibility', 'format_mooin4'),
-                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular
+                    'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular.
                     'help' => 'toggle_userlist_visibility',
                     'help_component' => 'format_mooin4',
                 ];
@@ -1072,11 +903,22 @@ function format_mooin4_inplace_editable($itemtype, $itemid, $newvalue) {
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
 }
-
-function format_mooin4_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+/**
+ * Serve the files from the format_mooin4 file areas.
+ *
+ * @param stdClass $course Course object
+ * @param stdClass $cm Course module object
+ * @param context $context Context object
+ * @param string $filearea File area
+ * @param array $args Extra arguments
+ * @param bool $forcedownload Whether to force download
+ * @param array $options Additional options
+ * @return bool False if file not found, does not return if found
+ */
+function format_mooin4_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
     require_login($course, true);
 
-    if ($filearea != 'headerimagemobile' and $filearea != 'headerimagedesktop') {
+    if ($filearea != 'headerimagemobile' && $filearea != 'headerimagedesktop') {
         return false;
     }
 
@@ -1105,138 +947,186 @@ function format_mooin4_pluginfile($course, $cm, $context, $filearea, $args, $for
 
 
 /**
- * Holt die benutzerdefinierte Einstellung 'toggle_section_number_visibility' eines Kurses.
+ * Get the custom setting 'toggle_section_number_visibility' of a course.
  *
- * @param int $courseid Die ID des Kurses.
- * @return int Der Wert der Einstellung (1 für sichtbar, 0 für unsichtbar).
+ * @param int $courseid The ID of the course.
+ * @return int The value of the setting (1 for visible, 0 for not visible).
  */
 function get_toggle_section_number_visibility($courseid) {
-    // Kursdaten abrufen
+    // Get course data.
     $course = get_course($courseid);
 
-    // Kursformat abrufen
-    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
-    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
+    // Get course format.
+    $format = course_get_format($courseid); // Get the format for the current course.
+    $formatoptions = $format->get_format_options(); // Get all course format options.
 
-    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    // Check if the custom option is set.
     if (isset($formatoptions['toggle_section_number_visibility'])) {
-        // Wenn der Wert gesetzt ist, diesen verwenden
+        // If value is set, use it.
         return $formatoptions['toggle_section_number_visibility'];
     } else {
-        // Andernfalls den Standardwert verwenden
-        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        // Otherwise use default value.
+        $courseformatoptions = $format->course_format_options(false); // Get default options.
         return $courseformatoptions['toggle_section_number_visibility']['default'];
     }
 }
 
+/**
+ * Get the custom setting 'toggle_newssection_visibility' of a course.
+ *
+ * @param int $courseid The ID of the course.
+ * @return int The value of the setting (1 for visible, 0 for not visible).
+ */
 function get_toggle_newssection_visibility($courseid) {
-    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
-    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
-    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    $format = course_get_format($courseid); // Get the format for the current course.
+    $formatoptions = $format->get_format_options(); // Get all course format options.
+    // Check if the custom option is set.
     if (isset($formatoptions['toggle_newssection_visibility'])) {
         return $formatoptions['toggle_newssection_visibility'];
     } else {
-        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        $courseformatoptions = $format->course_format_options(false); // Get default options.
         return $courseformatoptions['toggle_newssection_visibility']['default'];
     }
 }
 
+/**
+ * Get the custom setting 'toggle_progressbar_visibility' of a course.
+ *
+ * @param int $courseid The ID of the course.
+ * @return int The value of the setting (1 for visible, 0 for not visible).
+ */
 function get_toggle_progressbar_visibility($courseid) {
-    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
-    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
-    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    $format = course_get_format($courseid); // Get the format for the current course.
+    $formatoptions = $format->get_format_options(); // Get all course format options.
+    // Check if the custom option is set.
     if (isset($formatoptions['toggle_progressbar_visibility'])) {
         return $formatoptions['toggle_progressbar_visibility'];
     } else {
-        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        $courseformatoptions = $format->course_format_options(false); // Get default options.
         return $courseformatoptions['toggle_progressbar_visibility']['default'];
     }
 }
 
+/**
+ * Get the custom setting 'toggle_discussion_visibility' of a course.
+ *
+ * @param int $courseid The ID of the course.
+ * @return int The value of the setting (1 for visible, 0 for not visible).
+ */
 function get_toggle_discussion_visibility($courseid) {
     if (get_config('format_mooin4', "toggle_global_discussion_visibility") != 1) {
-        return 0; // oder false – je nach gewünschtem Verhalten
+        return 0; // Or false – depending on desired behavior.
     }
-    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
-    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
-    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    $format = course_get_format($courseid); // Get the format for the current course.
+    $formatoptions = $format->get_format_options(); // Get all course format options.
+    // Check if the custom option is set.
     if (isset($formatoptions['toggle_discussion_visibility'])) {
         return $formatoptions['toggle_discussion_visibility'];
     } else {
-        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        $courseformatoptions = $format->course_format_options(false); // Get default options.
         return $courseformatoptions['toggle_discussion_visibility']['default'];
     }
 }
 
+/**
+ * Get the custom setting 'toggle_badge_visibility' of a course.
+ *
+ * @param int $courseid The ID of the course.
+ * @return int The value of the setting (1 for visible, 0 for not visible).
+ */
 function get_toggle_badge_visibility($courseid) {
     if (get_config('format_mooin4', "toggle_global_badge_visibility") != 1) {
-        return 0; // oder false – je nach gewünschtem Verhalten
+        return 0; // Or false – depending on desired behavior.
     }
-    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
-    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
-    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    $format = course_get_format($courseid); // Get the format for the current course.
+    $formatoptions = $format->get_format_options(); // Get all course format options.
+    // Check if the custom option is set.
     if (isset($formatoptions['toggle_badge_visibility'])) {
         return $formatoptions['toggle_badge_visibility'];
     } else {
-        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        $courseformatoptions = $format->course_format_options(false); // Get default options.
         return $courseformatoptions['toggle_badge_visibility']['default'];
     }
 }
 
+/**
+ * Get the custom setting 'toggle_certificate_visibility' of a course.
+ *
+ * @param int $courseid The ID of the course.
+ * @return int The value of the setting (1 for visible, 0 for not visible).
+ */
 function get_toggle_certificate_visibility($courseid) {
     if (get_config('format_mooin4', "toggle_global_certificate_visibility") != 1) {
-        return 0; // oder false – je nach gewünschtem Verhalten
+        return 0; // Or false – depending on desired behavior.
     }
-    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
-    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
-    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    $format = course_get_format($courseid); // Get the format for the current course.
+    $formatoptions = $format->get_format_options(); // Get all course format options.
+    // Check if the custom option is set.
     if (isset($formatoptions['toggle_certificate_visibility'])) {
         return $formatoptions['toggle_certificate_visibility'];
     } else {
-        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        $courseformatoptions = $format->course_format_options(false); // Get default options.
         return $courseformatoptions['toggle_certificate_visibility']['default'];
     }
 }
 
+/**
+ * Get the custom setting 'toggle_userlist_visibility' of a course.
+ *
+ * @param int $courseid The ID of the course.
+ * @return int The value of the setting (1 for visible, 0 for not visible).
+ */
 function get_toggle_userlist_visibility($courseid) {
     if (get_config('format_mooin4', "toggle_global_userlist_visibility") != 1) {
-        return 0; // oder false – je nach gewünschtem Verhalten
+        return 0; // Or false – depending on desired behavior.
     }
-    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
-    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
-    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    $format = course_get_format($courseid); // Get the format for the current course.
+    $formatoptions = $format->get_format_options(); // Get all course format options.
+    // Check if the custom option is set.
     if (isset($formatoptions['toggle_userlist_visibility'])) {
         return $formatoptions['toggle_userlist_visibility'];
     } else {
-        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        $courseformatoptions = $format->course_format_options(false); // Get default options.
         return $courseformatoptions['toggle_userlist_visibility']['default'];
     }
 }
 
+/**
+ * Get the custom setting 'toggle_courseindex_visibility' of a course.
+ *
+ * @param int $courseid The ID of the course.
+ * @return int The value of the setting (1 for visible, 0 for not visible).
+ */
 function get_toggle_courseindex_visibility($courseid) {
-    $format = course_get_format($courseid); // Holt das Format für den aktuellen Kurs
-    $formatoptions = $format->get_format_options(); // Holt alle Kursformatoptionen
-    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    $format = course_get_format($courseid); // Get the format for the current course.
+    $formatoptions = $format->get_format_options(); // Get all course format options.
+    // Check if the custom option is set.
     if (isset($formatoptions['toggle_courseindex_visibility'])) {
         return $formatoptions['toggle_courseindex_visibility'];
     } else {
-        $courseformatoptions = $format->course_format_options(false); // Standardoptionen holen
+        $courseformatoptions = $format->course_format_options(false); // Get default options.
         return $courseformatoptions['toggle_courseindex_visibility']['default'];
     }
 }
 
-// Holt die benutzerdefinierte Einstellung 'show_right_sidebar' eines Kurses.
+
+/**
+ * Get the custom setting 'show_right_sidebar' of a course.
+ *
+ * @param int $courseid The ID of the course.
+ * @return int The value of the setting (1 for visible, 0 for not visible).
+ */
 function get_show_right_sidebar($courseid) {
     $course = get_course($courseid);
     $format = course_get_format($courseid);
     $formatoptions = $format->get_format_options();
 
-    // Überprüfen, ob die benutzerdefinierte Option gesetzt ist
+    // Check if the custom option is set.
     if (isset($formatoptions['show_right_sidebar'])) {
-        // Wenn der Wert gesetzt ist, diesen verwenden
+        // If value is set, use it.
         return $formatoptions['show_right_sidebar'];
     } else {
-        // Andernfalls den Standardwert verwenden
+        // Otherwise use default value.
         $courseformatoptions = $format->course_format_options(false);
         return $courseformatoptions['show_right_sidebar']['default'];
     }

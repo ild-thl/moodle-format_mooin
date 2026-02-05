@@ -44,22 +44,27 @@ class section extends section_base {
     /** @var course_format the course format */
     protected $format;
 
-    /** @var isChapter if this section is actually a chapter */
+    /** @var stdClass|null if this section is actually a chapter */
     protected $chapter;
 
-    protected $containsActiveSection = false;
+    /** @var bool whether this section contains the active section */
+    protected $containsactivesection = false;
 
-    /** @var is_first_section_of_chapter if this section is the first section of a chapter */
-    protected $is_first_section_of_chapter = false;
+    /** @var bool if this section is the first section of a chapter */
+    protected $isfirstsectionofchapter = false;
 
-    /** @var is_last_section_of_chapter if this section is the last section of a chapter */
-    protected $is_last_section_of_chapter = false;
+    /** @var bool if this section is the last section of a chapter */
+    protected $islastsectionofchapter = false;
 
-    /** @var parent_chapter if this section is the last section of a chapter */
-    protected $parent_chapter;
+    /** @var stdClass|null the parent chapter if this section is part of one */
+    protected $parentchapter;
 
-
-
+    /**
+     * Constructor.
+     *
+     * @param course_format $format the course format
+     * @param section_info $section the section info
+     */
     public function __construct(course_format $format, section_info $section) {
         global $USER;
         parent::__construct($format, $section);
@@ -68,13 +73,25 @@ class section extends section_base {
         if ($sectionnumber > 0) {
             set_user_preference('format_mooin4_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
         }
-        $this->addChapterData();
+        $this->add_chapter_data();
     }
 
+    /**
+     * Get the name of the template to use.
+     *
+     * @param renderer_base $renderer the renderer
+     * @return string the template name
+     */
     public function get_template_name(\renderer_base $renderer): string {
         return 'format_mooin4/local/content/section';
     }
 
+    /**
+     * Export the data for the template.
+     *
+     * @param renderer_base $output the renderer
+     * @return stdClass the data
+     */
     public function export_for_template(\renderer_base $output): stdClass {
         global $USER, $DB;
 
@@ -83,19 +100,14 @@ class section extends section_base {
         $data = parent::export_for_template($output);
 
         $course = $this->format->get_course();
-        //$sectionnumber = optional_param('section', 0, PARAM_INT);
-        // if ($sectionnumber > 0) {
-        //     set_user_preference('format_mooin4_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
-        // }
 
-        //update course table prefix according course settings 
+        // Update course table prefix according course settings.
         require_once(__DIR__ . '/../../../../lib.php');
         $courseid = $course->id;
         if (get_toggle_section_number_visibility($courseid) === 1) {
-            $data->sec_numb_visibility = true; 
-        }
-        else {
-            $data->sec_numb_visibility = false; 
+            $data->sec_numb_visibility = true;
+        } else {
+            $data->sec_numb_visibility = false;
         }
 
         if (!$this->format->get_sectionnum()) {
@@ -105,25 +117,25 @@ class section extends section_base {
             $data->insertafter = true;
             $data->isChapter = $this->chapter;
             $data->chapter_num = $this->chapter ? $this->chapter->chapter : null;
-            $data->is_first_section_of_chapter = $this->is_first_section_of_chapter;
-            $data->is_last_section_of_chapter = $this->is_last_section_of_chapter;
-            $data->parent_chapter = $this->parent_chapter ? $this->parent_chapter->chapter : null;
+            $data->is_first_section_of_chapter = $this->isfirstsectionofchapter;
+            $data->is_last_section_of_chapter = $this->islastsectionofchapter;
+            $data->parent_chapter = $this->parentchapter ? $this->parentchapter->chapter : null;
             $data->isActiveSection = $this->is_active_section();
-            $data->containsActiveSection = $this->containsActiveSection;
+            $data->containsActiveSection = $this->containsactivesection;
         }
 
-         $section_progress = utils::get_section_progress($course->id, $this->section->id, $USER->id);
-         $data->sectionprogress = $section_progress;
+        $sectionprogress = utils::get_section_progress($course->id, $this->section->id, $USER->id);
+        $data->sectionprogress = $sectionprogress;
 
-        if (!$DB->get_records('course_modules', array(
+        if (!$DB->get_records('course_modules', [
             'course' => $course->id,
             'deletioninprogress' => 0,
             'section' => $this->section->id,
-            'completion' => 2
-        ))) {
+            'completion' => 2,
+        ])) {
             $data->showCompletionButton = true;
         }
-        if ($section_progress == 100) {
+        if ($sectionprogress == 100) {
             $data->isCompleted = true;
         }
 
@@ -134,21 +146,32 @@ class section extends section_base {
             }
         }
 
-
         return $data;
     }
 
+    /**
+     * Check if this is the active section.
+     *
+     * @return bool true if it is the active section
+     */
     protected function is_active_section() {
         global $USER;
         $course = $this->format->get_course();
-        $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
-        if ($last_section == $this->section->section) {
+        $lastsection = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
+        if ($lastsection == $this->section->section) {
             return true;
         } else {
             return false;
         }
     }
 
+    /**
+     * Add header data to the template data.
+     *
+     * @param stdClass $data the template data
+     * @param renderer_base $output the renderer
+     * @return bool true if header data was added
+     */
     protected function add_header_data(stdClass &$data, renderer_base $output): bool {
         if (!empty($this->hidetitle)) {
             return false;
@@ -169,35 +192,38 @@ class section extends section_base {
         return true;
     }
 
-    protected function addChapterData() {
+    /**
+     * Add chapter data to the section.
+     */
+    protected function add_chapter_data() {
         global $DB;
         global $USER;
         $course = $this->format->get_course();
-        
-        if ($chapter = $DB->get_record('format_mooin4_chapter', array('sectionid' => $this->section->id))) {
+
+        if ($chapter = $DB->get_record('format_mooin4_chapter', ['sectionid' => $this->section->id])) {
             $this->chapter = $chapter;
-            $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
-            if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                $last_sections_parent_chapter = utils::get_parent_chapter($continuesection);
-                if ($last_sections_parent_chapter == $this->chapter) {
-                    $this->containsActiveSection = true;
+            $lastsection = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
+            if ($continuesection = $DB->get_record('course_sections', ['course' => $course->id, 'section' => $lastsection])) {
+                $lastsectionsparentchapter = utils::get_parent_chapter($continuesection);
+                if ($lastsectionsparentchapter == $this->chapter) {
+                    $this->containsactivesection = true;
                 }
             }
         }
         if (empty($this->chapter)) {
             if (utils::is_first_section_of_chapter($this->section->id)) {
-                $this->is_first_section_of_chapter = true;
+                $this->isfirstsectionofchapter = true;
             }
             if (utils::is_last_section_of_chapter($this->section->id)) {
-                $this->is_last_section_of_chapter = true;
+                $this->islastsectionofchapter = true;
             }
 
-            $this->parent_chapter = utils::get_parent_chapter($this->section);
-            $last_section = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
-            if ($continuesection = $DB->get_record('course_sections', array('course' => $course->id, 'section' => $last_section))) {
-                $last_sections_parent_chapter = utils::get_parent_chapter($continuesection);
-                if ($last_sections_parent_chapter == $this->parent_chapter) {
-                    $this->containsActiveSection = true;
+            $this->parentchapter = utils::get_parent_chapter($this->section);
+            $lastsection = get_user_preferences('format_mooin4_last_section_in_course_' . $course->id, 0, $USER->id);
+            if ($continuesection = $DB->get_record('course_sections', ['course' => $course->id, 'section' => $lastsection])) {
+                $lastsectionsparentchapter = utils::get_parent_chapter($continuesection);
+                if ($lastsectionsparentchapter == $this->parentchapter) {
+                    $this->containsactivesection = true;
                 }
             }
         }

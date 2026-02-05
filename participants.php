@@ -19,7 +19,7 @@
  *
  * @copyright 1999 Martin Dougiamas  http://dougiamas.com
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @package core_user
+ * @package format_mooin4
  */
 
 
@@ -28,12 +28,11 @@ require_once('../../../config.php');
 require_once($CFG->libdir.'/tablelib.php');
 require_once($CFG->libdir.'/filelib.php');
 require_once('../mooin4/lib.php');
-//require_once('locallib.php');
 
 use format_mooin4\local\utils as utils;
 
 $courseid = optional_param('id', 0, PARAM_INT);
-$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
 define('USER_SMALL_CLASS', 20);   // Below this is considered small.
 define('USER_LARGE_CLASS', 200);  // Above this is considered large.
@@ -47,36 +46,32 @@ $perpage      = optional_param('perpage', 10, PARAM_INT); // How many per page.
 $mode         = optional_param('mode', null, PARAM_INT); // Use the MODE_ constants.
 $accesssince  = optional_param('accesssince', 0, PARAM_INT); // Filter by last access. -1 = never.
 $search       = optional_param('search', '', PARAM_RAW); // Make sure it is processed with p() or s() when sending to output!
-$roleid       = optional_param('roleid', 0, PARAM_INT); // Optional roleid, 0 means all enrolled participants (or all on the frontpage).
+$roleid       = optional_param('roleid', 0, PARAM_INT);
 $contextid    = optional_param('contextid', 0, PARAM_INT); // One of this or.
-//$courseid     = optional_param('id', 0, PARAM_INT); // This are required.
 
-$PAGE->set_url('/course/format/mooin4/participants.php', array(
-		'id' => $courseid,
+$PAGE->set_url('/course/format/mooin4/participants.php', [
+        'id' => $courseid,
         'page' => $page,
         'perpage' => $perpage,
         'mode' => $mode,
         'accesssince' => $accesssince,
         'search' => $search,
         'roleid' => $roleid,
-        'contextid' => $contextid
-        ));
+        'contextid' => $contextid,
+        ]);
 
-$PAGE->set_url('/course/format/mooin4/participants.php', array('id' => $course->id));
+$PAGE->set_url('/course/format/mooin4/participants.php', ['id' => $course->id]);
 
 if ($contextid) {
     $context = context::instance_by_id($contextid, MUST_EXIST);
     if ($context->contextlevel != CONTEXT_COURSE) {
-        print_error('invalidcontext');
+        throw new moodle_exception('invalidcontext');
     }
-    //$course = $DB->get_record('course', array('id' => $context->instanceid), '*', MUST_EXIST);
 } else {
-    //$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
     $context = context_course::instance($course->id, MUST_EXIST);
 }
 // Not needed anymore.
 unset($contextid);
-// unset($courseid);
 
 require_login($course);
 
@@ -104,7 +99,7 @@ if ($isfrontpage) {
 
 // Make sure other roles may not be selected by any means.
 if (empty($rolenames[$roleid])) {
-    print_error('noparticipants');
+    throw new moodle_exception('noparticipants');
 }
 
 // No roles to display yet?
@@ -113,23 +108,22 @@ if (empty($rolenames) && !$isfrontpage) {
     if (has_capability('moodle/role:assign', $context)) {
         redirect($CFG->wwwroot.'/'.$CFG->admin.'/roles/assign.php?contextid='.$context->id);
     } else {
-        print_error('noparticipants');
+        throw new moodle_exception('noparticipants');
     }
 }
 
-$event = \core\event\user_list_viewed::create(array(
+$event = \core\event\user_list_viewed::create([
     'objectid' => $course->id,
     'courseid' => $course->id,
     'context' => $context,
-    'other' => array(
+    'other' => [
         'courseshortname' => $course->shortname,
-        'coursefullname' => $course->fullname
-    )
-));
+        'coursefullname' => $course->fullname,
+    ],
+]);
 $event->trigger();
 
-// changed by oncampus
-//$bulkoperations = has_capability('moodle/course:bulkmessaging', $context);
+// Changed by oncampus.
 $bulkoperations = false;
 
 $countries = get_string_manager()->get_list_of_countries();
@@ -167,26 +161,22 @@ if (!$currentgroup) {      // To make some other functions work better later.
     $currentgroup  = null;
 }
 
-$isseparategroups = ($course->groupmode == SEPARATEGROUPS and !has_capability('moodle/site:accessallgroups', $context));
+$isseparategroups = ($course->groupmode == SEPARATEGROUPS && !has_capability('moodle/site:accessallgroups', $context));
 
 $PAGE->set_title("$course->shortname: ".get_string('participants'));
 $PAGE->set_heading($course->fullname);
-//$PAGE->set_pagetype('course-view-' . $course->format);
 $PAGE->add_body_class('path-user');                     // So we can style it independently.
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
-// $PAGE->navbar->add('Participants');
 
 echo $OUTPUT->header();
 
 echo html_writer::div(utils::subpage_navbar(), 'sticky-container');
 echo html_writer::start_div('mooin4-subpage-bg');
 echo '<div class="userlist">';
-//echo '<div class="mooin4-md-container">';
 
-//echo navbar('participants');
-echo '<h2>'.get_string("participants","format_mooin4").'</h2>';
+echo '<h2>'.get_string("participants", "format_mooin4").'</h2>';
 
-if ($isseparategroups and (!$currentgroup) ) {
+if ($isseparategroups && (!$currentgroup) ) {
     // The user is not in the group so show message and exit.
     echo $OUTPUT->heading(get_string("notingroup"));
     echo $OUTPUT->footer();
@@ -195,13 +185,13 @@ if ($isseparategroups and (!$currentgroup) ) {
 
 
 // Should use this variable so that we don't break stuff every time a variable is added or changed.
-$baseurl = new moodle_url('/course/format/mooin4/participants.php', array(
+$baseurl = new moodle_url('/course/format/mooin4/participants.php', [
         'contextid' => $context->id,
         'roleid' => $roleid,
         'id' => $course->id,
         'perpage' => $perpage,
         'accesssince' => $accesssince,
-        'search' => s($search)));
+        'search' => s($search)]);
 
 // Setting up tags.
 if ($course->id == SITEID) {
@@ -216,12 +206,12 @@ if ($course->id == SITEID) {
 
 // Get the hidden field list.
 if (has_capability('moodle/course:viewhiddenuserfields', $context)) {
-    $hiddenfields = array();  // Teachers and admins are allowed to see everything.
+    $hiddenfields = [];  // Teachers and admins are allowed to see everything.
 } else {
     $hiddenfields = array_flip(explode(',', $CFG->hiddenuserfields));
 }
 
-// added by oncampus
+// Added by oncampus.
 $hiddenfields['lastaccess'] = true;
 
 if (isset($hiddenfields['lastaccess'])) {
@@ -237,15 +227,15 @@ $controlstable->data[] = new html_table_row();
 
 // Print my course menus.
 if ($mycourses = enrol_get_my_courses()) {
-    $courselist = array();
+    $courselist = [];
     $popupurl = new moodle_url('/course/format/mooin4/participants.php?roleid='.$roleid.'&sifirst=&silast=');
     foreach ($mycourses as $mycourse) {
         $coursecontext = context_course::instance($mycourse->id);
-        $courselist[$mycourse->id] = format_string($mycourse->shortname, true, array('context' => $coursecontext));
+        $courselist[$mycourse->id] = format_string($mycourse->shortname, true, ['context' => $coursecontext]);
     }
     if (has_capability('moodle/site:viewparticipants', $systemcontext)) {
         unset($courselist[SITEID]);
-        $courselist = array(SITEID => format_string($SITE->shortname, true, array('context' => $systemcontext))) + $courselist;
+        $courselist = [SITEID => format_string($SITE->shortname, true, ['context' => $systemcontext])] + $courselist;
     }
     $select = new single_select($popupurl, 'id', $courselist, $course->id, null, 'courseform');
     $select->set_label(get_string('mycourses'));
@@ -261,17 +251,17 @@ if (!isset($hiddenfields['lastaccess'])) {
         $minlastaccess = $DB->get_field_sql('SELECT min(timeaccess)
                                                FROM {user_lastaccess}
                                               WHERE courseid = ?
-                                                    AND timeaccess != 0', array($course->id));
-        $lastaccess0exists = $DB->record_exists('user_lastaccess', array('courseid' => $course->id, 'timeaccess' => 0));
+                                                    AND timeaccess != 0', [$course->id]);
+        $lastaccess0exists = $DB->record_exists('user_lastaccess', ['courseid' => $course->id, 'timeaccess' => 0]);
     } else {
         $minlastaccess = $DB->get_field_sql('SELECT min(lastaccess)
                                                FROM {user}
                                               WHERE lastaccess != 0');
-        $lastaccess0exists = $DB->record_exists('user', array('lastaccess' => 0));
+        $lastaccess0exists = $DB->record_exists('user', ['lastaccess' => 0]);
     }
 
     $now = usergetmidnight(time());
-    $timeaccess = array();
+    $timeaccess = [];
     $baseurl->remove_params('accesssince');
 
     // Makes sense for this to go first.
@@ -311,8 +301,8 @@ if (!isset($hiddenfields['lastaccess'])) {
     }
 }
 
-$formatmenu = array( '0' => get_string('brief'),
-                     '1' => get_string('userdetails'));
+$formatmenu = [ '0' => get_string('brief'),
+                     '1' => get_string('userdetails')];
 $select = new single_select($baseurl, 'mode', $formatmenu, $mode, null, 'formatmenu');
 $select->set_label(get_string('userlist'));
 $userlistcell = new html_table_cell();
@@ -320,12 +310,12 @@ $userlistcell->attributes['class'] = 'right';
 $userlistcell->text = $OUTPUT->render($select);
 $controlstable->data[0]->cells[] = $userlistcell;
 
-// removed by oncampus echo html_writer::table($controlstable);
 
-if ($currentgroup and (!$isseparategroups or has_capability('moodle/site:accessallgroups', $context))) {
+
+if ($currentgroup && (!$isseparategroups || has_capability('moodle/site:accessallgroups', $context))) {
     // Display info about the group.
     if ($group = groups_get_group($currentgroup)) {
-        if (!empty($group->description) or (!empty($group->picture) and empty($group->hidepicture))) {
+        if (!empty($group->description) || (!empty($group->picture) && empty($group->hidepicture))) {
             $groupinfotable = new html_table();
             $groupinfotable->attributes['class'] = 'groupinfobox';
             $picturecell = new html_table_cell();
@@ -337,7 +327,7 @@ if ($currentgroup and (!$isseparategroups or has_capability('moodle/site:accessa
 
             $contentheading = $group->name;
             if (has_capability('moodle/course:managegroups', $context)) {
-                $aurl = new moodle_url('/group/group.php', array('id' => $group->id, 'courseid' => $group->courseid));
+                $aurl = new moodle_url('/group/group.php', ['id' => $group->id, 'courseid' => $group->courseid]);
                 $contentheading .= '&nbsp;' . $OUTPUT->action_icon($aurl, new pix_icon('t/edit', get_string('editgroupprofile')));
             }
 
@@ -346,18 +336,17 @@ if ($currentgroup and (!$isseparategroups or has_capability('moodle/site:accessa
             if (!isset($group->descriptionformat)) {
                 $group->descriptionformat = FORMAT_MOODLE;
             }
-            $options = array('overflowdiv' => true);
+            $options = ['overflowdiv' => true];
             $formatteddesc = format_text($group->description, $group->descriptionformat, $options);
             $contentcell->text = $OUTPUT->heading($contentheading, 3) . $formatteddesc;
-            $groupinfotable->data[] = new html_table_row(array($picturecell, $contentcell));
-            //removed by oncampus echo html_writer::table($groupinfotable);
+            $groupinfotable->data[] = new html_table_row([$picturecell, $contentcell]);
         }
     }
 }
 
 // Define a table showing a list of participants in the current role selection.
-$tablecolumns = array();
-$tableheaders = array();
+$tablecolumns = [];
+$tableheaders = [];
 if ($bulkoperations && $mode === MODE_BRIEF) {
     $tablecolumns[] = 'select';
     $tableheaders[] = get_string('select');
@@ -365,9 +354,6 @@ if ($bulkoperations && $mode === MODE_BRIEF) {
 $tablecolumns[] = 'userpic';
 $tablecolumns[] = 'fullname';
 
-// Mod tinjohn.
-//$extrafields = get_extra_user_fields($context); 
-//$extrafields = \core_user\fields::for_identity($context)->get_required_fields(); 
 $extrafields = \core_user\fields::for_identity($context, false)->get_required_fields();
 $tableheaders[] = get_string('userpic');
 $tableheaders[] = get_string('fullnameuser');
@@ -375,15 +361,17 @@ $tableheaders[] = get_string('fullnameuser');
 if ($mode === MODE_BRIEF) {
     foreach ($extrafields as $field) {
         $tablecolumns[] = $field;
-        $tableheaders[] = \core_user\fields::get_display_name($field); // get_user_field_name($field)
+        $tableheaders[] = \core_user\fields::get_display_name($field);
     }
 }
-// course/format/mooin4
-if ($mode === MODE_BRIEF && !isset($hiddenfields['city']) && has_capability('format/mooin4:readuserpage', $context)) { // oncampus sprint
+
+if ($mode === MODE_BRIEF && !isset($hiddenfields['city'])
+    && has_capability('format/mooin4:readuserpage', $context)) {
     $tablecolumns[] = 'city';
     $tableheaders[] = get_string('city');
 }
-if ($mode === MODE_BRIEF && !isset($hiddenfields['country']) && has_capability('format/mooin4:readuserpage', $context)) { // oncampus sprint
+if ($mode === MODE_BRIEF && !isset($hiddenfields['country'])
+    && has_capability('format/mooin4:readuserpage', $context)) {
     $tablecolumns[] = 'country';
     $tableheaders[] = get_string('country');
 }
@@ -397,11 +385,10 @@ if (!isset($hiddenfields['lastaccess'])) {
     }
 }
 
-// added by oncampus
-// oncampus sprint
+// Added by oncampus.
 if (has_capability('format/mooin4:readuserpage', $context)) {
-	$tablecolumns[] = 'badges';
-	$tableheaders[] = get_string('badges');
+    $tablecolumns[] = 'badges';
+    $tableheaders[] = get_string('badges');
 }
 
 if ($bulkoperations && $mode === MODE_USERDETAILS) {
@@ -425,35 +412,32 @@ $table->no_sorting('groups');
 $table->no_sorting('groupings');
 $table->no_sorting('select');
 
-$table->no_sorting('badges'); // oncampus
+$table->no_sorting('badges');
 
 
 $table->set_attribute('cellspacing', '0');
 $table->set_attribute('id', 'participants');
 $table->set_attribute('class', 'generaltable generalbox');
 
-$table->set_control_variables(array(
+$table->set_control_variables([
             TABLE_VAR_SORT    => 'ssort',
             TABLE_VAR_HIDE    => 'shide',
             TABLE_VAR_SHOW    => 'sshow',
             TABLE_VAR_IFIRST  => 'sifirst',
             TABLE_VAR_ILAST   => 'silast',
-            TABLE_VAR_PAGE    => 'spage'
-            ));
+            TABLE_VAR_PAGE    => 'spage',
+            ]);
 $table->setup();
 
 list($esql, $params) = get_enrolled_sql($context, null, $currentgroup, true);
-$joins = array("FROM {user} u");
-$wheres = array();
+$joins = ["FROM {user} u"];
+$wheres = [];
 
-$userfields = array('username', 'email', 'city', 'country', 'lang', 'timezone', 'maildisplay');
-$mainuserfields =   user_picture::fields('u', $userfields); ;// \core_user\fields::for_name()->with_identity($context); ||
-// $extrasql = get_extra_user_fields_sql($context, 'u', '', $userfields); // \core_user\fields::for_identity($context)->including('u')->get_required_fields();
+$userfields = ['username', 'email', 'city', 'country', 'lang', 'timezone', 'maildisplay'];
+$mainuserfields = user_picture::fields('u', $userfields);
 
 $value = \core_user\fields::for_name()->with_identity($context);
 $extrasql = $value->get_sql('u')->selects;
-// $mainuserfields = $mainuserfields_first->get_sql('u')->selects;
-// var_dump($mainuserfields);
 if ($isfrontpage) {
     $select = "SELECT $mainuserfields, u.lastaccess$extrasql";
     $joins[] = "JOIN ($esql) e ON e.id = u.id"; // Everybody on the frontpage usually.
@@ -464,7 +448,8 @@ if ($isfrontpage) {
 } else {
     $select = "SELECT $mainuserfields, COALESCE(ul.timeaccess, 0) AS lastaccess$extrasql";
     $joins[] = "JOIN ($esql) e ON e.id = u.id"; // Course enrolled participants only.
-    $joins[] = "LEFT JOIN {user_lastaccess} ul ON (ul.userid = u.id AND ul.courseid = :courseid)"; // Not everybody accessed course yet.
+    // Not everybody accessed course yet.
+    $joins[] = "LEFT JOIN {user_lastaccess} ul ON (ul.userid = u.id AND ul.courseid = :courseid)";
     $params['courseid'] = $course->id;
     if ($accesssince) {
         $wheres[] = get_course_lastaccess_sql($accesssince);
@@ -481,10 +466,14 @@ $joins[] = $ccjoin;
 // Limit list to participants with some role only.
 if ($roleid) {
     // We want to query both the current context and parent contexts.
-    list($relatedctxsql, $relatedctxparams) = $DB->get_in_or_equal($context->get_parent_context_ids(true), SQL_PARAMS_NAMED, 'relatedctx');
+    list($relatedctxsql, $relatedctxparams) = $DB->get_in_or_equal(
+        $context->get_parent_context_ids(true),
+        SQL_PARAMS_NAMED,
+        'relatedctx'
+    );
 
     $wheres[] = "u.id IN (SELECT userid FROM {role_assignments} WHERE roleid = :roleid AND contextid $relatedctxsql)";
-    $params = array_merge($params, array('roleid' => $roleid), $relatedctxparams);
+    $params = array_merge($params, ['roleid' => $roleid], $relatedctxparams);
 }
 
 $from = implode("\n", $joins);
@@ -500,13 +489,12 @@ $totalcount = $DB->count_records_sql("SELECT COUNT(u.id) $from $where", $params)
 if (!empty($search)) {
     $fullname = $DB->sql_fullname('u.firstname', 'u.lastname');
     $wheres[] = "(". $DB->sql_like($fullname, ':search1', false, false) .
-                //" OR ". $DB->sql_like('email', ':search2', false, false) .
                 " OR ". $DB->sql_like('idnumber', ':search3', false, false) .
-				" OR ". $DB->sql_like('city', ':search4', false, false) .") ";
+                " OR ". $DB->sql_like('city', ':search4', false, false) .") ";
     $params['search1'] = "%$search%";
     $params['search2'] = "%$search%";
     $params['search3'] = "%$search%";
-	$params['search4'] = "%$search%";
+    $params['search4'] = "%$search%";
 }
 
 list($twhere, $tparams) = $table->get_sql_where();
@@ -523,92 +511,78 @@ if ($wheres) {
 }
 
 if ($table->get_sql_sort()) {
-
-	$sort = ' ORDER BY '.$table->get_sql_sort();
+    $sort = ' ORDER BY '.$table->get_sql_sort();
 } else {
     $sort = '';
 }
-if ($USER->username == 'riegerj') {
-	//echo $table->get_sql_sort();
-}
 $matchcount = $DB->count_records_sql("SELECT COUNT(u.id) $from $where", $params);
 
-// Participants Map Implenetation
+// Participants Map Implementation.
 $testnumberuser = $DB->get_recordset_sql("SELECT u.city, u.country $from $where", $params);
-// var_dump($testnumberuser);
-// oncampus $table->initialbars(true);
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Here print the code for the online participants map
-$city_list = array();
-    $user_infos = [];
-    $user_list_enrol = array();
-    $test_array = [];
-    // Fetch all the user enrol userid and store inside an array
-    foreach ($testnumberuser as $key => $value) {
-        array_push($test_array, $value);
-    }
-    $user_list_enrolLength = count($test_array);
-    foreach ($test_array as $key => $user) {
-        //print_r($city_list);
-        if(empty($city_list)) {
-            array_push($city_list, (object)[
-                'city' =>$user->city,
-                'town' =>$user-> country,
-                'accurance' =>  1]
-            );
-        }else {
-                $checkvalue = array_values((array)$city_list);
-                if (!in_array($user->city, $checkvalue)) {
-                    if(!empty($user->city)){
-                        array_push($city_list, (object)[
-                            'city' =>$user->city,
-                            'town' =>$user-> country,
-                            'accurance' =>  1]
-                        );
-                    }
 
-
+$citylist = [];
+$userinfos = [];
+$userlistenrol = [];
+$testarray = [];
+// Fetch all the user enrol userid and store inside an array.
+foreach ($testnumberuser as $key => $value) {
+    array_push($testarray, $value);
+}
+$userlistenrollength = count($testarray);
+foreach ($testarray as $key => $user) {
+    if (empty($citylist)) {
+        array_push($citylist, (object)[
+            'city' => $user->city,
+            'town' => $user->country,
+            'accurance' => 1,
+        ]);
+    } else {
+        $checkvalue = array_values((array)$citylist);
+        if (!in_array($user->city, $checkvalue)) {
+            if (!empty($user->city)) {
+                array_push($citylist, (object)[
+                    'city' => $user->city,
+                    'town' => $user->country,
+                    'accurance' => 1,
+                ]);
             }
         }
     }
-   // Build the template Array
-   $array_temp = array();
-   $array_element = [];
-   $val = [];
-   // var_dump($city_list);
-   foreach ($city_list as $key => $element) {
-        $city = $element->city;
-        $town = $element->town;
-       array_push($array_element, "$city , $town");
-       $val = array_count_values($array_element);
-   }
+}
+// Build the template Array.
+$arraytemp = [];
+$arrayelement = [];
+$val = [];
+foreach ($citylist as $key => $element) {
+    $city = $element->city;
+    $town = $element->town;
+    array_push($arrayelement, "$city , $town");
+    $val = array_count_values($arrayelement);
+}
 
-   foreach ($val as $key => $value) {
-       array_push($array_temp, $key. ' | ' .$value);
-   }
+foreach ($val as $key => $value) {
+    array_push($arraytemp, $key. ' | ' .$value);
+}
 
 $table->pagesize($perpage, $matchcount);
 $userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table->get_page_start(), $table->get_page_size());
 
-// generate array with city names and lat/lng
-$usermarkers = array();
+// Generate array with city names and lat/lng.
+$usermarkers = [];
 foreach ($userlist as $lu) {
-    //if ($coord = get_user_coordinates($lu)) {
     if ($coord = utils::get_user_coordinates_from_pref($lu->id)) {
         $usermarkers[] = $lu->city.'|'.$lu->country.'|'.$coord->lat.'|'.$coord->lng;
     }
 }
 
-    $map_title = get_string('map_title', 'format_mooin4');
-        $map_descr = get_string('map_descr', 'format_mooin4');
-        $templatecontext = (object)[
-            'title' => $map_title,
-            'desc' =>   $map_descr,
-            //'userdata' => array_values($array_temp),//(array)$array_temp
-            'usermarkers' => $usermarkers
-        ];
-        //print_object($templatecontext);
-        echo $OUTPUT->render_from_template('format_mooin4/map_manage', $templatecontext);
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+$maptitle = get_string('map_title', 'format_mooin4');
+$mapdescr = get_string('map_descr', 'format_mooin4');
+$templatecontext = (object)[
+    'title' => $maptitle,
+    'desc' => $mapdescr,
+    'usermarkers' => $usermarkers,
+];
+echo $OUTPUT->render_from_template('format_mooin4/map_manage', $templatecontext);
 echo('<br>');
 
 $userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table->get_page_start(), $table->get_page_size());
@@ -619,7 +593,7 @@ if ($roleid > 0) {
     $a->role = $rolenames[$roleid];
     $heading = format_string(get_string('xuserswiththerole', 'role', $a));
 
-    if ($currentgroup and $group) {
+    if ($currentgroup && $group) {
         $a->group = $group->name;
         $heading .= ' ' . format_string(get_string('ingroup', 'role', $a));
     }
@@ -633,18 +607,18 @@ if ($roleid > 0) {
 
     if (user_can_assign($context, $roleid)) {
         $headingurl = new moodle_url($CFG->wwwroot . '/' . $CFG->admin . '/roles/assign.php',
-                array('roleid' => $roleid, 'contextid' => $context->id));
+                ['roleid' => $roleid, 'contextid' => $context->id]);
         $heading .= $OUTPUT->action_icon($headingurl, new pix_icon('t/edit', get_string('edit')));
     }
     echo $OUTPUT->heading($heading, 3);
 } else {
     if ($course->id != SITEID && has_capability('moodle/course:enrolreview', $context)) {
-        $editlink = $OUTPUT->action_icon(new moodle_url('/enrol/users.php', array('id' => $course->id)),
+        $editlink = $OUTPUT->action_icon(new moodle_url('/enrol/users.php', ['id' => $course->id]),
                                          new pix_icon('t/edit', get_string('edit')));
     } else {
         $editlink = '';
     }
-    if ($course->id == SITEID and $roleid < 0) {
+    if ($course->id == SITEID && $roleid < 0) {
 
         $strallparticipants = get_string('allsiteusers', 'role');
     } else {
@@ -676,9 +650,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
             $strall = get_string('all');
             $alpha  = explode(',', get_string('alphabet', 'langconfig'));
 
-           //*  removed by oncampus
 
-		   // Bar of first initials.
 
             echo '<div class="initialbar firstinitial">'.get_string('firstname').' : ';
             if (!empty($firstinitial)) {
@@ -711,7 +683,6 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                 }
             }
             echo '</div>';
-			//*/
 
             $pagingbar = new paging_bar($matchcount, intval($table->get_page_start() / $perpage), $perpage, $baseurl);
             $pagingbar->pagevar = 'spage';
@@ -719,7 +690,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
         }
 
         if ($matchcount > 0) {
-            $usersprinted = array();
+            $usersprinted = [];
             foreach ($userlist as $user) {
                 if (in_array($user->id, $usersprinted)) { // Prevent duplicates by r.hidden - MDL-13935.
                     continue;
@@ -735,7 +706,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 
                 // Get the hidden field list.
                 if (has_capability('moodle/course:viewhiddenuserfields', $context)) {
-                    $hiddenfields = array();
+                    $hiddenfields = [];
                 } else {
                     $hiddenfields = array_flip(explode(',', $CFG->hiddenuserfields));
                 }
@@ -746,20 +717,24 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                 $row->cells[0] = new html_table_cell();
                 $row->cells[0]->attributes['class'] = 'left side';
 
-                $row->cells[0]->text = $OUTPUT->user_picture($user, array('size' => 100, 'courseid' => $course->id));
+                $row->cells[0]->text = $OUTPUT->user_picture($user, ['size' => 100, 'courseid' => $course->id]);
                 $row->cells[1] = new html_table_cell();
                 $row->cells[1]->attributes['class'] = 'content';
 
-                $row->cells[1]->text = $OUTPUT->container(fullname($user, has_capability('moodle/site:viewfullnames', $context)), 'username');
+                $row->cells[1]->text = $OUTPUT->container(
+                    fullname($user, has_capability('moodle/site:viewfullnames', $context)),
+                    'username'
+                );
                 $row->cells[1]->text .= $OUTPUT->container_start('info');
 
                 if (!empty($user->role)) {
                     $row->cells[1]->text .= get_string('role').get_string('labelsep', 'langconfig').$user->role.'<br />';
                 }
-                if ($user->maildisplay == 1 or ($user->maildisplay == 2 and ($course->id != SITEID) and !isguestuser()) or
-                            has_capability('moodle/course:viewhiddenuserfields', $context) or
-                            in_array('email', array($extrafields)) or ($user->id == $USER->id)) { //$extrafields
-                    $row->cells[1]->text .= get_string('email').get_string('labelsep', 'langconfig').html_writer::link("mailto:$user->email", $user->email) . '<br />';
+                if ($user->maildisplay == 1 || ($user->maildisplay == 2 && ($course->id != SITEID) && !isguestuser()) ||
+                            has_capability('moodle/course:viewhiddenuserfields', $context) ||
+                            in_array('email', [$extrafields]) || ($user->id == $USER->id)) {
+                    $emailstring = get_string('email').get_string('labelsep', 'langconfig');
+                    $row->cells[1]->text .= $emailstring.html_writer::link("mailto:$user->email", $user->email) . '<br />';
                 }
                 foreach ($extrafields as $field) {
                     if ($field === 'email') {
@@ -767,11 +742,11 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                         // because this page is intended for students too.
                         continue;
                     }
-                    $row->cells[1]->text .= \core_user\fields::get_display_name($field) . // get_user_field_name($field) .
+                    $row->cells[1]->text .= \core_user\fields::get_display_name($field) .
                             get_string('labelsep', 'langconfig') . s($user->{$field}) . '<br />';
                 }
 
-                if (($user->city or $user->country) and (!isset($hiddenfields['city']) or !isset($hiddenfields['country']))) {
+                if (($user->city || $user->country) && (!isset($hiddenfields['city']) || !isset($hiddenfields['country']))) {
                     $row->cells[1]->text .= get_string('city').get_string('labelsep', 'langconfig');
                     if ($user->city && !isset($hiddenfields['city'])) {
                         $row->cells[1]->text .= $user->city;
@@ -787,7 +762,8 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 
                 if (!isset($hiddenfields['lastaccess'])) {
                     if ($user->lastaccess) {
-                        $row->cells[1]->text .= get_string('lastaccess').get_string('labelsep', 'langconfig').userdate($user->lastaccess);
+                        $lastaccessstring = get_string('lastaccess').get_string('labelsep', 'langconfig');
+                        $row->cells[1]->text .= $lastaccessstring.userdate($user->lastaccess);
                         $row->cells[1]->text .= '&nbsp; ('. format_time(time() - $user->lastaccess, $datestring) .')';
                     } else {
                         $row->cells[1]->text .= get_string('lastaccess').get_string('labelsep', 'langconfig').get_string('never');
@@ -800,32 +776,44 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                 $row->cells[2]->attributes['class'] = 'links';
                 $row->cells[2]->text = '';
 
-                $links = array();
+                $links = [];
 
                 if ($CFG->enableblogs && ($CFG->bloglevel != BLOG_USER_LEVEL || $USER->id == $user->id)) {
                     $links[] = html_writer::link(new moodle_url('/blog/index.php?userid='.$user->id), get_string('blogs', 'blog'));
                 }
 
-                if (!empty($CFG->enablenotes) and (has_capability('moodle/notes:manage', $context) || has_capability('moodle/notes:view', $context))) {
-                    $links[] = html_writer::link(new moodle_url('/notes/index.php?course=' . $course->id. '&user='.$user->id), get_string('notes', 'notes'));
+                if (!empty($CFG->enablenotes)
+                    && (has_capability('moodle/notes:manage', $context)
+                    || has_capability('moodle/notes:view', $context))) {
+                    $notesurl = new moodle_url('/notes/index.php?course=' . $course->id. '&user='.$user->id);
+                    $links[] = html_writer::link($notesurl, get_string('notes', 'notes'));
                 }
 
-                if (has_capability('moodle/site:viewreports', $context) or has_capability('moodle/user:viewuseractivitiesreport', $usercontext)) {
-                    $links[] = html_writer::link(new moodle_url('/course/user.php?id='. $course->id .'&user='. $user->id), get_string('activity'));
+                if (has_capability('moodle/site:viewreports', $context)
+                    || has_capability('moodle/user:viewuseractivitiesreport', $usercontext)) {
+                    $userurl = new moodle_url('/course/user.php?id='. $course->id .'&user='. $user->id);
+                    $links[] = html_writer::link($userurl, get_string('activity'));
                 }
 
-                if ($USER->id != $user->id && !\core\session\manager::is_loggedinas() && has_capability('moodle/user:loginas', $context) && !is_siteadmin($user->id)) {
-                    $links[] = html_writer::link(new moodle_url('/course/loginas.php?id='. $course->id .'&user='. $user->id .'&sesskey='. sesskey()), get_string('loginas'));
+                if ($USER->id != $user->id && !\core\session\manager::is_loggedinas()
+                    && has_capability('moodle/user:loginas', $context) && !is_siteadmin($user->id)) {
+                    $loginasurl = new moodle_url('/course/loginas.php', [
+                        'id' => $course->id,
+                        'user' => $user->id,
+                        'sesskey' => sesskey(),
+                    ]);
+                    $links[] = html_writer::link($loginasurl, get_string('loginas'));
                 }
 
-                $links[] = html_writer::link(new moodle_url('/user/view.php?id='. $user->id .'&course='. $course->id), get_string('fullprofile') . '...');
+                $profileurl = new moodle_url('/user/view.php?id='. $user->id .'&course='. $course->id);
+                $links[] = html_writer::link($profileurl, get_string('fullprofile') . '...');
 
                 $row->cells[2]->text .= implode('', $links);
 
                 if ($bulkoperations) {
                     $row->cells[2]->text .= '<br /><input type="checkbox" class="usercheckbox" name="user'.$user->id.'" /> ';
                 }
-                $table->data = array($row);
+                $table->data = [$row];
 
                 echo html_writer::table($table);
             }
@@ -836,23 +824,22 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
     }
 
 } else {
-    // echo('Matchcount2 = ' . $matchcount . ' ,' . 'Totalcount2 = ' . $totalcount . ' ,' . 'Perpage2 = ' . $perpage . '<br>');
     $countrysort = (strpos($sort, 'country') !== false);
     $timeformat = get_string('strftimedate');
 
-	// Show a search box if all participants don't fit on a single screen.
+    // Show a search box if all participants don't fit on a single screen.
 
-	if ($totalcount > $perpage) {
-		echo '<form action="participants.php" class="searchform"><div><input type="hidden" name="id" value="'.$course->id.'" />';
-		//echo '<label for="search">' . get_string('search', 'search') . ' </label>';
-		echo '<input type="text" id="search" name="search" value="'.s($search).'" />&nbsp;';
-		echo '<input type="submit" value="'.get_string('search').'" />';
-		echo '&nbsp;'.html_writer::link(new moodle_url('/course/format/mooin4/participants.php', array('id' => $course->id, 'tab' => 1)), get_string('cancel'));
-		echo '</div></form>'."<br />";
-	}
+    if ($totalcount > $perpage) {
+        echo '<form action="participants.php" class="searchform"><div><input type="hidden" name="id" value="'.$course->id.'" />';
+        echo '<input type="text" id="search" name="search" value="'.s($search).'" />&nbsp;';
+        echo '<input type="submit" value="'.get_string('search').'" />';
+        $cancelurl = new moodle_url('/course/format/mooin4/participants.php', ['id' => $course->id, 'tab' => 1]);
+        echo '&nbsp;'.html_writer::link($cancelurl, get_string('cancel'));
+        echo '</div></form>'."<br />";
+    }
 
     if ($userlist) {
-        $usersprinted = array();
+        $usersprinted = [];
 
         foreach ($userlist as $user) {
             if (in_array($user->id, $usersprinted)) { // Prevent duplicates by r.hidden - MDL-13935.
@@ -881,19 +868,20 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
 
             $usercontext = context_user::instance($user->id);
 
-            if ($piclink = ($USER->id == $user->id || has_capability('moodle/user:viewdetails', $context) || has_capability('moodle/user:viewdetails', $usercontext))) {
-                $profilelink = '<strong><a href="'.$CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$course->id.'">'.fullname($user).'</a></strong>';
+            if ($piclink = ($USER->id == $user->id || has_capability('moodle/user:viewdetails', $context)
+                || has_capability('moodle/user:viewdetails', $usercontext))) {
+                $profileurl = $CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$course->id;
+                $profilelink = '<strong><a href="'.$profileurl.'">'.fullname($user).'</a></strong>';
             } else {
                 $profilelink = '<strong>'.fullname($user).'</strong>';
             }
 
-            //$profilelink = '<strong>'.fullname($user).'</strong>'; // oncampus sprint
 
-            $data = array();
+            $data = [];
             if ($bulkoperations) {
                 $data[] = '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" />';
             }
-            $data[] = $OUTPUT->user_picture($user, array('size' => 35, 'courseid' => $course->id, 'link' => false));
+            $data[] = $OUTPUT->user_picture($user, ['size' => 35, 'courseid' => $course->id, 'link' => false]);
             $data[] = $profilelink;
 
             if ($mode === MODE_BRIEF) {
@@ -901,57 +889,39 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                     $data[] = $user->{$field};
                 }
             }
-            // course/format/mooin4
-            if ($mode === MODE_BRIEF && !isset($hiddenfields['city']) && has_capability('format/mooin4:readuserpage', $context)) { // oncampus sprint && has_capability('course/mooin4:readuserpage', $context)
+
+            if ($mode === MODE_BRIEF && !isset($hiddenfields['city'])
+                && has_capability('format/mooin4:readuserpage', $context)) {
                 $data[] = $user->city;
             }
-            // course/format/mooin4
-            if ($mode === MODE_BRIEF && !isset($hiddenfields['country']) && has_capability('format/mooin4:readuserpage', $context)) { // oncampus sprint && has_capability('course/mooin4:readuserpage', $context)
+
+            if ($mode === MODE_BRIEF && !isset($hiddenfields['country'])
+                && has_capability('format/mooin4:readuserpage', $context)) {
                 $data[] = $country;
             }
-            // course/format/mooin4
-            if (!isset($hiddenfields['lastaccess']) && has_capability('format/mooin4:readuserpage', $context)) { // oncampus sprint  && has_capability('course/mooin4:readuserpage', $context)
+
+            if (!isset($hiddenfields['lastaccess'])
+                && has_capability('format/mooin4:readuserpage', $context)) {
                 $data[] = $lastaccess;
             }
-            // course/format/mooin4
-			/* if (has_capability('format/mooin4:readuserpage', $context)) {
-				$badges = '';
-				$ccontext = context_course::instance($course->id);
-				$roles = get_user_roles($ccontext, $user->id, false);
-				$not_a_teacher = true;
-				foreach ($roles as $role) {
-					if ($role->shortname == 'editingteacher') {
-						$not_a_teacher = false;
-					}
-				}
-				if ($not_a_teacher) {
-					$badges .= get_badges_list($user->id, $course->id);
-				}
-
-				$data[] = $badges;
-			} */
             if ($mode === MODE_BRIEF && !isset($hiddenfields['badges']) && has_capability('format/mooin4:aluhatsoff', $context)) {
-				// oncampus Badges anzeigen
-				$badges = '';
-				// $badges .= get_badges_list($user->id).get_badges_list($user->id, $course->id);
-                // var_dump(get_badges_list($user->id, $course->id));
+                $badges = '';
 
-                // nur wenn der teilnehmer kein teacher ist werden badges angezeigt
-				$ccontext = context_course::instance($course->id);
-				$roles = get_user_roles($ccontext, $user->id, false);
-				$not_a_teacher = true;
-				foreach ($roles as $role) {
-					if ($role->shortname == 'editingteacher') {
-						$not_a_teacher = false;
-					}
-				}
-				if ($not_a_teacher) {
-					$badges .= get_badges_list_html($user->id, $course->id);
-				}
+                // Only show badges if the participant is not a teacher.
+                $ccontext = context_course::instance($course->id);
+                $roles = get_user_roles($ccontext, $user->id, false);
+                $notateacher = true;
+                foreach ($roles as $role) {
+                    if ($role->shortname == 'editingteacher') {
+                        $notateacher = false;
+                    }
+                }
+                if ($notateacher) {
+                    $badges .= get_badges_list_html($user->id, $course->id);
+                }
 
-				$data[] = $badges;
-				// oncampus Badges anzeigen ende
-			}
+                $data[] = $badges;
+            }
             $table->add_data($data);
         }
     }
@@ -963,7 +933,7 @@ if ($bulkoperations) {
     echo '<br /><div class="mooin4">';
     echo '<input type="button" id="checkall" value="'.get_string('selectall').'" /> ';
     echo '<input type="button" id="checknone" value="'.get_string('deselectall').'" /> ';
-    $displaylist = array();
+    $displaylist = [];
     $displaylist['messageselect.php'] = get_string('messageselectadd');
     if (!empty($CFG->enablenotes) && has_capability('moodle/notes:manage', $context) && $context->id != $frontpagectx->id) {
         $displaylist['addnote.php'] = get_string('addnewnote', 'notes');
@@ -971,8 +941,8 @@ if ($bulkoperations) {
     }
 
     echo $OUTPUT->help_icon('withselectedusers');
-    echo html_writer::tag('label', get_string("withselectedusers"), array('for' => 'formactionid'));
-    echo html_writer::select($displaylist, 'formaction', '', array('' => 'choosedots'), array('id' => 'formactionid'));
+    echo html_writer::tag('label', get_string("withselectedusers"), ['for' => 'formactionid']);
+    echo html_writer::select($displaylist, 'formaction', '', ['' => 'choosedots'], ['id' => 'formactionid']);
 
     echo '<input type="hidden" name="id" value="'.$course->id.'" />';
     echo '<noscript style="display:inline">';
@@ -981,7 +951,7 @@ if ($bulkoperations) {
     echo '</div></div>';
     echo '</form>';
 
-    $module = array('name' => 'core_user', 'fullpath' => '/user/module.js');
+    $module = ['name' => 'core_user', 'fullpath' => '/user/module.js'];
     $PAGE->requires->js_init_call('M.core_user.init_participation', null, false, $module);
 }
 
@@ -989,42 +959,29 @@ $perpageurl = clone($baseurl);
 $perpageurl->remove_params('perpage');
 if ($perpage == SHOW_ALL_PAGE_SIZE) {
     $perpageurl->param('perpage', DEFAULT_PAGE_SIZE);
-    echo $OUTPUT->container(html_writer::link($perpageurl, get_string('showperpage', '', DEFAULT_PAGE_SIZE)), array(), 'showall');
+    echo $OUTPUT->container(html_writer::link($perpageurl, get_string('showperpage', '', DEFAULT_PAGE_SIZE)), [], 'showall');
 
 } else if ($matchcount > 0 && $perpage < $matchcount) {
     $perpageurl->param('perpage', SHOW_ALL_PAGE_SIZE);
-    echo $OUTPUT->container(html_writer::link($perpageurl, get_string('showall', '', $matchcount)), array(), 'showall');
+    echo $OUTPUT->container(html_writer::link($perpageurl, get_string('showall', '', $matchcount)), [], 'showall');
 }
 
-// Kurslich verliehene Badges
-echo('<br>');//echo('<br>');echo('<br>');echo('<br>');
-$out = html_writer::tag('div', get_string('awarded_badges', 'format_mooin4'), array('class' => 'oc_badges_text'));
+
+// Course awarded badges.
+echo('<br>');
+$out = html_writer::tag('div', get_string('awarded_badges', 'format_mooin4'), ['class' => 'oc_badges_text']);
 echo html_writer::tag('h2', $out);
-// echo html_writer::tag('div', get_string('lastday', 'format_mooin4'), array('class' => 'oc_badges_text'));
-// display_badges(0, $courseid, 24 * 60 * 60);
-//echo html_writer::tag('div', get_string('lastweek', 'format_mooin4'), array('class' => 'oc_badges_text'));
+
 ob_start();
 utils::get_badges_html(0, $courseid, 12 * 31 * 7 * 24 * 60 * 60);
 $out = ob_get_contents();
 ob_end_clean();
 if ($out != '') {
-    echo html_writer::div($out,'border-card');
-    //echo $out;
+    echo html_writer::div($out, 'border-card');
 } else {
-    //echo html_writer::div($out,'border-card');
-    //echo html_writer::div('', 'no-badges-img');
-    echo html_writer::tag('div', get_string('no_badges_awarded', 'format_mooin4'), array('class' => 'oc-no-badges'));
+    echo html_writer::tag('div', get_string('no_badges_awarded', 'format_mooin4'), ['class' => 'oc-no-badges']);
 }
-// Link zum Abmelden aus dem Kurs anzeigen,
-// wenn der User �ber Autoenrol eingeschrieben ist
-// if ($enrol = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'autoenrol', 'status' => 0))) {// manual || autoenrol
-// 	if ($user_enrolment = $DB->get_record('user_enrolments', array('enrolid' => $enrol->id, 'userid' => $USER->id))) {
-// 		$unenrolurl = new moodle_url("$CFG->wwwroot/enrol/autoenrol/unenrolself.php?enrolid=$enrol->id");
-// 		echo html_writer::tag('div', html_writer::link($unenrolurl, get_string('unenrol', 'format_mooin4') )); // , array('class' => 'oc-kurs-abmeldung'
 
-// 	}
-// }
-//echo '</div>';  // md-container.
 echo '</div>';  // Userlist.
 echo '</div>';
 

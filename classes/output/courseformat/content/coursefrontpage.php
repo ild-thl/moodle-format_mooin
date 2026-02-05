@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace format_mooin4\output\courseformat\content;
 
@@ -33,14 +47,21 @@ class coursefrontpage implements renderable {
     private $header;
 
     /** @var news_section the course frontpage news section class */
-    private $news_section;
+    private $newssection;
 
     /** @var courseprogress the course frontpage progress class */
     private $courseprogress;
 
+    /** @var badges the course frontpage badges class */
     private $badges;
+
+    /** @var certificates the course frontpage certificates class */
     private $certificates;
+
+    /** @var discussions the course frontpage discussions class */
     private $discussions;
+
+    /** @var participants the course frontpage participants class */
     private $participants;
 
 
@@ -52,7 +73,7 @@ class coursefrontpage implements renderable {
     public function __construct(course_format $format) {
         $this->format = $format;
         $this->header = new header($format);
-        $this->news_section = new news_section($format);
+        $this->newssection = new news_section($format);
         $this->courseprogress = new courseprogress($format);
         $this->badges = new badges($format);
         $this->certificates = new certificates($format);
@@ -60,10 +81,16 @@ class coursefrontpage implements renderable {
         $this->participants = new participants($format);
     }
 
+    /**
+     * Export this data so it can be used as the context for a mustache template.
+     *
+     * @param \renderer_base $output typically, the renderer that's calling this function
+     * @return \stdClass data context for a mustache template
+     */
     public function export_for_template(\renderer_base $output) {
         $format = $this->format;
         $header = $this->header;
-        $news_section = $this->news_section;
+        $newssection = $this->newssection;
         $courseprogress = $this->courseprogress;
         $badges = $this->badges;
         $certificates = $this->certificates;
@@ -71,12 +98,10 @@ class coursefrontpage implements renderable {
         $participants = $this->participants;
         $course = $format->get_course();
 
-
-
         $data = (object)[
             'header' => $header->export_for_template($output),
             'coursename' => $course->fullname,
-            'news_section' => $news_section->export_for_template($output),
+            'news_section' => $newssection->export_for_template($output),
             'courseprogress' => $courseprogress->export_for_template($output),
             'badges' => $badges->export_for_template($output),
             'certificates' => $certificates->export_for_template($output),
@@ -88,7 +113,7 @@ class coursefrontpage implements renderable {
         require_once(__DIR__ . '/../../../../lib.php');
         $courseid = $course->id;
 
-        //handle data for course element visibility
+        // Handle data for course element visibility.
         if (get_toggle_newssection_visibility($courseid) == 1) {
             $data->newssection_visibility = true;
         } else {

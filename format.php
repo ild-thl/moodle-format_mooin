@@ -44,10 +44,7 @@ $context = context_course::instance($course->id);
 $course->hiddensections = true;
 
 
-// $sectionnumber = optional_param('section', 0, PARAM_INT);
-// if ($sectionnumber > 0) {
-//     set_user_preference('format_mooin4_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
-// }
+
 
 if (($marker >= 0) && has_capability('moodle/course:setcurrentsection', $context) && confirm_sesskey()) {
     $course->marker = $marker;
@@ -61,24 +58,19 @@ course_create_sections_if_missing($course, 0);
 
 $renderer = $PAGE->get_renderer('format_mooin4');
 
-//$sectionnumber = optional_param('section', 0, PARAM_INT);
-// if ($sectionnumber > 0) {
-//     set_user_preference('format_mooin4_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
-// }
+
 
 // Tinajohn replaced.
 if (!is_null($displaysection)) {
     $format->set_sectionnum($displaysection);
 }
 
-// if (!empty($displaysection)) {
-//     $format->set_section_number($displaysection);
-// }
+
 
 $outputclass = $format->get_output_classname('content');
 $widget = new $outputclass($format);
 echo $renderer->render($widget);
 
-//var_dump($widget);
+
 // Include course format js module.
 $PAGE->requires->js('/course/format/mooin4/format.js');

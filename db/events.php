@@ -26,56 +26,56 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$observers = array(
-    // Badges
-    array(
+$observers = [
+    // Badges.
+    [
         'eventname' => '\core\event\badge_awarded',
         'callback' => 'format_mooin4_observer::badge_awarded',
-    ),
-    array(
+    ],
+    [
         'eventname' => '\core\event\badge_viewed',
         'callback' => 'format_mooin4_observer::badge_viewed',
-    ),
-    // ilddigitalcert
-    array(
+    ],
+    // Ilddigitalcert.
+    [
         'eventname' => '\mod_ilddigitalcert\event\certificate_issued',
         'callback' => 'format_mooin4_observer::ilddigital_certificate_issued',
-    ),
-    array(
+    ],
+    [
         'eventname' => '\mod_ilddigitalcert\event\certificate_viewed',
         'callback' => 'format_mooin4_observer::ilddigital_certificate_viewed',
-    ),
-    // coursecertificate
-    array(
+    ],
+    // Coursecertificate.
+    [
         'eventname' => '\mod_coursecertificate\event\course_module_viewed',
         'callback' => 'format_mooin4_observer::course_certificate_viewed',
-    ),
-    array(
+    ],
+    [
         'eventname' => '\tool_certificate\event\certificate_issued',
         'callback' => 'format_mooin4_observer::course_certificate_issued',
-    ),
-    // Forum
-    array(
+    ],
+    // Forum.
+    [
         'eventname' => '\mod_forum\event\discussion_viewed',
-        'callback' => 'format_mooin4_observer::discussion_viewed'
-    ),
-    // User
-    array(
+        'callback' => 'format_mooin4_observer::discussion_viewed',
+    ],
+    // User.
+    [
         'eventname' => '\core\event\user_updated',
-        'callback' => 'format_mooin4_observer::user_updated'
-    ),
-    array(
+        'callback' => 'format_mooin4_observer::user_updated',
+    ],
+    [
         'eventname' => '\core\event\user_created',
-        'callback' => 'format_mooin4_observer::user_created'
-    ),
-    // Sections
-    array(
+        'callback' => 'format_mooin4_observer::user_created',
+    ],
+    // Sections.
+    [
         'eventname' => '\core\event\course_section_created',
         'callback' => 'format_mooin4_observer::course_section_created',
-    ),
-    // Course reset
-    array(
+    ],
+    // Course reset.
+    [
         'eventname' => '\core\event\course_reset_ended',
         'callback' => 'format_mooin4_observer::course_reset_ended',
-    )
-);
+    ],
+];

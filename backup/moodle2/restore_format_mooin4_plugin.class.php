@@ -14,9 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Specialised restore for mooin4 course format.
  *
@@ -32,7 +29,8 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
     /** @var int */
     protected $originalnumsections = 0;
 
-    var $chapters = null;
+    /** @var array|null Array of chapter data. */
+    protected $chapters = null;
 
     /**
      * Checks if backup file was made on Moodle before 3.3 and we should respect the 'numsections'
@@ -52,30 +50,45 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
      * @return restore_path_element[]
      */
     public function define_course_plugin_structure() {
-        $paths = array();
+        $paths = [];
 
         $elepath = $this->get_pathfor('/format_mooin4_chapter');
 
-        //Dummy path element is needed in order for after_restore_course() to be called.
-        return [new restore_path_element('dummy_course', $this->get_pathfor('/dummycourse')), new restore_path_element('chapter', $elepath)];
+        // Dummy path element is needed in order for after_restore_course() to be called.
+        return [
+            new restore_path_element('dummy_course', $this->get_pathfor('/dummycourse')),
+            new restore_path_element('chapter', $elepath),
+        ];
     }
 
-    function after_execute_course() {
+    /**
+     * Executed after course execution.
+     */
+    public function after_execute_course() {
         global $DB;
 
         $this->add_related_files('format_mooin4', 'headerimagedesktop', null);
         $this->add_related_files('format_mooin4', 'headerimagemobile', null);
     }
 
+    /**
+     * Process chapter data.
+     *
+     * @param array $data
+     */
     public function process_chapter($data) {
         global $DB;
         $data = (object)$data;
 
         $data->courseid = $this->task->get_courseid();
         $this->chapters[] = $data;
-        //$DB->insert_record('format_mooin4_chapter', $data);
     }
 
+    /**
+     * Restore files for area.
+     *
+     * @param string $area
+     */
     public function restore_files($area) {
         $courseid = $this->task->get_courseid();
         $fs = get_file_storage();
@@ -91,6 +104,7 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
     /**
      * Dummy process method.
      *
+     * @param array $data
      * @return void
      */
     public function process_dummy_course($data) {
@@ -108,7 +122,7 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
 
         $backupinfo = $this->step->get_task()->get_info();
         $contextid = $this->task->get_contextid();
-        
+
         if ($backupinfo->original_course_format !== 'mooin4') {
             return;
         }
@@ -116,9 +130,9 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
         $this->restore_files('headerimagedesktop');
         $this->restore_files('headerimagemobile');
 
-        $DB->delete_records('files', array('contextid' => $contextid, 'itemid' => $backupinfo->original_course_id));
+        $DB->delete_records('files', ['contextid' => $contextid, 'itemid' => $backupinfo->original_course_id]);
 
-        if ($newcourse = $DB->get_record('course', array('id' => $this->step->get_task()->get_courseid()))) {
+        if ($newcourse = $DB->get_record('course', ['id' => $this->step->get_task()->get_courseid()])) {
             if ($newcourse->format == 'mooin4') {
                 foreach ($backupinfo->sections as $section) {
                     $id = $this->get_mappingid('course_section', $section->sectionid);
@@ -130,7 +144,7 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
             }
         }
 
-        $DB->delete_records('format_mooin4_chapter', array('chapter' => 1, 'courseid' => $this->step->get_task()->get_courseid()));
+        $DB->delete_records('format_mooin4_chapter', ['chapter' => 1, 'courseid' => $this->step->get_task()->get_courseid()]);
 
         foreach ($this->chapters as $chapter) {
             $id = $this->get_mappingid('course_section', $chapter->sectionid);
@@ -138,19 +152,10 @@ class restore_format_mooin4_plugin extends restore_format_plugin {
             $DB->insert_record('format_mooin4_chapter', $chapter);
         }
 
-
-
-
-
-
         if (!$this->need_restore_numsections()) {
             // Backup file was made in Moodle 3.3 or later, we don't need to process 'numsecitons'.
             return;
         }
-
-
-
-
 
         if ($backupinfo->original_course_format !== 'mooin4' || !isset($data['tags']['numsections'])) {
             // Backup from another course format or backup file does not even have 'numsections'.

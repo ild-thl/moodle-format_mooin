@@ -15,128 +15,167 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Event observer for the mooin4 course format.
  *
  * @package     format_mooin4
  * @category    event
  * @copyright   2023 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
  */
-
-defined('MOODLE_INTERNAL') || die();
 
 use format_mooin4\local\utils;
 
+/**
+ * Observer class for handling various Moodle events in the mooin4 course format.
+ *
+ * This class provides static methods to handle events such as badge awards,
+ * certificate issuance, forum discussions, user updates, and course resets.
+ */
 class format_mooin4_observer {
+    /**
+     * Triggered when a badge is awarded.
+     *
+     * @param \core\event\badge_awarded $event
+     */
     public static function badge_awarded(\core\event\badge_awarded $event) {
-        // event parameters:
+        // Event parameters:
         // int expiredate: Badge expire timestamp.
         // int badgeissuedid: Badge issued ID.
-        global $CFG;
-        //require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $awardedtoid = $event->relateduserid;
         $badgeissuedid = $event->other['badgeissuedid'];
         utils::set_new_badge($awardedtoid, $badgeissuedid);
     }
 
+    /**
+     * Triggered when a badge is viewed.
+     *
+     * @param \core\event\badge_viewed $event
+     */
     public static function badge_viewed(\core\event\badge_viewed $event) {
-        // event parameters:
-        // int badgeid: the ID of the badge.
+        // Event parameters:
+        // int badgeid: The ID of the badge.
         // int badgehash: The UID of the awarded badge.
-        global $CFG;
-        //require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $viewedbyuserid = $event->userid;
         $badgehash = $event->other['badgehash'];
         utils::unset_new_badge($viewedbyuserid, $badgehash);
     }
 
+    /**
+     * Triggered when an ILD digital certificate is issued.
+     *
+     * @param \mod_ilddigitalcert\event\certificate_issued $event
+     */
     public static function ilddigital_certificate_issued(\mod_ilddigitalcert\event\certificate_issued $event) {
-        global $CFG;
-        //require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $awardedtoid = $event->relateduserid;
         $issuedid = $event->objectid;
         utils::set_new_certificate($awardedtoid, $issuedid, 'ilddigitalcert');
     }
 
+    /**
+     * Triggered when an ILD digital certificate is viewed.
+     *
+     * @param \mod_ilddigitalcert\event\certificate_viewed $event
+     */
     public static function ilddigital_certificate_viewed(\mod_ilddigitalcert\event\certificate_viewed $event) {
-        global $CFG;
-        //require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $viewedbyuserid = $event->userid;
         $issuedid = $event->objectid;
         utils::unset_new_certificate($viewedbyuserid, $issuedid, 'ilddigitalcert');
     }
 
+    /**
+     * Triggered when a course certificate is issued.
+     *
+     * @param \tool_certificate\event\certificate_issued $event
+     */
     public static function course_certificate_issued(\tool_certificate\event\certificate_issued $event) {
-        global $CFG;
-        //require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $awardedtoid = $event->relateduserid;
         $issuedid = $event->objectid;
         utils::set_new_certificate($awardedtoid, $issuedid, 'coursecertificate');
     }
 
+    /**
+     * Triggered when a course certificate is viewed.
+     *
+     * @param \mod_coursecertificate\event\course_module_viewed $event
+     */
     public static function course_certificate_viewed(\mod_coursecertificate\event\course_module_viewed $event) {
-        global $CFG, $DB;
-        //require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
+        global $DB;
         $viewedbyuserid = $event->userid;
         $coursecertificateid = $event->objectid;
-        if ($coursecertificate = $DB->get_record('coursecertificate', array('id' => $coursecertificateid))) {
+        if ($coursecertificate = $DB->get_record('coursecertificate', ['id' => $coursecertificateid])) {
             if ($coursecertificateissue = $DB->get_record(
                 'tool_certificate_issues',
-                array(
+                [
                     'userid' => $viewedbyuserid,
                     'templateid' => $coursecertificate->template,
-                    'courseid' => $coursecertificate->course
-                )
+                    'courseid' => $coursecertificate->course,
+                ]
             )) {
                 utils::unset_new_certificate($viewedbyuserid, $coursecertificateissue->id, 'coursecertificate');
             }
         }
     }
 
+    /**
+     * Triggered when a forum discussion is viewed.
+     *
+     * @param \mod_forum\event\discussion_viewed $event
+     */
     public static function discussion_viewed(\mod_forum\event\discussion_viewed $event) {
-        global $CFG;
-        //require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
         $forumid = $event->contextinstanceid;
         $userid = $event->userid;
         $discussionid = $event->objectid;
         utils::set_discussion_viewed($userid, $forumid, $discussionid);
     }
 
+    /**
+     * Triggered when a user is updated.
+     *
+     * @param \core\event\user_updated $event
+     */
     public static function user_updated(\core\event\user_updated $event) {
-        global $CFG, $DB;
-        //require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
+        global $DB;
         $userid = $event->objectid;
-        if ($user = $DB->get_record('user', array('id' => $userid))) {
+        if ($user = $DB->get_record('user', ['id' => $userid])) {
             if ($coordinates = utils::get_user_coordinates($user)) {
                 utils::set_user_coordinates($userid, $coordinates->lat, $coordinates->lng);
             }
         }
     }
 
+    /**
+     * Triggered when a user is created.
+     *
+     * @param \core\event\user_created $event
+     */
     public static function user_created(\core\event\user_created $event) {
-        global $CFG, $DB;
-        //require_once($CFG->dirroot . '/course/format/mooin4/locallib.php');
+        global $DB;
         $userid = $event->objectid;
-        if ($user = $DB->get_record('user', array('id' => $userid))) {
+        if ($user = $DB->get_record('user', ['id' => $userid])) {
             if ($coordinates = utils::get_user_coordinates($user)) {
                 utils::set_user_coordinates($userid, $coordinates->lat, $coordinates->lng);
             }
         }
     }
 
+    /**
+     * Triggered when a course section is created.
+     *
+     * @param \core\event\course_section_created $event
+     */
     public static function course_section_created(\core\event\course_section_created $event) {
         global $DB;
-        
+
         $courseid = $event->courseid;
 
-        $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+        $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
         if ($course->format == 'mooin4') {
             $newsection = new stdClass();
             $newsection->id = $event->objectid;
             $newsection->name = get_string('new_lesson', 'format_mooin4');
 
-            if ($createdsection = $DB->get_record('course_sections', array('id' => $event->objectid))) {
+            if ($createdsection = $DB->get_record('course_sections', ['id' => $event->objectid])) {
                 if ($createdsection->section == 0) {
                     $newsection->name = get_string('lesson', 'format_mooin4') . ' 0';
                 }
@@ -144,7 +183,6 @@ class format_mooin4_observer {
 
             $DB->update_record('course_sections', $newsection);
         }
-       
     }
 
     /**
@@ -157,7 +195,7 @@ class format_mooin4_observer {
         global $DB;
 
         $courseid = $event->courseid;
-        $course = $DB->get_record('course', array('id' => $courseid));
+        $course = $DB->get_record('course', ['id' => $courseid]);
 
         // Only process if the course uses mooin4 format.
         if (!$course || $course->format !== 'mooin4') {
@@ -165,53 +203,53 @@ class format_mooin4_observer {
         }
 
         // Get all section IDs for this course.
-        $sections = $DB->get_records('course_sections', array('course' => $courseid), '', 'id');
+        $sections = $DB->get_records('course_sections', ['course' => $courseid], '', 'id');
         $sectionids = array_keys($sections);
 
         // Get all course module IDs for this course.
-        $cms = $DB->get_records('course_modules', array('course' => $courseid), '', 'id, instance');
+        $cms = $DB->get_records('course_modules', ['course' => $courseid], '', 'id, instance');
 
         // Delete user preferences related to this course.
         // 1. Last section visited in course.
-        $DB->delete_records_select('user_preferences', 
-            "name = :name", 
-            array('name' => 'format_mooin4_last_section_in_course_' . $courseid)
+        $DB->delete_records_select('user_preferences',
+            "name = :name",
+            ['name' => 'format_mooin4_last_section_in_course_' . $courseid]
         );
 
         // 2. Section completed status for each section.
         foreach ($sectionids as $sectionid) {
-            $DB->delete_records_select('user_preferences', 
-                "name = :name", 
-                array('name' => 'format_mooin4_section_completed_' . $sectionid)
+            $DB->delete_records_select('user_preferences',
+                "name = :name",
+                ['name' => 'format_mooin4_section_completed_' . $sectionid]
             );
-            $DB->delete_records_select('user_preferences', 
-                "name = :name", 
-                array('name' => 'format_mooin4_hide_modal_for_section_' . $sectionid)
+            $DB->delete_records_select('user_preferences',
+                "name = :name",
+                ['name' => 'format_mooin4_hide_modal_for_section_' . $sectionid]
             );
         }
 
         // 3. H5P progress for each course module.
         foreach ($cms as $cm) {
-            $DB->delete_records_select('user_preferences', 
-                "name = :name", 
-                array('name' => 'format_mooin4_hvp_progress_cmid_' . $cm->id)
+            $DB->delete_records_select('user_preferences',
+                "name = :name",
+                ['name' => 'format_mooin4_hvp_progress_cmid_' . $cm->id]
             );
-            $DB->delete_records_select('user_preferences', 
-                "name = :name", 
-                array('name' => 'format_mooin4_hvp_progress_' . $cm->instance)
+            $DB->delete_records_select('user_preferences',
+                "name = :name",
+                ['name' => 'format_mooin4_hvp_progress_' . $cm->instance]
             );
         }
 
         // 4. Delete all mooin4 preferences using LIKE patterns for this course.
         // This catches any remaining preferences that might be tied to course-specific data.
-        $likepatterns = array(
+        $likepatterns = [
             'format_mooin4_last_section_in_course_' . $courseid,
-        );
+        ];
 
         foreach ($likepatterns as $pattern) {
-            $DB->delete_records_select('user_preferences', 
-                "name = :name", 
-                array('name' => $pattern)
+            $DB->delete_records_select('user_preferences',
+                "name = :name",
+                ['name' => $pattern]
             );
         }
     }

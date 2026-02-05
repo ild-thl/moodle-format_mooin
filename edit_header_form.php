@@ -26,13 +26,35 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
 
+/**
+ * Form to edit the course header.
+ *
+ * @package     format_mooin4
+ * @copyright   2022 ISy TH Lübeck <dev.ild@th-luebeck.de>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class edit_header_form extends \moodleform {
+    /**
+     * Definition of the form.
+     */
     public function definition() {
         $mform = $this->_form;
-        $filemanageropts = $this->_customdata['filemanageropts'];        
+        $filemanageropts = $this->_customdata['filemanageropts'];
 
-        $mform->addElement('filemanager', 'headerimagedesktop', get_string('headerimagedesktop', 'format_mooin4'), null, $filemanageropts);
-        $mform->addElement('filemanager', 'headerimagemobile', get_string('headerimagemobile', 'format_mooin4'), null, $filemanageropts);
+        $mform->addElement(
+            'filemanager',
+            'headerimagedesktop',
+            get_string('headerimagedesktop', 'format_mooin4'),
+            null,
+            $filemanageropts
+        );
+        $mform->addElement(
+            'filemanager',
+            'headerimagemobile',
+            get_string('headerimagemobile', 'format_mooin4'),
+            null,
+            $filemanageropts
+        );
 
         $this->add_action_buttons();
     }

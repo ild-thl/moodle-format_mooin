@@ -41,11 +41,22 @@ class content extends content_base {
     /** @var coursefrontpage the course frontpage class */
     protected $coursefrontpage;
 
+    /**
+     * Constructor for the content class.
+     *
+     * @param course_format $format
+     */
     public function __construct(course_format $format) {
         parent::__construct($format);
         $this->coursefrontpage = new coursefrontpage($format);
     }
 
+    /**
+     * Get the template name.
+     *
+     * @param \renderer_base $renderer
+     * @return string
+     */
     public function get_template_name(\renderer_base $renderer): string {
         return 'format_mooin4/local/content';
     }
@@ -69,8 +80,8 @@ class content extends content_base {
         // shift of section results in not displaying any sections.
         // $shiftedfirsrtsections = $sections;
         // if (!empty($sections)) {
-        //     $initialsection = array_shift($shiftedfirsrtsections);
-        // }
+        // $initialsection = array_shift($shiftedfirsrtsections);
+        // }.
 
         $data = (object)[
             'title' => $format->page_title(), // This method should be in the course_format class.
@@ -80,31 +91,10 @@ class content extends content_base {
             'sectionreturn' => null,
         ];
 
-
-
-        // Es gibt nur eine section in den Lektionen
-        // Nur für die Frontpage gibt es mehrere
-/*         foreach ($sections as $sec) {
-            $message = "section nr" . $sec->num . "section cms" . json_encode($sec->cmlist);
-            \core\notification::warning($message);
-        }
- */
-        /* Es gibt Probleme mit der Lösung oben vielleicht.
-        if (!empty($sections)) {
-            $section = array_shift($sections);
-        }
-        */
-
-        // $data = (object)[
-        //     'title' => $format->page_title(), // This method should be in the course_format class.
-        //     'format' => $format->get_format(),
-        //     'sectionreturn' => 0,            
-        // ];
-
         // The single section format has extra navigation.
         $singlesection = $this->format->get_sectionnum();
         $data->editing = $format->show_editor();
- 
+
         if (!is_null($singlesection)) {
 
             $sectionnavigation = new $this->sectionnavigationclass($format, $singlesection);
@@ -112,27 +102,26 @@ class content extends content_base {
 
             $sectionselector = new $this->sectionselectorclass($format, $sectionnavigation);
             $data->sectionselector = $sectionselector->export_for_template($output);
-            
-            $data->hasnavigation = true;    
-            $data->singlesection = $data->sections; // Tinjohn take the first and leave the rest with array_shift -it is only one
+
+            $data->hasnavigation = true;
+            $data->singlesection = $data->sections; // Tinjohn take the first and leave the rest with array_shift -it is only one.
             $data->sectionreturn = $singlesection;
         }
 
         if (is_null($singlesection)) {
-            // Most formats uses section 0 as a separate section so we handle it as additional section.  
+            // Most formats uses section 0 as a separate section so we handle it as additional section.
             $initialsection = array_shift($data->sections);
-         
+
             $data = (object)[
                  'title' => $format->page_title(), // This method should be in the course_format class.
                  'initialsection' => $initialsection,
                  'sections' => $data->sections,
-                 'sectionid' =>  $initialsection->id,
+                 'sectionid' => $initialsection->id,
                  'sectionreturnid' => 0,
-             ]; 
+             ];
 
-             $data->sectionreturn = $initialsection->num;     
+             $data->sectionreturn = $initialsection->num;
              $data->frontpage = $coursefrontpage->export_for_template($output);
-            //var_dump($output);
         }
 
         if ($this->hasaddsection) {
@@ -140,9 +129,6 @@ class content extends content_base {
             $data->numsections = $addsection->export_for_template($output);
         }
 
-
-
-        //var_dump($singlesection);
         return $data;
     }
 

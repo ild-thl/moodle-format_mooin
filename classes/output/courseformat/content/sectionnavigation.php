@@ -17,7 +17,7 @@
 /**
  * Contains the default section navigation output class.
  *
- * @package   core_courseformat
+ * @package   format_mooin4
  * @copyright 2020 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,18 +35,31 @@ use format_mooin4\local\utils as utils;
 /**
  * Base class to render a course add section navigation.
  *
- * @package   core_courseformat
+ * @package   format_mooin4
  * @copyright 2020 Ferran Recio <ferran@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class sectionnavigation extends sectionnavigation_base {
 
+    /** @var stdClass|null $data Cache for the exported data. */
     private $data = null;
 
+    /**
+     * Get the template name to use for rendering.
+     *
+     * @param \renderer_base $renderer The renderer base.
+     * @return string The template name.
+     */
     public function get_template_name(\renderer_base $renderer): string {
         return 'format_mooin4/local/content/sectionnavigation';
     }
 
+    /**
+     * Export the data for the template.
+     *
+     * @param \renderer_base $output The renderer base.
+     * @return stdClass The exported data.
+     */
     public function export_for_template(\renderer_base $output): stdClass {
         global $USER, $DB, $PAGE;
 
@@ -57,7 +70,6 @@ class sectionnavigation extends sectionnavigation_base {
         $format = $this->format;
         $course = $format->get_course();
         $context = context_course::instance($course->id);
-        
 
         $modinfo = $this->format->get_modinfo();
         $sections = $modinfo->get_section_info_all();
@@ -69,25 +81,18 @@ class sectionnavigation extends sectionnavigation_base {
         $data = (object)[
             'previousurl' => '',
             'nexturl' => '',
-            //'larrow' => $output->larrow(),
-            //'rarrow' => $output->rarrow(),
             'currentsection' => $this->sectionno,
             'title_without_link' => $output->section_title_without_link($section, $course),
-            'coursebreadcrumb' => utils::course_navbar()
+            'coursebreadcrumb' => utils::course_navbar(),
         ];
 
-        $section_progress = utils::get_section_progress($course->id, $section->id, $USER->id);
-        $data->sectionprogress = $section_progress;
-
-
+        $sectionprogress = utils::get_section_progress($course->id, $section->id, $USER->id);
+        $data->sectionprogress = $sectionprogress;
 
         $back = $this->sectionno - 1;
-        //$isChapter_prev = false;
 
-
-
-        while ($back > 0 and empty($data->previousurl)) {
-            if ($DB->get_record('format_mooin4_chapter', array('sectionid' => $sections[$back]->id))) {
+        while ($back > 0 && empty($data->previousurl)) {
+            if ($DB->get_record('format_mooin4_chapter', ['sectionid' => $sections[$back]->id])) {
                 $data->previousname = get_string('previous_chapter', 'format_mooin4');
             } else {
                 if ($canviewhidden || $sections[$back]->uservisible) {
@@ -97,8 +102,6 @@ class sectionnavigation extends sectionnavigation_base {
                     if (empty($data->previousname)) {
                         $data->previousname = get_string('previous_lesson', 'format_mooin4');
                     }
-                    
-
 
                     $data->previousurl = course_get_url($course, $back);
                     $data->hasprevious = true;
@@ -108,13 +111,11 @@ class sectionnavigation extends sectionnavigation_base {
             $back--;
         }
 
-        
-
         $forward = $this->sectionno + 1;
         $numsections = course_get_format($course)->get_last_section_number();
-        while ($forward <= $numsections and empty($data->nexturl)) {
-            if ($DB->get_record('format_mooin4_chapter', array('sectionid' => $sections[$forward]->id))) {
-                $data->nextname = get_string('next_chapter', 'format_mooin4'); 
+        while ($forward <= $numsections && empty($data->nexturl)) {
+            if ($DB->get_record('format_mooin4_chapter', ['sectionid' => $sections[$forward]->id])) {
+                $data->nextname = get_string('next_chapter', 'format_mooin4');
             } else {
                 if ($canviewhidden || $sections[$forward]->uservisible) {
                     if (!$sections[$forward]->visible) {
@@ -123,7 +124,7 @@ class sectionnavigation extends sectionnavigation_base {
                     if (empty($data->nextname)) {
                         $data->nextname = get_string('next_lesson', 'format_mooin4');
                     }
-                    
+
                     $data->nexturl = course_get_url($course, $forward);
                     $data->hasnext = true;
                 }

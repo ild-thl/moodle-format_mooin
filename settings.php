@@ -34,7 +34,7 @@ if ($ADMIN->fulltree) {
         1
     ));
 
-    // Add a headline "Include in Navigation"
+    // Add a headline "Include in Navigation".
     $settings->add(new admin_setting_heading(
         'format_mooin4/global_tile_visibility',
         get_string('global_tile_visibility', 'format_mooin4'),
@@ -53,16 +53,16 @@ if ($ADMIN->fulltree) {
     ));
     $settings->add(new admin_setting_configcheckbox(
         'format_mooin4/toggle_global_discussion_visibility',
-        new lang_string('toggle_global_discussion_visibility', 'format_mooin4'),"",
+        new lang_string('toggle_global_discussion_visibility', 'format_mooin4'), "",
         1
     ));
     $settings->add(new admin_setting_configcheckbox(
         'format_mooin4/toggle_global_userlist_visibility',
-        new lang_string('toggle_global_userlist_visibility', 'format_mooin4'),"",
+        new lang_string('toggle_global_userlist_visibility', 'format_mooin4'), "",
         1
     ));
-   
-    // Add a headline "Include in Navigation"
+
+    // Add a headline "Include in Navigation".
     $settings->add(new admin_setting_heading(
         'format_mooin4/include_in_navigation',
         get_string('include_in_sidebar', 'format_mooin4'),
@@ -81,27 +81,27 @@ if ($ADMIN->fulltree) {
     ));
     $settings->add(new admin_setting_configcheckbox(
         'format_mooin4/certificates',
-        new lang_string('certificates', 'format_mooin4'),"",
+        new lang_string('certificates', 'format_mooin4'), "",
         1
     ));
     $settings->add(new admin_setting_configcheckbox(
         'format_mooin4/coursecompetencies',
-        new lang_string('coursecompetencies', 'tool_lp'),"",
+        new lang_string('coursecompetencies', 'tool_lp'), "",
         0
     ));
     $settings->add(new admin_setting_configcheckbox(
         'format_mooin4/discussions',
-        new lang_string('discussions', 'format_mooin4'),"",
+        new lang_string('discussions', 'format_mooin4'), "",
         1
     ));
     $settings->add(new admin_setting_configcheckbox(
         'format_mooin4/participants',
-        new lang_string('participants', 'format_mooin4'),"",
+        new lang_string('participants', 'format_mooin4'), "",
         1
     ));
 
     // Configure data for getting user coordinates.
-    // Add a headline "Include in Navigation"
+    // Add a headline "Include in Navigation".
     $settings->add(new admin_setting_heading(
         'format_mooin4/geonamessettings',
         get_string('geonamessettings', 'format_mooin4'),
@@ -111,19 +111,19 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext(
         'format_mooin4/geonamesapi_url',
         get_string('configlabel_geonamesapi_url', 'format_mooin4'),
-        get_string('configdesc_geonamesapi_url', 'format_mooin4'), 
+        get_string('configdesc_geonamesapi_url', 'format_mooin4'),
         'http://api.geonames.org'
     ));
     $settings->add(new admin_setting_configtext(
         'format_mooin4/geonamesapi_username',
         get_string('configlabel_geonamesapi_username', 'format_mooin4'),
-        get_string('configdesc_geonamesapi_username', 'format_mooin4'), 
+        get_string('configdesc_geonamesapi_username', 'format_mooin4'),
         'mooin4'
     ));
 
-    
+
 }
 
 if (isset($PAGE)) {
-        $PAGE->requires->js(new moodle_url('/course/format/mooin4/format.js'));
-    }
+    $PAGE->requires->js(new moodle_url('/course/format/mooin4/format.js'));
+}
