@@ -275,7 +275,27 @@ class utils {
                 }
             }
 
-            if ($coursemodule->completion != 2) {
+            // Skip activities with no completion tracking at all.
+            if ($coursemodule->completion == 0) {
+                continue;
+            }
+
+            // Activities with manual completion (completion = 1, e.g. text pages, labels):
+            // Always count as an activity; if manually marked as done → 100%, otherwise 0%.
+            if ($coursemodule->completion == 1) {
+                $activities++;
+                $sql = 'SELECT *
+                          FROM {course_modules_completion}
+                         WHERE coursemoduleid = :coursemoduleid
+                           AND userid = :userid
+                           AND completionstate != 0';
+                $params = [
+                    'coursemoduleid' => $coursemodule->id,
+                    'userid'         => $userid,
+                ];
+                if ($DB->get_record_sql($sql, $params)) {
+                    $percentage += 100;
+                }
                 continue;
             }
 
@@ -307,12 +327,12 @@ class utils {
                             $percentage += 0;
                         }
                     } else {
-                        // Priority 3: Check if marked as PASSED (completionstate = 2).
+                        // Priority 3: Erledigt markiert (completionstate = 1) ODER Bestanden (completionstate = 2).
                         $sql = 'SELECT *
                                   FROM {course_modules_completion}
                                  WHERE coursemoduleid = :coursemoduleid
                                    AND userid = :userid
-                                   AND completionstate = 2';
+                                   AND completionstate != 0';
                         $params = [
                             'coursemoduleid' => $coursemodule->id,
                             'userid' => $userid,
@@ -1315,11 +1335,22 @@ class utils {
 
             $istrackedh5p = in_array($modulename, ['hvp', 'h5pactivity']);
             $completionrequired = ($coursemodule->completion == 2);
+            $completionview = ($coursemodule->completion == 1); // z.B. Textseiten, Labels
 
-            // Always process H5P activities (hvp and h5pactivity), even if not yet started
-            // Skip only non-H5P activities that don't require completion and have no stored progress
-            // Mod: For H5P we also enforce strict completion requirement now (completion == 2).
-            if ((!$istrackedh5p && !$completionrequired && $storedprogress === null) || ($istrackedh5p && !$completionrequired)) {
+            // Check whether a completion=1 activity has been manually marked as done.
+            // Applies to ALL activity types (including H5P/HVP).
+            $completionrecord = null;
+            if ($completionview) {
+                $completionrecord = $DB->get_record('course_modules_completion', [
+                    'coursemoduleid' => $coursemodule->id,
+                    'userid'         => $userid,
+                ]);
+            }
+            $ismanuallycompletedview = ($completionview && $completionrecord && $completionrecord->completionstate != 0);
+
+            // Skip only activities with no completion tracking at all (completion=0, no stored progress).
+            // H5P activities with completion=1 (manual) are now always counted.
+            if (!$completionrequired && !$completionview && $storedprogress === null) {
                 continue;
             }
 
@@ -1359,10 +1390,16 @@ class utils {
                         $grademax = $gradinginfo->items[0]->grademax;
                         if (isset($grade) && $grade != 0) {
                             $percentage += 100 / ($grademax / $grade);
+                        } else if ($ismanuallycompletedview) {
+                            // Fallback: no grade yet, but manually marked as done → 100%.
+                            $percentage += 100;
                         } else {
                             // No grade yet, add 0% to ensure activity is counted in average.
                             $percentage += 0;
                         }
+                    } else if ($ismanuallycompletedview) {
+                        // No gradebook entry, but manually marked as done → 100%.
+                        $percentage += 100;
                     } else {
                         // No gradebook entry yet, add 0% to ensure activity is counted in average.
                         $percentage += 0;
@@ -1385,13 +1422,14 @@ class utils {
                             $percentage += 0;
                         }
                     } else {
-                        // Priority 3: Check if marked as PASSED (completionstate = 2).
-                        // Only grant 100% if explicitly passed, not just completed.
+                        // Priority 3: Erledigt markiert (completionstate = 1) ODER Bestanden (completionstate = 2).
+                        // Mit completionstate != 0 zählen wir beide Fälle: sowohl manuell als Erledigt
+                        // markiert (ohne Aufgabe gelöst) als auch automatisch bestanden.
                         $sql = 'SELECT *
                                   FROM {course_modules_completion}
                                  WHERE coursemoduleid = :coursemoduleid
                                    AND userid = :userid
-                                   AND completionstate = 2';
+                                   AND completionstate != 0';
                         $params = [
                             'coursemoduleid' => $coursemodule->id,
                             'userid' => $userid,
@@ -1408,7 +1446,12 @@ class utils {
                     $percentage += (float)$storedprogress;
                     continue;
                 }
-                // If completed, add to percentage.
+                // Für completion=1 (View-based / manuell): Als 100% zählen wenn als Erledigt markiert.
+                if ($ismanuallycompletedview) {
+                    $percentage += 100;
+                    continue;
+                }
+                // If completed (completion=2), add to percentage.
                 $sql = 'SELECT *
                               FROM {course_modules_completion}
                              WHERE coursemoduleid = :coursemoduleid
