@@ -119,6 +119,16 @@ class header extends header_base {
             $data->ishidden = true;
         }
 
+        // Detect "not yet available" sections: visible=1 but availability conditions not met.
+        if ($section->visible && !$section->uservisible) {
+            $info = new \core_availability\info_section($section);
+            $warnings = [];
+            $isavailable = $info->is_available($warnings, false, $USER->id);
+            if (!$isavailable) {
+                $data->isnotyetavailable = true;
+            }
+        }
+
         if ($course->id == SITEID) {
             $data->sitehome = true;
         }

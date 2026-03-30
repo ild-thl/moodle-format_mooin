@@ -62,14 +62,24 @@
             {{^sec_numb_visibility}}
                 <a data-toggle="collapse" href="#chapter-{{{chapter_num}}}" class="{{^containsActiveSection}} collapsed {{/containsActiveSection}}" role="button" aria-expanded="false" aria-controls="chapter-{{{chapter_num}}}"><i class="bi bi-caret-right-fill"></i> <span>{{{title}}} </span></a>
             {{/sec_numb_visibility}}
+            {{#isnotyetavailable}}
+            <span class="badge badge-info ml-1 notyetavailable-badge" style="background-color: #6c757d; color: white;">
+                {{#str}}notyetavailable, format_mooin4{{/str}}
+            </span>
+            {{/isnotyetavailable}}
         {{/chapter}}
         {{^chapter}}
             {{#sec_numb_visibility}}
-                <a href="{{{url}}}">{{^singleheader}}{{#str}}lesson, format_mooin4{{/str}} {{{prefix}}}: {{/singleheader}}{{{title_without_link}}}</a>
+                <a href="{{{url}}}">{{^singleheader}}<span>{{#str}}lesson, format_mooin4{{/str}} {{{prefix}}}: </span>{{/singleheader}}{{{title_without_link}}}</a>
             {{/sec_numb_visibility}}
             {{^sec_numb_visibility}}
                 <a href="{{{url}}}">{{{title_without_link}}}</a>
             {{/sec_numb_visibility}}
+            {{#isnotyetavailable}}
+            <span class="badge badge-info ml-1 notyetavailable-badge" style="background-color: #6c757d; color: white;">
+                {{#str}}notyetavailable, format_mooin4{{/str}}
+            </span>
+            {{/isnotyetavailable}}
         {{/chapter}}
         {{/editing}}
     </h3>

@@ -146,6 +146,11 @@
                 {{#pix}} t/locked, core {{/pix}}
             </span>
             {{#isCompleted}}<i class="bi bi-check" data-for="checkmark"></i>{{/isCompleted}}
+            {{#isnotyetavailable}}
+            <span class="badge badge-secondary ml-1 notyetavailable-badge" title="{{#str}}notyetavailable, format_mooin4{{/str}}">
+                <i class="bi bi-lock-fill"></i>
+            </span>
+            {{/isnotyetavailable}}
             <span class="dragicon ml-auto">{{#pix}}i/dragdrop{{/pix}}</span>
         </span>
         

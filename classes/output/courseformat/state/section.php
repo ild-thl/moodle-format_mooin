@@ -124,6 +124,17 @@ class section extends section_base {
             if ($lastsection == $this->section->section) {
                 $data->isActiveSection = true;
             }
+
+        // Detect "not yet available" sections: visible=1 but availability conditions not met.
+        // These should show a "Noch nicht verfügbar" badge in the course index so learners
+        // understand why the course progress is not at 100%.
+        if ($this->section->visible && !$this->section->uservisible) {
+            $info = new info_section($this->section);
+            $warnings = [];
+            $isavailable = $info->is_available($warnings, false, $USER->id);
+            if (!$isavailable) {
+                $data->isnotyetavailable = true;
+            }
         }
 
         return $data;

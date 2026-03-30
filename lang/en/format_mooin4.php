@@ -126,6 +126,7 @@ $string['new_user'] = 'Recently joined: ';
 $string['news'] = 'News';
 $string['newsectionname'] = 'New name for section {$a}';
 $string['newsforum_settings'] = 'News forum settings';
+$string['notyetavailable'] = 'Not yet available';
 $string['next_chapter'] = 'Next chapter';
 $string['next_lesson'] = 'Next lesson';
 $string['no_badges_awarded'] = 'No badges have been issued in this course yet.';
