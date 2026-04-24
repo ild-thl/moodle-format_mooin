@@ -201,3 +201,13 @@ $string['users'] = 'Users';
 $string['welcome'] = 'Welcome to the course';
 $string['youareeditingsection'] = 'Warning: You are editing Section 0!';
 $string['youareeditingsectioninfo'] = 'In this course format, the contents of this section are processed hidden. You can use it as usual for hidden content in Moodle. However, no content is displayed in this section itself.';
+
+// Placeholder images settings.
+$string['placeholder_images_heading'] = 'Placeholder Images';
+$string['placeholder_images_description'] = 'Configure placeholder images that are displayed when no content is available (e.g., no badges, certificates, or participants).';
+$string['placeholder_badges'] = 'Badges placeholder image';
+$string['placeholder_badges_help'] = 'Upload a custom placeholder image for badges. Recommended size: 200x200px. If no image is uploaded, the default CSS placeholder will be used.';
+$string['placeholder_certificates'] = 'Certificates placeholder image';
+$string['placeholder_certificates_help'] = 'Upload a custom placeholder image for certificates. Recommended size: 200x200px. If no image is uploaded, the default CSS placeholder will be used.';
+$string['placeholder_participants'] = 'Participants placeholder image';
+$string['placeholder_participants_help'] = 'Upload a custom placeholder image for participants. Recommended size: 200x200px. If no image is uploaded, the default CSS placeholder will be used.';

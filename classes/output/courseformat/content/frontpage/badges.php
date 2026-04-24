@@ -75,6 +75,7 @@ class badges implements renderable {
             'badgesUrl' => new moodle_url('/course/format/mooin4/badges.php', ['id' => $course->id]),
             'new_badge' => $newbadge,
             'badges_number' => $badgescountmobile,
+            'placeholder_badges_url' => utils::get_placeholder_url('badges'),
         ];
 
         $coursecontext = context_course::instance($course->id);
@@ -82,6 +83,7 @@ class badges implements renderable {
             $managebadgesurl = new moodle_url('/badges/view.php', ['type' => '2', 'id' => $course->id]);
             $data->manage_badges_url = $managebadgesurl;
         }
+
         return $data;
     }
 }

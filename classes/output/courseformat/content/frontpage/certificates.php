@@ -124,6 +124,7 @@ class certificates implements renderable {
             'othercertificates' => $othercertificates,
             'new_cert' => $newcert,
             'cert_number' => $certificatesnumbermobile,
+            'placeholder_certificates_url' => utils::get_placeholder_url('certificates'),
         ];
         return $data;
     }

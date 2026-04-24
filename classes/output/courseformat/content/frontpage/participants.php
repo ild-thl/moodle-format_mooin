@@ -58,6 +58,7 @@ class participants implements renderable {
      * @return \stdClass the data
      */
     public function export_for_template(\renderer_base $output) {
+        global $USER;
         $course = $this->format->get_course();
         $usercardlist = utils::get_user_in_course($course->id);
 
@@ -68,7 +69,39 @@ class participants implements renderable {
 
         $coursecontext = context_course::instance($course->id);
         $data->has_capability_viewuser = has_capability('moodle/course:viewparticipants', $coursecontext);
+        // Check if user has editing capabilities (admin/teacher).
+        // This will work with role switching, unlike is_siteadmin().
+        $data->is_admin = has_capability('moodle/course:manageactivities', $coursecontext);
+
+        // Get placeholder image URL for participants.
+        $data->placeholder_participants_url = $this->get_placeholder_image_url('placeholder_participants');
 
         return $data;
+    }
+
+    /**
+     * Get the URL for a placeholder image.
+     *
+     * @param string $filearea The file area name (e.g., 'placeholder_participants')
+     * @return string|null The URL of the placeholder image, or null if none exists
+     */
+    private function get_placeholder_image_url($filearea) {
+        $syscontext = \context_system::instance();
+        $fs = get_file_storage();
+        $files = $fs->get_area_files($syscontext->id, 'format_mooin4', $filearea, 0, 'filename', false);
+        
+        if (!empty($files)) {
+            $file = reset($files);
+            return \moodle_url::make_pluginfile_url(
+                $syscontext->id,
+                'format_mooin4',
+                $filearea,
+                0,
+                '/',
+                $file->get_filename()
+            )->out();
+        }
+        
+        return null;
     }
 }

@@ -57,6 +57,7 @@ $certificates = utils::show_certificat($course->id);
 $data = [
     'breadcrumb' => $breadcrumb,
     'certificates' => $certificates,
+    'placeholder_certificates_url' => utils::get_placeholder_url('certificates'),
 ];
 
 echo $OUTPUT->render_from_template('format_mooin4/local/content/subpages/certificates', $data);

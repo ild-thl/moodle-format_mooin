@@ -63,6 +63,7 @@ $data = [
     'badges' => $badges,
     'userBadges' => new moodle_url('/user/profile.php', ['id' => $USER->id]),
     'badgeOptions' => new moodle_url('/badges/mybackpack.php'),
+    'placeholder_badges_url' => utils::get_placeholder_url('badges'),
 ];
 
 echo $OUTPUT->render_from_template('format_mooin4/local/content/subpages/badges', $data);

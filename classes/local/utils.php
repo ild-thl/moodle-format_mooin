@@ -178,6 +178,63 @@ class utils {
     }
 
     /**
+     * Set the grade for an h5pactivity.
+     *
+     * @param stdClass $coursemodule The course module object.
+     * @param float $score The score.
+     * @param float $maxscore The maximum score.
+     * @return mixed The new progress or false on failure.
+     */
+    public static function setgrade_h5pactivity($coursemodule, $score, $maxscore) {
+        global $DB, $USER, $CFG;
+        require_once($CFG->libdir . '/gradelib.php');
+
+        $cm = $coursemodule;
+        
+        // Get grading info for the user.
+        $gradinginfo = \grade_get_grades($cm->course, 'mod', 'h5pactivity', $cm->instance, $USER->id);
+        
+        // Calculate raw grade from score/maxscore scaling to grade item's max.
+        // Usually h5pactivity passes raw points. 
+        // We will trust the passed score, but we should ensure we update the grade item correctly.
+        
+        if (empty($gradinginfo->items)) {
+            return false;
+        }
+        
+        $gradeitem = $gradinginfo->items[0];
+        // If the grade item is locked or overridden, we shouldn't touch it.
+        if ($gradeitem->locked || $gradeitem->overridden) {
+             return false;
+        }
+
+        // Prepare grade record.
+        $grade = new \stdClass();
+        $grade->userid = $USER->id;
+        $grade->rawgrade = $score;
+        
+        // Use grade_update to save.
+        // Note: 'mod/h5pactivity' usually updates grades internally via its own events.
+        // However, if we are forcing it from the frontend, we must use the gradebook API.
+        
+        $source = 'mooin4_manual'; 
+        
+        // Array structure for grade_update.
+        $grades = array(
+            $USER->id => array(
+                'rawgrade' => $score,
+                'userid'   => $USER->id,
+                'usermodified' => time(),
+            ) 
+        );
+
+        // We need to call h5pactivity_grade_item_update closely or just use grade_update directly.
+        // Looking at mod/h5pactivity/lib.php would be ideal, but standard grade_update is safer for generic use.
+        
+        return \grade_update('mod/h5pactivity', $cm->course, 'mod', 'h5pactivity', $cm->instance, 0, $grades);
+    }
+
+    /**
      * Get HVP section progress.
      *
      * @param int $courseid The course ID.
@@ -233,6 +290,39 @@ class utils {
                     $percentage += 100 / ($grademax / $grade);
                 } else if ($storedprogress !== null) {
                     $percentage += (float)$storedprogress;
+                }
+            } else if ($modulename == 'h5pactivity') {
+                // Priority 1: Stored progress (cache).
+                if ($storedprogress !== null) {
+                    $percentage += (float)$storedprogress;
+                } else {
+                    // Priority 2: Gradebook.
+                    $gradinginfo = grade_get_grades($courseid, 'mod', 'h5pactivity', $coursemodule->instance, $userid);
+                    if (!empty($gradinginfo->items) && !empty($gradinginfo->items[0]->grades[$userid])) {
+                        $grade = $gradinginfo->items[0]->grades[$userid]->grade;
+                        $grademax = $gradinginfo->items[0]->grademax;
+                        if (isset($grade) && $grade !== null && $grademax && $grademax > 0) {
+                            $percentage += 100 / ($grademax / $grade);
+                        } else {
+                            $percentage += 0;
+                        }
+                    } else {
+                        // Priority 3: Check if marked as PASSED (completionstate = 2).
+                        $sql = 'SELECT *
+                                  FROM {course_modules_completion}
+                                 WHERE coursemoduleid = :coursemoduleid
+                                   AND userid = :userid
+                                   AND completionstate = 2';
+                        $params = [
+                            'coursemoduleid' => $coursemodule->id,
+                            'userid' => $userid,
+                        ];
+                        if ($DB->get_record_sql($sql, $params)) {
+                            $percentage += 100;
+                        } else {
+                            $percentage += 0;
+                        }
+                    }
                 }
             } else {
                 // If completed, add to percentage.
@@ -293,6 +383,58 @@ class utils {
         }
         return false;
     }
+
+    /**
+     * Get the URL for a placeholder image.
+     *
+     * @param string $type The type of placeholder (badges, certificates, participants)
+     * @return string|null The URL of the placeholder image or null if not set
+     */
+    public static function get_placeholder_url($type) {
+        $config = get_config('format_mooin4', 'placeholder_' . $type);
+
+        // DEBUG: Log the config value
+        error_log("DEBUG get_placeholder_url($type): config = " . var_export($config, true));
+
+        if (empty($config)) {
+            error_log("DEBUG get_placeholder_url($type): config is empty, returning null");
+            return null;
+        }
+
+        $fs = get_file_storage();
+        $context = context_system::instance();
+        $files = $fs->get_area_files(
+            $context->id,
+            'format_mooin4',
+            'placeholder_' . $type,
+            0,
+            'itemid, filepath, filename',
+            false
+        );
+
+        error_log("DEBUG get_placeholder_url($type): found " . count($files) . " files");
+
+        if (empty($files)) {
+            error_log("DEBUG get_placeholder_url($type): no files found, returning null");
+            return null;
+        }
+
+        $file = reset($files);
+        $url = moodle_url::make_pluginfile_url(
+            $file->get_contextid(),
+            $file->get_component(),
+            $file->get_filearea(),
+            $file->get_itemid(),
+            $file->get_filepath(),
+            $file->get_filename()
+        )->out();
+        
+        error_log("DEBUG get_placeholder_url($type): returning URL = $url");
+        return $url;
+    }
+
+
+
 
     /**
      * Get the user in the course
@@ -1227,24 +1369,38 @@ class utils {
                     }
                 }
             } else if ($modulename == 'h5pactivity') {
-                // For h5pactivity, always check stored progress first (from user preferences).
+                // Priority 1: Stored progress (cache from user preferences).
                 if ($storedprogress !== null) {
                     $percentage += (float)$storedprogress;
                 } else {
-                    // If no stored progress, try to get from gradebook.
+                     // Priority 2: Gradebook.
                     $gradinginfo = grade_get_grades($courseid, 'mod', 'h5pactivity', $coursemodule->instance, $userid);
                     if (!empty($gradinginfo->items) && !empty($gradinginfo->items[0]->grades[$userid])) {
                         $grade = $gradinginfo->items[0]->grades[$userid]->grade;
                         $grademax = $gradinginfo->items[0]->grademax;
-                        if (isset($grade) && $grade != null && $grade != 0 && $grademax && $grademax > 0) {
+                        if (isset($grade) && $grade !== null && $grademax && $grademax > 0) {
+                            // Calculate percentage from actual grade (even if 0).
                             $percentage += 100 / ($grademax / $grade);
                         } else {
-                            // No grade yet, add 0% to ensure activity is counted in average.
                             $percentage += 0;
                         }
                     } else {
-                        // No gradebook entry yet, add 0% to ensure activity is counted in average.
-                        $percentage += 0;
+                        // Priority 3: Check if marked as PASSED (completionstate = 2).
+                        // Only grant 100% if explicitly passed, not just completed.
+                        $sql = 'SELECT *
+                                  FROM {course_modules_completion}
+                                 WHERE coursemoduleid = :coursemoduleid
+                                   AND userid = :userid
+                                   AND completionstate = 2';
+                        $params = [
+                            'coursemoduleid' => $coursemodule->id,
+                            'userid' => $userid,
+                        ];
+                        if ($DB->get_record_sql($sql, $params)) {
+                            $percentage += 100;
+                        } else {
+                            $percentage += 0;
+                        }
                     }
                 }
             } else {

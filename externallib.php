@@ -251,6 +251,10 @@ class format_mooin4_external extends external_api {
             }
             if ($module !== 'h5pactivity') {
                 set_user_preference('format_mooin4_hvp_progress_' . $contentid, $immediatepercentage, $USER->id);
+            } else {
+                 // For h5pactivity, we MUST persist the grade to the gradebook.
+                 // This ensures it survives backup/restore.
+                 utils::setgrade_h5pactivity($cm, $score, $maxscore);
             }
         }
 

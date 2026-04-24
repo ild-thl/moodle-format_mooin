@@ -916,6 +916,31 @@ function format_mooin4_inplace_editable($itemtype, $itemid, $newvalue) {
  * @return bool False if file not found, does not return if found
  */
 function format_mooin4_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
+    // Handle placeholder images (system context, no login required).
+    $placeholderareas = ['placeholder_badges', 'placeholder_certificates', 'placeholder_participants'];
+    if (in_array($filearea, $placeholderareas)) {
+        if ($context->contextlevel != CONTEXT_SYSTEM) {
+            return false;
+        }
+
+        $fs = get_file_storage();
+        
+        // For placeholder areas, the itemid is always 0 and comes first in args
+        $itemid = (int)array_shift($args); // Remove itemid from beginning of args
+        $filename = array_pop($args); // Get filename from end of args
+        $filepath = $args ? '/' . implode('/', $args) . '/' : '/'; // Remaining items form the path
+
+        $file = $fs->get_file($context->id, 'format_mooin4', $filearea, $itemid, $filepath, $filename);
+
+        if (!$file || $file->is_directory()) {
+            return false;
+        }
+
+        send_stored_file($file, 86400, 0, $forcedownload, $options);
+        return;
+    }
+
+    // Handle other file areas (requires login).
     require_login($course, true);
 
     if ($filearea != 'headerimagemobile' && $filearea != 'headerimagedesktop') {
@@ -942,6 +967,7 @@ function format_mooin4_pluginfile($course, $cm, $context, $filearea, $args, $for
     // Finally send the file - in this case with a cache lifetime of 0 seconds and no filtering.
     send_stored_file($file, 0, 0, $forcedownload, $options);
 }
+
 
 
 

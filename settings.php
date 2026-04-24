@@ -121,6 +121,36 @@ if ($ADMIN->fulltree) {
         'mooin4'
     ));
 
+    // Add a headline "Placeholder Images".
+    $settings->add(new admin_setting_heading(
+        'format_mooin4/placeholder_images',
+        get_string('placeholder_images_heading', 'format_mooin4'),
+        get_string('placeholder_images_description', 'format_mooin4')
+    ));
+
+    // Placeholder image for badges.
+    $settings->add(new admin_setting_configstoredfile(
+        'format_mooin4/placeholder_badges',
+        new lang_string('placeholder_badges', 'format_mooin4'),
+        new lang_string('placeholder_badges_help', 'format_mooin4'),
+        'placeholder_badges'
+    ));
+
+    // Placeholder image for certificates.
+    $settings->add(new admin_setting_configstoredfile(
+        'format_mooin4/placeholder_certificates',
+        new lang_string('placeholder_certificates', 'format_mooin4'),
+        new lang_string('placeholder_certificates_help', 'format_mooin4'),
+        'placeholder_certificates'
+    ));
+
+    // Placeholder image for participants.
+    $settings->add(new admin_setting_configstoredfile(
+        'format_mooin4/placeholder_participants',
+        new lang_string('placeholder_participants', 'format_mooin4'),
+        new lang_string('placeholder_participants_help', 'format_mooin4'),
+        'placeholder_participants'
+    ));
 
 }
 
