@@ -69,6 +69,11 @@ class utils {
     /**
      * Get the course progress for a user.
      *
+     * Invisible sections (visible=0) are excluded from course progress entirely.
+     * Sections that are "not yet available" (visible=1, but availability conditions
+     * not yet met) are included as 0% progress, so learners can see there are more
+     * lessons to complete and understand why progress is not at 100%.
+     *
      * @param int $courseid The course ID.
      * @param int $userid The user ID.
      * @return int The progress percentage.
@@ -84,14 +89,24 @@ class utils {
                     !$DB->get_record('format_mooin4_chapter', ['sectionid' => $section->id]) &&
                     $section->section != 0
                 ) {
+                    // Skip invisible sections (hidden by teacher) - they don't count towards progress.
+                    if (!$section->visible) {
+                        continue;
+                    }
+
+                    // Include visible sections even if their availability conditions are not met.
+                    // These "not yet available" sections count as 0% so learners see there are
+                    // more lessons to complete and understand why progress is not 100%.
                     $i++;
                     $percentage += self::get_section_progress($courseid, $section->id, $userid);
                 }
             }
         }
 
-        if ($percentage > 0) {
+        if ($i > 0 && $percentage > 0) {
             $percentage = $percentage / $i;
+        } else if ($i > 0) {
+            $percentage = 0;
         }
 
         return round($percentage);
