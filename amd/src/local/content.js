@@ -22,9 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {BaseComponent} from "core/reactive";
-import {debounce} from "core/utils";
-import {getCurrentCourseEditor} from "core_courseformat/courseeditor";
+import { BaseComponent } from "core/reactive";
+import { debounce } from "core/utils";
+import { getCurrentCourseEditor } from "core_courseformat/courseeditor";
 import inplaceeditable from "core/inplace_editable";
 import Section from "format_mooin4/local/content/section";
 import CmItem from "format_mooin4/local/content/section/cmitem";
@@ -36,7 +36,7 @@ import * as CourseEvents from "core_course/events";
 import jQuery from "jquery";
 import Pending from "core/pending";
 import log from "core/log";
-import {get_string as getString} from "core/str";
+import { get_string as getString } from "core/str";
 import ModalFactory from "core/modal_factory";
 import Templates from "core/templates";
 import ModalEvents from "core/modal_events";
@@ -282,34 +282,34 @@ export default class Component extends BaseComponent {
     }
     return [
       // State changes that require to reload some course modules.
-      {watch: `cm.visible:updated`, handler: this._reloadCm},
-      {watch: `cm.stealth:updated`, handler: this._reloadCm},
-      {watch: `cm.indent:updated`, handler: this._reloadCm},
+      { watch: `cm.visible:updated`, handler: this._reloadCm },
+      { watch: `cm.stealth:updated`, handler: this._reloadCm },
+      { watch: `cm.indent:updated`, handler: this._reloadCm },
       // Update section number and title.
-      {watch: `section.number:updated`, handler: this._refreshSectionNumber},
+      { watch: `section.number:updated`, handler: this._refreshSectionNumber },
       // Collapse and expand sections.
       {
         watch: `section.contentcollapsed:updated`,
         handler: this._refreshSectionCollapsed,
       },
       // Sections and cm sorting.
-      {watch: `transaction:start`, handler: this._startProcessing},
+      { watch: `transaction:start`, handler: this._startProcessing },
       {
         watch: `course.sectionlist:updated`,
         handler: this._refreshCourseSectionlist,
       },
-      {watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist},
+      { watch: `section.cmlist:updated`, handler: this._refreshSectionCmlist },
       // Section visibility.
-      {watch: `section.visible:updated`, handler: this._reloadSection},
+      { watch: `section.visible:updated`, handler: this._reloadSection },
       {
         watch: `section.isChapter:updated`,
         handler: this._updateChapters,
       },
       // Reindex sections and cms.
-      {watch: `state:updated`, handler: this._indexContents},
+      { watch: `state:updated`, handler: this._indexContents },
       // State changes thaty require to reload course modules.
-      {watch: `cm.visible:updated`, handler: this._reloadCm},
-      {watch: `cm.sectionid:updated`, handler: this._reloadCm},
+      { watch: `cm.visible:updated`, handler: this._reloadCm },
+      { watch: `cm.sectionid:updated`, handler: this._reloadCm },
       {
         watch: `section.sectionprogress:updated`,
         handler: this._updateSectionProgress,
@@ -327,7 +327,7 @@ export default class Component extends BaseComponent {
    * @param {Object} args.state The state data
    * @param {Object} args.element The element to update
    */
-  _refreshSectionCollapsed({state, element}) {
+  _refreshSectionCollapsed({ state, element }) {
     const target = this.getElement(this.selectors.SECTION, element.id);
     if (!target) {
       throw new Error(`Unknown section with ID ${element.id}`);
@@ -404,11 +404,35 @@ export default class Component extends BaseComponent {
    *
    * @param {Event} event the custom ecent
    */
-  _completionHandler({detail}) {
+  _completionHandler({ detail }) {
     if (detail === undefined) {
       return;
     }
     this.reactive.dispatch("cmCompletion", [detail.cmid], detail.completed);
+
+    // Immediately update the progress bar without page reload:
+    // Find the section ID of the course module and trigger a progress refresh.
+    const state = this.reactive.state;
+    let sectionId = null;
+    const cmidStr = String(detail.cmid);
+
+    // Find the section that contains this CM.
+    // cmlist is a reactive collection with string IDs.
+    state.section.forEach((section) => {
+      if (section.cmlist) {
+        // cmlist can be an array, Set, or reactive map – forEach works for all.
+        section.cmlist.forEach((cmid) => {
+          if (String(cmid) === cmidStr) {
+            sectionId = section.id;
+          }
+        });
+      }
+    });
+
+    if (sectionId) {
+      // Dispatch updateSectionprogress: triggers AJAX call and updates the state (progress bar).
+      this.reactive.dispatch("updateSectionprogress", sectionId, 0, 0, 0);
+    }
   }
 
   /**
@@ -465,9 +489,9 @@ export default class Component extends BaseComponent {
 
       if (screenHeight <= 600) {
         removeOffset = titleHeight + progressbarContainerHeight + 20;
-         removeOffsetNav = removeOffset;
-         removeOffsetBreadCrump = 60;
-         removeOffsetNavUp = 60;
+        removeOffsetNav = removeOffset;
+        removeOffsetBreadCrump = 60;
+        removeOffsetNavUp = 60;
       } else {
         removeOffset = titleHeight + 20;
         removeOffsetNav = 0;
@@ -537,7 +561,7 @@ export default class Component extends BaseComponent {
    * @param {Object} param.element details the update details.
    * @param state.element
    */
-  _refreshSectionNumber({state, element}) {
+  _refreshSectionNumber({ state, element }) {
     // Find the element.
     const target = this.getElement(this.selectors.SECTION, element.id);
     if (!target) {
@@ -584,7 +608,7 @@ export default class Component extends BaseComponent {
    * @param {Object} param
    * @param {Object} param.element details the update details.
    */
-  _refreshSectionCmlist({element}) {
+  _refreshSectionCmlist({ element }) {
     const cmlist = element.cmlist ?? [];
     const section = this.getElement(this.selectors.SECTION, element.id);
     const listparent = section?.querySelector(this.selectors.SECTION_CMLIST);
@@ -607,7 +631,7 @@ export default class Component extends BaseComponent {
    * @param {Object} param
    * @param {Object} param.element details the update details.
    */
-  _refreshCourseSectionlist({element}) {
+  _refreshCourseSectionlist({ element }) {
     // If we have a section return means we only show a single section so no need to fix order.
     if (this.reactive.sectionReturn != 0) {
       return;
@@ -682,7 +706,7 @@ export default class Component extends BaseComponent {
    * @param {object} param0 the watcher details
    * @param {object} param0.element the state object
    */
-  _reloadCm({element}) {
+  _reloadCm({ element }) {
     if (!this.getElement(this.selectors.CM, element.id)) {
       return;
     }
@@ -753,7 +777,7 @@ export default class Component extends BaseComponent {
    * @param {details} param0 the watcher details
    * @param {object} param0.element the state object
    */
-  _reloadSection({state, element}) {
+  _reloadSection({ state, element }) {
     const pendingReload = new Pending(
       `courseformat/content:reloadSection_${element.id}`
     );
@@ -769,7 +793,7 @@ export default class Component extends BaseComponent {
       promise
         .then(() => {
           this._indexContents();
-          this._reloadSectionNames({state: state, element: element});
+          this._reloadSectionNames({ state: state, element: element });
           return true;
         })
         .catch((error) => {
@@ -782,7 +806,7 @@ export default class Component extends BaseComponent {
     }
   }
 
-  _reloadSectionNames({state, element}) {
+  _reloadSectionNames({ state, element }) {
     state.section.forEach((section) => {
       if (section.number >= element.number) {
         const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
@@ -796,33 +820,33 @@ export default class Component extends BaseComponent {
           //   number.innerHTML = state.section.get(section.id).prefix;
           // }
           number.innerHTML = state.section.get(section.id).prefix;
-            // Section.parentChapter + "." + section.innerChapterNumber;
+          // Section.parentChapter + "." + section.innerChapterNumber;
         }
       }
     });
   }
 
-  _updateChapters({state, element}) {
+  _updateChapters({ state, element }) {
     // This.reactive.dispatch('reloadAllSectionPrefixes', element);
     // this._reloadSection({ element });
     // window.console.log("chapter updated");
     this._reloadSection({
-            state: state, element: element,
-          });
+      state: state, element: element,
+    });
     // State.section.forEach((section) => {
     //   if (section.number >= element.number) {
     //     this._reloadSection({
     //       element: section,
     //     });
-        // const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
-        // if (section.isChapter) {
-        //   number.innerHTML = section.isChapter;
-        // } else {
-        //   number.innerHTML =
-        //     section.parentChapter + "." + section.innerChapterNumber;
-        // }
-        // window.console.log(number);
-     // }
+    // const number = this.getElement(this.selectors.INDEXNUMBER, section.id);
+    // if (section.isChapter) {
+    //   number.innerHTML = section.isChapter;
+    // } else {
+    //   number.innerHTML =
+    //     section.parentChapter + "." + section.innerChapterNumber;
+    // }
+    // window.console.log(number);
+    // }
     // });
   }
 
@@ -959,7 +983,7 @@ export default class Component extends BaseComponent {
     }
   }
 
-  async _updateSectionProgress({state, element}) {
+  async _updateSectionProgress({ state, element }) {
     const progressbar = this.getElement(this.selectors.PROGRESSBARINNER);
     progressbar.style.width = element.sectionprogress + "%";
 
@@ -998,7 +1022,7 @@ export default class Component extends BaseComponent {
       }
       if (
         Number(section.parentChapter) ===
-          Number(currentSection.parentChapter) + 1 &&
+        Number(currentSection.parentChapter) + 1 &&
         section.isFirstSectionOfChapter
       ) {
         nextSection = section;
@@ -1025,7 +1049,7 @@ export default class Component extends BaseComponent {
       ),
       footer: Templates.render(
         "format_mooin4/local/content/modals/completechapterfooter",
-        {nextSection}
+        { nextSection }
       ),
       scrollable: false,
     });
