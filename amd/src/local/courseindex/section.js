@@ -99,6 +99,7 @@ export default class Component extends DndSection {
             // this.reactive.dispatch('setContinueSection', 'section', this.id);
             sectionItem.scrollIntoView();
         }
+        this._syncChapterCaret();
     }
 
     /**
@@ -110,6 +111,7 @@ export default class Component extends DndSection {
         return [
             { watch: `section[${this.id}]:deleted`, handler: this.remove },
             { watch: `section[${this.id}]:updated`, handler: this._refreshSection },
+            { watch: `section[${this.id}].indexcollapsed:updated`, handler: this._syncChapterCaret },
             { watch: `course.pageItem:updated`, handler: this._refreshPageItem },
             { watch: `section[${this.id}].sectionprogress:updated`, handler: this._updateSectionProgress },
             // {watch: `section[${this.id}].isChapter:updated`, handler: this._reloadSectionNames},
@@ -130,9 +132,8 @@ export default class Component extends DndSection {
      *
      * @param {Object} param details the update details.
      * @param {Object} param.element the section element
-     * @param param.state
      */
-    _refreshSection({ state, element }) {
+    _refreshSection({ element }) {
         // Update classes.
         const sectionItem = this.getElement(this.selectors.SECTION_ITEM);
         sectionItem.classList.toggle(this.classes.SECTIONHIDDEN, !element.visible);
@@ -144,6 +145,7 @@ export default class Component extends DndSection {
         if (this.reactive.isEditing) {
             this._reloadSectionNames({ element: element });
         }
+        this._syncChapterCaret();
 
     }
 
@@ -152,13 +154,29 @@ export default class Component extends DndSection {
         // Window.console.log(element);
         if (element.isChapter) {
             const caret = document.createElement("i");
-            caret.classList.add("bi", "bi-caret-right-fill");
+            caret.classList.add("bi");
             title.innerHTML = " " + await getString("chapter", "format_mooin4") + " " + element.isChapter + ": " + element.title;
             title.prepend(caret);
+            this._syncChapterCaret();
         } if (!element.isChapter) {
-            // Title.innerHTML = element.parentChapter + "." + element.innerChapterNumber + ": " + element.title;
-            title.innerHTML = element.prefix + ": " + element.title;
+            const prefix = (element.prefix ?? "").toString().trim();
+            // Keep lesson titles readable even when no numeric prefix is available yet.
+            title.innerHTML = prefix ? `${prefix}: ${element.title}` : element.title;
         }
+    }
+
+    /**
+     * Toggle chapter caret icon to match collapsed state.
+     */
+    _syncChapterCaret() {
+        const caret = this.getElement(this.selectors.CARET);
+        if (!caret) {
+            return;
+        }
+        const chapterToggler = this.element.querySelector('[data-toggle="collapse"]');
+        const isCollapsed = chapterToggler?.classList.contains('collapsed') ?? false;
+        caret.classList.toggle('bi-caret-right-fill', isCollapsed);
+        caret.classList.toggle('bi-caret-down-fill', !isCollapsed);
     }
 
     /**
@@ -191,9 +209,11 @@ export default class Component extends DndSection {
     }
 
 
-    async _updateSectionProgress({ state, element }) {
+    async _updateSectionProgress({ element }) {
         // Remove any existing checkmarks first.
-        const existingCheckmarks = this.element.querySelectorAll(this.selectors.CHECKMARK); // Assuming you've uncommented the selector in create()
+        const existingCheckmarks = this.element.querySelectorAll(
+            this.selectors.CHECKMARK
+        );
         if (existingCheckmarks) {
             existingCheckmarks.forEach(node => node.remove());
         }

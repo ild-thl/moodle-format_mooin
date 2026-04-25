@@ -58,6 +58,10 @@ class section extends section_base {
         }
         $data = (object)parent::export_for_template($output);
         $data->ischapter = $ischapter;
+        // Keep both key styles for compatibility across templates/JS state consumers.
+        $data->isChapter = $ischapter;
+        // Always provide a prefix key to keep frontend rendering stable.
+        $data->prefix = '';
         if (!is_null($parentchapter)) {
             $data->parentChapter = $parentchapter->chapter;
 
@@ -73,7 +77,6 @@ class section extends section_base {
                 $data->prefix = utils::get_section_prefix($this->section);
             } else {
                 $data->sec_numb_visibility = false;
-                $data->prefix = '';
             }
         }
         // Set sec_numb_visibility for course index.
@@ -104,9 +107,11 @@ class section extends section_base {
         if (!$ischapter) {
             if (utils::is_first_section_of_chapter($this->section->id)) {
                 $data->isfirstsectionofchapter = true;
+                $data->isFirstSectionOfChapter = true;
             }
             if (utils::is_last_section_of_chapter($this->section->id)) {
                 $data->islastsectionofchapter = true;
+                $data->isLastSectionOfChapter = true;
                 if (!get_user_preferences('format_mooin4_hide_modal_for_section_' . $this->section->id)) {
                     $data->showlastsectionmodal = true;
                 }
