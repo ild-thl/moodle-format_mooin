@@ -14,14 +14,14 @@
     <a href="{{{editheaderlink}}}" class="edit-header-img"><i class="bi bi-gear-fill"></i></a>
     {{/editheaderlink}}
     {{#headerimageURL}}
-        <img src="{{{headerimageURL}}}" alt="" class="header-image">
+        <img src="{{{headerimageURL}}}" alt="" class="header-image d-none d-sm-block">
     {{/headerimageURL}}
     {{^headerimageURL}}
         <div class="desktop-placeholder d-none d-sm-block"></div>
     {{/headerimageURL}}
 
     {{#headerimageURLMobile}}
-        <img src="{{{headerimageURLMobile}}}" alt="" class="header-image">
+        <img src="{{{headerimageURLMobile}}}" alt="" class="header-image d-block d-sm-none">
     {{/headerimageURLMobile}}
     {{^headerimageURLMobile}}
         <div class="mobile-placeholder d-block d-sm-none"></div>
