@@ -87,11 +87,9 @@
             data-for="section_title"
             tabindex="-1"
         >
-        <i class="bi bi-caret-right-fill" data-for="caret"></i>
+        <i class="bi {{#containsActiveSection}}bi-caret-down-fill{{/containsActiveSection}}{{^containsActiveSection}}bi-caret-right-fill{{/containsActiveSection}}" data-for="caret"></i>
         <span>
-            {{#sec_numb_visibility}}
-                {{#str}}chapter, format_mooin4{{/str}} <span data-for="index_number" data-id="{{id}}">{{{isChapter}}}</span>:
-            {{/sec_numb_visibility}}
+            {{#str}}chapter, format_mooin4{{/str}} <span data-for="index_number" data-id="{{id}}">{{{isChapter}}}</span>:
             {{{title}}}
         </span>
         </span>
@@ -133,7 +131,7 @@
         >
                
             {{#sec_numb_visibility}}
-            <span data-for="index_number" data-id="{{id}}">{{{prefix}}}</span>: 
+                {{#prefix}}<span data-for="index_number" data-id="{{id}}">{{{prefix}}}</span>: {{/prefix}}
             {{/sec_numb_visibility}}
             {{{title}}}
             
