@@ -127,12 +127,16 @@ class section extends section_base {
         $sectionprogress = utils::get_section_progress($course->id, $this->section->id, $USER->id);
         $data->sectionprogress = $sectionprogress;
 
-        if (!$DB->get_records('course_modules', [
-            'course' => $course->id,
-            'deletioninprogress' => 0,
-            'section' => $this->section->id,
-            'completion' => 2,
-        ])) {
+        // Show the section completion button only when no activity in the section
+        // has completion tracking enabled (manual or automatic).
+        if (!$DB->record_exists_select(
+            'course_modules',
+            'course = :course AND deletioninprogress = 0 AND section = :section AND completion <> 0',
+            [
+                'course' => $course->id,
+                'section' => $this->section->id,
+            ]
+        )) {
             $data->showCompletionButton = true;
         }
         if ($sectionprogress == 100) {
