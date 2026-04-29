@@ -99,6 +99,7 @@ export default class Component extends DndSection {
             // this.reactive.dispatch('setContinueSection', 'section', this.id);
             sectionItem.scrollIntoView();
         }
+        this._registerChapterToggleSync();
         this._syncChapterCaret();
     }
 
@@ -174,9 +175,38 @@ export default class Component extends DndSection {
             return;
         }
         const chapterToggler = this.element.querySelector('[data-toggle="collapse"]');
-        const isCollapsed = chapterToggler?.classList.contains('collapsed') ?? false;
+        if (!chapterToggler) {
+            return;
+        }
+        const collapseTargetSelector = chapterToggler.getAttribute('href');
+        const collapseTarget = collapseTargetSelector ? document.querySelector(collapseTargetSelector) : null;
+        const isCollapsed = collapseTarget
+            ? !collapseTarget.classList.contains('show')
+            : chapterToggler.classList.contains('collapsed');
         caret.classList.toggle('bi-caret-right-fill', isCollapsed);
         caret.classList.toggle('bi-caret-down-fill', !isCollapsed);
+    }
+
+    /**
+     * Keep chapter caret icon synced with collapse state changes.
+     */
+    _registerChapterToggleSync() {
+        const chapterToggler = this.element.querySelector('[data-toggle="collapse"]');
+        if (!chapterToggler || chapterToggler.dataset.caretSyncBound === '1') {
+            return;
+        }
+        chapterToggler.dataset.caretSyncBound = '1';
+        const collapseTargetSelector = chapterToggler.getAttribute('href');
+        const collapseTarget = collapseTargetSelector ? document.querySelector(collapseTargetSelector) : null;
+
+        chapterToggler.addEventListener('click', () => {
+            // Let collapse classes update first, then resync the icon.
+            window.setTimeout(() => this._syncChapterCaret(), 0);
+        });
+        if (collapseTarget) {
+            collapseTarget.addEventListener('shown.bs.collapse', () => this._syncChapterCaret());
+            collapseTarget.addEventListener('hidden.bs.collapse', () => this._syncChapterCaret());
+        }
     }
 
     /**

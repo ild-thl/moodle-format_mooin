@@ -76,6 +76,7 @@ export default class Component extends BaseComponent {
       COMPLETIONBUTTON: `[data-for='complete-section']`,
       SECTIONPROGRESS: `[data-for='section-progress']`,
       TITLEOVERLAY: `[data-for='title-overlay']`,
+      CHAPTERCARET: `[data-for='chapter_caret']`,
       // H5P: `.parent-iframe`,
     };
     // Default classes to toggle on refresh.
@@ -130,6 +131,8 @@ export default class Component extends BaseComponent {
     this._indexContents();
     // Activate section togglers.
     this.addEventListener(this.element, "click", this._sectionTogglers);
+    // Sync chapter carets in the main content area.
+    this._initChapterCarets();
 
     // Collapse/Expand all sections button.
     const toogleAll = this.getElement(this.selectors.TOGGLEALL);
@@ -543,6 +546,62 @@ export default class Component extends BaseComponent {
         titleOverlay.classList.remove(this.classes.FADEOUT);
       }
     }
+  }
+
+  /**
+   * Initialize caret syncing for chapter headings in the main content.
+   */
+  _initChapterCarets() {
+    const togglers = this.getElements("a[data-toggle='collapse'][href^='#chapter-']");
+    togglers.forEach((toggler) => this._bindChapterCaret(toggler));
+    // Initial sync based on current collapse state.
+    togglers.forEach((toggler) => this._updateChapterCaret(toggler));
+  }
+
+  /**
+   * Attach listeners so a chapter caret follows collapse events.
+   *
+   * @param {Element} toggler
+   */
+  _bindChapterCaret(toggler) {
+    if (!toggler || toggler.dataset.chapterCaretBound === "1") {
+      return;
+    }
+    toggler.dataset.chapterCaretBound = "1";
+    const targetSelector = toggler.getAttribute("href");
+    const target = targetSelector ? document.querySelector(targetSelector) : null;
+
+    toggler.addEventListener("click", () => {
+      // Let Bootstrap update the collapse state, then refresh the caret.
+      window.setTimeout(() => this._updateChapterCaret(toggler), 0);
+    });
+    if (target) {
+      target.addEventListener("shown.bs.collapse", () => this._updateChapterCaret(toggler));
+      target.addEventListener("hidden.bs.collapse", () => this._updateChapterCaret(toggler));
+    }
+  }
+
+  /**
+   * Update a single chapter caret icon according to its collapse target.
+   *
+   * @param {Element} toggler
+   */
+  _updateChapterCaret(toggler) {
+    if (!toggler) {
+      return;
+    }
+    const caret = toggler.querySelector(this.selectors.CHAPTERCARET);
+    if (!caret) {
+      return;
+    }
+    const targetSelector = toggler.getAttribute("href");
+    const target = targetSelector ? document.querySelector(targetSelector) : null;
+    const isCollapsed = target
+      ? !target.classList.contains("show")
+      : toggler.classList.contains(this.classes.COLLAPSED);
+
+    caret.classList.toggle("bi-caret-right-fill", isCollapsed);
+    caret.classList.toggle("bi-caret-down-fill", !isCollapsed);
   }
 
   /**
