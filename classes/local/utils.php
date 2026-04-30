@@ -602,13 +602,14 @@ class utils {
             }
 
             $forumdiscussionurl = new moodle_url('/mod/forum/discuss.php', ['d' => $newsforumpost->discussion]);
+            $formattedmessage = self::format_forum_post_preview($newsforumpost, $cm);
             $templatecontext = [
                 'news_url' => $newsurl,
                 'user_firstname' => $user->firstname,
                 'created_news' => $creatednews,
                 'user_picture' => $OUTPUT->user_picture($user, ['courseid' => $courseid]),
                 'news_title' => $newsforumpost->subject,
-                'news_text' => $newsforumpost->message,
+                'news_text' => $formattedmessage,
                 'discussion_url' => $forumdiscussionurl,
                 'unread_news_number' => $unreadnewsnumber,
             ];
@@ -722,12 +723,13 @@ class utils {
                     $unreadforumnumber = self::count_unread_posts($USER->id, $courseid, false);
 
                     $forumdiscussionurl = new moodle_url('/mod/forum/discuss.php', ['d' => $post->discussion]);
+                    $formattedmessage = self::format_forum_post_preview($post, $cm);
                     $templatecontext = [
                         'user_firstname' => $user->firstname,
                         'created_news' => $creatednews,
                         'user_picture' => $OUTPUT->user_picture($user, ['courseid' => $courseid]),
                         'news_title' => $post->subject,
-                        'news_text' => $post->message,
+                        'news_text' => $formattedmessage,
                         'discussion_url' => $forumdiscussionurl,
                         'unread_news_number' => $unreadforumnumber,
                         'new_news' => false,
@@ -747,6 +749,31 @@ class utils {
         ];
 
         return $templatecontext;
+    }
+
+    /**
+     * Format a forum post message for preview cards.
+     *
+     * @param \stdClass $post The forum post.
+     * @param \stdClass $cm The course module.
+     * @return string
+     */
+    private static function format_forum_post_preview(\stdClass $post, \stdClass $cm): string {
+        $context = \context_module::instance($cm->id);
+        $message = file_rewrite_pluginfile_urls(
+            $post->message,
+            'pluginfile.php',
+            $context->id,
+            'mod_forum',
+            'post',
+            $post->id
+        );
+
+        return format_text($message, $post->messageformat, [
+            'context' => $context,
+            'overflowdiv' => false,
+            'para' => false,
+        ]);
     }
 
 
