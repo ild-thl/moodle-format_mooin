@@ -339,7 +339,21 @@ class utils {
                         if (isset($grade) && $grade !== null && $grademax && $grademax > 0) {
                             $percentage += 100 / ($grademax / $grade);
                         } else {
-                            $percentage += 0;
+                            // Grade row exists but no score: treat like get_section_progress (completion fallback).
+                            $sql = 'SELECT *
+                                      FROM {course_modules_completion}
+                                     WHERE coursemoduleid = :coursemoduleid
+                                       AND userid = :userid
+                                       AND completionstate != 0';
+                            $params = [
+                                'coursemoduleid' => $coursemodule->id,
+                                'userid' => $userid,
+                            ];
+                            if ($DB->get_record_sql($sql, $params)) {
+                                $percentage += 100;
+                            } else {
+                                $percentage += 0;
+                            }
                         }
                     } else {
                         // Priority 3: Erledigt markiert (completionstate = 1) ODER Bestanden (completionstate = 2).
@@ -1421,11 +1435,15 @@ class utils {
                     }
                 }
             } else if ($modulename == 'h5pactivity') {
-                // Priority 1: Stored progress (cache from user preferences).
-                if ($storedprogress !== null) {
+                // Manual "mark as done" (completion = view / manual): always 100% for this activity,
+                // even when the gradebook row exists with no score yet (typical for mod_h5pactivity).
+                if ($ismanuallycompletedview) {
+                    $percentage += 100;
+                } else if ($storedprogress !== null) {
+                    // Priority 1: Stored progress (cache from user preferences).
                     $percentage += (float)$storedprogress;
                 } else {
-                     // Priority 2: Gradebook.
+                    // Priority 2: Gradebook.
                     $gradinginfo = grade_get_grades($courseid, 'mod', 'h5pactivity', $coursemodule->instance, $userid);
                     if (!empty($gradinginfo->items) && !empty($gradinginfo->items[0]->grades[$userid])) {
                         $grade = $gradinginfo->items[0]->grades[$userid]->grade;
@@ -1434,7 +1452,21 @@ class utils {
                             // Calculate percentage from actual grade (even if 0).
                             $percentage += 100 / ($grademax / $grade);
                         } else {
-                            $percentage += 0;
+                            // No usable grade yet: fall back to activity completion (same as hvp branch).
+                            $sql = 'SELECT *
+                                      FROM {course_modules_completion}
+                                     WHERE coursemoduleid = :coursemoduleid
+                                       AND userid = :userid
+                                       AND completionstate != 0';
+                            $params = [
+                                'coursemoduleid' => $coursemodule->id,
+                                'userid' => $userid,
+                            ];
+                            if ($DB->get_record_sql($sql, $params)) {
+                                $percentage += 100;
+                            } else {
+                                $percentage += 0;
+                            }
                         }
                     } else {
                         // Priority 3: Erledigt markiert (completionstate = 1) ODER Bestanden (completionstate = 2).
