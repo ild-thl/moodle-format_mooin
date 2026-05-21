@@ -254,4 +254,37 @@ class format_mooin4_observer {
         }
     }
 
+    /**
+     * Safety-net handler for course_content_deleted event.
+     *
+     * Acts as a fallback to clean up any remaining format_mooin4 user preferences
+     * after a course is deleted. The primary cleanup is done in
+     * format_mooin4::delete_format_data(), which runs while sections and modules
+     * still exist. This handler catches anything left over, such as:
+     *   - Badge / certificate notification preferences (not section-scoped)
+     *   - Any prefs from a course whose format was changed before deletion
+     *
+     * Uses a LIKE query, so it is intentionally broad and runs only once per
+     * course deletion (not per-user).
+     *
+     * @param \core\event\course_content_deleted $event
+     */
+    public static function course_content_deleted(\core\event\course_content_deleted $event) {
+        global $DB;
+
+        $courseid = $event->objectid;
+
+        // Remove any remaining format_mooin4_* preferences that embed the course ID directly.
+        $DB->delete_records_select(
+            'user_preferences',
+            $DB->sql_like('name', ':pattern'),
+            ['pattern' => 'format_mooin4_%_' . $courseid]
+        );
+
+        // Also catch the last-section pref (format: format_mooin4_last_section_in_course_<courseid>).
+        $DB->delete_records('user_preferences', [
+            'name' => 'format_mooin4_last_section_in_course_' . $courseid,
+        ]);
+    }
+
 }

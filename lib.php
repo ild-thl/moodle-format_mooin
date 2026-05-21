@@ -881,6 +881,57 @@ class format_mooin4 extends core_courseformat\base {
 
         return $courseformatoptions;
     }
+
+    /**
+     * Course deletion hook.
+     *
+     * Removes all format_mooin4-specific data when a course is deleted:
+     *   - Chapter records from mdl_format_mooin4_chapter
+     *   - All format_mooin4_* user preferences tied to this course,
+     *     its sections, and its course modules.
+     */
+    public function delete_format_data() {
+        global $DB;
+
+        // Always call parent to remove the core 'coursesectionspreferences_' preference.
+        parent::delete_format_data();
+
+        $courseid = $this->courseid;
+
+        // 1. Delete all chapter records for this course.
+        $DB->delete_records('format_mooin4_chapter', ['courseid' => $courseid]);
+
+        // 2. Collect section IDs before they are removed (called while sections still exist).
+        $sectionids = $DB->get_fieldset_select('course_sections', 'id', 'course = ?', [$courseid]);
+
+        // 3. Collect course-module IDs for this course.
+        $cms = $DB->get_records('course_modules', ['course' => $courseid], '', 'id, instance');
+
+        // 4. Delete course-level user preference: last visited section.
+        $DB->delete_records('user_preferences', [
+            'name' => 'format_mooin4_last_section_in_course_' . $courseid,
+        ]);
+
+        // 5. Delete section-level user preferences.
+        foreach ($sectionids as $sectionid) {
+            $DB->delete_records('user_preferences', [
+                'name' => 'format_mooin4_section_completed_' . $sectionid,
+            ]);
+            $DB->delete_records('user_preferences', [
+                'name' => 'format_mooin4_hide_modal_for_section_' . $sectionid,
+            ]);
+        }
+
+        // 6. Delete course-module-level user preferences (H5P / HVP progress).
+        foreach ($cms as $cm) {
+            $DB->delete_records('user_preferences', [
+                'name' => 'format_mooin4_hvp_progress_cmid_' . $cm->id,
+            ]);
+            $DB->delete_records('user_preferences', [
+                'name' => 'format_mooin4_hvp_progress_' . $cm->instance,
+            ]);
+        }
+    }
 }
 
 /**

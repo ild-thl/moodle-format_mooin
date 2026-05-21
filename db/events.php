@@ -78,4 +78,14 @@ $observers = [
         'eventname' => '\core\event\course_reset_ended',
         'callback' => 'format_mooin4_observer::course_reset_ended',
     ],
+    // Course deletion: safety-net cleanup for any remaining format_mooin4 user preferences.
+    // The primary cleanup is done in format_mooin4::delete_format_data(), but this observer
+    // acts as a fallback for preferences that reference course-independent keys (e.g. badge/
+    // certificate notifications) and for courses whose format may have been switched away
+    // from mooin4 before deletion.
+    [
+        'eventname' => '\core\event\course_content_deleted',
+        'callback' => 'format_mooin4_observer::course_content_deleted',
+    ],
 ];
+
