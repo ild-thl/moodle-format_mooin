@@ -80,5 +80,22 @@ export default class Component extends BaseComponent {
             return;
         }
         this.reactive.dispatch('cmCompletion', [detail.cmid], detail.completed);
+
+        // Match format_mooin4/local/content: refresh section progress bar after manual completion.
+        const state = this.reactive.state;
+        let sectionId = null;
+        const cmidStr = String(detail.cmid);
+        state.section.forEach((section) => {
+            if (section.cmlist) {
+                section.cmlist.forEach((cmid) => {
+                    if (String(cmid) === cmidStr) {
+                        sectionId = section.id;
+                    }
+                });
+            }
+        });
+        if (sectionId) {
+            this.reactive.dispatch('updateSectionprogress', sectionId, 0, 0, 0);
+        }
     }
 }
