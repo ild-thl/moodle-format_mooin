@@ -115,8 +115,8 @@
             {{#userlist_visibility}}
                 <div class="participants-container d-flex flex-column">
                     {{#userCardList}}
-                        {{#is_admin}}
-                            {{! Admin view: Show detailed participant list }}
+                        {{#show_full_participants}}
+                            {{! Full view: Show detailed participant list }}
                             <span>
                                 <i class="bi bi-people-fill"></i>
                                 <a href="{{{participantsUrl}}}" class="caption">{{#str}} user_card_title, format_mooin4 {{/str}}</a>  
@@ -147,9 +147,9 @@
                             <div class="participants-link mt-auto">
                                 <a href="{{{participantsUrl}}}">{{#str}} show_all_infos, format_mooin4 {{/str}}</a>
                             </div>
-                        {{/is_admin}}
-                        {{^is_admin}}
-                            {{! Non-admin view: Show only placeholder image }}
+                        {{/show_full_participants}}
+                        {{^show_full_participants}}
+                            {{! Reduced view: Show only placeholder image }}
                             <span>
                                 <i class="bi bi-people-fill"></i>
                                 {{#has_capability_viewuser}}
@@ -183,7 +183,7 @@
                                     <a href="{{{participantsUrl}}}">{{#str}} show_all_infos, format_mooin4 {{/str}}</a>
                                 </div>
                             {{/has_capability_viewuser}}
-                        {{/is_admin}}
+                        {{/show_full_participants}}
                     {{/userCardList}}
                 </div>
             {{/userlist_visibility}}

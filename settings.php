@@ -61,6 +61,11 @@ if ($ADMIN->fulltree) {
         new lang_string('toggle_global_userlist_visibility', 'format_mooin4'), "",
         1
     ));
+    $settings->add(new admin_setting_configcheckbox(
+        'format_mooin4/toggle_global_participant_list_for_students',
+        new lang_string('toggle_global_participant_list_for_students', 'format_mooin4'), "",
+        0
+    ));
 
     // Add a headline "Include in Navigation".
     $settings->add(new admin_setting_heading(

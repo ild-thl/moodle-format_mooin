@@ -75,10 +75,6 @@ unset($contextid);
 
 require_login($course);
 
-// Check if user has editing capabilities (admin/teacher).
-// This will work with role switching, unlike is_siteadmin().
-$isadmin = has_capability('moodle/course:manageactivities', $context);
-
 $systemcontext = context_system::instance();
 $isfrontpage = ($course->id == SITEID);
 
@@ -579,8 +575,8 @@ foreach ($userlist as $lu) {
     }
 }
 
-if (!$isadmin) {
-    // Non-admin view: Show only placeholder image and participant count.
+if (!format_mooin4_show_full_participants($course->id, $context)) {
+    // Reduced view: Show only placeholder image and participant count.
     echo '<div class="non-admin-participants-view" style="text-align: center; padding: 40px 20px;">';
     
     // Get placeholder image URL.

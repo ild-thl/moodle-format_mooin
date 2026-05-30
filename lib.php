@@ -805,6 +805,12 @@ class format_mooin4 extends core_courseformat\base {
 
                 ];
             }
+            if (get_config('format_mooin4', "toggle_global_participant_list_for_students") == 1) {
+                $courseformatoptions['toggle_participant_list_for_students'] = [
+                    'default' => 0,
+                    'type' => PARAM_BOOL,
+                ];
+            }
         }
         if ($foreditform) {
             $courseformatoptionsedit = [];
@@ -871,6 +877,14 @@ class format_mooin4 extends core_courseformat\base {
                     'label' => new lang_string('toggle_userlist_visibility', 'format_mooin4'),
                     'element_type' => 'advcheckbox',  // Checkbox-Typ für das Bearbeitungsformular.
                     'help' => 'toggle_userlist_visibility',
+                    'help_component' => 'format_mooin4',
+                ];
+            }
+            if (get_config('format_mooin4', "toggle_global_participant_list_for_students") == 1) {
+                $courseformatoptionsedit['toggle_participant_list_for_students'] = [
+                    'label' => new lang_string('toggle_participant_list_for_students', 'format_mooin4'),
+                    'element_type' => 'advcheckbox',
+                    'help' => 'toggle_participant_list_for_students',
                     'help_component' => 'format_mooin4',
                 ];
             }
@@ -1166,6 +1180,42 @@ function get_toggle_userlist_visibility($courseid) {
         $courseformatoptions = $format->course_format_options(false); // Get default options.
         return $courseformatoptions['toggle_userlist_visibility']['default'];
     }
+}
+
+/**
+ * Get the custom setting 'toggle_participant_list_for_students' of a course.
+ *
+ * @param int $courseid The ID of the course.
+ * @return int The value of the setting (1 for visible, 0 for not visible).
+ */
+function get_toggle_participant_list_for_students($courseid) {
+    if (get_config('format_mooin4', 'toggle_global_participant_list_for_students') != 1) {
+        return 0;
+    }
+    $format = course_get_format($courseid);
+    $formatoptions = $format->get_format_options();
+    if (isset($formatoptions['toggle_participant_list_for_students'])) {
+        return $formatoptions['toggle_participant_list_for_students'];
+    }
+    $courseformatoptions = $format->course_format_options(false);
+    return $courseformatoptions['toggle_participant_list_for_students']['default'];
+}
+
+/**
+ * Whether the current user should see the full participant list and map.
+ *
+ * @param int $courseid The ID of the course.
+ * @param \context $context The course context.
+ * @return bool
+ */
+function format_mooin4_show_full_participants($courseid, $context) {
+    if (has_capability('moodle/course:manageactivities', $context)) {
+        return true;
+    }
+    if (!has_capability('moodle/course:viewparticipants', $context)) {
+        return false;
+    }
+    return get_toggle_participant_list_for_students($courseid) == 1;
 }
 
 /**
