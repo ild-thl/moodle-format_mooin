@@ -269,4 +269,42 @@ final class format_mooin4_test extends \advanced_testcase {
         $this->assertNotEmpty($format->get_view_url(1, ['navigation' => 1]));
         $this->assertNotEmpty($format->get_view_url(0, ['navigation' => 1]));
     }
+
+    /**
+     * Mooin4 cannot be saved when site-wide course themes are disabled.
+     */
+    public function test_edit_form_validation_requires_allowcoursethemes(): void {
+        $this->resetAfterTest(true);
+
+        $course = $this->getDataGenerator()->create_course(['format' => 'topics']);
+        $format = course_get_format($course);
+        $data = ['format' => 'mooin4'];
+
+        set_config('allowcoursethemes', 0);
+        $errors = $format->edit_form_validation($data, [], []);
+        $this->assertArrayHasKey('format', $errors);
+
+        set_config('allowcoursethemes', 1);
+        $errors = $format->edit_form_validation($data, [], []);
+        $this->assertArrayNotHasKey('format', $errors);
+        $this->assertArrayHasKey('theme', $errors);
+    }
+
+    /**
+     * Mooin4 requires the mooin4 course theme when course themes are allowed.
+     */
+    public function test_edit_form_validation_requires_mooin4_theme(): void {
+        $this->resetAfterTest(true);
+        set_config('allowcoursethemes', 1);
+
+        $course = $this->getDataGenerator()->create_course(['format' => 'topics']);
+        $format = course_get_format($course);
+
+        $errors = $format->edit_form_validation(['format' => 'mooin4', 'theme' => 'boost_union'], [], []);
+        $this->assertArrayHasKey('theme', $errors);
+
+        $errors = $format->edit_form_validation(['format' => 'mooin4', 'theme' => 'mooin4'], [], []);
+        $this->assertArrayNotHasKey('theme', $errors);
+        $this->assertArrayNotHasKey('format', $errors);
+    }
 }

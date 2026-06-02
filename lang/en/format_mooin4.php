@@ -215,3 +215,11 @@ $string['placeholder_certificates'] = 'Certificates placeholder image';
 $string['placeholder_certificates_help'] = 'Upload a custom placeholder image for certificates. Recommended size: 200x200px. If no image is uploaded, the default CSS placeholder will be used.';
 $string['placeholder_participants'] = 'Participants placeholder image';
 $string['placeholder_participants_help'] = 'Upload a custom placeholder image for participants. Recommended size: 200x200px. If no image is uploaded, the default CSS placeholder will be used.';
+
+// Course theme requirement (allowcoursethemes).
+$string['allowcoursethemeswarning_prefix'] = 'The Mooin course format requires per-course themes. Open the';
+$string['allowcoursethemeswarning_suffix'] = ', enable “{$a}”, and set the course theme to Mooin 4.x under Appearance.';
+$string['allowcoursethemeswarning_noadmin'] = 'The Mooin course format requires per-course themes. Saving is only possible if the site administrator has enabled “{$a}” and the course theme is set to Mooin 4.x under Appearance.';
+$string['error_allowcoursethemes_required'] = 'The Mooin course format cannot be saved while “{$a}” is disabled. Ask your site administrator to enable this setting, then set the course theme to Mooin 4.x under Appearance.';
+$string['mooin4themerequirementwarning'] = 'The Mooin course format requires the Mooin 4.x theme. Under Appearance, set "Force theme" to Mooin 4.x before saving.';
+$string['error_mooin4_theme_required'] = 'When using the Mooin course format, you must set "Force theme" to Mooin 4.x under Appearance.';

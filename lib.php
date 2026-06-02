@@ -454,7 +454,7 @@ class format_mooin4 extends core_courseformat\base {
      * @return array array of references to the added form elements.
      */
     public function create_edit_form_elements(&$mform, $forsection = false) {
-        global $COURSE;
+        global $CFG, $COURSE;
         $elements = parent::create_edit_form_elements($mform, $forsection);
 
         if (!$forsection && (empty($COURSE->id) || $COURSE->id == SITEID)) {
@@ -472,7 +472,162 @@ class format_mooin4 extends core_courseformat\base {
             array_unshift($elements, $element);
         }
 
+        if (!$forsection && self::is_mooin4_format_selected($mform)) {
+            $message = self::get_mooin4_theme_requirement_message($mform);
+            if ($message !== '') {
+                $element = $mform->addElement(
+                    'static',
+                    'mooin4themerequirementwarning',
+                    '',
+                    html_writer::div($message, 'alert alert-warning')
+                );
+                array_unshift($elements, $element);
+            }
+        }
+
         return $elements;
+    }
+
+    /**
+     * Validates course edit form data for this format.
+     *
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @param array $errors errors already discovered in edit form validation
+     * @return array of "element_name"=>"error_description" if there are errors
+     */
+    public function edit_form_validation($data, $files, $errors) {
+        foreach (self::get_mooin4_theme_validation_errors($data) as $field => $message) {
+            $errors[$field] = $message;
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Theme plugin name required for the mooin4 course format.
+     *
+     * @return string
+     */
+    public static function get_required_course_theme(): string {
+        return 'mooin4';
+    }
+
+    /**
+     * Validation errors when mooin4 is selected but course theme requirements are not met.
+     *
+     * @param array $data submitted course edit form data
+     * @return array field name => error message
+     */
+    protected static function get_mooin4_theme_validation_errors(array $data): array {
+        global $CFG;
+
+        if (($data['format'] ?? '') !== 'mooin4') {
+            return [];
+        }
+
+        if (empty($CFG->allowcoursethemes)) {
+            return [
+                'format' => get_string(
+                    'error_allowcoursethemes_required',
+                    'format_mooin4',
+                    get_string('allowcoursethemes', 'admin')
+                ),
+            ];
+        }
+
+        $theme = $data['theme'] ?? '';
+        if ($theme !== self::get_required_course_theme()) {
+            return ['theme' => get_string('error_mooin4_theme_required', 'format_mooin4')];
+        }
+
+        return [];
+    }
+
+    /**
+     * Warning message for the course edit form when mooin4 theme requirements are not met.
+     *
+     * @param MoodleQuickForm $mform
+     * @return string empty string if no warning should be shown
+     */
+    protected static function get_mooin4_theme_requirement_message($mform): string {
+        global $CFG;
+
+        if (empty($CFG->allowcoursethemes)) {
+            return self::get_allowcoursethemes_warning_message();
+        }
+
+        if (self::get_selected_course_theme($mform) !== self::get_required_course_theme()) {
+            return get_string('mooin4themerequirementwarning', 'format_mooin4');
+        }
+
+        return '';
+    }
+
+    /**
+     * URL to the site setting that enables per-course themes.
+     *
+     * @return moodle_url
+     */
+    protected static function get_allowcoursethemes_settings_url(): moodle_url {
+        return new moodle_url('/admin/settings.php', ['section' => 'themesettingsadvanced']);
+    }
+
+    /**
+     * Warning HTML when allowcoursethemes is disabled (includes admin link when permitted).
+     *
+     * @return string
+     */
+    protected static function get_allowcoursethemes_warning_message(): string {
+        $settingname = get_string('allowcoursethemes', 'admin');
+
+        if (has_capability('moodle/site:config', context_system::instance())) {
+            $link = html_writer::link(
+                self::get_allowcoursethemes_settings_url(),
+                get_string('themesettingsadvanced', 'admin')
+            );
+            return trim(
+                get_string('allowcoursethemeswarning_prefix', 'format_mooin4') . ' '
+                . $link . ' '
+                . get_string('allowcoursethemeswarning_suffix', 'format_mooin4', $settingname)
+            );
+        }
+
+        return get_string('allowcoursethemeswarning_noadmin', 'format_mooin4', $settingname);
+    }
+
+    /**
+     * Whether the course edit form currently has the mooin4 format selected.
+     *
+     * @param MoodleQuickForm $mform
+     * @return bool
+     */
+    protected static function is_mooin4_format_selected($mform): bool {
+        if (!$mform->elementExists('format')) {
+            return false;
+        }
+        $formatvalue = $mform->getElementValue('format');
+        if (is_array($formatvalue)) {
+            return ($formatvalue[0] ?? '') === 'mooin4';
+        }
+        return $formatvalue === 'mooin4';
+    }
+
+    /**
+     * Returns the course theme currently selected in the course edit form.
+     *
+     * @param MoodleQuickForm $mform
+     * @return string theme name or empty string if not forced
+     */
+    protected static function get_selected_course_theme($mform): string {
+        if (!$mform->elementExists('theme')) {
+            return '';
+        }
+        $themevalue = $mform->getElementValue('theme');
+        if (is_array($themevalue)) {
+            return (string)($themevalue[0] ?? '');
+        }
+        return (string)$themevalue;
     }
 
     /**

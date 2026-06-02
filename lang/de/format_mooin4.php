@@ -215,3 +215,11 @@ $string['placeholder_certificates'] = 'Zertifikate Platzhaltergrafik';
 $string['placeholder_certificates_help'] = 'Lade eine benutzerdefinierte Platzhaltergrafik für Zertifikate hoch. Empfohlene Größe: 200x200px. Wenn kein Bild hochgeladen wird, wird der Standard-CSS-Platzhalter verwendet.';
 $string['placeholder_participants'] = 'Teilnehmer Platzhaltergrafik';
 $string['placeholder_participants_help'] = 'Lade eine benutzerdefinierte Platzhaltergrafik für Teilnehmer hoch. Empfohlene Größe: 200x200px. Wenn kein Bild hochgeladen wird, wird der Standard-CSS-Platzhalter verwendet.';
+
+// Course theme requirement (allowcoursethemes).
+$string['allowcoursethemeswarning_prefix'] = 'Das Mooin-Kursformat setzt kursbezogene Designs voraus. Öffnen Sie die';
+$string['allowcoursethemeswarning_suffix'] = ', aktivieren Sie „{$a}“ und erzwingen Sie unter Darstellung das Design „Mooin 4.x“.';
+$string['allowcoursethemeswarning_noadmin'] = 'Das Mooin-Kursformat setzt kursbezogene Designs voraus. Speichern ist nur möglich, wenn die Administration „{$a}“ aktiviert hat und unter Darstellung das Design „Mooin 4.x“ erzwungen wird.';
+$string['error_allowcoursethemes_required'] = 'Das Mooin-Kursformat kann nicht gespeichert werden, solange „{$a}“ deaktiviert ist. Bitte die Administration bitten, diese Einstellung zu aktivieren und anschließend unter Darstellung das Design „Mooin 4.x“ zu erzwingen.';
+$string['mooin4themerequirementwarning'] = 'Das Mooin-Kursformat setzt das Design „Mooin 4.x“ voraus. Wählen Sie unter Darstellung bei „Design festlegen“ Mooin 4.x, bevor Sie speichern.';
+$string['error_mooin4_theme_required'] = 'Beim Mooin-Kursformat muss unter Darstellung bei „Design festlegen“ das Design „Mooin 4.x“ gewählt werden.';
