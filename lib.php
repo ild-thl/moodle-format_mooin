@@ -483,24 +483,12 @@ class format_mooin4 extends core_courseformat\base {
             if ($context && !has_capability('format/mooin4:allowmooin4', $context)) {
                 $hascapability = false;
                 $message = get_string('error_mooin4_format_not_allowed', 'format_mooin4');
-                $oldformat = (!empty($COURSE->format) && $COURSE->format !== 'mooin4') ? $COURSE->format : 'topics';
 
-                $script = html_writer::script("
-                    require(['jquery'], function($) {
-                        setTimeout(function() {
-                            var formatselect = $('#id_format');
-                            if (formatselect.val() === 'mooin4') {
-                                formatselect.val('" . $oldformat . "').trigger('change');
-                            }
-                        }, 2000); // Revert after 2 seconds so the user can see the warning
-                    });
-                ");
-                
                 $element = $mform->addElement(
                     'static',
                     'mooin4formatnotallowed',
                     '',
-                    html_writer::div($message, 'alert alert-warning') . $script
+                    html_writer::div($message, 'alert alert-warning')
                 );
                 array_unshift($elements, $element);
             }
