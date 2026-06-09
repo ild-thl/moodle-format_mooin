@@ -15,17 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
+ * Capability definitions for the mooin4 course format.
  *
  * @package    format_mooin4
- * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
+ * @copyright  2024 ISy TH Lübeck <dev.ild@th-luebeck.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2026060900;       // The current plugin version (Date: YYYYMMDDXX).
-$plugin->release   = 'v4.4.2';
-$plugin->requires  = 2022111800;       // Requires this Moodle version.
-$plugin->component = 'format_mooin4'; // Full name of the plugin (used for diagnostics).
-$plugin->dependencies = ['theme_mooin4' => 2025081300];
+$capabilities = [
+    'format/mooin4:allowmooin4' => [
+        'riskbitmask' => RISK_CONFIG,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+        ],
+    ],
+];

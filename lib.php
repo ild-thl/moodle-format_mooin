@@ -473,15 +473,50 @@ class format_mooin4 extends core_courseformat\base {
         }
 
         if (!$forsection && self::is_mooin4_format_selected($mform)) {
-            $message = self::get_mooin4_theme_requirement_message($mform);
-            if ($message !== '') {
+            global $PAGE;
+            $context = context_course::instance($COURSE->id, IGNORE_MISSING);
+            if (empty($COURSE->id)) {
+                $context = $PAGE->context;
+            }
+            
+            $hascapability = true;
+            if ($context && !has_capability('format/mooin4:allowmooin4', $context)) {
+                $hascapability = false;
+                $message = get_string('error_mooin4_format_not_allowed', 'format_mooin4');
+                $oldformat = (!empty($COURSE->format) && $COURSE->format !== 'mooin4') ? $COURSE->format : 'topics';
+
+                $script = html_writer::script("
+                    require(['jquery'], function($) {
+                        setTimeout(function() {
+                            var formatselect = $('#id_format');
+                            if (formatselect.val() === 'mooin4') {
+                                formatselect.val('" . $oldformat . "').trigger('change');
+                            }
+                        }, 2000); // Revert after 2 seconds so the user can see the warning
+                    });
+                ");
+                
                 $element = $mform->addElement(
                     'static',
-                    'mooin4themerequirementwarning',
+                    'mooin4formatnotallowed',
                     '',
-                    html_writer::div($message, 'alert alert-warning')
+                    html_writer::div($message, 'alert alert-warning') . $script
                 );
                 array_unshift($elements, $element);
+            }
+
+            // Only show theme requirement warning if the user actually has the capability.
+            if ($hascapability) {
+                $message = self::get_mooin4_theme_requirement_message($mform);
+                if ($message !== '') {
+                    $element = $mform->addElement(
+                        'static',
+                        'mooin4themerequirementwarning',
+                        '',
+                        html_writer::div($message, 'alert alert-warning')
+                    );
+                    array_unshift($elements, $element);
+                }
             }
         }
 
@@ -497,8 +532,22 @@ class format_mooin4 extends core_courseformat\base {
      * @return array of "element_name"=>"error_description" if there are errors
      */
     public function edit_form_validation($data, $files, $errors) {
-        foreach (self::get_mooin4_theme_validation_errors($data) as $field => $message) {
-            $errors[$field] = $message;
+        global $COURSE, $PAGE;
+
+        if (($data['format'] ?? '') === 'mooin4') {
+            $context = context_course::instance($COURSE->id, IGNORE_MISSING);
+            if (empty($COURSE->id)) {
+                $context = $PAGE->context;
+            }
+            if ($context && !has_capability('format/mooin4:allowmooin4', $context)) {
+                $errors['format'] = get_string('error_mooin4_format_not_allowed', 'format_mooin4');
+            }
+        }
+
+        if (!isset($errors['format'])) {
+            foreach (self::get_mooin4_theme_validation_errors($data) as $field => $message) {
+                $errors[$field] = $message;
+            }
         }
 
         return $errors;
