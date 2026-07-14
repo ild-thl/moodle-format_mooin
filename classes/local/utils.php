@@ -984,7 +984,12 @@ class utils {
         global $DB;
         global $chapters;
         global $sections;
-        if (isset($sections[$section->id])) {
+        //if (isset($sections[$section->id])) {
+           // if (isset($chapters[$sections[$section->id]->parentchapterid])) {
+               // return $chapters[$sections[$section->id]->parentchapterid];
+           // }
+        //}
+        if (isset($sections[$section->id]->parentchapterid)) {
             if (isset($chapters[$sections[$section->id]->parentchapterid])) {
                 return $chapters[$sections[$section->id]->parentchapterid];
             }
@@ -1000,8 +1005,13 @@ class utils {
             if (in_array($section->id, $sids)) {
                 $chapter->sectionids = $sids;
                 $chapters[$chapter->id] = $chapter;
-                $section->parentchapterid = $chapter->id;
-                $sections[$section->id] = $section;
+                // Store parent chapter information separately.
+                if (!isset($sections[$section->id])) {
+                    $sections[$section->id] = new \stdClass();
+                }
+                $sections[$section->id]->parentchapterid = $chapter->id;
+                //$section->parentchapterid = $chapter->id;
+                //$sections[$section->id] = $section;
                 return $chapter;
             }
         }
