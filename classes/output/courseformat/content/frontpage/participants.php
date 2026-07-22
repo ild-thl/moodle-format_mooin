@@ -58,20 +58,24 @@ class participants implements renderable {
      * @return \stdClass the data
      */
     public function export_for_template(\renderer_base $output) {
-        global $USER;
+        global $CFG;
         $course = $this->format->get_course();
+        $coursecontext = context_course::instance($course->id);
+        require_once($CFG->dirroot . '/course/format/mooin4/lib.php');
+
         $usercardlist = utils::get_user_in_course($course->id);
+        $showfullparticipants = format_mooin4_show_full_participants($course->id, $coursecontext);
+        if (is_array($usercardlist)) {
+            $usercardlist['show_full_participants'] = $showfullparticipants;
+        }
 
         $data = (object) [
             'participantsUrl' => new moodle_url('/course/format/mooin4/participants.php', ['id' => $course->id]),
             'userCardList' => $usercardlist,
         ];
 
-        $coursecontext = context_course::instance($course->id);
         $data->has_capability_viewuser = has_capability('moodle/course:viewparticipants', $coursecontext);
-        // Check if user has editing capabilities (admin/teacher).
-        // This will work with role switching, unlike is_siteadmin().
-        $data->is_admin = has_capability('moodle/course:manageactivities', $coursecontext);
+        $data->show_full_participants = $showfullparticipants;
 
         // Get placeholder image URL for participants.
         $data->placeholder_participants_url = $this->get_placeholder_image_url('placeholder_participants');
