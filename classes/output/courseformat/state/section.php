@@ -54,10 +54,7 @@ class section extends section_base {
         if ($chapter = $DB->get_record('format_mooin4_chapter', ['sectionid' => $this->section->id])) {
             $ischapter = $chapter->chapter;
         } else {
-            //$parentchapter = utils::get_parent_chapter($this->section);
-            if ($parentchapter) {
-                $data->chapter = $parentchapter->chapter;
-            }
+            $parentchapter = utils::get_parent_chapter($this->section);
         }
         $data = (object)parent::export_for_template($output);
         $data->ischapter = $ischapter;
@@ -65,11 +62,10 @@ class section extends section_base {
         $data->isChapter = $ischapter;
         // Always provide a prefix key to keep frontend rendering stable.
         $data->prefix = '';
-        if (!is_null($parentchapter)) {
-            //$data->parentChapter = $parentchapter->chapter;
-            if ($parentchapter) {
-                $data->sectionid = $parentchapter->sectionid;
-            }
+        if ($parentchapter) {
+            $data->parentChapter = $parentchapter->chapter;
+            $data->chapter = $parentchapter->chapter;
+            $data->sectionid = $parentchapter->sectionid;
 
             if ($parentchapterassection = $DB->get_record('course_sections', ['id' => $parentchapter->sectionid])) {
                 $data->innerchapternumber = $this->section->section - $parentchapterassection->section;
