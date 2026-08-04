@@ -152,12 +152,7 @@
                             {{! Reduced view: Show only placeholder image }}
                             <span>
                                 <i class="bi bi-people-fill"></i>
-                                {{#has_capability_viewuser}}
-                                    <a href="{{{participantsUrl}}}" class="caption">{{#str}} user_card_title, format_mooin4 {{/str}}</a>
-                                {{/has_capability_viewuser}}
-                                {{^has_capability_viewuser}}
-                                    <span class="caption">{{#str}} user_card_title, format_mooin4 {{/str}}</span>
-                                {{/has_capability_viewuser}}
+                                <span class="caption">{{#str}} user_card_title, format_mooin4 {{/str}}</span>
                             </span>
                             <div class="no-participantscap-container">
                                 {{#placeholder_participants_url}}
@@ -178,11 +173,6 @@
                                     {{/singleuser}}
                                 </span>
                             </div>
-                            {{#has_capability_viewuser}}
-                                <div class="participants-link mt-auto">
-                                    <a href="{{{participantsUrl}}}">{{#str}} show_all_infos, format_mooin4 {{/str}}</a>
-                                </div>
-                            {{/has_capability_viewuser}}
                         {{/show_full_participants}}
                     {{/userCardList}}
                 </div>
