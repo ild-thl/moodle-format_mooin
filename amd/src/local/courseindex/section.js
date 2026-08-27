@@ -156,13 +156,22 @@ export default class Component extends DndSection {
         if (element.isChapter) {
             const caret = document.createElement("i");
             caret.classList.add("bi");
-            title.innerHTML = " " + await getString("chapter", "format_mooin4") + " " + element.isChapter + ": " + element.title;
+            if (element.sec_numb_visibility) {
+                const chapterStr = await getString("chapter", "format_mooin4");
+                title.innerHTML = ` ${chapterStr} ${element.isChapter}: ${element.title}`;
+            } else {
+                title.innerHTML = " " + element.title;
+            }
             title.prepend(caret);
             this._syncChapterCaret();
         } if (!element.isChapter) {
             const prefix = (element.prefix ?? "").toString().trim();
             // Keep lesson titles readable even when no numeric prefix is available yet.
-            title.innerHTML = prefix ? `${prefix}: ${element.title}` : element.title;
+            if (element.sec_numb_visibility && prefix) {
+                title.innerHTML = `${prefix}: ${element.title}`;
+            } else {
+                title.innerHTML = element.title;
+            }
         }
     }
 
