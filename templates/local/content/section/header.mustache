@@ -70,7 +70,7 @@
         {{/chapter}}
         {{^chapter}}
             {{#sec_numb_visibility}}
-                <a href="{{{url}}}">{{^singleheader}}<span>{{#str}}lesson, format_mooin4{{/str}} {{{prefix}}}: </span>{{/singleheader}}{{{title_without_link}}}</a>
+                <a href="{{{url}}}">{{^singleheader}}<span>{{#str}}lesson, format_mooin4{{/str}} {{{prefix}}}: {{{title_without_link}}}</span>{{/singleheader}}{{#singleheader}}{{{title_without_link}}}{{/singleheader}}</a>
             {{/sec_numb_visibility}}
             {{^sec_numb_visibility}}
                 <a href="{{{url}}}">{{{title_without_link}}}</a>

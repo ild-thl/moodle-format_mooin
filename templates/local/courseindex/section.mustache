@@ -89,7 +89,9 @@
         >
         <i class="bi {{#containsActiveSection}}bi-caret-down-fill{{/containsActiveSection}}{{^containsActiveSection}}bi-caret-right-fill{{/containsActiveSection}}" data-for="caret"></i>
         <span>
+            {{#sec_numb_visibility}}
             {{#str}}chapter, format_mooin4{{/str}} <span data-for="index_number" data-id="{{id}}">{{{isChapter}}}</span>:
+            {{/sec_numb_visibility}}
             {{{title}}}
         </span>
         </span>
