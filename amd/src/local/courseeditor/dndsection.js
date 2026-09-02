@@ -160,7 +160,7 @@ export default class extends BaseComponent {
             this.reactive.dispatch('cmMove', [dropdata.id], this.id);
         }
         if (dropdata.type == 'section') {
-            this.reactive.dispatch('sectionMove', [dropdata.id], this.id);
+            this.reactive.dispatch('sectionMoveAfter', [dropdata.id], this.id);
         }
     }
 }
