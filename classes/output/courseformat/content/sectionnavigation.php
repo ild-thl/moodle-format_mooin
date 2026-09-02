@@ -42,7 +42,7 @@ use format_mooin4\local\utils as utils;
 class sectionnavigation extends sectionnavigation_base {
 
     /** @var stdClass|null $data Cache for the exported data. */
-    private $data = null;
+    protected $data = null;
 
     /**
      * Get the template name to use for rendering.
