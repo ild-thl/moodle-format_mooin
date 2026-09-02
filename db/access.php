@@ -44,4 +44,14 @@ $capabilities = [
             'coursecreator' => CAP_ALLOW,
         ],
     ],
+
+    'format/mooin4:aluhatsoff' => [
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+            'coursecreator' => CAP_ALLOW,
+        ],
+    ],
 ];

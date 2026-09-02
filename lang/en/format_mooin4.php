@@ -224,5 +224,6 @@ $string['error_allowcoursethemes_required'] = 'The Mooin course format cannot be
 $string['mooin4themerequirementwarning'] = 'The Mooin course format requires the Mooin 4.x theme. Under Appearance, set "Force theme" to Mooin 4.x before saving.';
 $string['mooin4:allowmooin4'] = 'Allowed to change course format to Mooin 4.x';
 $string['mooin4:readuserpage'] = 'View additional participant profile fields (city, country, badges) on the participants page';
+$string['mooin4:aluhatsoff'] = 'View the course badges of other (non-teacher) participants on the participants page';
 $string['error_mooin4_format_not_allowed'] = 'You do not have permission to change the course format to Mooin 4.x.';
 $string['error_mooin4_theme_required'] = 'When using the Mooin course format, you must set "Force theme" to Mooin 4.x under Appearance.';
