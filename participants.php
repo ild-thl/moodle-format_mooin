@@ -434,7 +434,8 @@ $joins = ["FROM {user} u"];
 $wheres = [];
 
 $userfields = ['username', 'email', 'city', 'country', 'lang', 'timezone', 'maildisplay'];
-$mainuserfields = user_picture::fields('u', $userfields);
+$mainuserfields = \core_user\fields::for_userpic()->including(...$userfields)->get_sql('u', false, '', 'id', false)->selects;
+$mainuserfields = str_replace(', ', ',', $mainuserfields);
 
 $value = \core_user\fields::for_name()->with_identity($context);
 $extrasql = $value->get_sql('u')->selects;
