@@ -657,7 +657,7 @@ if ($roleid > 0) {
     echo $OUTPUT->heading($heading, 3);
 } else {
     if ($course->id != SITEID && has_capability('moodle/course:enrolreview', $context)) {
-        $editlink = $OUTPUT->action_icon(new moodle_url('/enrol/users.php', ['id' => $course->id]),
+        $editlink = $OUTPUT->action_icon(new moodle_url('/user/index.php', ['id' => $course->id]),
                                          new pix_icon('t/edit', get_string('edit')));
     } else {
         $editlink = '';
