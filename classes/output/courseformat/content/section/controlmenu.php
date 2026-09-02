@@ -25,6 +25,8 @@
 namespace format_mooin4\output\courseformat\content\section;
 
 use context_course;
+use core\output\action_menu\link_secondary;
+use core\output\pix_icon;
 use core_courseformat\output\local\content\section\controlmenu as controlmenu_base;
 use moodle_url;
 
@@ -79,12 +81,11 @@ class controlmenu extends controlmenu_base {
             // Add the chapter set/unset controls.
             if ($chapter = $DB->get_record('format_mooin4_chapter', ['sectionid' => $section->id])) {
                 $url->param('unsetchapter', $section->section);
-                $controls['chapter'] = [
-                    'url' => $url,
-                    'icon' => 'i/settings',
-                    'name' => get_string('unsetchapter', 'format_mooin4'),
-                    'pixattr' => ['class' => ''],
-                    'attr' => [
+                $controls['chapter'] = new link_secondary(
+                    url: $url,
+                    icon: new pix_icon('i/settings', '', null, ['class' => 'smallicon']),
+                    text: get_string('unsetchapter', 'format_mooin4'),
+                    attributes: [
                         'class' => 'icon editing_showhide',
                         'data-sectionreturn' => $sectionreturn,
                         'data-action' => ($usecomponents) ? 'sectionUnsetChapter' : 'unsetChapter',
@@ -92,15 +93,14 @@ class controlmenu extends controlmenu_base {
                         'data-swapname' => get_string('setchapter', 'format_mooin4'),
                         'data-swapicon' => 'i/settings',
                     ],
-                ];
+                );
             } else {
                 $url->param('setchapter', $section->section);
-                $controls['chapter'] = [
-                    'url' => $url,
-                    'icon' => 'i/settings',
-                    'name' => get_string('setchapter', 'format_mooin4'),
-                    'pixattr' => ['class' => ''],
-                    'attr' => [
+                $controls['chapter'] = new link_secondary(
+                    url: $url,
+                    icon: new pix_icon('i/settings', '', null, ['class' => 'smallicon']),
+                    text: get_string('setchapter', 'format_mooin4'),
+                    attributes: [
                         'class' => 'icon editing_showhide',
                         'data-sectionreturn' => $sectionreturn,
                         'data-action' => ($usecomponents) ? 'sectionSetChapter' : 'setChapter',
@@ -108,7 +108,7 @@ class controlmenu extends controlmenu_base {
                         'data-swapname' => get_string('unsetchapter', 'format_mooin4'),
                         'data-swapicon' => 'i/settings',
                     ],
-                ];
+                );
             }
         }
         if ($section->section) {
@@ -125,17 +125,16 @@ class controlmenu extends controlmenu_base {
                     'delete' => 1,
                     'sesskey' => sesskey(),
                 ]);
-                $controls['delete'] = [
-                    'url' => $url,
-                    'icon' => 'i/delete',
-                    'name' => $strdelete,
-                    'pixattr' => ['class' => ''],
-                    'attr' => [
+                $controls['delete'] = new link_secondary(
+                    url: $url,
+                    icon: new pix_icon('i/delete', '', null, ['class' => 'smallicon']),
+                    text: $strdelete,
+                    attributes: [
                         'class' => 'icon editing_delete',
                         'data-action' => 'deleteSection',
                         'data-id' => $section->id,
                     ],
-                ];
+                );
             }
         }
 
