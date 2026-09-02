@@ -18,7 +18,7 @@
     <span class="d-flex">
         <h2>{{#str}} community, format_mooin4 {{/str}}</h2>
         {{#has_capability}}
-            <button type="button" class="btn info-tip p-0 ms-auto d-none d-lg-block" data-toggle="tooltip" data-placement="top"
+            <button type="button" class="btn info-tip p-0 ms-auto d-none d-lg-block" data-bs-toggle="tooltip" data-bs-placement="top"
                 title="{{#str}} discussions_tooltip, format_mooin4 {{/str}}">
                 <span class="bi bi-info-circle-fill"></span>
             </button>
@@ -62,7 +62,7 @@
                                 {{{user_firstname}}} - {{{created_news}}}
                             </span>
                             {{#has_capability}}
-                                <button type="button" class="btn info-tip p-0 ms-auto d-none d-sm-block d-lg-none" data-toggle="tooltip" data-placement="top"
+                                <button type="button" class="btn info-tip p-0 ms-auto d-none d-sm-block d-lg-none" data-bs-toggle="tooltip" data-bs-placement="top"
                                 title="{{#str}} discussions_tooltip, format_mooin4 {{/str}}">
                                     <span class="bi bi-info-circle-fill"></span>
                                 </button>
@@ -90,7 +90,7 @@
                             <span class="d-flex w-100">
                                 <a href="{{{all_discussions_url}}}" class="caption"> {{#str}} discussion_forum, format_mooin4 {{/str}}</a>
                                 {{#has_capability}}
-                                    <button type="button" class="btn info-tip ms-auto p-0" data-toggle="tooltip" data-placement="top"
+                                    <button type="button" class="btn info-tip ms-auto p-0" data-bs-toggle="tooltip" data-bs-placement="top"
                                         title=" {{#str}} certificates_tooltip, format_mooin4 {{/str}}">
                                         <span class="bi bi-info-circle-fill"></span>
                                     </button>
@@ -123,7 +123,7 @@
                             </span>
                             <div class="d-flex flex-column ms-4">
                                 <span>
-                                    <span class="font-weight-bold">
+                                    <span class="fw-bold">
                                         {{{user_count}}} 
                                         {{^singleuser}}
                                             {{#str}} user, format_mooin4 {{/str}}
@@ -139,7 +139,7 @@
                                         {{#str}} in_course_sgl, format_mooin4 {{/str}}
                                     {{/singleuser}}
                                 </span>
-                                <span class="font-weight-bold caption--sm"> {{#str}} new_user, format_mooin4 {{/str}} </span>
+                                <span class="fw-bold caption--sm"> {{#str}} new_user, format_mooin4 {{/str}} </span>
                                 <span class="caption--sm">
                                     {{{user_list}}}
                                 </span>

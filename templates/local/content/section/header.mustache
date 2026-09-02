@@ -35,10 +35,10 @@
 <h3 id="sectionid-{{id}}-title" class="sectionname d-flex align-items-center">
     {{#chapter}}
         {{#sec_numb_visibility}}
-        <a data-toggle="collapse" href="#chapter-{{{chapter_num}}}" class="" role="button" aria-expanded="false" aria-controls="chapter-{{{chapter_num}}}"><i class="bi bi-caret-right-fill" data-for="chapter_caret"></i> <span class="chapternumber"> {{#str}}chapter, format_mooin4{{/str}} <span data-for="index_number" data-id="{{id}}"> {{{prefix}}}</span>:&nbsp </span></a>
+        <a data-bs-toggle="collapse" href="#chapter-{{{chapter_num}}}" class="" role="button" aria-expanded="false" aria-controls="chapter-{{{chapter_num}}}"><i class="bi bi-caret-right-fill" data-for="chapter_caret"></i> <span class="chapternumber"> {{#str}}chapter, format_mooin4{{/str}} <span data-for="index_number" data-id="{{id}}"> {{{prefix}}}</span>:&nbsp </span></a>
         {{/sec_numb_visibility}}
         {{^sec_numb_visibility}}
-                <a data-toggle="collapse" href="#chapter-{{{chapter_num}}}" class="" role="button" aria-expanded="false" aria-controls="chapter-{{{chapter_num}}}"><i class="bi bi-caret-right-fill" data-for="chapter_caret"></i> <span class="chapternumber"> {{#str}}chapter, format_mooin4{{/str}} :&nbsp </span></a>
+                <a data-bs-toggle="collapse" href="#chapter-{{{chapter_num}}}" class="" role="button" aria-expanded="false" aria-controls="chapter-{{{chapter_num}}}"><i class="bi bi-caret-right-fill" data-for="chapter_caret"></i> <span class="chapternumber"> {{#str}}chapter, format_mooin4{{/str}} :&nbsp </span></a>
         {{/sec_numb_visibility}}
 
             {{{title}}}
@@ -57,13 +57,13 @@
         {{^editing}}
         {{#chapter}}
             {{#sec_numb_visibility}}
-                <a data-toggle="collapse" href="#chapter-{{{chapter_num}}}" class="{{^containsActiveSection}} collapsed {{/containsActiveSection}}" role="button" aria-expanded="false" aria-controls="chapter-{{{chapter_num}}}"><i class="bi bi-caret-right-fill" data-for="chapter_caret"></i> <span>{{#str}}chapter, format_mooin4{{/str}} {{{prefix}}}: {{{title}}} </span></a>
+                <a data-bs-toggle="collapse" href="#chapter-{{{chapter_num}}}" class="{{^containsActiveSection}} collapsed {{/containsActiveSection}}" role="button" aria-expanded="false" aria-controls="chapter-{{{chapter_num}}}"><i class="bi bi-caret-right-fill" data-for="chapter_caret"></i> <span>{{#str}}chapter, format_mooin4{{/str}} {{{prefix}}}: {{{title}}} </span></a>
             {{/sec_numb_visibility}}
             {{^sec_numb_visibility}}
-                <a data-toggle="collapse" href="#chapter-{{{chapter_num}}}" class="{{^containsActiveSection}} collapsed {{/containsActiveSection}}" role="button" aria-expanded="false" aria-controls="chapter-{{{chapter_num}}}"><i class="bi bi-caret-right-fill" data-for="chapter_caret"></i> <span>{{{title}}} </span></a>
+                <a data-bs-toggle="collapse" href="#chapter-{{{chapter_num}}}" class="{{^containsActiveSection}} collapsed {{/containsActiveSection}}" role="button" aria-expanded="false" aria-controls="chapter-{{{chapter_num}}}"><i class="bi bi-caret-right-fill" data-for="chapter_caret"></i> <span>{{{title}}} </span></a>
             {{/sec_numb_visibility}}
             {{#isnotyetavailable}}
-            <span class="badge badge-info ms-1 notyetavailable-badge" style="background-color: #6c757d; color: white;">
+            <span class="badge bg-info text-white ms-1 notyetavailable-badge" style="background-color: #6c757d; color: white;">
                 {{#str}}notyetavailable, format_mooin4{{/str}}
             </span>
             {{/isnotyetavailable}}
@@ -76,7 +76,7 @@
                 <a href="{{{url}}}">{{{title_without_link}}}</a>
             {{/sec_numb_visibility}}
             {{#isnotyetavailable}}
-            <span class="badge badge-info ms-1 notyetavailable-badge" style="background-color: #6c757d; color: white;">
+            <span class="badge bg-info text-white ms-1 notyetavailable-badge" style="background-color: #6c757d; color: white;">
                 {{#str}}notyetavailable, format_mooin4{{/str}}
             </span>
             {{/isnotyetavailable}}
@@ -93,7 +93,7 @@
     {{/sitehome}}
     {{^sitehome}}
         <div class="d-flex align-items-start position-relative">
-            <a role="button" data-toggle="collapse"
+            <a role="button" data-bs-toggle="collapse"
                href="#coursecontentcollapse{{num}}"
                id="collapssesection{{num}}"
                aria-expanded="{{^contentcollapsed}}true{{/contentcollapsed}}{{#contentcollapsed}}false{{/contentcollapsed}}"

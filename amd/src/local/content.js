@@ -32,8 +32,7 @@ import CmItem from "format_mooin4/local/content/section/cmitem";
 import courseActions from "core_course/actions";
 import DispatchActions from "format_mooin4/local/content/actions";
 import * as CourseEvents from "core_course/events";
-// The jQuery module is only used for interacting with Boostrap 4. It can we removed when MDL-71979 is integrated.
-import jQuery from "jquery";
+import Collapse from "theme_boost/bootstrap/collapse";
 import Pending from "core/pending";
 import log from "core/log";
 import { get_string as getString } from "core/str";
@@ -62,7 +61,7 @@ export default class Component extends BaseComponent {
       CM: `[data-for='cmitem']`,
       PAGE: `#region-main`,
       TOGGLER: `[data-action="togglecoursecontentsection"]`,
-      COLLAPSE: `[data-toggle="collapse"]`,
+      COLLAPSE: `[data-bs-toggle="collapse"]`,
       TOGGLEALL: `[data-toggle="toggleall"]`,
       // Formats can override the activity tag but a default one is needed to create new elements.
       ACTIVITYTAG: "li",
@@ -352,10 +351,11 @@ export default class Component extends BaseComponent {
         return;
       }
 
-      // Course index is based on Bootstrap 4 collapsibles. To collapse them we need jQuery to
-      // interact with collapsibles methods. Hopefully, this will change in Bootstrap 5 because
-      // it does not require jQuery anymore (when MDL-71979 is integrated).
-      jQuery(collapsible).collapse(element.contentcollapsed ? "hide" : "show");
+      if (element.contentcollapsed) {
+        Collapse.getOrCreateInstance(collapsible, {toggle: false}).hide();
+      } else {
+        Collapse.getOrCreateInstance(collapsible, {toggle: false}).show();
+      }
     }
 
     this._refreshAllSectionsToggler(state);
@@ -552,7 +552,7 @@ export default class Component extends BaseComponent {
    * Initialize caret syncing for chapter headings in the main content.
    */
   _initChapterCarets() {
-    const togglers = this.getElements("a[data-toggle='collapse'][href^='#chapter-']");
+    const togglers = this.getElements("a[data-bs-toggle='collapse'][href^='#chapter-']");
     togglers.forEach((toggler) => this._bindChapterCaret(toggler));
     // Initial sync based on current collapse state.
     togglers.forEach((toggler) => this._updateChapterCaret(toggler));
