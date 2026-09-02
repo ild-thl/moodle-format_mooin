@@ -26,10 +26,8 @@ namespace format_mooin4\output\courseformat\content;
 
 use context_course;
 use core_courseformat\output\local\content\sectionnavigation as sectionnavigation_base;
-use format_mooin4;
 use stdClass;
-use renderer_base;
-use format_mooin4\local\utils as utils;
+use format_mooin4\local\utils;
 
 
 /**
@@ -40,7 +38,6 @@ use format_mooin4\local\utils as utils;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class sectionnavigation extends sectionnavigation_base {
-
     /** @var stdClass|null $data Cache for the exported data. */
     protected $data = null;
 

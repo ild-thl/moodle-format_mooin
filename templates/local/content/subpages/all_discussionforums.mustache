@@ -10,10 +10,10 @@
             {{#forumslist}}
                 <li class="d-inline-flex w-100 text-nowrap align-items-center">
                     {{{index}}} 
-                    <a class="ml-1" href={{{url}}}>{{{name}}}</a>
+                    <a class="ms-1" href={{{url}}}>{{{name}}}</a>
                     {{#unreadposts}}
                         <span class="w-100 d-flex align-items-center justify-content-between" data-for="mark_as_read_container">
-                            <span class=" ml-1 notification-badge mr-1">{{{unreadposts}}}</span>
+                            <span class=" ms-1 notification-badge me-1">{{{unreadposts}}}</span>
                             <a class="d-none d-md-flex" type="button" data-id="{{{id}}}" data-for="unread_link">{{#str}} mark_all_as_read, format_mooin4 {{/str}}</a>
                             <a class="d-flex d-md-none unread-btn-mobile" type="button" data-id="{{{id}}}" data-for="unread_link"></a>
                         </span>
