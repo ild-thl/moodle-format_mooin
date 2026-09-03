@@ -72,7 +72,7 @@
         id="courseindexsection{{number}}"
         data-for="section_item"
     >
-        <a data-toggle="collapse"
+        <a data-bs-toggle="collapse"
             href="#chapter-{{{isChapter}}}-index"
             class="{{^editmode}}{{^containsActiveSection}} collapsed {{/containsActiveSection}} {{/editmode}} chapter"
             aria-expanded="{{#containsActiveSection}}true{{/containsActiveSection}}{{^containsActiveSection}}false{{/containsActiveSection}}"
@@ -96,13 +96,13 @@
         </span>
         </span>
         </a>
-        <span class="current-badge badge badge-primary ml-2 px-2 rounded-pill">
+        <span class="current-badge badge bg-primary text-white ms-2 px-2 rounded-pill">
             {{highlighted}}
         </span>
-        <span class="courseindex-locked ml-1" data-for="cm_name">
+        <span class="courseindex-locked ms-1" data-for="cm_name">
             {{#pix}} t/locked, core {{/pix}}
         </span>
-        <span class="dragicon ml-auto">{{#pix}}i/dragdrop{{/pix}}</span>
+        <span class="dragicon ms-auto">{{#pix}}i/dragdrop{{/pix}}</span>
     </div>
     
 </div>
@@ -139,19 +139,19 @@
             
         </a>
         <span class="index-infos" data-for="index_infos">
-            <span class="current-badge badge badge-primary ml-2 px-2 rounded-pill">
+            <span class="current-badge badge bg-primary text-white ms-2 px-2 rounded-pill">
                 {{highlighted}}
             </span>
-            <span class="courseindex-locked ml-1" data-for="cm_name">
+            <span class="courseindex-locked ms-1" data-for="cm_name">
                 {{#pix}} t/locked, core {{/pix}}
             </span>
             {{#isCompleted}}<i class="bi bi-check" data-for="checkmark"></i>{{/isCompleted}}
             {{#isnotyetavailable}}
-            <span class="badge badge-secondary ml-1 notyetavailable-badge" title="{{#str}}notyetavailable, format_mooin4{{/str}}">
+            <span class="badge bg-secondary text-dark ms-1 notyetavailable-badge" title="{{#str}}notyetavailable, format_mooin4{{/str}}">
                 <i class="bi bi-lock-fill"></i>
             </span>
             {{/isnotyetavailable}}
-            <span class="dragicon ml-auto">{{#pix}}i/dragdrop{{/pix}}</span>
+            <span class="dragicon ms-auto">{{#pix}}i/dragdrop{{/pix}}</span>
         </span>
         
     </div>

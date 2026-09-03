@@ -123,19 +123,21 @@ export default class extends BaseComponent {
      * Display the component dropzone.
      *
      * @param {Object} dropdata the accepted drop data
+     * @param {Event} event the original drag event
      */
-    showDropZone(dropdata) {
+    showDropZone(dropdata, event) {
         if (dropdata.type == 'cm') {
             this.getLastCm()?.classList.add(this.classes.DROPDOWN);
         }
         if (dropdata.type == 'section') {
-            // The relative move of section depends on the section number.
-            if (this.section.number > dropdata.number) {
-                this.element.classList.remove(this.classes.DROPUP);
-                this.element.classList.add(this.classes.DROPDOWN);
-            } else {
+            // Show the drop indicator on the exact half of the section the user is hovering,
+            // so the visual cue matches where the section will actually be placed.
+            if (this._isDropBeforeSection(event)) {
                 this.element.classList.add(this.classes.DROPUP);
                 this.element.classList.remove(this.classes.DROPDOWN);
+            } else {
+                this.element.classList.remove(this.classes.DROPUP);
+                this.element.classList.add(this.classes.DROPDOWN);
             }
         }
     }
@@ -150,17 +152,61 @@ export default class extends BaseComponent {
     }
 
     /**
+     * Check whether the dragged element should be dropped before this section.
+     *
+     * The dragged section is always moved using the "move after" mutation, so to
+     * place it exactly where the pointer is (instead of always behind the hovered
+     * section), we need to figure out if the pointer is over the top or the bottom
+     * half of this section.
+     *
+     * @param {Event} event the original drag event
+     * @returns {boolean} true if the pointer is over the top half of this section
+     */
+    _isDropBeforeSection(event) {
+        if (!event) {
+            return false;
+        }
+        const rect = this.element.getBoundingClientRect();
+        const middle = rect.top + (rect.height / 2);
+        return event.clientY < middle;
+    }
+
+    /**
+     * Get the id of the section immediately before this one in the course.
+     *
+     * @returns {number|null} the previous section id, or null if this is the first section
+     */
+    _getPreviousSectionId() {
+        const sectionlist = this.course.sectionlist;
+        const index = sectionlist.indexOf(this.id);
+        if (index <= 0) {
+            return null;
+        }
+        return sectionlist[index - 1];
+    }
+
+    /**
      * Drop event handler.
      *
      * @param {Object} dropdata the accepted drop data
+     * @param {Event} event the original drag event
      */
-    drop(dropdata) {
+    drop(dropdata, event) {
         // Call the move mutation.
-        if (dropdata.type == 'cm') {
+        if (dropdata.type === 'cm') {
             this.reactive.dispatch('cmMove', [dropdata.id], this.id);
         }
-        if (dropdata.type == 'section') {
-            this.reactive.dispatch('sectionMove', [dropdata.id], this.id);
+        if (dropdata.type === 'section') {
+            let targetId = this.id;
+            if (this._isDropBeforeSection(event)) {
+                const previousId = this._getPreviousSectionId();
+                if (previousId && previousId !== dropdata.id) {
+                    targetId = previousId;
+                } else if (previousId === dropdata.id) {
+                    return;
+                }
+            }
+            this.reactive.dispatch('sectionMoveAfter', [dropdata.id], targetId);
         }
     }
 }

@@ -223,5 +223,7 @@ $string['allowcoursethemeswarning_noadmin'] = 'Das Mooin-Kursformat setzt kursbe
 $string['error_allowcoursethemes_required'] = 'Das Mooin-Kursformat kann nicht gespeichert werden, solange „{$a}“ deaktiviert ist. Bitte die Administration bitten, diese Einstellung zu aktivieren und anschließend unter Darstellung das Design „Mooin 4.x“ zu erzwingen.';
 $string['mooin4themerequirementwarning'] = 'Das Mooin-Kursformat setzt das Design „Mooin 4.x“ voraus. Wählen Sie unter Darstellung bei „Design festlegen“ Mooin 4.x, bevor Sie speichern.';
 $string['mooin4:allowmooin4'] = 'Darf das Kursformat zu Mooin 4.x wechseln';
+$string['mooin4:readuserpage'] = 'Zusätzliche Profilfelder von Teilnehmer/innen (Stadt, Land, Abzeichen) auf der Teilnehmenden-Seite anzeigen';
+$string['mooin4:aluhatsoff'] = 'Kursbadges anderer (nicht-lehrender) Teilnehmer/innen auf der Teilnehmenden-Seite anzeigen';
 $string['error_mooin4_format_not_allowed'] = 'Sie haben keine Berechtigung, das Kursformat zu Mooin 4.x zu wechseln.';
 $string['error_mooin4_theme_required'] = 'Beim Mooin-Kursformat muss unter Darstellung bei „Design festlegen“ das Design „Mooin 4.x“ gewählt werden.';
