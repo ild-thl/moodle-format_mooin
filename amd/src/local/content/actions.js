@@ -26,7 +26,8 @@
  */
 
 import { BaseComponent } from 'core/reactive';
-import ModalFactory from 'core/modal_factory';
+import Modal from 'core/modal';
+import ModalSaveCancel from 'core/modal_save_cancel';
 import ModalEvents from 'core/modal_events';
 import Templates from 'core/templates';
 import { prefetchStrings } from 'core/prefetch';
@@ -216,7 +217,7 @@ export default class extends BaseComponent {
         };
 
         // Create the modal.
-        const modal = await this._modalBodyRenderedPromise(modalParams);
+        const modal = await this._modalBodyRenderedPromise(Modal, modalParams);
 
         const modalBody = getList(modal.getBody())[0];
 
@@ -301,7 +302,7 @@ export default class extends BaseComponent {
         };
 
         // Create the modal.
-        const modal = await this._modalBodyRenderedPromise(modalParams);
+        const modal = await this._modalBodyRenderedPromise(Modal, modalParams);
 
         const modalBody = getList(modal.getBody())[0];
 
@@ -399,10 +400,9 @@ export default class extends BaseComponent {
                 title: getString('confirm', 'core'),
                 body: getString('confirmdeletesection', 'moodle', sectionInfo.title),
                 saveButtonText: getString('delete', 'core'),
-                type: ModalFactory.types.SAVE_CANCEL,
             };
 
-            const modal = await this._modalBodyRenderedPromise(modalParams);
+            const modal = await this._modalBodyRenderedPromise(ModalSaveCancel, modalParams);
 
             modal.getRoot().on(
                 ModalEvents.save,
@@ -468,12 +468,13 @@ export default class extends BaseComponent {
     /**
      * Render a modal and return a body ready promise.
      *
+     * @param {Modal} ModalClass the modal class to instantiate
      * @param {object} modalParams the modal params
      * @return {Promise} the modal body ready promise
      */
-    _modalBodyRenderedPromise(modalParams) {
+    _modalBodyRenderedPromise(ModalClass, modalParams) {
         return new Promise((resolve, reject) => {
-            ModalFactory.create(modalParams).then((modal) => {
+            ModalClass.create(modalParams).then((modal) => {
                 modal.setRemoveOnClose(true);
                 // Handle body loading event.
                 modal.getRoot().on(ModalEvents.bodyRendered, () => {

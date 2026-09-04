@@ -4,7 +4,6 @@ import ajax from 'core/ajax';
 import notification from 'core/notification';
 import Str from 'core/str';
 import Url from 'core/url';
-import ModalFactory from 'core/modal_factory';
 
 // ILD Namespace Definition
 const ILD = {};
