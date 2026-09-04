@@ -1,5 +1,4 @@
 import Modal from 'core/modal';
-import ModalFactory from 'core/modal_factory';
 import ModalRegistry from 'core/modal_registry';
 
 export default class Mooin4Modal extends Modal {

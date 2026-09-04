@@ -36,7 +36,6 @@ import Collapse from "theme_boost/bootstrap/collapse";
 import Pending from "core/pending";
 import log from "core/log";
 import { get_string as getString } from "core/str";
-import ModalFactory from "core/modal_factory";
 import Templates from "core/templates";
 import ModalEvents from "core/modal_events";
 import Mooin4Modal from "../mooin4modal";
@@ -1096,8 +1095,7 @@ export default class Component extends BaseComponent {
   }
 
   async _showChapterCompletedModal(state, nextSection) {
-    const modal = await ModalFactory.create({
-      type: Mooin4Modal.TYPE,
+    const modal = await Mooin4Modal.create({
       title: await getString(
         "modal_chapter_complete_title",
         "format_mooin4"
@@ -1117,8 +1115,7 @@ export default class Component extends BaseComponent {
   }
 
   async _showCourseCompletedModal(state) {
-    const modal = await ModalFactory.create({
-      type: Mooin4Modal.TYPE,
+    const modal = await Mooin4Modal.create({
       title: await getString(
         "modal_course_complete_title",
         "format_mooin4"

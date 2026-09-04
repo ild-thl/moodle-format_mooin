@@ -93,7 +93,7 @@ class section extends section_base {
         $sectionprogress = utils::get_section_progress($course->id, $this->section->id, $USER->id);
         $data->sectionprogress = $sectionprogress;
         if ($sectionprogress == 100) {
-            $data->iscompleted = true;
+            $data->isCompleted = true;
         }
 
         if ($chapter = $DB->get_record('format_mooin4_chapter', ['sectionid' => $this->section->id])) {
