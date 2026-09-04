@@ -69,8 +69,8 @@ class section extends section_base {
         global $USER;
         parent::__construct($format, $section);
         $course = $format->get_course();
-        $sectionnumber = optional_param('section', 0, PARAM_INT);
-        if ($sectionnumber > 0) {
+        $sectionnumber = $format->get_sectionnum();
+        if (!empty($sectionnumber)) {
             set_user_preference('format_mooin4_last_section_in_course_' . $course->id, $sectionnumber, $USER->id);
         }
         $this->add_chapter_data();
