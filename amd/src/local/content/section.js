@@ -25,7 +25,6 @@
 import Header from "format_mooin4/local/content/section/header";
 import DndSection from "format_mooin4/local/courseeditor/dndsection";
 import Templates from "core/templates";
-import ModalFactory from "core/modal_factory";
 import Mooin4Modal from "../../mooin4modal";
 import { get_string as getString } from "core/str";
 import ILD from "format_mooin4/ildhvp4";
@@ -250,8 +249,7 @@ export default class extends DndSection {
       section.showLastSectionModal &&
       window.location.href == section.sectionurl.replace(/&amp;/g, "&")
     ) {
-      const modal = await ModalFactory.create({
-        type: Mooin4Modal.TYPE,
+      const modal = await Mooin4Modal.create({
         title: await getString(
           "modal_last_section_of_chapter_title",
           "format_mooin4"

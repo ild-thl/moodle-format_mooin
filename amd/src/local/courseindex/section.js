@@ -183,7 +183,7 @@ export default class Component extends DndSection {
         if (!caret) {
             return;
         }
-        const chapterToggler = this.element.querySelector('[data-toggle="collapse"]');
+        const chapterToggler = this.element.querySelector('[data-bs-toggle="collapse"]');
         if (!chapterToggler) {
             return;
         }
@@ -200,7 +200,7 @@ export default class Component extends DndSection {
      * Keep chapter caret icon synced with collapse state changes.
      */
     _registerChapterToggleSync() {
-        const chapterToggler = this.element.querySelector('[data-toggle="collapse"]');
+        const chapterToggler = this.element.querySelector('[data-bs-toggle="collapse"]');
         if (!chapterToggler || chapterToggler.dataset.caretSyncBound === '1') {
             return;
         }

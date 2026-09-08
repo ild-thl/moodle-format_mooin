@@ -24,7 +24,7 @@
 
 import {BaseComponent} from 'core/reactive';
 import {getCurrentCourseEditor} from 'core_courseformat/courseeditor';
-import jQuery from 'jquery';
+import Collapse from 'theme_boost/bootstrap/collapse';
 import ContentTree from 'core_courseformat/local/courseeditor/contenttree';
 
 export default class Component extends BaseComponent {
@@ -41,7 +41,7 @@ export default class Component extends BaseComponent {
             SECTION_CMLIST: `[data-for='cmlist']`,
             CM: `[data-for='cm']`,
             TOGGLER: `[data-action="togglecourseindexsection"]`,
-            COLLAPSE: `[data-toggle="collapse"]`,
+            COLLAPSE: `[data-bs-toggle="collapse"]`,
             DRAWER: `.drawer`,
             CHAPTERCONTAINER: `[data-for="chapter-container"]`,
             INDEXNUMBER: `[data-for='index_number']`,
@@ -201,11 +201,11 @@ export default class Component extends BaseComponent {
             forceValue = (element.indexcollapsed) ? false : true;
         }
 
-        // Course index is based on Bootstrap 4 collapsibles. To collapse them we need jQuery to
-        // interact with collapsibles methods. Hopefully, this will change in Bootstrap 5 because
-        // it does not require jQuery anymore (when MDL-71979 is integrated).
-        const togglerValue = (forceValue) ? 'show' : 'hide';
-        jQuery(collapsible).collapse(togglerValue);
+        if (forceValue) {
+            Collapse.getOrCreateInstance(collapsible, {toggle: false}).show();
+        } else {
+            Collapse.getOrCreateInstance(collapsible, {toggle: false}).hide();
+        }
     }
 
     /**

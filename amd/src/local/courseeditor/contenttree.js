@@ -30,6 +30,7 @@
 import jQuery from 'jquery';
 import Tree from 'core/tree';
 import {getList} from 'core/normalise';
+import Collapse from 'theme_boost/bootstrap/collapse';
 
 export default class extends Tree {
 
@@ -146,7 +147,6 @@ export default class extends Tree {
      * @param {JQuery} item  the jQuery object
      */
     toggleGroup(item) {
-        // All jQuery in this segment of code can be replaced when MDL-71979 is integrated.
         const toggler = item.find(this.selectors.COLLAPSE);
         let collapsibleId = toggler.data('target') ?? toggler.attr('href');
         if (!collapsibleId) {
@@ -154,10 +154,9 @@ export default class extends Tree {
         }
         collapsibleId = collapsibleId.replace('#', '');
 
-        // Bootstrap 4 uses jQuery to interact with collapsibles.
-        const collapsible = jQuery(`#${collapsibleId}`);
-        if (collapsible.length) {
-            jQuery(`#${collapsibleId}`).collapse('toggle');
+        const collapsible = document.getElementById(collapsibleId);
+        if (collapsible) {
+            Collapse.getOrCreateInstance(collapsible).toggle();
         }
     }
 

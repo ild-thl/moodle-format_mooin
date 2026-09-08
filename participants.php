@@ -29,6 +29,7 @@ require_once($CFG->libdir.'/tablelib.php');
 require_once($CFG->libdir.'/filelib.php');
 require_once('../mooin4/lib.php');
 
+use core_user\fields;
 use format_mooin4\local\utils as utils;
 
 $courseid = optional_param('id', 0, PARAM_INT);
@@ -354,14 +355,14 @@ if ($bulkoperations && $mode === MODE_BRIEF) {
 $tablecolumns[] = 'userpic';
 $tablecolumns[] = 'fullname';
 
-$extrafields = \core_user\fields::for_identity($context, false)->get_required_fields();
+$extrafields = fields::for_identity($context, false)->get_required_fields();
 $tableheaders[] = get_string('userpic');
 $tableheaders[] = get_string('fullnameuser');
 
 if ($mode === MODE_BRIEF) {
     foreach ($extrafields as $field) {
         $tablecolumns[] = $field;
-        $tableheaders[] = \core_user\fields::get_display_name($field);
+        $tableheaders[] = fields::get_display_name($field);
     }
 }
 
@@ -434,9 +435,10 @@ $joins = ["FROM {user} u"];
 $wheres = [];
 
 $userfields = ['username', 'email', 'city', 'country', 'lang', 'timezone', 'maildisplay'];
-$mainuserfields = user_picture::fields('u', $userfields);
+$mainuserfields = fields::for_userpic()->including(...$userfields)->get_sql('u', false, '', 'id', false)->selects;
+$mainuserfields = str_replace(', ', ',', $mainuserfields);
 
-$value = \core_user\fields::for_name()->with_identity($context);
+$value = fields::for_name()->with_identity($context);
 $extrasql = $value->get_sql('u')->selects;
 if ($isfrontpage) {
     $select = "SELECT $mainuserfields, u.lastaccess$extrasql";
@@ -656,7 +658,7 @@ if ($roleid > 0) {
     echo $OUTPUT->heading($heading, 3);
 } else {
     if ($course->id != SITEID && has_capability('moodle/course:enrolreview', $context)) {
-        $editlink = $OUTPUT->action_icon(new moodle_url('/enrol/users.php', ['id' => $course->id]),
+        $editlink = $OUTPUT->action_icon(new moodle_url('/user/index.php', ['id' => $course->id]),
                                          new pix_icon('t/edit', get_string('edit')));
     } else {
         $editlink = '';
@@ -785,7 +787,7 @@ if ($mode === MODE_USERDETAILS) {  // Print simple listing.
                         // because this page is intended for students too.
                         continue;
                     }
-                    $row->cells[1]->text .= \core_user\fields::get_display_name($field) .
+                    $row->cells[1]->text .= fields::get_display_name($field) .
                             get_string('labelsep', 'langconfig') . s($user->{$field}) . '<br />';
                 }
 
