@@ -668,89 +668,106 @@ class format_mooin4 extends core_courseformat\base {
     }
 
     /**
-     * Updates format options for a course.
-     *
-     * In case if course format was changed to 'topics', we try to copy options
-     * 'coursedisplay' and 'hiddensections' from the previous format.
-     *
-     * @param stdClass|array $data return value from {@see moodleform::get_data()} or array with data
-     * @param stdClass $oldcourse if this function is called from {@see update_course()}
-     *     this object contains information about the course before update
-     * @return bool whether there were any changes to the options values
-     */
+    * Updates format options for a course.
+    *
+    * In case if course format was changed to 'topics', we try to copy options
+    * 'coursedisplay' and 'hiddensections' from the previous format.
+    *
+    * @param stdClass|array $data return value from {@see moodleform::get_data()} or array with data
+    * @param stdClass $oldcourse if this function is called from {@see update_course()}
+    *     this object contains information about the course before update
+    * @return bool whether there were any changes to the options values
+    */
     public function update_course_format_options($data, $oldcourse = null) {
-        global $DB;
+    global $DB;
 
-        // Function update_course_format_options for format_topics_test.php only.
-        if (!$oldcourse) {
-            // Add first chapter, there must be no sections without parent chapter.
-            $chaptertitle = get_string('chapter', 'format_mooin4') . ' 1';
+    // Function update_course_format_options for format_topics_test.php only.
+    if (!$oldcourse) {
+        // Add first chapter, there must be no sections without parent chapter.
+        $chaptertitle = get_string('chapter', 'format_mooin4') . ' 1';
 
-            $newsection = new stdClass();
-            $newsection->course = $this->courseid;
-            $newsection->section = 1;
-            $newsection->name = $chaptertitle;
-            $newsection->summaryformat = 1;
-            $newsection->visible = 1;
-            $newsection->timemodified = time();
+        $newsection = new stdClass();
+        $newsection->course = $this->courseid;
+        $newsection->section = 1;
+        $newsection->name = $chaptertitle;
+        $newsection->summaryformat = 1;
+        $newsection->visible = 1;
+        $newsection->timemodified = time();
 
-            if ($newsectionid = $DB->insert_record('course_sections', $newsection)) {
-                $newchapter = new stdClass();
-                $newchapter->courseid = $this->courseid;
-                $newchapter->title = $chaptertitle;
-                $newchapter->sectionid = $newsectionid;
-                $newchapter->chapter = 1;
-                $DB->insert_record('format_mooin4_chapter', $newchapter);
-            }
+        if ($newsectionid = $DB->insert_record('course_sections', $newsection)) {
+            $newchapter = new stdClass();
+            $newchapter->courseid = $this->courseid;
+            $newchapter->title = $chaptertitle;
+            $newchapter->sectionid = $newsectionid;
+            $newchapter->chapter = 1;
+
+            $DB->insert_record('format_mooin4_chapter', $newchapter);
+        }
         } else {
-            // Add new chapter at position 1 if format is changed to mooin4.
-            // was format of oldcourse not mooin4?
-            if ($oldcourse->format != 'mooin4') {
-                // Is there no chapter at position 1?
-                if ($section1 = $DB->get_record('course_sections', ['course' => $this->courseid, 'section' => 1])) {
-                    $chapterexists = $DB->get_record(
-                        'format_mooin4_chapter',
-                        ['courseid' => $this->courseid, 'sectionid' => $section1->id]
-                    );
-                    if (!$chapterexists) {
-                        // Add new section.
-                        $sectionnumber = $DB->count_records('course_sections', ['course' => $this->courseid]);
-                        if ($sectionnumber > 0) {
-                            $chaptertitle = get_string('chapter', 'format_mooin4') . ' 1';
-                            $newsection = new stdClass();
-                            $newsection->course = $this->courseid;
-                            $newsection->section = $sectionnumber;
-                            $newsection->name = $chaptertitle;
-                            $newsection->summaryformat = 1;
-                            $newsection->visible = 1;
-                            $newsection->timemodified = time();
+        // Course format was changed from another format to Mooin4.
+        if ($oldcourse->format != 'mooin4') {
 
-                            if ($newsectionid = $DB->insert_record('course_sections', $newsection)) {
-                                // Move new section to position 1.
-                                if ($course = $DB->get_record('course', ['id' => $this->courseid])) {
-                                    move_section_to($course, $sectionnumber, 1, true);
-                                    // Convert new section to chapter.
-                                    $newchapter = new stdClass();
-                                    $newchapter->courseid = $this->courseid;
-                                    $newchapter->title = $chaptertitle;
-                                    $newchapter->sectionid = $newsectionid;
-                                    $newchapter->chapter = 1;
-                                    $DB->insert_record('format_mooin4_chapter', $newchapter);
-                                    utils::sort_course_chapters($this->courseid);
-                                }
-                            }
-                        }
-                    }
+            // Check whether section 1 already exists and is already a Mooin chapter.
+            $section1 = $DB->get_record(
+                'course_sections',
+                [
+                    'course' => $this->courseid,
+                    'section' => 1,
+                ]
+            );
+
+            $chapterexists = false;
+
+            if ($section1) {
+                $chapterexists = $DB->record_exists(
+                    'format_mooin4_chapter',
+                    [
+                        'courseid' => $this->courseid,
+                        'sectionid' => $section1->id,
+                    ]
+                );
+            }
+
+            // If there is no Mooin chapter at position 1, create one.
+            if (!$chapterexists) {
+                $chaptertitle = get_string('chapter', 'format_mooin4') . ' 1';
+
+                // Let Moodle create the section properly at position 1.
+                // Existing sections are shifted automatically.
+                $newsection = course_create_section($this->courseid, 1);
+
+                if ($newsection) {
+                    // Give the new section the chapter title.
+                    $newsection->name = $chaptertitle;
+                    $newsection->timemodified = time();
+
+                    $DB->update_record('course_sections', $newsection);
+
+                    // Register the new Moodle section as a Mooin chapter.
+                    $newchapter = new stdClass();
+                    $newchapter->courseid = $this->courseid;
+                    $newchapter->title = $chaptertitle;
+                    $newchapter->sectionid = $newsection->id;
+                    $newchapter->chapter = 1;
+
+                    $DB->insert_record('format_mooin4_chapter', $newchapter);
+
+                    // Make sure chapter numbers are correct.
+                    utils::sort_course_chapters($this->courseid);
+
+                    // Refresh Moodle's course/section cache.
+                    rebuild_course_cache($this->courseid, true);
                 }
             }
         }
+    }
 
-        if ($course = $DB->get_record('course', ['id' => $this->courseid])) {
-            $course->newsitems = 1;
-            $DB->update_record('course', $course);
-        }
+    if ($course = $DB->get_record('course', ['id' => $this->courseid])) {
+        $course->newsitems = 1;
+        $DB->update_record('course', $course);
+    }
 
-        return $this->update_format_options($data);
+    return $this->update_format_options($data);
     }
 
     /**
