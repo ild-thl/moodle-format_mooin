@@ -1148,7 +1148,7 @@ class utils {
 
                 foreach ($nextsections as $nextsection) {
                     $sectioninfo = get_fast_modinfo($course)->get_section_info($nextsection->section);
-                    if ($format->is_section_visible($sectioninfo)) {
+                    if ($sectioninfo !== null && $format->is_section_visible($sectioninfo)) {
 
                         if ($nextsection->id == $sectionid) {
                             return true;
