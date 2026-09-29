@@ -80,21 +80,21 @@ ILD.xAPIAnsweredListener = (event) => {
 
     if (contentSubIds.indexOf(subContentId) !== -1) {
       if (!ILD.answeredSubIds[contentId]) {
-        ILD.answeredSubIds[contentId] = [];
+        ILD.answeredSubIds[contentId] = {};
       }
 
       const answered = ILD.answeredSubIds[contentId];
-
-      if (answered.indexOf(subContentId) === -1) {
-        answered.push(subContentId);
-      }
+      // Keep the best result per interaction as a fraction between 0 and 1.
+      const fraction = maxScore > 0 ? score / maxScore : 1;
+      answered[subContentId] = Math.max(answered[subContentId] || 0, fraction);
 
       const interactions = ILD.interactions[contentId];
-      const answeredCount = answered.length;
+      // Sum up the correctness of all answered interactions.
+      const correctSum = Object.values(answered).reduce((sum, value) => sum + value, 0);
 
       if (interactions && interactions > 0) {
-        ILD.percentage = (answeredCount / interactions) * 100;
-        ILD.setResult(contentId, answeredCount, interactions, ILD.contentToSection[contentId] || null);
+        ILD.percentage = (correctSum / interactions) * 100;
+        ILD.setResult(contentId, correctSum, interactions, ILD.contentToSection[contentId] || null);
       }
     } else if (!contentSubIds.length) {
       const percentage = (score / maxScore) * 100;
@@ -167,9 +167,8 @@ ILD.checkLibrary = (H5PIntegration, H5PInstance) => {
   if (H5PInstance && H5PInstance.video && typeof H5PInstance.video.on === 'function') {
 
     // Check if there are no answerable interactions in video
-    function noAnswerableInteractions(H5PInstance) {
-      return H5PInstance.interactions.every(interaction => !interaction.isAnswerable());
-    }
+    const noAnswerableInteractions = (instance) =>
+      instance.interactions.every(interaction => !interaction.isAnswerable());
 
     //console.log(`H5P Interactive Video instance (${contentId}) detected. Attaching video listener.`);
     if (H5PInstance.interactions
