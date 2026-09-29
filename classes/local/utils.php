@@ -151,13 +151,14 @@ class utils {
         require_once($CFG->libdir . '/gradelib.php');
         $gradinginfo = \grade_get_grades($cm->course, 'mod', 'hvp', $cm->instance, $USER->id);
         $gradinginfo = (object)$gradinginfo;
-        if (!empty($gradinginfo->items)) {
-            $usergrade = $gradinginfo->items[0]->grades[$USER->id]->grade;
-        } else {
-            $usergrade = 0;
-        }
+        $item = $gradinginfo->items[0] ?? null;
+        $usergrade = $item->grades[$USER->id]->grade ?? null;
+        $grademax = (float)($item->grademax ?? 100);
+        // Scale the new score to the grade item maximum before comparing.
+        $newgrade = $maxscore > 0 ? ($score / $maxscore) * $grademax : 0;
 
-        if ($score >= $usergrade) {
+        // Only update the grade if the new result is at least as good.
+        if ($usergrade === null || $newgrade >= (float)$usergrade) {
 
             // Set grade using Gradebook API.
             $hvp->cmidnumber = $cm->idnumber;
@@ -1447,7 +1448,13 @@ class utils {
 
             // Activity is hvp, we use the grades to get the individual progress.
             if ($modulename == 'hvp') {
-                if ($storedprogress !== null) {
+                $gradinginfo = grade_get_grades($courseid, 'mod', 'hvp', $coursemodule->instance, $userid);
+                $hvpgrade = $gradinginfo->items[0]->grades[$userid]->grade ?? null;
+                $hvpgrademax = (float)($gradinginfo->items[0]->grademax ?? 0);
+                if ($hvpgrade !== null && $hvpgrademax > 0) {
+                    // Progress follows the Moodle gradebook grade.
+                    $percentage += ($hvpgrade / $hvpgrademax) * 100;
+                } else if ($storedprogress !== null) {
                     $percentage += (float)$storedprogress;
                 } else {
                     $gradinginfo = grade_get_grades($courseid, 'mod', 'hvp', $coursemodule->instance, $userid);
